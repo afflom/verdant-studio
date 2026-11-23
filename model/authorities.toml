@@ -112,23 +112,6 @@ checksum_reason = "Cited by the seed. Its official machine-readable form enters 
 realized_by = []
 
 [[authority]]
-id = "W3C-PROV-O"
-name = "PROV-O: The PROV Ontology"
-issuer = "W3C"
-edition = "2013-04-30"
-canonical_id = "http://www.w3.org/ns/prov#"
-source_role = "normative"
-retrieval_date = "2026-11-23"
-url = "https://www.w3.org/TR/2013/REC-prov-o-20130430/"
-media_type = "text/html"
-license = "W3C Document License"
-redistribution = "citation-only"
-statement = "Agent, Entity and wasAttributedTo, used for stakeholders as producers and consumers."
-checksum = "none"
-checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
-realized_by = []
-
-[[authority]]
 id = "ISO-IEC-IEEE-42010-2022"
 name = "Software, systems and enterprise: Architecture description"
 issuer = "ISO/IEC/IEEE"
@@ -235,4 +218,21 @@ redistribution = "redistributable"
 statement = "The JSON Schema 2020-12 meta-schema, the official machine-readable form the translator reads."
 artifact = "authorities/JSON-SCHEMA-2020-12/schema"
 checksum = "41da76f5afb7ce062d248f762463a92f7ca47e4e0f905b224ba6afeef91ded0f"
+realized_by = []
+
+[[authority]]
+id = "W3C-PROV-O"
+name = "PROV-O: The PROV Ontology"
+issuer = "W3C"
+edition = "W3C Recommendation 2013-04-30"
+canonical_id = "http://www.w3.org/ns/prov#"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.w3.org/ns/prov-o-20130430"
+media_type = "text/turtle"
+license = "W3C Software and Document License"
+redistribution = "redistributable"
+statement = "The PROV-O ontology in its official Turtle form: Agent, Entity, Activity and wasAttributedTo, used for stakeholders as producers and consumers."
+artifact = "authorities/W3C-PROV-O/prov-o-20130430"
+checksum = "3d03c8e15753178541fb8cd59fbefecaf1861f9c37ef75190c6e938b85fb0c3d"
 realized_by = []
