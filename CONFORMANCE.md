@@ -73,6 +73,76 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `VRMC-VRM-1.0` | The root JSON Schema of the VRMC_vrm 1.0 glTF extension for humanoid avatars: meta, humanoid, firstPerson, lookAt and expressions. Index row E05. |  |
 | `WEB3D-X3D-4.0-XSD` | The X3D 4.0 XML Schema, which encodes the HAnim component nodes of ISO/IEC 19774-1:2019 (HAnimHumanoid, HAnimJoint, HAnimSegment, HAnimSite, HAnimDisplacer, HAnimMotion). Index row E04. |  |
 | `YARNSPINNER-PARSER-3.3.1` | The ANTLR parser grammar of the Yarn language: nodes, headers, lines, options, commands and expressions. Index row C06. |  |
+| `ASWF-OSL-GRAMMAR-1.15.8.0` | The Bison grammar of the Open Shading Language that the official oslc compiler parses: shader declarations, parameters, statements, expressions and closures. Index row D10. |  |
+| `BREAKPAD-MINIDUMP-FORMAT` | The Breakpad project's C declaration of the minidump file format, following Microsoft's MINIDUMP structures: header, stream directory, thread, module, exception and system-info streams used by Breakpad and Crashpad crash reports. Index row O06. |  |
+| `CVE-RECORD-FORMAT-5.2.0` | The official CVE JSON 5.2.0 record schema: CVE metadata, CNA and ADP containers, affected products, problem types, references and metrics. Index row T10. |  |
+| `ECMA-424-CYCLONEDX-1.6` | The official CycloneDX 1.6 JSON Schema: BOM metadata, components, services, dependencies, vulnerabilities and attestations. Index row T09. |  |
+| `EU-DIR-2005-29` | The Unfair Commercial Practices Directive as published in the Official Journal, in the official XHTML manifestation, Annex I blacklist included: misleading and aggressive practices and direct exhortation to children. Index row U03. |  |
+| `EU-DIR-2011-83` | The Consumer Rights Directive as published in the Official Journal, in the official XHTML manifestation, annexes included: pre-contractual information, withdrawal right and its exception for digital content. Index row U03. |  |
+| `EU-DIR-2015-2366` | PSD2 as published in the Official Journal, in the official XHTML manifestation, annexes included: payment services, rights and obligations, and strong customer authentication. Index row T15. |  |
+| `EU-DIR-2019-770` | The Digital Content Directive as published in the Official Journal, in the official XHTML manifestation: supply, conformity, remedies and modification of digital content and services. Index row U11. |  |
+| `EU-DIR-2019-882` | The European Accessibility Act in the Publications Office's official English XHTML form. |  |
+| `EU-DIR-2024-2853` | The revised Product Liability Directive as published in the Official Journal, in its official Formex 4 XML package: software as a product, defectiveness, liable economic operators and disclosure of evidence. Index row X10. |  |
+| `EU-REG-2016-679` | The GDPR as published in the Official Journal, in the Publications Office's official XHTML manifestation: principles, lawful bases, data subject rights, controller and processor duties, and transfers. Index row R01. |  |
+| `EU-REG-2022-2065` | The Digital Services Act as published in the Official Journal, in its official Formex 4 XML package: intermediary liability, notice and action, online platform duties and protection of minors. Index row S03. |  |
+| `EU-REG-2024-1689` | The EU AI Act in the Publications Office's official English XHTML form. |  |
+| `EU-REG-2024-2847` | The Cyber Resilience Act as published in the Official Journal, in its official Formex 4 XML package: essential cybersecurity requirements for products with digital elements, vulnerability handling and reporting. Index row T14. |  |
+| `FIRST-CVSS-4.0` | The official CVSS v4.0 JSON Schema: the vector string and the base, threat, environmental and supplemental metrics with their scores and severities. Index row T10. |  |
+| `GNU-GETTEXT-0.26-MANUAL` | The GNU gettext manual, including the PO file format, in its official HTML form. |  |
+| `IAB-TCF-GVL-3-186` | The archived official Global Vendor List of the Transparency and Consent Framework v2.2: purposes, special purposes, features, special features, data categories and registered vendors. Index row R11. |  |
+| `IAB-VAST-4.2` | The official VAST 4.2 XML Schema: InLine and Wrapper ads, linear and non-linear creatives, tracking events, verification and macros-bearing URIs. Index row U10. |  |
+| `IANA-LANGUAGE-SUBTAG-REGISTRY` | The BCP 47 language, script, region and variant subtags in IANA's official record-jar form. |  |
+| `IETF-RFC-3533` | The Ogg page and bitstream encapsulation format, in the RFC's official plain-text form. |  |
+| `IETF-RFC-4647` | The BCP 47 language range matching and lookup algorithms, in the RFC's official plain-text form. |  |
+| `IETF-RFC-5646` | The BCP 47 language tag syntax and subtag registry rules, in the RFC's official plain-text form. |  |
+| `IETF-RFC-6455` | The WebSocket opening handshake and framing protocol, in the RFC's official plain-text form. |  |
+| `IETF-RFC-6716` | The Opus codec bitstream and reference decoder, in the RFC's official plain-text form. |  |
+| `IETF-RFC-6749` | The OAuth 2.0 roles, grants, endpoints and token issuance, in the RFC's official plain-text form. |  |
+| `IETF-RFC-768` | The UDP datagram header and delivery semantics, in the RFC's official plain-text form. |  |
+| `IETF-RFC-7845` | The mapping of Opus streams into Ogg, with its headers, in the RFC's official plain-text form. |  |
+| `IETF-RFC-8445` | The ICE protocol for NAT traversal of UDP-based communication, in the RFC's official plain-text form. |  |
+| `IETF-RFC-8489` | The STUN protocol for discovering NAT bindings, in the RFC's official plain-text form. |  |
+| `IETF-RFC-8493` | BagIt V1.0 in the RFC's official plain-text form: bag declaration, payload manifests, tag files and validity rules for packaging archived game builds. Index row Y05. |  |
+| `IETF-RFC-8656` | The TURN relay extension to STUN, in the RFC's official plain-text form. |  |
+| `IETF-RFC-9000` | The QUIC transport protocol: connections, streams, flow control and loss recovery signals, in the RFC's official plain-text form. |  |
+| `IETF-RFC-9293` | The TCP connection, segment and state machine specification, in the RFC's official plain-text form. |  |
+| `KHRONOS-OPENGL-REGISTRY-GLXML` | The OpenGL and OpenGL ES API registry: commands, enums, features and extensions in Khronos's official XML form. |  |
+| `KHRONOS-OPENXR-REGISTRY-1.1.65` | The OpenXR API registry: commands, types, enums and extensions in Khronos's official XML form. |  |
+| `KHRONOS-SPIRV-GRAMMAR-1.4.363.0` | The SPIR-V core instruction set grammar: opcodes, operands and operand kinds in Khronos's official JSON form. |  |
+| `KHRONOS-VULKAN-REGISTRY-1.4.369` | The Vulkan API registry: every command, type, enum, extension and feature in Khronos's official XML form. |  |
+| `KHRONOS-WEBGL-1.0-IDL` | The WebGL 1.0 interface definitions in Khronos's official Web IDL form. |  |
+| `KHRONOS-WEBGL-2.0-IDL` | The WebGL 2.0 interface definitions in Khronos's official Web IDL form. |  |
+| `LOC-ISO-639-2` | The ISO 639-2 and 639-1 language codes in the registration authority's official delimited text form. |  |
+| `LOC-METS-1.12.1` | The official METS 1.12.1 XML Schema: header, descriptive and administrative metadata sections, file section and structural map of a digital object. Index row Y02. |  |
+| `LOC-PREMIS-3.0` | The official PREMIS 3.0 XML Schema: Object, Event, Agent and Rights entities and their semantic units for preservation metadata. Index row Y02. |  |
+| `MICROSOFT-D3D12-IDL-1.721.2` | The Direct3D 12 interfaces, structures and enums in Microsoft's official IDL form. |  |
+| `NVIDIA-MDL-GRAMMAR-2026.0.2` | The Coco/R attributed grammar of the Material Definition Language that the official MDL SDK compiler parses: modules, imports, declarations, materials, functions, annotations and expressions. Index row D09. |  |
+| `OASIS-XLIFF-2.1` | The XLIFF 2.1 localization interchange format: its core, modules and processing requirements. |  |
+| `OIDF-OPENID-CONNECT-CORE-1.0` | The OpenID Connect identity layer on OAuth 2.0: ID tokens, claims and authentication flows, in its official plain-text form. |  |
+| `OPENFEATURE-SPEC-0.9.0` | The official machine-readable OpenFeature specification.json: every numbered requirement and condition of the flag evaluation API, providers, hooks, events and tracking. Index row W05. |  |
+| `OWASP-ASVS-5.0.0` | The official ASVS 5.0.0 JSON export: chapters, sections and each verification requirement with its identifier and level. Index row T02. |  |
+| `OWASP-MASVS-2.1.0` | The official MASVS 2.1.0 YAML release asset: the control groups and each control with its identifier and statement. Index row T02. |  |
+| `SIX-ISO-4217-LIST-ONE` | The ISO 4217 current currency and fund codes in the maintenance agency's official XML form. |  |
+| `SPDX-3.0.1` | The official SPDX 3.0.1 model in RDF Turtle: the Core, Software, Licensing, Security and Build profiles' classes and properties. Index row T09. |  |
+| `SPDX-LICENSE-LIST-3.29.0` | The official SPDX License List data in JSON: each license identifier, name, reference and its OSI-approved and FSF-libre flags. Index row X02. |  |
+| `UK-EUR-2016-679` | The UK GDPR as it stood on 2026-01-01, in legislation.gov.uk's official Crown Legislation Markup Language XML. Index row R01. |  |
+| `UK-UKPGA-2023-50` | The Online Safety Act 2023 as enacted, in legislation.gov.uk's official Crown Legislation Markup Language XML: duties of care for user-to-user and search services, children's safety duties and Ofcom's codes and enforcement. Index row S02. |  |
+| `UNICODE-CLDR-49-SUPPLEMENTAL` | The CLDR 49 supplemental data (territories, currencies, languages, calendars) in its official LDML XML form. |  |
+| `UNICODE-MF2-ABNF-LDML48.2` | The MessageFormat 2 message syntax in its official ABNF form. |  |
+| `US-CFR-16-255-2026` | The FTC Endorsement Guides in the official annual CFR edition in GPO's XML form: endorser and advertiser liability, consumer and expert endorsements, and disclosure of material connections. Index row V02. |  |
+| `US-CFR-16-312-2026` | The COPPA Rule as codified in the official annual CFR edition in GPO's XML form, including the 2025 amendments: definitions, notice, verifiable parental consent, mixed audience services, data retention and safe harbor programs. Index row R02. |  |
+| `US-CFR-37-201.40-2025` | The section 1201 exemptions in the official annual CFR edition in GPO's XML form, including the video game preservation and console repair classes. Index row Y07. |  |
+| `US-PL-111-260` | The CVAA as enacted, in the Government Publishing Office's official text form. |  |
+| `W3C-GAMEPAD-20261119` | The Gamepad API and its standard gamepad button and axis mapping. |  |
+| `W3C-IMSC-1.2-2020` | The IMSC 1.2 text and image profiles of TTML for subtitles and captions. |  |
+| `W3C-TTML2-2018` | The TTML2 timed text vocabulary, timing and styling model for subtitles and captions. |  |
+| `W3C-WCAG22-2024` | The WCAG 2.2 principles, guidelines and testable success criteria. |  |
+| `W3C-WCAG22-JSON` | The WCAG 2.2 principles, guidelines, success criteria and levels in the W3C's official JSON form. |  |
+| `W3C-WEBGPU-20261116` | The WebGPU API for GPU rendering and compute on the web. |  |
+| `W3C-WEBRTC-2025` | The WebRTC peer connection, data channel and media transport API. |  |
+| `W3C-WEBXR-20261109` | The WebXR API for immersive sessions, reference spaces, poses and input sources. |  |
+| `W3C-WGSL-20261106` | The WGSL shader language: its grammar, types and execution model. |  |
+| `WIPO-NICE-NCL-13-2026` | WIPO's official Nice Classification master file of class headings, explanatory notes and goods and services, including classes 9, 28 and 41. Index row V04. |  |
 
 ## Claims that are not conformance IDs
 
