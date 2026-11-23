@@ -64,6 +64,15 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `OPENUSD-USDSKEL-SCHEMA-26.11.1` | The UsdSkel schema for skeletal animation: SkelRoot, Skeleton, SkelAnimation, BlendShape and SkelBindingAPI. Index row E06. |  |
 | `SMPTE-OPENTRACKIO-SCHEMA` | The OpenTrackIO JSON Schema 2020-12 for camera tracking samples: static, tracker, timing, lens and transforms. Index row F03. |  |
 | `WDAS-DISNEY-BRDF-2012` | The Disney principled BRDF as published by Walt Disney Animation Studios in BRDF Explorer: its parameters and analytic evaluation. Index row D08. |  |
+| `ALLAR-UE-STYLE-GUIDE` | The community Unreal Engine style guide: asset naming prefixes and suffixes, directory structure, and Blueprint conventions. Index row D20. |  |
+| `ASWF-OPENEXR-FILE-LAYOUT-3.5.5` | The byte-level layout of an OpenEXR file: magic number, version field, header attributes, offset tables and scan line, tile and deep data. Index row D13. |  |
+| `ASWF-OPENTIMELINEIO-0.18.1` | Every OpenTimelineIO class that serializes to and from JSON, with its schema version and fields, as generated from the implementation. Index row F05. |  |
+| `IFTF-TWEE-3.0.2` | The Twee 3 text format for Twine stories: passages, headers, tags, metadata and the StoryData and StoryTitle passages. Index row C07. |  |
+| `INKLE-INK-JSON-1.2.1` | The JSON format that compiled ink is written to and the runtime reads: containers, control commands, diverts, variables and choices. Index row C05. |  |
+| `KHRONOS-COLLADA-1.5.0` | The COLLADA 1.5.0 XML Schema for digital asset exchange: geometry, materials, effects, animation, kinematics and physics. Index row D15. |  |
+| `VRMC-VRM-1.0` | The root JSON Schema of the VRMC_vrm 1.0 glTF extension for humanoid avatars: meta, humanoid, firstPerson, lookAt and expressions. Index row E05. |  |
+| `WEB3D-X3D-4.0-XSD` | The X3D 4.0 XML Schema, which encodes the HAnim component nodes of ISO/IEC 19774-1:2019 (HAnimHumanoid, HAnimJoint, HAnimSegment, HAnimSite, HAnimDisplacer, HAnimMotion). Index row E04. |  |
+| `YARNSPINNER-PARSER-3.3.1` | The ANTLR parser grammar of the Yarn language: nodes, headers, lines, options, commands and expressions. Index row C06. |  |
 
 ## Claims that are not conformance IDs
 
