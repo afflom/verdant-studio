@@ -70,3 +70,18 @@ Each construct and the citation that admits it.
 - `Studio.Check`: der pattern from Studio.Admission, D12, P10, P11
 - `Studio.Ops`: der pattern from Studio.Check, Studio.Csv, Studio.Schema, D8, P9, P6, AgentIdentity
 - `Studio.Main`: der pattern from Studio.Ops, P14, LexLeanStd
+- `D1`: req REQ-D1
+- `D3`: req REQ-D3
+- `D4`: req REQ-D4
+- `D5`: req REQ-D5
+- `D6`: req REQ-D6
+- `D7`: req REQ-D7
+- `D9`: req REQ-D9
+- `D11`: req REQ-D11
+- `P1`: std PRISM-TEMPLATE-CONTRACT-2
+- `P2`: std PRISM-TEMPLATE-CONTRACT-2
+- `P3`: std PRISM-TEMPLATE-CONTRACT-2
+- `P4`: std PRISM-TEMPLATE-CONTRACT-2
+- `P5`: std PRISM-TEMPLATE-CONTRACT-2
+- `P7`: std PRISM-TEMPLATE-CONTRACT-2
+- `P12`: std PRISM-TEMPLATE-CONTRACT-2
