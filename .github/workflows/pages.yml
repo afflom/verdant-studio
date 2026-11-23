@@ -24,24 +24,6 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-      - name: accept only pull requests made through the API
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
-        run: |
-          set -euo pipefail
-          app='afflom-verdant-studio[bot]'
-          if [ "$AUTHOR" != "$app" ]; then
-            echo "::error::$AUTHOR opened this pull request. Only $app, through the operate workflow, changes this repository."
-            exit 1
-          fi
-          others=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}/commits" --paginate --jq ".[] | select(.author.login != \"$app\") | .sha")
-          if [ -n "$others" ]; then
-            echo "::error::these commits were not made by $app: $others"
-            exit 1
-          fi
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: '24'
@@ -73,6 +55,24 @@ jobs:
           target/release/verdant_studio build
           target/release/verdant_studio publish
           if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
+      - name: accept only pull requests made through the API (last, so every seal step reports first)
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          set -euo pipefail
+          app='afflom-verdant-studio[bot]'
+          if [ "$AUTHOR" != "$app" ]; then
+            echo "::error title=provenance::$AUTHOR opened this pull request, not $app through operate. Every seal step above passed; only the provenance gate refuses it."
+            exit 1
+          fi
+          others=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}/commits" --paginate --jq ".[] | select(.author.login != \"$app\") | .sha")
+          if [ -n "$others" ]; then
+            echo "::error::these commits were not made by $app: $others"
+            exit 1
+          fi
       - if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
