@@ -229,3 +229,10 @@ statement = "The CSV record, field and quoting rules the index reader follows."
 checksum = "none"
 checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
 realized_by = []
+
+[[authority]]
+id = "FATELINES-STANDARDS-INDEX"
+statement = "The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims."
+artifact = "catalog/standards-index.csv"
+checksum = "0765d3a3a4c79fc00452a6a007dd431066e000312e1635e70f4caafb3461a7ac"
+realized_by = []

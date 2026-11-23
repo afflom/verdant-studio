@@ -53,6 +53,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-SKOS-2009` | Concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch. |  |
 | `JSON-SCHEMA-2020-12` | The JSON Schema core and validation vocabularies the translator reads. |  |
 | `IETF-RFC-4180` | The CSV record, field and quoting rules the index reader follows. |  |
+| `FATELINES-STANDARDS-INDEX` | The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims. |  |
 
 ## Claims that are not conformance IDs
 
