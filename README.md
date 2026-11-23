@@ -10,12 +10,15 @@ template below.
 | --- | --- |
 | `next` | Prints the next operation the model derives (today: each staged binding whose authority is not pinned yet) |
 | `stage-bindings JSONL` | Stages one PrismPM binding per line in `model/bindings/`; on merge, `operate` runs `advance`, which runs every operation `next` derives, in one pull request |
+| `admit JSONL` | Admits requirements (`id`, `statement`, `stakeholder`, `evidence`) and constructs (`construct` with one `req`, `std` or `der` citation), one per line; refuses names already in the model |
+| `agenda` | Lists the work the model shows open (today: standards-index rows no construct cites) |
+| `merge-gate RULES` | Prints `merge` when the branch rules require the `studio` check, else `wait`; `operate` uses it to decide auto-merge |
 | `check` | Every construct resolves to one Std, Req or Der citation; every module has a stratum; no locked register entry was dropped |
 | `ingest-index CSV` | Commits the standards index and pins its sha256 |
 | `ingest-authority BINDING` | Fetches a PrismPM authority binding's pinned source and refuses a sha256 mismatch |
 | `propose-encoding SCHEMA NAME CITATION...` | Translates a JSON Schema 2020-12 encoding into LexLean, admitted only with its citation |
 | `build` | `prism-code lock`, then `prism-code build`, which checks |
-| `publish` | Writes the workflows and `CODEOWNERS` |
+| `publish` | Writes the workflows, `CODEOWNERS` and `docs/model.md`, the plan view generated from the registers |
 
 The workflow runs the certified command in `certified/`, then opens a pull
 request as the `afflom-verdant-studio` GitHub App for the owner to approve. CI
