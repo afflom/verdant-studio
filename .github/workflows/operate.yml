@@ -5,11 +5,15 @@
 name: operate
 
 on:
+  push:
+    branches: [main]
+    paths: ['model/bindings/**']
   workflow_dispatch:
     inputs:
       args:
-        description: 'The operation and its arguments, e.g. "ingest-authority target/input/binding.json"'
+        description: 'The operation and its arguments, e.g. "stage-bindings target/input/bindings.jsonl", or "advance" to run every operation that next derives'
         required: true
+        default: 'advance'
         type: string
       input:
         description: 'Optional content, written to target/input/<input_name> before the operation runs'
@@ -67,21 +71,31 @@ jobs:
           cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
       - name: run the operation, then check and build through the API
         env:
-          ARGS: ${{ inputs.args }}
+          ARGS: ${{ inputs.args || 'advance' }}
           INPUT: ${{ inputs.input }}
           INPUT_NAME: ${{ inputs.input_name }}
         run: |
           set -euo pipefail -f
           case "$INPUT_NAME" in */*|.*|'') echo "input_name must be a plain file name" >&2; exit 1;; esac
           if [ -n "$INPUT" ]; then mkdir -p target/input; cat > "target/input/$INPUT_NAME" <<< "$INPUT"; fi
-          target/release/verdant_studio $ARGS | tee target/operation.txt
+          if [ "$ARGS" = advance ]; then
+            : > target/operation.txt
+            last=''
+            while op=$(target/release/verdant_studio next) && [ -n "$op" ]; do
+              if [ "$op" = "$last" ]; then echo "::error::$op did not settle"; exit 1; fi
+              target/release/verdant_studio $op | tee -a target/operation.txt
+              last=$op
+            done
+          else
+            target/release/verdant_studio $ARGS | tee target/operation.txt
+          fi
           target/release/verdant_studio build
           target/release/verdant_studio check
       - name: open a pull request as the Verdant Studio app
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           SLUG: ${{ steps.app.outputs.app-slug }}
-          ARGS: ${{ inputs.args }}
+          ARGS: ${{ inputs.args || 'advance' }}
         run: |
           set -euo pipefail
           git add -A
@@ -95,3 +109,8 @@ jobs:
           branch="studio/${GITHUB_RUN_ID}"
           git push origin "HEAD:refs/heads/${branch}"
           gh pr create --head "$branch" --base main --title "verdant_studio $ARGS" --body-file target/operation.txt
+          if gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" --jq '[.[] | select(.type == "required_status_checks") | .parameters.required_status_checks[].context] | index("studio")' | grep -qv null; then
+            gh pr merge "$branch" --auto --squash --delete-branch
+          else
+            echo "::notice::main does not require the studio check, so this pull request waits for the owner's merge"
+          fi
