@@ -54,6 +54,16 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-PROV-O` | The PROV-O ontology in its official Turtle form: Agent, Entity, Activity and wasAttributedTo, used for stakeholders as producers and consumers. |  |
 | `IETF-RFC-4180` | The CSV record, field and quoting rules the index reader follows, in the RFC's official plain-text form. |  |
 | `W3C-SKOS-2009` | The SKOS core vocabulary in its official RDF/XML form: concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch. |  |
+| `ASWF-MATERIALX-STDLIB-1.39.5` | The declarations of the standard data types and nodes included in the MaterialX specification, in its official .mtlx form. Index row D06. |  |
+| `ASWF-OPENPBR-1.1.2` | The OpenPBR Surface shading model as its reference MaterialX node definition, with every parameter, default and range. Index row D07. |  |
+| `KHRONOS-DATAFORMAT-1.4.0` | The official C header of the Khronos Data Format Specification 1.4.0: the data format descriptor and its color models, including the BC1 to BC7, ETC2 and ASTC compressed models. Index row D12. |  |
+| `KHRONOS-GLTF-2.0` | The official glTF 2.0 JSON Schema root, glTF.schema.json: the asset object and its arrays of scenes, nodes, meshes, materials, skins, animations, buffers and accessors. Index rows D02 and E06 (glTF skins). |  |
+| `KHRONOS-KTX-2.0.4` | The KTX 2.0 container format for GPU textures, including supercompression with Basis Universal, in its official AsciiDoc source. Index row D11. |  |
+| `OPENASSETIO-MEDIACREATION-TRAITS` | The well-known traits and specifications for OpenAssetIO hosts and managers, in their official TraitGen YAML form. Index row D16. |  |
+| `OPENUSD-USD-SCHEMA-26.11.1` | The usd library schema.usda that defines the core USD prim schemata (Typed, APISchemaBase, ModelAPI, CollectionAPI, ClipsAPI) and drives code generation, in the OpenUSD reference implementation. Index row D01. |  |
+| `OPENUSD-USDSKEL-SCHEMA-26.11.1` | The UsdSkel schema for skeletal animation: SkelRoot, Skeleton, SkelAnimation, BlendShape and SkelBindingAPI. Index row E06. |  |
+| `SMPTE-OPENTRACKIO-SCHEMA` | The OpenTrackIO JSON Schema 2020-12 for camera tracking samples: static, tracker, timing, lens and transforms. Index row F03. |  |
+| `WDAS-DISNEY-BRDF-2012` | The Disney principled BRDF as published by Walt Disney Animation Studios in BRDF Explorer: its parameters and analytic evaluation. Index row D08. |  |
 
 ## Claims that are not conformance IDs
 
