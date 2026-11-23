@@ -153,6 +153,11 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `SDL-GAMECONTROLLERDB` | The community game controller mappings in SDL's GameController mapping string form. |  |
 | `SEMVER-2.0.0` | The Semantic Versioning 2.0.0 rules for version numbers, precedence and pre-release identifiers. |  |
 | `UNICODE-UCD-17.0.0` | The Unicode 17.0.0 code point properties in the Consortium's official UCD text form. |  |
+| `C2PA-SPEC-2.3` | The C2PA manifest, assertion, claim signature and validation model for Content Credentials. |  |
+| `FLECS-ECS-FAQ` | The definitions of entity, component, system and their storage designs in the ECS FAQ. |  |
+| `NIST-AI-RMF-PLAYBOOK` | The AI RMF 1.0 Govern, Map, Measure and Manage subcategories with suggested actions, in NIST's official JSON form. |  |
+| `SOFA-SIMPLEFREEFIELDHRIR-1.0` | The AES69 SOFA SimpleFreeFieldHRIR attribute and variable definitions in the reference toolbox's convention table form. |  |
+| `XIPH-VORBIS-I` | The Vorbis I audio codec decoding specification. |  |
 
 ## Claims that are not conformance IDs
 

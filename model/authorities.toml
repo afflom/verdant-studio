@@ -1919,3 +1919,88 @@ statement = "The Unicode 17.0.0 code point properties in the Consortium's offici
 artifact = "authorities/UNICODE-UCD-17.0.0/UnicodeData.txt"
 checksum = "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
 realized_by = []
+
+[[authority]]
+id = "C2PA-SPEC-2.3"
+name = "C2PA Technical Specification"
+issuer = "Coalition for Content Provenance and Authenticity"
+edition = "2.3"
+canonical_id = "https://spec.c2pa.org/specifications/specifications/2.3/specs/C2PA_Specification.html"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://spec.c2pa.org/specifications/specifications/2.3/specs/C2PA_Specification.html"
+media_type = "text/html"
+license = "CC-BY-4.0"
+redistribution = "redistributable"
+statement = "The C2PA manifest, assertion, claim signature and validation model for Content Credentials."
+artifact = "authorities/C2PA-SPEC-2.3/C2PA_Specification.html"
+checksum = "034aa72b0019561021fecdd8be46e92aa49cc34e281aa0083d5c103c80c2952e"
+realized_by = []
+
+[[authority]]
+id = "FLECS-ECS-FAQ"
+name = "Entity Component System FAQ"
+issuer = "Sander Mertens (flecs)"
+edition = "702005e5"
+canonical_id = "https://github.com/SanderMertens/ecs-faq"
+source_role = "informative"
+retrieval_date = "2026-11-23"
+url = "https://raw.githubusercontent.com/SanderMertens/ecs-faq/702005e51a687f205cb4a515da8abb548ef33959/README.md"
+media_type = "text/markdown"
+license = "No license stated"
+redistribution = "citation-only"
+statement = "The definitions of entity, component, system and their storage designs in the ECS FAQ."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "NIST-AI-RMF-PLAYBOOK"
+name = "NIST AI RMF Playbook"
+issuer = "US NIST"
+edition = "AI RMF 1.0 Playbook"
+canonical_id = "https://airc.nist.gov/airmf-resources/playbook/"
+source_role = "informative"
+retrieval_date = "2026-11-23"
+url = "https://airc.nist.gov/docs/playbook.json"
+media_type = "application/json"
+license = "Public domain (17 U.S.C. 105)"
+redistribution = "redistributable"
+statement = "The AI RMF 1.0 Govern, Map, Measure and Manage subcategories with suggested actions, in NIST's official JSON form."
+artifact = "authorities/NIST-AI-RMF-PLAYBOOK/playbook.json"
+checksum = "aecbee3d3c8820816d295b11d10fb61324b17c25c2ff39ee95e2aa5654555bba"
+realized_by = []
+
+[[authority]]
+id = "SOFA-SIMPLEFREEFIELDHRIR-1.0"
+name = "SOFA convention SimpleFreeFieldHRIR 1.0 (AES69)"
+issuer = "SOFA conventions (SOFAtoolbox)"
+edition = "1.0"
+canonical_id = "https://www.sofaconventions.org/"
+source_role = "informative"
+retrieval_date = "2026-11-23"
+url = "https://raw.githubusercontent.com/sofacoustics/SOFAtoolbox/2179359aa454860ee5dbd839790be434f797108f/SOFAtoolbox/conventions/SimpleFreeFieldHRIR_1.0.csv"
+media_type = "text/tab-separated-values"
+license = "No license stated"
+redistribution = "citation-only"
+statement = "The AES69 SOFA SimpleFreeFieldHRIR attribute and variable definitions in the reference toolbox's convention table form."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "XIPH-VORBIS-I"
+name = "Vorbis I specification"
+issuer = "Xiph.Org Foundation"
+edition = "Vorbis I"
+canonical_id = "https://xiph.org/vorbis/doc/Vorbis_I_spec.html"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://xiph.org/vorbis/doc/Vorbis_I_spec.html"
+media_type = "text/html"
+license = "Xiph.Org copyright, no license stated"
+redistribution = "citation-only"
+statement = "The Vorbis I audio codec decoding specification."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
