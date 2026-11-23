@@ -49,11 +49,11 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `ISO-IEC-IEEE-42010-2022` | Stakeholder, concern, viewpoint and view of an architecture description. |  |
 | `ISO-IEC-IEEE-29148-2018` | A stakeholder requirement with its source and rationale. |  |
 | `ISO-25964-1-2011` | Facets of a thesaurus. |  |
-| `W3C-SKOS-2009` | Concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch. |  |
-| `IETF-RFC-4180` | The CSV record, field and quoting rules the index reader follows. |  |
 | `FATELINES-STANDARDS-INDEX` | The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims. |  |
 | `JSON-SCHEMA-2020-12` | The JSON Schema 2020-12 meta-schema, the official machine-readable form the translator reads. |  |
 | `W3C-PROV-O` | The PROV-O ontology in its official Turtle form: Agent, Entity, Activity and wasAttributedTo, used for stakeholders as producers and consumers. |  |
+| `IETF-RFC-4180` | The CSV record, field and quoting rules the index reader follows, in the RFC's official plain-text form. |  |
+| `W3C-SKOS-2009` | The SKOS core vocabulary in its official RDF/XML form: concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch. |  |
 
 ## Claims that are not conformance IDs
 

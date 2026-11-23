@@ -163,40 +163,6 @@ checksum_reason = "ISO text is not redistributable, so it is cited and nothing i
 realized_by = []
 
 [[authority]]
-id = "W3C-SKOS-2009"
-name = "SKOS Simple Knowledge Organization System Reference"
-issuer = "W3C"
-edition = "2009-08-18"
-canonical_id = "http://www.w3.org/2004/02/skos/core#"
-source_role = "normative"
-retrieval_date = "2026-11-23"
-url = "https://www.w3.org/TR/2009/REC-skos-reference-20090818/"
-media_type = "text/html"
-license = "W3C Document License"
-redistribution = "citation-only"
-statement = "Concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch."
-checksum = "none"
-checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
-realized_by = []
-
-[[authority]]
-id = "IETF-RFC-4180"
-name = "Common Format and MIME Type for CSV Files"
-issuer = "IETF"
-edition = "RFC 4180"
-canonical_id = "https://www.rfc-editor.org/rfc/rfc4180"
-source_role = "normative"
-retrieval_date = "2026-11-23"
-url = "https://www.rfc-editor.org/rfc/rfc4180.txt"
-media_type = "text/plain"
-license = "IETF Trust"
-redistribution = "citation-only"
-statement = "The CSV record, field and quoting rules the index reader follows."
-checksum = "none"
-checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
-realized_by = []
-
-[[authority]]
 id = "FATELINES-STANDARDS-INDEX"
 statement = "The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims."
 artifact = "catalog/standards-index.csv"
@@ -235,4 +201,38 @@ redistribution = "redistributable"
 statement = "The PROV-O ontology in its official Turtle form: Agent, Entity, Activity and wasAttributedTo, used for stakeholders as producers and consumers."
 artifact = "authorities/W3C-PROV-O/prov-o-20130430"
 checksum = "3d03c8e15753178541fb8cd59fbefecaf1861f9c37ef75190c6e938b85fb0c3d"
+realized_by = []
+
+[[authority]]
+id = "IETF-RFC-4180"
+name = "Common Format and MIME Type for CSV Files"
+issuer = "IETF"
+edition = "RFC 4180"
+canonical_id = "https://www.rfc-editor.org/rfc/rfc4180"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.rfc-editor.org/rfc/rfc4180.txt"
+media_type = "text/plain"
+license = "IETF Trust Legal Provisions"
+redistribution = "redistributable"
+statement = "The CSV record, field and quoting rules the index reader follows, in the RFC's official plain-text form."
+artifact = "authorities/IETF-RFC-4180/rfc4180.txt"
+checksum = "5d9ec035aa40c0108362cb767c9e2d08c30f7225cb2a4715f484cb13c29b5f21"
+realized_by = []
+
+[[authority]]
+id = "W3C-SKOS-2009"
+name = "SKOS Simple Knowledge Organization System Reference"
+issuer = "W3C"
+edition = "W3C Recommendation 2009-08-18"
+canonical_id = "http://www.w3.org/2004/02/skos/core#"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.w3.org/2009/08/skos-reference/skos.rdf"
+media_type = "application/rdf+xml"
+license = "W3C Software and Document License"
+redistribution = "redistributable"
+statement = "The SKOS core vocabulary in its official RDF/XML form: concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch."
+artifact = "authorities/W3C-SKOS-2009/skos.rdf"
+checksum = "e79633b8d0564816cee8a99f5c9acf9a0e6fc7257c7209acd684ecad53a89dd6"
 realized_by = []
