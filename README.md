@@ -8,6 +8,8 @@ template below.
 
 | Operation | What it does |
 | --- | --- |
+| `next` | Prints the next operation the model derives (today: each staged binding whose authority is not pinned yet) |
+| `stage-bindings JSONL` | Stages one PrismPM binding per line in `model/bindings/`; on merge, `operate` runs `advance`, which runs every operation `next` derives, in one pull request |
 | `check` | Every construct resolves to one Std, Req or Der citation; every module has a stratum; no locked register entry was dropped |
 | `ingest-index CSV` | Commits the standards index and pins its sha256 |
 | `ingest-authority BINDING` | Fetches a PrismPM authority binding's pinned source and refuses a sha256 mismatch |
