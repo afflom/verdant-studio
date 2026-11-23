@@ -1,0 +1,2561 @@
+= KTX File Format Specification
+:author: Mark Callow
+:author_org: Edgewise Consulting
+:description: Specification of a container format for GPU textures.
+:docrev: 4
+:ktxver: 2.0
+:revnumber: {ktxver}.{docrev}
+:revdate: {docdate}
+:version-label: Version
+:lang: en
+:docinfo1:
+:doctype: article
+:encoding: utf-8
+////
+// Choose latexmath. A desire for italicized multi-letter variable
+// names and indented blocks, overrides the unreadable equations.
+////
+:stem: latexmath
+// Disabling toc and numbered attributes doesn't work with a2x.
+// Use the xsltproc options instead.
+:toc!:
+// a2x: --xsltproc-opts "--stringparam generate.toc nop"
+:numbered:
+// a2x: --xsltproc-opts "--stringparam chapter.autolabel 0"
+// a2x: --xsltproc-opts "--stringparam section.autolabel 0"
+//:max-width: 50em
+:data-uri:
+:icons: font
+:source-highlighter: prettify
+:stylesheet: khronos.css
+:xrefstyle: full
+:imagesdir: images
+
+:url-khr-reg: https://registry.khronos.org
+:url-khr-df: {url-khr-reg}/DataFormat
+:url-khr-ktx: {url-khr-reg}/KTX
+:url-khr-vulkan: {url-khr-reg}/vulkan
+:url-df-spec: {url-khr-df}/specs/1.4/dataformat.1.4.html
+:url-vk-spec: {url-khr-vulkan}/specs/latest/html/vkspec.html
+:url-vk-docs: https://docs.vulkan.org
+:url-vk-docs-spec: https://docs.vulkan.org/spec/latest
+:url-vk-docs-sp-appendices: {url-vk-docs-spec}/appendices
+:url-vk-docs-sp-chapters: {url-vk-docs-spec}/chapters
+:url-khr-github: https://github.com/KhronosGroup
+:url-spec-repo: {url-khr-github}/KTX-Specification
+
+////
+// This part is the Preamble whose 1st 'graph is given [.lead] role
+// by default meaning it is rendered in a larger font.  Add [.lead]
+// to the other Preamble 'graphs so they match. For all 'graphs in
+// preamble to be rendered normally add [.normal] to the first 'graph.
+////
+*Format Version:* 2.0
+
+[.lead]
+*Document Revision:* {docrev}
+
+[.lead]
+*Editor:* {author} ({author_org})
+
+[.legal]
+--
+Copyright 2020-2022 The Khronos Group Inc.
+
+include::license.adoc[]
+--
+
+[abstract]
+== Abstract
+KTX^™️^ (Khronos TeXture) is an efficient lightweight container
+file format for reliably distributing GPU textures to diverse
+platforms and applications. It is distinguished by the simplicity
+of the loader required to instantiate texture objects from the file
+contents. The contents of a KTX file can range from a simple
+base-level 2D texture to a cubemap array texture with mipmaps. KTX
+files hold all the parameters needed for efficient texture loading
+into 3D APIs such as OpenGL® and Vulkan®
+
+Version 2 extends the functionality of version 1 with easier loading
+of Vulkan textures, easier use by non-OpenGL and non-Vulkan
+applications, the possibility of streaming, through sending small
+mip levels first, universal textures using Basis Universal technology
+and supercompression. Providing this new functionality requires a
+significantly different file structure from version 1.
+
+[discrete]
+=== Status of this document
+
+KTX 2.0 ratified by the Khronos Board of Promoters Aug 14th, 2020.
+
+Document Revision 1 approved by the 3D Formats WG Dec 7th, 2022.
+
+Document Revision 2 approved by the 3D Formats WG Sep 6th, 2023.
+
+Document Revision 3 approved by the 3D Formats WG Feb 14th, 2024.
+
+Document Revision 4 approved by the 3D Formats WG Feb 19th 2025.
+
+== Introduction
+
+This document describes the KTX^™️^ file format version 2.0, hereafter
+_KTX_, unless disambiguation is necessary. KTX files are used for
+storing textures for use with GPU APIs such as OpenGL^®^, OpenGL
+ES^™️^, Vulkan^®^ and WebGL^™️^.
+
+The canonical version of the specification is available in the
+Khronos Registry ({url-khr-ktx}). The source files used to generate
+the specification are stored in the KTX-Specification Repository
+({url-spec-repo}). The source repository has a public issue tracker
+and allows the submission of pull requests that improve the
+specification.
+
+KTX files can contain almost any of the wide variety of image
+formats supported by GPUs. Other specifications wishing to refer
+to KTX as a container may wish to restrict the range of image
+formats or other items that can be used. Such referrers must establish
+a way to identify that given KTX files are compliant with their
+subsets such as by adding a metadata item.
+
+=== Document Conventions
+
+The KTX specification is intended for use by both creators and
+consumers of KTX files forming a contract between these parties.
+Specification text may address either party; typically the intended
+audience can be inferred from context
+
+==== Normative Terminology
+
+Within this specification, the key words must, required, should,
+recommended, may and optional are to be interpreted as described
+in _Key words for use in RFCs to Indicate Requirement Levels_
+<<RFC2119>>.  In text addressing creators, their use expresses
+requirements that apply to the files produced.  In text addressing
+consumers, their use expresses requirements that must be followed
+when, e.g, uploading the textures via a 3D API.
+
+==== Admonitions
+
+NOTE: Notes are non-normative and give further background information
+such as rationales.
+
+TIP: Tips are non-normative and give helpful suggestions for
+implementers or users.
+
+IMPORTANT: Importants are normative and give directions for
+implementers.
+
+CAUTION: Cautions are normative and give restrictions that must be
+followed.
+
+== File Structure
+
+.Basic Structure
+[source,c,subs="+quotes,+attributes,+replacements"]
+----
+Byte[12] identifier
+UInt32 vkFormat
+UInt32 typeSize
+UInt32 pixelWidth
+UInt32 pixelHeight
+UInt32 pixelDepth
+UInt32 layerCount
+UInt32 faceCount
+UInt32 levelCount
+UInt32 supercompressionScheme
+
+// Index <.>
+UInt32 dfdByteOffset
+UInt32 dfdByteLength
+UInt32 kvdByteOffset
+UInt32 kvdByteLength
+UInt64 sgdByteOffset
+UInt64 sgdByteLength
+// Level Index <.>
+struct {
+    UInt64 byteOffset
+    UInt64 byteLength
+    UInt64 uncompressedByteLength
+} levels[max(1, levelCount)]
+
+// Data Format Descriptor <.>
+UInt32 dfdTotalSize
+continue
+    dfDescriptorBlock dfdBlock
+          [.optional]#&#xFE19;#
+until dfdTotalSize read
+
+// Key/Value Data <.>
+continue
+    UInt32   keyAndValueByteLength
+    Byte     keyAndValue[keyAndValueByteLength]
+    align(4) valuePadding <.>
+                    [.optional]#&#xFE19;#
+until kvdByteLength read
+if (sgdByteLength > 0)
+    align(8) sgdPadding
+
+// Supercompression Global Data <.>
+Byte supercompressionGlobalData[sgdByteLength]
+
+// Mip Level Array <.>
+for each mip_level in levelCount <.>
+    Byte     levelImages[bytesOfLevelImages] <.>
+end
+----
+<.> Required. See <<Index>>.
+<.> Required. See <<Level Index>>.
+<.> Required. See <<Data Format Descriptor>>.
+<.> Not required. See <<Key/Value Data>>.
+<.> `align(n)` is pseudo function that inserts the minimum number
+    of 0-filled bytes of padding required to align the following
+    item on an n-byte boundary.  where n is the function parameter.
+<.> Not required. See <<Supercompression Global Data>>.
+<.> Required. See <<Mip Level Array>>.
+<.> Replace with 1 if `levelCount` is 0
+<.> See the <<levelImages>> below.
+
+After inflation from supercompression or when `supercompressionScheme ==
+0`, `levelImages` looks like the following:
+
+NOTE: Mip levels are supercompressed independently so do not contain
+`mipPadding.` Applications inflating levels may choose to restore the
+alignment caused by `mipPadding`.
+
+[[levelImages,levelImages structure]]
+.levelImages Structure
+[source, c]
+----
+align( lcm(texel_block_size, 4) ) mipPadding <1> <2>
+for each layer in max(1, layerCount)
+   for each face in faceCount
+       for each z_slice_of_blocks in num_blocks_z <3>
+           for each row_of_blocks in num_blocks_y <3>
+               for each block in num_blocks_x <3>
+                   Byte data[format_specific_number_of_bytes] <4>
+               end
+           end
+       end
+   end
+end
+----
+<1> stem:[\operatorname{lcm}] is _least common multiple_.
+<2> See <<mipPadding>>.
+<3> See <<levelImages_defs,the definitions>> below.
+<4> Rows of uncompressed texture images must be tightly packed,
+    equivalent to a `GL_UNPACK_ALIGNMENT` of 1.
+
+[[levelImages_defs]]In the `levelImages` loops above,
+
+[stem]
+// num_blocks_z = max(1, ceil(level_depth / block_depth))
++++++
+\textit{num_blocks_z} = \max\left(1, \left\lceil{\frac{\left\lfloor{{\texttt{pixelDepth}}*{2^{-p}}}\right\rfloor}{\textit{block_depth}}}\right\rceil\right)
++++++
+
+[stem]
+// num_blocks_y = max(1, ceil(level_height / block_height))
++++++
+\textit{num_blocks_y} = \max\left(1, \left\lceil{\frac{\left\lfloor{{\texttt{pixelHeight}}*{2^{-p}}}\right\rfloor}{\textit{block_height}}}\right\rceil\right)
++++++
+
+[stem]
+// num_blocks_x = max(1, ceil(level_width / block_width))
++++++
+\textit{num_blocks_x} = \max\left(1, \left\lceil{\frac{\left\lfloor{{\texttt{pixelWidth}}*{2^{-p}}}\right\rfloor}{\textit{block_width}}}\right\rceil\right)
++++++
+
+where stem:[p] is the level index (see <<levelCount>>) and
+stem:[\textit{block_depth}], stem:[\textit{block_height}] and
+stem:[\textit{block_width}] are stem:[1] for uncompressed formats and
+the block size in that dimension for block compressed formats as given
+in the format's section of the Khronos Data Format specification <<KDF14>>.
+
+A _block_ is a single pixel for uncompressed formats and
+stem:[\textit{block_width} \times \textit{block_height} \times \textit{block_depth}]
+pixels for block compressed formats.
+
+For formats whose Vulkan names have `\_422_`, stem:[\textit{block_depth}] and
+stem:[\textit{block_height}] are stem:[1], and stem:[\textit{block_width}] is
+stem:[2].
+
+== Field Descriptions
+
+=== identifier
+The file identifier is a unique set of bytes that will differentiate the file
+from other types of files. It consists of 12 bytes, as follows:
+[source,c]
+----
+Byte[12] FileIdentifier = {
+  0xAB, 0x4B, 0x54, 0x58, 0x20, 0x32, 0x30, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A
+}
+----
+This can also be expressed using C-style character definitions as:
+[source,c]
+----
+Byte[12] FileIdentifier = {
+  '«', 'K', 'T', 'X', ' ', '2', '0', '»', '\r', '\n', '\x1A', '\n'
+}
+----
+The rationale behind the choice of values in the identifier is based
+on the rationale for the identifier in the PNG specification. This
+identifier both identifies the file as a KTX version 2 file and
+provides for immediate detection of common file-transfer problems.
+
+  * Byte [0] is chosen as a non-ASCII value to reduce the probability that a
+    text file may be misrecognized as a KTX file.
+  * Byte [0] also catches bad file transfers that clear bit 7.
+  * Bytes [1..6] identify the format, and are the ASCII values for the string
+    "`KTX 20`".
+  * Byte [7] is for aesthetic balance with byte [0] (they are a matching pair
+    of double-angle quotation marks).
+  * Bytes [8..9] form a CR-LF sequence which catches bad file transfers that
+    alter newline sequences.
+  * Byte [10] is a control-Z character, which stops file display under MS-DOS,
+    and further reduces the chance that a text file will be falsely recognized.
+  * Byte [11] is a final line feed, which checks for the inverse of the CR-LF
+    translation problem.
+
+=== vkFormat
+`vkFormat` specifies the image format using Vulkan `VkFormat` enum
+values. It can be any value defined in the Vulkan specification
+<<VULKAN>>, future core versions or registered Vulkan extensions,
+except for values listed in <<prohibitedFormats>> and any `\*_SCALED_*`
+or `\*[2-9]PLANE*` formats added in future. Values defined by the
+latest core Vulkan specification and registered extensions are given
+in {url-vk-docs-sp-chapters}/formats.html[Formats] on <<VULKAN-DOCS>>.
+
+Use of the value `VK_FORMAT_UNDEFINED` (0) is only permissible when
+the format of the data is a not a recognized Vulkan format, such
+as in the case of the universal texture formats. In this case
+information about the format must be provided by the Data Format
+Descriptor and, in cases where the format is known to another GPU
+API, the KTX writer must include one or more of the metadata items
+described in <<formatMappingMetadata>>.  Some permissible uses are
+outlined within this specification and summarized in
+<<Use of `VK_FORMAT_UNDEFINED`>>.
+
+The table in <<formatMapping>> gives the mapping for all `VkFormat`
+enum values in {url-vk-docs-sp-chapters}/formats.html[Formats] at
+the time of writing, to the equivalent OpenGL format (internal
+format, format and type values), DXGI_FORMAT and MTLPixelFormat.
+Applications must use these mappings. If <<formatMapping>> does not
+have an entry for the value of `vkFormat` and a mapping to one or
+more of the other APIs exists then, even if the value is not
+`VK_FORMAT_UNDEFINED`, the KTX writer must provide that mapping
+using one or more of the metadata items described in
+<<formatMappingMetadata>>.
+
+[TIP]
+====
+Before loading any image, Vulkan loaders should confirm via
+`vkGetPhysicalDeviceFormatProperties` that the Vulkan physical
+device (`VkDevice`) supports the intended use of the format.
+
+Vulkan applications using a core Vulkan format whose name has the
+`_BLOCK` suffix must ensure they enable the corresponding
+`textureCompression*` physical device feature at `VkDevice` creation
+time. Those using formats defined by extensions must ensure they
+enable the defining extension at `VkDevice` creation time.
+
+Vulkan applications handling textures whose formats are not known at
+`VkDevice` creation time are recommended to enable all available texture
+compression features and format defining extensions when creating a
+device.
+====
+
+[NOTE]
+.Packed A8B8G8R8 Formats
+====
+The `A8B8G8R8*PACK32` formats are supported but the end result
+is the same regardless of whether the data is treated as packed
+into 32 bits or as the equivalent `R8G8B8A8` format, i.e., as an array
+of 4 bytes; a Data Format Descriptor cannot distinguish between
+these cases.
+====
+
+[width=50%,align=center,cols="<,^",options=header]
+[[prohibitedFormats]]
+.Prohibited Formats
+|===
+| Format Name                          | Value
+| VK_FORMAT_R8_USCALED                 | 11
+| VK_FORMAT_R8_SSCALED                 | 12
+| VK_FORMAT_R8G8_USCALED               | 18
+| VK_FORMAT_R8G8_SSCALED               | 19
+| VK_FORMAT_R8G8B8_USCALED             | 25
+| VK_FORMAT_R8G8B8_SSCALED             | 26
+| VK_FORMAT_B8G8R8_USCALED             | 32
+| VK_FORMAT_B8G8R8_SSCALED             | 33
+| VK_FORMAT_R8G8B8A8_USCALED           | 39
+| VK_FORMAT_R8G8B8A8_SSCALED           | 40
+| VK_FORMAT_B8G8R8A8_USCALED           | 46
+| VK_FORMAT_B8G8R8A8_SSCALED           | 47
+| VK_FORMAT_A8B8G8R8_USCALED_PACK32    | 53
+| VK_FORMAT_A8B8G8R8_SSCALED_PACK32    | 54
+| VK_FORMAT_A2R10G10B10_USCALED_PACK32 | 60
+| VK_FORMAT_A2R10G10B10_SSCALED_PACK32 | 61
+| VK_FORMAT_A2B10G10R10_USCALED_PACK32 | 66
+| VK_FORMAT_A2B10G10R10_SSCALED_PACK32 | 67
+| VK_FORMAT_R16_USCALED                | 72
+| VK_FORMAT_R16_SSCALED                | 73
+| VK_FORMAT_R16G16_USCALED             | 79
+| VK_FORMAT_R16G16_SSCALED             | 80
+| VK_FORMAT_R16G16B16_USCALED          | 86
+| VK_FORMAT_R16G16B16_SSCALED          | 87
+| VK_FORMAT_R16G16B16A16_USCALED       | 93
+| VK_FORMAT_R16G16B16A16_SSCALED       | 94
+| VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM | 1000156002
+| VK_FORMAT_G8_B8R8_2PLANE_420_UNORM | 1000156003
+| VK_FORMAT_G8_B8_R8_3PLANE_422_UNORM | 1000156004
+| VK_FORMAT_G8_B8R8_2PLANE_422_UNORM | 1000156005
+| VK_FORMAT_G8_B8_R8_3PLANE_444_UNORM | 1000156006
+| VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16 | 1000156012
+| VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16 | 1000156013
+| VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16 | 1000156014
+| VK_FORMAT_G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16 | 1000156015
+| VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16 | 1000156016
+| VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16 | 1000156022
+| VK_FORMAT_G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16 | 1000156023
+| VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16 | 1000156024
+| VK_FORMAT_G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16 | 1000156025
+| VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16 | 1000156026
+| VK_FORMAT_G16_B16_R16_3PLANE_420_UNORM | 1000156029
+| VK_FORMAT_G16_B16R16_2PLANE_420_UNORM | 1000156030
+| VK_FORMAT_G16_B16_R16_3PLANE_422_UNORM | 1000156031
+| VK_FORMAT_G16_B16R16_2PLANE_422_UNORM | 1000156032
+| VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM | 1000156033
+| VK_FORMAT_G8_B8R8_2PLANE_444_UNORM | 1000330000
+| VK_FORMAT_G10X6_B10X6R10X6_2PLANE_444_UNORM_3PACK16 | 1000330001
+| VK_FORMAT_G12X4_B12X4R12X4_2PLANE_444_UNORM_3PACK16 | 1000330002
+| VK_FORMAT_G16_B16R16_2PLANE_444_UNORM | 1000330003
+|===
+
+[NOTE]
+.Rationale
+====
+The \*SCALED* formats are prohibited because they are intended for
+vertex data, very few, if any, implementations support using them
+for texturing and a Data Format Descriptor cannot distinguish
+these from `int` values having the same bit pattern.
+
+The \*[2-9]PLANE* formats are prohibited because multiplanar formats
+are not supported.
+====
+
+[CAUTION]
+.Legacy Formats
+====
+The legacy OpenGL & OpenGL ES formats specified by the following
+extensions, do not have equivalent Vulkan formats and are not
+supported.
+
+- OES_compressed_paletted_texture
+- AMD_compressed_3DC_texture
+- AMD_compressed_ATC_texture
+- 3DFX_texture_compression_FXT1
+- EXT_texture_compression_latc
+
+Only a few of these formats can be described without an extended
+Data Format Descriptor so `VK_FORMAT_UNDEFINED` must not be used
+as a workaround.
+
+This is felt to be an acceptable trade-off for simplifying this
+specification as the formats are not in wide use and applications
+needing them can use KTX version 1.
+====
+
+==== Depth and Stencil Formats
+Despite Vulkan requiring separate uploads of depth and stencil
+components, combined depth/stencil pixel formats can be used with KTX.
+[NOTE]
+.Rationale
+====
+Other GPU APIs support combined uploads and given KTX data alignment it's
+trivial to upload components separately in Vulkan.
+====
+
+`VK_FORMAT_D16_UNORM_S8_UINT` is defined as two 16-bit words per texel.
+The first word contains the D16 value. The second word contains the S8
+value in the eight LSBs and zeros in the eight MSBs.
+
+`VK_FORMAT_D24_UNORM_S8_UINT` is defined as one 32-bit word per texel
+with the S8 value in the eight LSBs of the word and the D24 value in the MSBs.
+[TIP]
+====
+This layout matches OpenGL's `GL_UNSIGNED_INT_24_8` type. Uploading such data
+via other GPU APIs, such as Direct3D 11 or Metal, usually requires swapping the
+components, i.e., performing right rotation by 8 bits.
+====
+
+`VK_FORMAT_X8_D24_UNORM_PACK32` is defined as one 32-bit word per texel
+with the D24 value in the LSBs of the word and zeros in the eight MSBs.
+
+`VK_FORMAT_D32_SFLOAT_S8_UINT` is defined as two 32-bit words per
+texel.  The first word contains the floating-point D32 value. The
+second word contains the S8 value in the eight LSBs and zeros in
+the MSBs.
+
+`VK_FORMAT_S8_UINT`, `VK_FORMAT_D16_UNORM` and `VK_FORMAT_D32_SFLOAT`
+are defined as in {url-vk-docs-sp-chapters}/formats.html[Formats]
+on <<VULKAN-DOCS>>.
+
+=== typeSize
+`typeSize` specifies the size of the data type in bytes used to
+upload the data to a graphics API. When `typeSize` is greater than
+1, software on big-endian systems must endian convert all image
+data since it is little-endian. When format is `VK_FORMAT_UNDEFINED`,
+`typeSize` must equal stem:[1]. For formats whose Vulkan names have
+the suffix `_BLOCK` it must equal stem:[1]. For formats with the
+suffix `_PACKxx` or `_nPACKxx` it must equal the value of
+stem:[\texttt{xx} / 8].  For unpacked formats, except combined
+depth/stencil formats, it must equal the number of bytes needed for
+a single component which can be derived from the format name. E.g.
+for `VK_FORMAT_R16G16B16_UNORM` it will be stem:[16 / 8].  This
+means it will equal stem:[1] for any format with 8-bit components.
+For `VK_FORMAT_D16_UNORM_S8_UINT`, using the layout defined in this
+specification, the value will be stem:[2] and for the other combined
+depth/stencil formats the value will be stem:[4].
+
+[NOTE]
+.Rationale
+====
+Although `typeSize` can be calculated from the Data Format Descriptor
+and big-endian machines are in the minority we have chosen to provide
+a useful piece of data instead of the 4 bytes of padding that would
+otherwise be needed for proper alignment of `sgdByteOffset`.
+====
+
+=== pixelWidth, pixelHeight, pixelDepth [[dimensions]]
+The size of the texture image for level 0, in pixels.
+
+These properties combined with <<faceCount,`faceCount`>> and
+<<layerCount,`layerCount`>> determine the type of the texture as
+understood by graphics APIs. See <<Texture Type>> for more details.
+
+`pixelWidth` must not be 0.
+
+If `faceCount` is equal to 6, `pixelHeight` must be equal to
+`pixelWidth`, and `pixelDepth` must be 0.
+
+`pixelHeight` must not be 0 for block-compressed formats, including
+BasisLZ/ETC1S and UASTC.
+
+`pixelDepth` must not be 0 for block-compressed formats that have
+block depth greater than 1.
+
+`pixelDepth` must be 0 for depth or stencil formats.
+
+[TIP]
+====
+While the KTX format does not impose any image size restrictions,
+beyond those above, producers of KTX files need to be aware that some
+APIs and formats have specific requirements including, but not
+limited to, the following:
+
+* Partial texture uploads of all block-compressed formats except
+  PVRTC1 can be performed only along block boundaries. Textures of
+  PVRTC1 formats support only full-image replacement.
+* Vulkan requires the width of texture images using `\_422_` formats
+  to be a multiple of 2.
+* Direct3D 11 and earlier require the width and height of level 0
+  texture images using BCn formats to be multiples of 4.
+* WebGL 1.0 requires the width and height of all non-base mip
+  levels to be powers of 2.
+* PVRTC1 formats require the width and height of all images to be
+  powers of 2. Transcoders from universal formats to PVRTC1 may have
+  the same requirement.
+====
+
+=== layerCount
+`layerCount` specifies the number of array elements. If
+the texture is not an array texture, `layerCount` must
+equal 0.
+
+Although current graphics APIs do not support 3D array textures, KTX
+files can be used to store them.
+
+Refer to <<_texture_type>> for more details about valid values.
+
+=== faceCount
+`faceCount` specifies the number of cubemap faces. For cubemaps and
+cubemap arrays this must be 6. For non cubemaps this must be 1.
+Cubemap faces are stored in the order: +X, -X, +Y, -Y, +Z, -Z in a
+left-handed coordinate system with +Y up and, with the +Z face
+forward, +X on the on the right. All faces must have the same
+orientation which must be `rd` (top-left origin) which is assumed
+in the absence of <<KTXorientation>> metadata. See <<cubemapOrientation>>
+for details.
+
+Applications wanting to store incomplete cubemaps should flatten faces
+into a 2D array and use the metadata described in <<KTXcubemapIncomplete>>
+to signal which faces are present.
+
+=== levelCount
+`levelCount` specifies the number of levels in the <<_mip_level_array,_Mip
+Level Array_>> and, by extension, the number of indices in the
+`<<_level_index,Level Index>>` array.  A KTX file does not need to
+contain a complete mipmap pyramid.  Mip level data is ordered from
+the level with the smallest size images, stem:[\textit{level}_p]
+to that with the largest size images, stem:[\textit{level}_\textit{base}]
+where stem:[p = \texttt{levelCount} - 1] and stem:[\textit{base} =
+0].  stem:[\textit{level}_p] must not be greater than the maximum
+possible, stem:[\textit{level}_{M}], where
+
+[stem]
+// max = floor(log2(max(pixelWidth, pixelHeight, pixelDepth)))
++++++
+M = \lfloor\log _2\left(\max\left(\texttt{pixelWidth}, \texttt{pixelHeight}, \texttt{pixelDepth}\right)\right)\rfloor
++++++
+
+stem:[\texttt{levelCount} = 1] means that a file contains only the
+base level and the texture isn't meant to have other levels. E.g.,
+this could be a LUT rather than a natural image.
+
+stem:[\texttt{levelCount} = 0] is allowed, except for block-compressed
+formats, and means that a file contains only the base level and
+consumers, particularly loaders, should generate other levels if
+needed.
+
+=== supercompressionScheme
+`supercompressionScheme` indicates if a supercompression scheme has
+been applied to the data in `<<levelImagesDesc, levelImages>>`.  It
+must be one of the unreserved values from <<supercompressionSchemes>>
+or <<vendorSupercompressionSchemes>>. A value of `0` indicates no
+supercompression.
+
+[width=100%,align=center,cols="^22,<18,<30,<30",options=header]
+[[supercompressionSchemes]]
+.Supercompression Schemes
+|===
+| Scheme Id            | Scheme Name     | Level Data Format | Global Data Format
+| 0                    | None            | n/a               | n/a
+| 1                    | BasisLZ         | <<etc1s_slice,ETC1S Slice Decoding>>  | <<basislz_gd,BasisLZ Global Data>>
+| 2                    | Zstandard       | <<RFC8478>>       | n/a
+| 3                    | ZLIB            | <<RFC1950>>       | n/a
+| 4･･･0xffff           | Reserved^1^     |                   |
+| 0x10000･･･0x1ffff    | Reserved^2^     |                   |
+| 0x20000･･･0xffffffff | Reserved^3^     |                   |
+|===
+
+[small]
+1. Reserved for KTX use.
+2. Reserved for vendor compression schemes.
+   See <<vendorSupercompressionSchemes>>.
+3. Reserved. Do not use.
+
+The supercompression scheme is applied independently to each mip
+level to permit streaming and random access to the levels. The
+format of the data in `<<levelImagesDesc,levelImages>>` for a scheme
+is specified in the reference given in the _Level Data Format_
+column of <<supercompressionSchemes>>.
+
+Schemes that require data global to all levels can store it as
+described in `<<supercompressionGlobalData>>`. Currently only BasisLZ
+uses global data. The format of the global data for a scheme
+is specified in the reference given in the _Global Data Format_
+column of <<supercompressionSchemes>>.
+
+When a supercompression scheme is used, the image data must be
+inflated from the scheme prior to GPU sampling.
+
+[TIP]
+====
+LZW-style lossless supercompression, e.g, scheme 2, is generally
+ineffective on the block-compressed data of GPU texture formats.
+It is best reserved for use with uncompressed texture formats or
+with block-compressed data that has been specially conditioned for
+LZW compression such as by _Rate-distortion Optimization_ <<RDO>>.
+
+BasisLZ internally uses a universal block-compressed
+texture format and Rate-distortion Optimization. Encoding to the
+RDO-conditioned internal format is combined with supercompression.
+Therefore it is applicable only to uncompressed images.
+====
+
+[[vendorSupercompressionSchemes]]
+.Vendor Supercompression Schemes^1^
+[width=100%,align=center,cols="^10,<10,<10,<12,<18,<20,<20",options=header]
+|===
+| Scheme Id | Scheme Name | Token | Author | Contact | Level Data Format  | Global Data Format
+//
+// Can't use comment blocks in a table except in a cell with the "a"
+// (AsciiDoc) style.
+//
+// To register a scheme submit a PR that adds a row with the following info.
+//
+//| <id> | <scheme name> | KTX_SS_<name>_<TAG> | <company or person name> | Contact | Link | Link
+//
+// Pick the next available id from the reserved ids and edit the reserved
+// list values accordingly.
+//
+// Token is a name that can be used in code to refer to the scheme.
+// Follow this template: KTX_SS_<name>_<TAG>.
+//
+// Contact can be a GitHub handle (preferred)
+// or an email address. For a GitHub handle, the Contact cell must be
+//
+//     Full Name link:++<GitHub repo URL>/issues/new?body=Desired issue body. Include GitHub handle in message body. Use %0A for a newline.++[icon:github[alt=GitHub,role="black"]<GitHub handle without @>,window=_blank,opts=nofollow]
+//
+// For an email address, this
+//
+//     Full Name link:++mailto:email@domain.com?subject=subject&body=Desired issue body. Use %0A for newline.[icon:mail[alt=Mail,role="black"]email,window=_blank,opts=nofollow]
+//
+// If publishing the specifications, Level Data Format must be a
+// link to an anchor in the related specification appendix. Global
+// Data Format must be a link to an anchor in the related specification
+// appendix or "n/a" if the scheme does not use global data.
+//
+// If not publishing the specifications, Level Data Format must be
+// "Proprietary" and Global Data Format must one of "n/a" or "Required",
+// as appropriate.
+//
+// E.g.
+//| 0x10000              | Acme XP       | KTX_SS_XP_ACME | Acme plc | Wile E. Coyote link:++https://github.com/Acme/XP/issues/new?body= @wileec%0A*Here describe the issue or question you have about Acme XP supercompression.*++[icon:github[role="black"]wileec,window=_blank,opts=nofollow] | <<etc1s_slice,ETC1S Slice Decoding>>  | <<basislz_gd,BasisLZ Global Data>>
+//| 0x10000              | Acme XP       | KTX_SS_XP_ACME | Acme plc | Wile E. Coyote link:++mailto:wilee@coyote.com?body=*Here describe the issue or question you have about Acme XP supercompression.*++[icon:send[role="black"]wileec,window=_blank,opts=nofollow] | Proprietary | Required
+//
+// The PR must also add a note to Vendor Scheme Notes below.
+| 0x10000              | Asobo         | KTX_SS_PROPRIETARY_ASOBO | Asobo Studio | Julien Vernay link:mailto:jvernay@asobostudio.com?subject=(KTX2-Asobo)%20...question...&body=...who%20are%20you%20and%20your%20question...[icon:send[role="black"]jvernay@asobostudio.com,window=_blank,opts=nofollow] | Proprietary | Required
+| 0x10001･･･0x1ffff    | Reserved^2^   |      |          |                              |                   |
+|===
+
+[small]
+1. For information on registering schemes see
+<<registeringSupercompressionSchemes>>. Readers and writers may, but are
+not required, to support these schemes.
+2. Reserved for schemes yet to come.
+
+[#schemeNotes]
+==== Scheme Notes (Normative)
+===== BasisLZ
+* <<ETC1S Slice Decoding>> describes the bitstream for a single
+  image (slice).
+* ETC1S slice locations within a mip level are defined exclusively
+  by the corresponding `ImageDesc` structures from the
+  <<basislz_global_data_structure>>. The same slice data may be
+  used by multiple `ImageDesc` structures within the mip level.
+* An image bitstream refers to the endpoint and selector codebooks
+  described in in <<basislz_gd>>.
+* <<_vkformat,`vkFormat`>> must be `VK_FORMAT_UNDEFINED` (0x00).
+  The <<_data_format_descriptor,_Data Format Descriptor_>> must
+  retain the pre-deflation color space information and indicate
+  which color and alpha components are present.
+  See <<DFD for Supercompressed Data>>.
+
+* `<<_levelsp_uncompressedbytelength,levels[p].uncompressedByteLength>>`
+  must be 0.
+
+[NOTE]
+.Rationale
+====
+The BasisLZ encoder combines encoding to a universal format with
+deflation. The transcoder combines inflation back to the universal
+format with transcoding to one of the many GPU-specific block
+compressed formats. There is therefore no visible common pre- and
+post-supercompression format.
+
+The effective uncompressed byte length is dependent on the which
+transcode target format is selected.
+====
+
+===== Zstandard
+* After inflation, the level data follows the uncompressed layout as
+  specified in the <<levelImages>>.
+
+* Only _Zstandard_ frames are required. Inflators may skip _Skippable_
+  frames.
+
+* Checksums are optional. If a checksum is present, inflators should
+  verify it.
+
+* <<_vkformat,`vkFormat`>> must retain the pre-deflation value.
+  The <<_data_format_descriptor,_Data Format Descriptor_>> must
+  retain pre-deflation color space information and indicate which
+  components are present. See <<DFD for Supercompressed Data>>.
+
+===== ZLIB
+* After inflation, the level data follows the uncompressed layout as
+  specified in the <<levelImages>>.
+
+* With Deflate <<RFC1951>> compression scheme.
+
+* <<_vkformat,`vkFormat`>> must retain the pre-deflation value.
+  The <<_data_format_descriptor,_Data Format Descriptor_>> must
+  retain pre-deflation color space information and indicate which
+  components are present. See <<DFD for Supercompressed Data>>.
+
+[#vendorSchemeNotes]
+////
+// A PR registering a new vendor supercompression scheme must add
+// a note detailing, at a miminum, handling of the vkFormat field
+// and the DFD's color space information.
+////
+==== Vendor Scheme Notes (Normative)
+===== Asobo
+* <<_vkformat,`vkFormat`>> must retain the pre-deflation value.
+  The <<_data_format_descriptor,_Data Format Descriptor_>> must
+  retain pre-deflation color space information and indicate which
+  components are present. See <<DFD for Supercompressed Data>>.
+
+=== Index
+An index giving the byte offsets from the start of the file and byte
+sizes of the various sections of the KTX file.
+
+==== dfdByteOffset
+The offset from the start of the file of the
+`<<_dfdtotalsize,dfdTotalSize>>` field of the
+<<_data_format_descriptor,_Data Format Descriptor_>>.
+
+==== dfdByteLength
+The total number of bytes in the <<_data_format_descriptor,_Data
+Format Descriptor_>> including the `<<_dfdtotalsize,dfdTotalSize>>`
+field. `dfdByteLength` must equal
+`<<_dfdtotalsize,dfdTotalSize>>`.
+
+[NOTE]
+====
+This field is not necessary. Since no padding is needed for DFDs
+the value is easily calculated from the offsets. However, if it is
+removed, we would need 4 bytes of padding instead for proper alignment
+of `supercompressionGlobalData`. Retaining it means all sections of
+the file can be handled uniformly.
+====
+
+==== kvdByteOffset
+An arbitrary number of <<_keyvalue_data,key/value pairs>> may
+follow the Index. These can be used to encode any arbitrary data.
+The `kvdByteOffset` field gives the offset of this data, i.e.
+that of first key/value pair, from the start of the file.  The value
+must be 0 when `kvdByteLength` = 0.
+
+==== kvdByteLength
+The total number of bytes of key/value data including all
+`<<_keyandvaluebytelength,keyAndValueByteLength>>` fields, all
+`<<_keyandvalue,keyAndValue>>` fields and all
+`<<_valuepadding,valuePadding>>` fields.
+
+==== sgdByteOffset
+The offset from the start of the file of
+`<<_supercompressionglobaldata,supercompressionGlobalData>>`. The
+value must be 0 when `sgdByteLength` = 0.
+
+==== sgdByteLength
+The number of bytes of
+`<<_supercompressionglobaldata,supercompressionGlobalData>>`. For
+supercompression schemes for which no reference is provided in the
+_Global Data Format_ column of <<supercompressionSchemes>>.  the
+value must be 0.
+
+==== Level Index
+An array, `levels`, giving the offset from the start of the file and
+compressed and uncompressed byte sizes of the image data for each
+mip level within the <<_mip_level_array,_Mip Level Array_>> The array is ordered
+starting with stem:[\textit{level}_\textit{base}] (the level with the largest size images)
+at index stem:[0]. The image for stem:[\textit{level}_p] will be found at index
+stem:[p].
+
+===== levels[p].byteOffset
+
+The offset from the start of the file of the first byte of image data
+for mip level _p_. It is the offset of the first byte after any
+`<<_mippadding,mipPadding>>`.
+
+===== levels[p].byteLength
+
+The total size of the data for supercompressed mip level _p_.
+
+`levels[p].byteLength` is the number of bytes of pixel data in
+LOD stem:[\textit{level}_p]. This includes all layers, all z slices, all
+faces, all rows (or rows of blocks) and all pixels (or blocks) in
+each row for the mip level.
+
+The total size of the image data from
+stem:[\texttt{levels}[\textit{num_levels}-1\]\texttt{.byteOffset}] (i.e.,
+after the first `mipPadding`, if any) until the end of the file is:
+[stem]
++++++
+\texttt{levels}[0]\texttt{.byteLength} +
+\sum_{p=1}^{\textit{num_levels}-1}
+\left\lceil{\frac{\texttt{levels}[p]\texttt{.byteLength}}{\textit{required_alignment}}}\right\rceil
+\times \textit{required_alignment}
++++++
+where
+[stem]
++++++
+\textit{num_levels} = \max\left(1, \texttt{levelCount}\right)
++++++
+and
+[stem]
++++++
+\textit{required_alignment} =
+  \begin{cases}
+    \operatorname{lcm}(\textit{texel_block_size}, 4)      & (\texttt{supercompressionScheme} = 0) \\
+    1                                      & (\texttt{supercompressionScheme} \neq 0)
+  \end{cases}
++++++
+stem:[\textit{texel_block_size}] is defined in <<mipPadding>>.
+
+===== levels[p].uncompressedByteLength
+
+`levels[p].uncompressedByteLength` is the number of bytes of pixel
+data in LOD stem:[\textit{level}_p] after reflation from supercompression.
+This includes all layers, all z slices, all faces, all rows (or
+rows of blocks) and all pixels (or blocks) in each row for the mip
+level. When `supercompressionScheme == 0`,
+`<<_levelsp_bytelength,levels[p].byteLength>>` must have the same
+value as this.   When `supercompressionScheme == 1`, BasisLZ, the
+value must be 0.
+
+The value of a level's `uncompressedByteLength` must satisfy the
+following condition:
+[listing]
+----
+uncompressedByteLength % (faceCount * max(1, layerCount)) == 0
+----
+
+[TIP]
+====
+Writers should be aware that block-compressed formats require the
+byte length of encoded levels be a multiple of the block size, i.e.
+the data is always a whole number of blocks regardless of the size
+in texels. The PVRTC1 format has extra restrictions. See Chapter
+24 {url-df-spec}#PVRTC[_PVRTC Compressed Texture Image Formats_] in
+<<KDF14>>.
+
+In versions of OpenGL < 4.5 and in OpenGL ES, faces of non-array
+cubemap textures (any texture where `faceCount` is 6 and
+`layerCount` is 0) must be uploaded individually. Loaders
+wishing to minimize the size of their intermediate buffers may want
+to read the faces individually rather than as a block of size
+`level[n].uncompressedByteLength`.
+====
+
+=== Data Format Descriptor
+The Data Format Descriptor (_dfDescriptor_) describes the layout
+of the texel blocks in `data`.  The full specification for this is
+is {url-df-spec}#pass:[_formats_and_texel_access][Chapters 2 to
+11], of the _Khronos Data Format Specification_ <<KDF14>>.
+
+The dfDescriptor is partially expanded in this specification in
+order to provide sufficient information for a KTX file to be parsed
+without having to refer to <<KDF14>>. It consists of a total size
+field and one or more Descriptor Blocks (_dfDescriptorBlock_)
+described below.
+
+[NOTE]
+.Rationale
+====
+A _dfDescriptor_ is useful in the following cases:
+
+* wise choice of transcode target format when the data is in one of
+  the universal formats by providing information about the components
+  present;
+* precise color management using the descriptor's color space
+  information;
+* use of pre-multiplied alpha by providing indication of
+  pre-multiplication.
+* easier use of the images by non-OpenGL and non-Vulkan applications.
+  There will be no need for large tables to interpret format enums.
+====
+
+==== Restrictions
+The following restrictions must be obeyed when setting the fields of a
+_dfDescriptorBlock_.
+
+* If <<_vkformat,`vkFormat`>> is not `VK_FORMAT_UNDEFINED`, the
+  DFD's `texelBlockDimension*`, `bytesPlane*` and sample information
+  fields must match the format's definition. The `colorModel` must
+  be `KHR_DF_MODEL_RGBSDA`, `KHR_DF_MODEL_YUVSDA` or the matching
+  block compressed color model listed in <<KDF14>>
+  {url-df-spec}#CompressedFormatModels[Section 5.6] or its successors,
+  currently `KHR_DF_MODEL_BC1A` to `KHR_DF_MODEL_UASTC`.
+  `KHR_DF_MODEL_YUVSDA` should be used for all non-prohibited
+  `+*_422_*+` formats.
+* If <<_vkformat,`vkFormat`>> is one of the `+*_SRGB{,_*}+` formats,
+  `transferFunction` must be `KHR_DF_TRANSFER_SRGB`.
+* If <<_vkformat,`vkFormat`>> is not one of the `+*_SRGB{,_*}+` formats
+  and an sRGB variant of that format exists, `transferFunction` should not
+  be `KHR_DF_TRANSFER_SRGB`.
+* If formats for other transfer functions are added to GPU APIs in the
+  future similar restrictions to those just described apply. For
+  example, if formats for the HLG transfer function which have the
+  the suffix `_HLG` are added then
+    - If <<_vkformat,`vkFormat`>> is one of the `+*_HLG{,_*}+` formats
+      `transferFunction` must be `KHR_DF_TRANSFER_HLG`.
+    - If <<_vkformat,`vkFormat`>> is not one of the `+*_HLG{,_*}+`
+      formats and an HLG variant of that format exists,
+      `transferFunction` should not be `KHR_DF_TRANSFER_HLG`.
+* If <<_vkformat,`vkFormat`>> is one of the `+*_[SU]INT{,_*}+` formats
+  or one of the depth, stencil, or combined depth/stencil formats
+  `colorPrimaries` must be `KHR_DF_PRIMARIES_UNSPECIFIED` and `transferFunction`
+  must be `KHR_DF_TRANSFER_UNSPECIFIED`.
+
+[NOTE]
+====
+For example, `VK_FORMAT_R8G8B8A8_UNORM` should not be used with
+`KHR_DF_TRANSFER_SRGB` because there is `VK_FORMAT_R8G8B8A8_SRGB`.
+
+On the other hand, `VK_FORMAT_A2B10G10R10_UNORM_PACK32` may be used with
+`KHR_DF_TRANSFER_SRGB` because there is no sRGB variant of this format.
+====
+
+[NOTE]
+====
+The `+*ASTC_*_SRGB_BLOCK+` formats are not variants of the
+`+*ASTC_*_SFLOAT_BLOCK+` formats.
+====
+
+[NOTE]
+====
+When <<_vkformat,`vkFormat`>> is not one of the `+*_SRGB{,_*}+` formats and the
+transfer function is not linear, the KTX file may be much less portable due to
+limited hardware support of such inputs.
+====
+
+[NOTE]
+====
+Except for the formats for which it is specified above, `colorPrimaries` may
+be any of the available values since conversion of the selected primaries
+and white point to a display's can be done simply with a 3x3 matrix multiply.
+
+Still, `KHR_DF_PRIMARIES_BT709` / `KHR_DF_PRIMARIES_SRGB` is recommended
+for standard dynamic range, standard gamut images.
+====
+
+[TIP]
+====
+The specification allows free choice of `transferFunction` when
+<<_vkformat,`vkFormat`>> is `VK_FORMAT_UNDEFINED`. When creating a
+texture using sRGB-encoded images use of `KHR_DF_TRANSFER_SRGB` is
+highly recommended.
+====
+
+
+==== Use of Transfer Functions
+The majority of color spaces listed in Chapter 13
+{url-df-spec}#TRANSFER_CONVERSION[_Transfer functions_]
+of <<KDF14>>, with corresponding enumerators given in Section 5.8
+_transferFunction_, define only an electro-optical transfer function
+(EOTF) or only an opto-electrical transfer function (OETF) as
+indicated by aliases for the enumerator value. When a KTX file
+uses an enumerator with an EOTF alias
+
+* applications should use the EOTF to decode prior to sampling and
+  filtering;
+* mipmap generation should use the path EOTF → scaling → EOTF^-1^.
+
+The sRGB color space is one of these, defining only an EOTF.
+
+When a KTX file uses an enumerator with an OETF alias
+
+* applications should use the OETF^-1^ to decode prior to sampling and
+  filtering;
+* mipmap generation should use the path OETF^-1^ → scaling → OETF.
+
+Some color spaces have a non-linear opto-optical transfer function
+(OOTF). That is they define an OETF and an EOTF and the EOTF is not
+the inverse of the OETF. These have two separate enumerators, one
+with an `OETF` suffix, the other with an `EOTF` suffix. When a KTX
+file has the enumerator with an explicit `_OETF` suffix
+
+* the images are _scene referred_ and intended to be decoded to
+  scene-linear values;
+* applications should use OETF^-1^ to decode prior to sampling and
+  filtering;
+* mipmap generation should use the path OETF^-1^ → scaling → OETF.
+
+When a KTX file has the enumerator with an explicit `_EOTF` suffix
+
+* the images are _display referred_ and intended to be decoded to
+  display-linear values;
+* applications should use the EOTF (often derived from the OOTF) to
+  decode prior to sampling and filtering;
+* mipmap generation should use the path EOTF → scaling → EOTF^-1^.
+
+OETF and EOTF formulae are given in Chapter 13
+{url-df-spec}#TRANSFER_CONVERSION[_Transfer functions_] in
+<<KDF14>>.
+
+==== Providing additional information
+There are several cases where the _dfDescriptorBlock_ is used to
+provide information beyond that given by <<_vkformat,`vkFormat`>>.
+
+Premultiplied Alpha::
+  `KHR_DF_FLAG_ALPHA_PREMULTIPLIED` (= 1) can be set in the `flags`
+  field if the images' RGB components have been multiplied by their
+  alpha components, otherwise it must be 0.
+
+Basis Universal UASTC Format::
+The Universal ASTC image format (UASTC) is indicated by `colorModel`
+`KHR_DF_MODEL_UASTC` (= 166) together with `vkFormat` `VK_FORMAT_UNDEFINED`
+(= 0). The DFD must be as described in Section 5.6.14
+{url-df-spec}#KHR_DF_MODEL_UASTC[_KHR_DF_MODEL_UASTC_] of
+<<KDF14>>. Images in this format must be transcoded to a GPU-supported
+block-compressed format or decoded to a GPU-supported uncompressed
+format before being uploaded to and sampled by a GPU.  UASTC images
+can be supercompressed with Zstandard (`supercompressionScheme` =
+2) with or without first conditioning the data with Rate-distortion
+Optimization. If supercompression is used, the DFD must follow the
+rules described in the next subsection.
++
+This color model provides channel Ids, e.g. `KHR_DF_CHANNEL_UASTC_RGB`
+that must be used to indicate the effective number of components
+in the data.  Consumers use this information to help select a
+transcode target. The following ids are valid and must be used for
+the type of data indicated.
++
+[width=100%,align=center,cols="<30,^10,<60",options=header]
+|===
+| Id | Value | Type
+|`KHR_DF_CHANNEL_UASTC_RGB`  | 0 | 3 component: opaque color. RGB
+                                   components in the rgb channels.
+|`KHR_DF_CHANNEL_UASTC_RGBA` | 3 | 4 component: color + alpha. RGB
+                                   components in the rgb channels,
+                                   alpha in the alpha channel.
+|`KHR_DF_CHANNEL_UASTC_RRR`  | 4 | 1 component: R component replicated
+                                   in all 3 rgb channels for better
+                                   compression results.
+|`KHR_DF_CHANNEL_UASTC_RRRG` | 5 | 2 independent components: R component
+                                   replicated in all 3 rgb channels and
+                                   G moved to alpha for better
+                                   compression results.
+|`KHR_DF_CHANNEL_UASTC_RG`   | 6 | 2 independent components. Blue &
+                                   alpha should not be sampled.
+|===
++
+[TIP]
+====
+_UASTC_RRRG cannot be transcoded to the RG channels of an ASTC or BC7
+texture. Applications using this channel id will have to use swizzles or
+have shaders that understand this channel layout.
+====
++
+The bitstream of the UASTC data is described in Chapter 25
+{url-df-spec}#UASTC[_UASTC Compressed Texture Image Format_] of
+<<KDF14>>.
+
+[[etc1s]]
+Basis Universal ETC1S Format::
+The ETC1S image format is indicated by `colorModel` `KHR_DF_MODEL_ETC1S`
+(= 163) together with `vkFormat` `VK_FORMAT_UNDEFINED` (= 0). The
+DFD must be as described in Section 5.6.11
+{url-df-spec}#KHR_DF_MODEL_ETC1S[_KHR_DF_MODEL_ETC1S_] of
+<<KDF14>>. Because ETC1S does not support an alpha component, Basis
+Universal uses 2 _slices_, (_planes_ in DFD-speak) to represent
+RGBA images.  This color model provides the following channel ids
+that must be used to indicate the use of a slice.
++
+[width=100%,align=center,cols="<30,^10,<60",options=header]
+|===
+| Id | Value | Type
+|`KHR_DF_CHANNEL_ETC1S_RGB` | 0  | 3 components: opaque color. RGB
+                                   components in the slice's rgb components.
+|`KHR_DF_CHANNEL_ETC1S_RRR` | 3  | 1 component: R component in the
+                                   slice's r component.
+|`KHR_DF_CHANNEL_ETC1S_GGG` | 4  | 1 component: G component in the
+                                   slice's r component. Not used independently.
+|`KHR_DF_CHANNEL_ETC1S_AAA` | 15 | 1 component: Alpha component in the
+                                   slice's r component. Not used independently.
+|===
++
+For better compression results, non-RGB slices may have the same value
+replicated in all 3 slice components.
++
+Whether there are 1 or 2 slices depends on the pre-deflation components
+as detailed in the following table of valid channel id combinations.
++
+[width=100%,align=center,cols="<65,<35",options=header]
+|===
+| Combination | Description
+|`KHR_DF_CHANNEL_ETC1S_RGB` | One slice, opaque color.
+|`KHR_DF_CHANNEL_ETC1S_RGB` + `KHR_DF_CHANNEL_ETC1S_AAA` | Two slices,
+                                                           color + alpha
+|`KHR_DF_CHANNEL_ETC1S_RRR` | One slice, 1 component encoded as greyscale.
+|`KHR_DF_CHANNEL_ETC1S_RRR` + `KHR_DF_CHANNEL_ETC1S_GGG` | Two slices, 2
+                                                           independent
+                                                           components
+                                                           each encoded
+                                                           as greyscale.
+|===
++
+TIP: KTX writers may map components of their original input images
+into the RGB and A components of the supercompressed image in any
+way they choose.  They may also offer an option to apply KTXswizzle
+metadata prior to supercompressing an uncompressed KTX file.
++
+Images in this format must be supercompressed. A scheme designed
+for ETC1S streams such as BasisLZ must be used.  Images must be
+inflated and transcoded to a GPU-supported block-compressed format
+or decoded to a GPU-supported uncompressed format before being
+uploaded to and sampled by a GPU. Because ETC1S images are
+supercompressed, the DFD must follow the rules described in the
+next subsection.
+
+TIP: Whether the image has 1 or 2 slices
+can be determined from the DFD's sample count.
+
+The bitstream of the ETC1S data pre LZ deflation is described in
+Section 21.1 {url-df-spec}#ETC1S[_ETC1S_] of <<KDF14>>.
+
+NOTE: Since inflation and transcoding are typically combined in a
+single operation, this bitstream is not visible to applications.
+
+[IMPORTANT]
+====
+The DFD for UASTC and ETC1S must reflect the components provided
+as input to the Basis encoders not those of the source image.
+Therefore, for example, if the software checks for and removes from
+source image(s) alpha channel(s) that are all opaque (1.0) before
+submitting the data to a Basis encoder then the DFD must not
+have a sample with a channelType that indicates it is alpha.
+====
+
+===== DFD for Supercompressed Data
+When `<<_supercompressionscheme,supercompressionScheme>>` is not 0
+the _dfDescriptorBlock_ must preserve the `colorModel`, `transferFunction`,
+`colorPrimaries`, `flags`, `texelBlockDimension[0-3]` and
+`bytesPlane[0-7]` of the pre-deflation images along with each
+sample's `channelType`, `qualifiers`, `bitlength`, `bitOffset`,
+`sampleLower`, and `sampleUpper`.
+
+BasisLZ supercompression works only on ETC1S blocks so, when it is
+used, `texelBlockDimension[01]` must be 3, `bytesPlane0` must
+be 8 and, if there is an alpha plane, `bytesPlane1` must also be
+8.
+
+[NOTE]
+====
+In the event that a block-compressed format is supercompressed the
+DFD will reflect the color model of the block-compressed format
+most of which have only one or two components.
+====
+
+[NOTE]
+====
+Previous document revisions required  `bytesPlane[0-7]` to be set to
+0 to indicate an _unsized format_ in accordance with Data Formats
+v1.3.1 and unpublished drafts of <<KDF14>>. For the foreseeable future
+software must be able to handle such KTX files.
+====
+
+<<example_rg>> shows a DFD for images that were `VK_FORMAT_R8G8_UNORM`,
+before encoding and deflation, i.e. they have two
+unsigned 8-bit components.
+
+[[example_rg]]
+.Example Unsigned R + G descriptor for BasisLZ/ETC1S
+[.dfdexample, width=75%]
+|================================
+32+^| *~++uint32_t++ bit~*
+^| ~31~ ^| ~30~ ^| ~29~ ^| ~28~ ^| ~27~ ^| ~26~ ^| ~25~ ^| ~24~ ^| ~23~ ^| ~22~ ^| ~21~ ^| ~20~ ^| ~19~ ^| ~18~ ^| ~17~ ^| ~16~ ^| ~15~ ^| ~14~ ^| ~13~ ^| ~12~ ^| ~11~ ^| ~10~ ^| ~9~ ^| ~8~ ^| ~7~ ^| ~6~ ^| ~5~ ^| ~4~ ^| ~3~ ^| ~2~ ^| ~1~ ^| ~0~
+32+^| *_totalSize:_* 60
+15+^| *_descriptorType:_* 0 17+^| *_vendorId:_* 0
+16+^| *_descriptorBlockSize:_* 24 + (16 {times} 2) = 56 16+^| *_versionNumber:_* 2
+8+^| *_flags:_* *++ALPHA_STRAIGHT++* 8+^| *_transferFunction:_* *++LINEAR++* 8+^| *_colorPrimaries:_* *++BT709++* 8+^| *_colorModel:_* *++ETC1S++*
+8+^| *_~texelBlockDimension3~_* 8+^| *_~texelBlockDimension2~_* 8+^| *_~texelBlockDimension1~_* 8+^| *_~texelBlockDimension0~_*
+8+^| 0 8+^| 0 8+^| 3 (= ``4'') 8+^| 3 (= ``4'')
+8+^| *_bytesPlane3:_* 0 8+^| *_bytesPlane2:_* 0 8+^| *_bytesPlane1:_* 8 8+^| *_bytesPlane0:_* 8
+8+^| *_bytesPlane7:_* 0 8+^| *_bytesPlane6:_* 0 8+^| *_bytesPlane5:_* 0 8+^| *_bytesPlane4:_* 0
+^| *_~F~_* ^| *_~S~_* ^| *_~E~_* ^| *_~L~_* 4+^| *_~channelType~_* 24+^|
+~Red sample information~
+^| 0 ^| 0 ^| 0 ^| 0 4+^| *++RRR++* 8+^| *_bitLength:_* 63 (= ``64'') 16+^| *_bitOffset:_* 0
+8+^| *_~samplePosition3~_* 8+^| *_~samplePosition2~_* 8+^| *_~samplePosition1~_* 8+^| *_~samplePosition0~_*
+8+^| 0 8+^| 0 8+^| 0 8+^| 0
+32+^| *_sampleLower:_* 0
+32+^| *_sampleUpper:_* *++UINT32_MAX++*
+^| *_~F~_* ^| *_~S~_* ^| *_~E~_* ^| *_~L~_* 4+^| *_~channelType~_* 24+^|
+~Green sample information~
+^| 0 ^| 0 ^| 0 ^| 0 4+^| *++GGG++* 8+^| *_bitLength:_* 63 (= ``64'')
+16+^| *_bitOffset:_* 64
+8+^| *_~samplePosition3~_* 8+^| *_~samplePosition2~_* 8+^| *_~samplePosition1~_* 8+^| *_~samplePosition0~_*
+8+^| 0 8+^| 0 8+^| 0 8+^| 0
+32+^| *_sampleLower:_* 0
+32+^| *_sampleUpper:_* *++UINT32_MAX++*
+|================================
+
+<<example_rgb>> shows a DFD for images that were `VK_FORMAT_R8G8B8_SNORM`,
+before deflation, i.e. have 3 signed 8-bit components.
+
+[[example_rgb]]
+.Example Signed RGB descriptor for Zstandard/ZLIB
+[.dfdexample, width=75%]
+|================================
+32+^| *~++uint32_t++ bit~*
+^| ~31~ ^| ~30~ ^| ~29~ ^| ~28~ ^| ~27~ ^| ~26~ ^| ~25~ ^| ~24~ ^| ~23~ ^| ~22~ ^| ~21~ ^| ~20~ ^| ~19~ ^| ~18~ ^| ~17~ ^| ~16~ ^| ~15~ ^| ~14~ ^| ~13~ ^| ~12~ ^| ~11~ ^| ~10~ ^| ~9~ ^| ~8~ ^| ~7~ ^| ~6~ ^| ~5~ ^| ~4~ ^| ~3~ ^| ~2~ ^| ~1~ ^| ~0~
+32+^| *_totalSize:_* 76
+15+^| *_descriptorType:_* 0 17+^| *_vendorId:_* 0
+16+^| *_descriptorBlockSize:_* stem:[24 + (16 \times 3) = 72] 16+^| *_versionNumber:_* 2
+8+^| *_flags:_* *++ALPHA_STRAIGHT++* 8+^| *_transferFunction:_*
+*++LINEAR++* 8+^| *_colorPrimaries:_* *++BT709++* 8+^| *_colorModel:_* *++RGBSDA++*
+8+^| *_~texelBlockDimension3~_* 8+^| *_~texelBlockDimension2~_* 8+^| *_~texelBlockDimension1~_* 8+^| *_~texelBlockDimension0~_*
+8+^| 0 8+^| 0 8+^| 0 8+^| 0
+8+^| *_bytesPlane3:_* 0 8+^| *_bytesPlane2:_* 0 8+^| *_bytesPlane1:_* 0 8+^| *_bytesPlane0:_* 3
+8+^| *_bytesPlane7:_* 0 8+^| *_bytesPlane6:_* 0 8+^| *_bytesPlane5:_* 0 8+^| *_bytesPlane4:_* 0
+^| *_~F~_* ^| *_~S~_* ^| *_~E~_* ^| *_~L~_* 4+^| *_~channelType~_* 24+^| ~Red sample information~
+^| 0 ^| 1 ^| 0 ^| 0 4+^| *++RED++* 8+^| *_bitLength:_* 7 16+^| *_bitOffset:_* 0
+8+^| *_~samplePosition3~_* 8+^| *_~samplePosition2~_* 8+^| *_~samplePosition1~_* 8+^| *_~samplePosition0~_*
+8+^| 0 8+^| 0 8+^| 0 8+^| 0
+32+^| *_sampleLower:_* -127
+32+^| *_sampleUpper:_* 127
+^| *_~F~_* ^| *_~S~_* ^| *_~E~_* ^| *_~L~_* 4+^| *_~channelType~_* 24+^| ~Green sample information~
+^| 0 ^| 1 ^| 0 ^| 0 4+^| *++GREEN++* 8+^| *_bitLength:_* 7 16+^| *_bitOffset:_* 8
+8+^| *_~samplePosition3~_* 8+^| *_~samplePosition2~_* 8+^| *_~samplePosition1~_* 8+^| *_~samplePosition0~_*
+8+^| 0 8+^| 0 8+^| 0 8+^| 0
+32+^| *_sampleLower:_* -127
+32+^| *_sampleUpper:_* 127
+^| *_~F~_* ^| *_~S~_* ^| *_~E~_* ^| *_~L~_* 4+^| *_~channelType~_* 24+^| ~Blue sample information~
+^| 0 ^| 1 ^| 0 ^| 0 4+^| *++BLUE++* 8+^| *_bitLength:_* 7 16+^|
+*_bitOffset:_* 16
+8+^| *_~samplePosition3~_* 8+^| *_~samplePosition2~_* 8+^| *_~samplePosition1~_* 8+^| *_~samplePosition0~_*
+8+^| 0 8+^| 0 8+^| 0 8+^| 0
+32+^| *_sampleLower:_* -127
+32+^| *_sampleUpper:_* 127
+|================================
+
+==== dfdTotalSize
+Called `total_size` in <<KDF14>>, `dfdTotalSize` indicates the total
+number of bytes in the _dfDescriptor_ including `dfdTotalSize` and
+all `dfdBlock` fields.  `<<_dfdbytelength,dfdByteLength>>`
+must equal `dfdTotalSize`.
+
+If
+[stem]
++++++
+\texttt{dfdTotalSize} \neq \texttt{kvdByteOffset} - \texttt{dfdByteOffset}
++++++
+the file is invalid.
+
+[NOTE]
+====
+`dfdTotalSize` is included so that the KTX file contains a complete
+descriptor as defined in Chapter 4
+{url-df-spec}#dataformatdescriptor[_Khronos Data Format Descriptor_]
+of <<KDF14>>.
+====
+
+==== dfdBlock
+A `Descriptor Block` as defined in
+{url-df-spec}#descriptorblock[Section 4.1] of <<KDF14>>. The
+high-order 15 bits of its first UInt32 are the `descriptor_type`
+and the high-order 16 bits of the second UInt32 are the
+`descriptor_block_size`.  `descriptor_block_size` is mandated to
+be a multiple of 4 which guarantees that the following
+`keyAndValueByteLength` will be aligned in a 32-bit word.
+
+=== Key/Value Data
+Key/Value data consists of a set of key/value pairs. The number of
+pairs is such that
+[stem]
++++++
+\sum_{i=0}^{n-1}
+\left\lceil{\frac{\texttt{keyAndValueByteLength}[i]}{4}}\right\rceil \times 4
++ n \times 4 = \texttt{kvdByteLength}
++++++
+
+Any file that does not meet the above condition is invalid.
+
+KTX tools must update any key/value data affected by their operations.
+For example, a tool that supports xflip or yflip operations must
+update existing `KTXorientation` data to reflect the result of
+performing one of these. Tools must, preserve any key/value data
+not affected by their operations and not modified by the user or that
+they do not understand.
+
+Key/value data must be written to the file sorted by the Unicode
+code points of the keys starting from a key's first character.
+
+Keys must not appear more than once.
+
+==== keyAndValueByteLength
+The number of bytes of combined key and value data in one key/value
+pair. This includes the size of the key, the required NUL byte
+terminating the key and all the bytes of data in the value. If the
+value is a UTF-8 string it should be NUL terminated and
+`keyAndValueByteLength` must include the NUL character (but code
+that reads KTX files must not assume that value fields are NUL
+terminated). `keyAndValueByteLength` does not include the bytes in
+`<<_valuepadding,valuePadding>>`.
+
+`keyAndValueByteLength` must be at least 2, that is a 1 byte key plus
+its NUL terminator.
+
+==== keyAndValue
+`keyAndValue` contains 2 separate sections. First it contains a key
+encoded in UTF-8 without a byte order mark (BOM). The key must be
+terminated by a NUL character (a single 0x00 byte). Keys that begin
+with the 3 ASCII characters `KTX` or `ktx` are reserved and must
+not be used except as described by this specification (this version
+of the KTX spec. defines eight keys). Immediately following the NUL
+character that terminates the key is the Value data.
+
+The Value data may consist of any arbitrary data bytes. Any byte
+value is allowed. It is encouraged that the value be a NUL terminated
+UTF-8 string without a BOM, but this is not required.
+
+If the Value data is binary, it is a sequence of bytes rather than
+of words. It is up to the vendor defining the key to specify how
+those bytes are to be interpreted. If any bytes encode multi-byte
+numbers they must be in little-endian order and, if such a number
+appears at the start of the Value data, the key length including
+its terminating NUL must be a multiple of the number of bytes in
+the number so that the number will be properly aligned.
+
+If the Value data is a string then the NUL termination, if present,
+must be included in `keyAndValueByteLength` (but programs that read
+KTX files must not rely on NUL termination).
+
+==== valuePadding
+Contains between 0 and 3 bytes of value `0x00` to ensure that the
+byte following the last byte in `valuePadding` is at a file offset
+that is a multiple of 4. This ensures that every `keyAndValueByteLength`
+field is 4-byte aligned. This padding is included in the
+`<<_kvdbytelength,kvdByteLength>>` field but not the
+individual `keyAndValueByteLength` fields.
+
+=== Supercompression Global Data
+==== supercompressionGlobalData
+An array of data used by certain supercompression schemes that must
+be available before any mip level can be inflated. Must start on
+the next 8-byte boundary following the key/value data.
+
+The specification of this data block for the BasisLZ scheme is given
+in <<basislz_gd>>.
+
+=== Mip Level Array
+Mip levels in the array are ordered from the level with the
+smallest size images, stem:[\textit{level}_p] to that with the largest size
+images, stem:[\textit{level}_{base}].
+
+[NOTE]
+.Rationale
+====
+When streaming a KTX file, sending smaller mip levels first can be
+used together with, e.g., the `GL_TEXTURE_MAX_LEVEL` and
+`GL_TEXTURE_BASE_LEVEL` texture parameters or appropriate region setting
+in a `VkCmdCopyBufferToImage`, to display a low resolution image quickly
+without waiting for the entire texture data.
+====
+
+[[levelImagesDesc]]
+==== levelImages
+`levelImages` is an array of Bytes holding all the image data for
+a level. The offset of a level's `levelImages` is provided by the
+<<_level_index,Level Index>>. Images are concatenated in the order
+layer, face, slice.
+
+When `<<_supercompressionscheme,supercompressionScheme>> != 0` these
+bytes are formatted as specified in the scheme documentation.
+
+==== mipPadding
+`mipPadding` is between stem:[0] and
+stem:[\operatorname{lcm}(\textit{texel_block_size}, 4) - 1] bytes of value
+`0x00`. This is only required when `<<_supercompressionscheme,supercompressionScheme>> == 0`.
+
+_Texel block size_ is as given for the `vkFormat` value in
+{url-vk-docs-sp-chapters}/formats.html#formats-compatibility-classes[_Format
+Compatibility Classes_] of <<VULKAN-DOCS>> for all `vkFormat` values
+except the following three:
+
+[options="header"]
+|====
+| VkFormat                     | _Texel Block Size_
+|`VK_FORMAT_UNDEFINED`         | Derived from DFD
+|`VK_FORMAT_D16_UNORM_S8_UINT` | 4
+|`VK_FORMAT_D32_SFLOAT_S8_UINT`| 8
+|====
+
+[NOTE]
+.Padding Rationale
+====
+`mipPadding` ensures that data for each mip level is aligned on a
+boundary that enables data to be uploaded to a graphics API in bulk
+without having to shuffle it around. Among other things, this enables
+memory mapped files to be used with some APIs. Vulkan requires data
+to be aligned to a texel block size boundary and to a 4-byte boundary
+hence the least common multiple requirement.
+
+Since levels after the first will be naturally aligned to their
+texel block size, in block-compressed formats because an integral
+number of blocks is required regardless of the image size, the
+majority of formats will have 0 bytes of padding between levels.
+The exception is formats whose texel block size is not a multiple
+of 4. Depending on the image size, these may require some `mipPadding`
+bytes between levels to meet the alignment requirement.
+====
+
+== General comments
+=== Texture Type
+The type of texture can be determined from the following table. Any
+other combination of these parameters makes the KTX file invalid.
+
+[options="header"]
+|====
+|Type|<<dimensions,pixelWidth>>|<<dimensions,pixelHeight>>|<<dimensions,pixelDepth>>|<<_layercount,layerCount>>|<<_facecount,faceCount>>
+|1D           |> 0       |0          |0         |0                    |1
+|2D           |> 0       |> 0        |0         |0                    |1
+|3D           |> 0       |> 0        |> 0       |0                    |1
+|Cubemap      |> 0       |> 0        |0         |0                    |6
+|1D Array     |> 0       |0          |0         |> 0                  |1
+|2D Array     |> 0       |> 0        |0         |> 0                  |1
+|3D Array     |> 0       |> 0        |> 0       |> 0                  |1
+|Cubemap Array|> 0       |> 0        |0         |> 0                  |6
+|====
+
+=== Use of `VK_FORMAT_UNDEFINED`
+`VK_FORMAT_UNDEFINED` can be used
+
+* For custom formats that do not have any equivalent in GPU APIs.
+* For BasisLZ supercompressed data.
+* For any formats from any GPU APIs that do not have Vulkan equivalents.
+* For compressed color models in
+  {url-df-spec}#CompressedFormatModels[Section 5.6] of <<KDF14>> or
+  successors that do not have corresponding Vulkan formats. One
+  such format exists now, the transcodable format with colorModel
+  `KHR_DF_MODEL_UASTC` (= 166).
+
+If `VK_FORMAT_UNDEFINED` is used and the format is known to OpenGL,
+Direct3D or Metal APIs, the corresponding format metadata item
+should be present.
+
+=== Extending KTX
+The following sections describe ways to extend what can be contained
+in a KTX file. It covers three categories: formats, supercompression
+schemes and metadata. This specification can be periodically updated
+to incorporate officially recognized additions and the Document
+Revision incremented. Since the KTX format itself would not change
+the KTX version and file identifier would not change. This document
+serves as the registry for both official and vendor extensions.
+
+TIP: The document revision can be used as a parameter for validators to
+guide validation.
+
+Consumers of KTX files must fail gracefully when encountering formats or
+supercompression schemes they are not prepared to handle. They must
+ignore or report metadata items they are not prepared to handle.
+
+In the following, _vendor_ encompasses independent software and
+hardware vendors and open source developers.
+
+==== Carrying New Formats
+Formats are identified by one or more of the following:
+
+* A Vulkan VkFormat enum value.
+* A color model value from Sections
+  {url-df-spec}#COLORMODEL[5.5] or
+  {url-df-spec}#CompressedFormatModels[5.6] of <<KDF14>>.
+
+New transcodable formats can be added by:
+
+* Creating a new color model and format specification in the Khronos
+  Data format specification <<KDF14>> (as was done with UASTC).
+* Creating a new color model and format specification as above and
+  providing a specification for a new supercompression scheme that
+  incorporates this transcodable format (à la BasisLZ/ETC1S).
+
+New Vulkan formats are created via Vulkan extensions.
+
+New DXGI or Metal formats can be carried by using `VK_FORMAT_UNDEFINED`
+together with a Data Format Descriptor, which may or may not need
+a new color model, and format mapping metadata giving the DXGI or Metal
+format value.
+
+[#extendingSupercompressionSchemes]
+==== Supercompression Schemes
+Supercompression schemes are identified by `supercompressionScheme` in the
+KTX header. New official schemes can be documented in updates to this
+specification.
+
+Vendors can create their own supercompression schemes. To avoid
+conflicts in the Scheme Id name space, those doing so must register
+them with Khronos as described in <<registeringExtensions>>.
+
+==== Adding Metadata Items
+New official metadata items (i.e, KTX prefixed) can be documented
+in updates to this specification.
+
+Vendors can register their own metadata items (key/value pairs) as
+described in <<registeringExtensions>> and are strongly encouraged
+to do so to avoid potential collisions in the key name space (prefix).
+
+[#registeringExtensions]
+==== Registering Extensions
+===== General Procedures
+Supercompression schemes and metadata items are registered by
+proposing a pull-request (PR) against the default branch (currently
+`main`) of the {url-spec-repo}[KTX-Specification] repository on
+GitHub. See the sections below for the specific information required.
+
+The vendor will need to create a GitHub account, if it doesn't have
+one.  Register the vendor's FQDN to that account. A GitHub account
+handle is the preferred way of providing the required registration
+contact information.
+
+Choose a short tag name to identify the vendor. Use the same tag
+the vendor uses for Vulkan, glTF, OpenGL etcetera extensions, if
+there is one. The sections below explain how the tag will be used.
+As a matter of courtesy and respect, please do not try to use tags
+which clearly belong to an existing company or project which may
+wish to develop extensions in the future. Khronos may decline to
+register extensions that are not requested in good faith.
+
+Registration is not complete until the repository maintainer has
+validated and merged the PR.
+
+[#registeringSupercompressionSchemes]
+===== Supercompression Schemes
+Submit requests for scheme ids by proposing a pull request (PR)
+against `ktxspec.adoc`. The PR must add a row to
+<<vendorSupercompressionSchemes>>, that uses the next available id,
+and a note to <<vendorSchemeNotes>>.  Follow the instructions in
+the comments at those locations. Required information for the first
+includes the scheme name, author, contact information and a token
+name that must incorporate the chosen tag name. The token can be
+used by readers and writers to identify the scheme and vendor in
+enumerations, etc.  Required information for the second includes
+whether to retain post compression the <<_vkformat,`vkFormat`>>
+value and the <<_data_format_descriptor,_Data Format Descriptor's_>>
+color space information.
+
+Vendors are strongly encouraged to provide the bitstream and, if
+applicable, global data specifications but they are not required.
+When provided, they must be put in appendices to this document and
+contain anchors linked from the added row. Create an AsciiDoc file
+for each in the `appendices` directory named using the template
+
+    KTX_<TAG>_<name>_{bitstream,gdata}.adoc
+
+Replace `<TAG>` with the vendor's identifying tag and `<name>` with
+the scheme name.  Use AsciiDoc's `+include::+` directive to include
+these appendices after the last similar include currently in this
+document. Add the new files to the PR as well as edits to `Makefile`
+that add the new files to the `ktx_sources` variable.
+
+The registration process can be split into several steps to accommodate
+scheme id assignment prior to scheme publication:
+
+* Acquire a scheme id. This is done by proposing a PR against
+  ktxspec.adoc. The id will be reserved only once this request is
+  accepted into the default branch.
+* Develop and test the scheme using the registered id.
+* Publish the bit stream specifications to Khronos with a PR that
+  updates the row in the table for the previously registered id and
+  adds the scheme documentation.
+
+[#registeringMetadata]
+==== Metadata
+Register items by proposing a pull request (PR) against
+`appendices/vendor_metadata.adoc`, the source file for <<vendorMetadata>>.
+Add the metadata item(s) following the instructions in the comment
+there.
+
+Use the tag described in <<Registering Extensions>> as the key prefix.
+
+=== Animation Sequence
+The images of any array texture can be indicated to be the frames
+of a short animation sequence by including <<_ktxanimdata,KTXanimData>>
+metadata. Valid _animation_ files must have the combination of
+parameters outlined in <<Texture Type>> for Array textures in
+addition to KTXanimData metadata. <<_layercount,`layerCount`>> is
+the number of frames in the video, i.e. layers become the temporal
+axis.
+
+TIP: Use of uncompressed images for an animation sequence will not
+be memory efficient. Animation sequences should be limited to
+block-compressed or, preferably, BasisLZ compressed textures.
+
+=== Endianness
+KTX files are little endian. All header fields and the
+data for all uncompressed texture formats are stored in little
+endian order.  Readers on big-endian machines must endian convert
+all header UInt32s and UInt64s and, when <<_typesize,typeSize>> is
+greater than 1, all `data` to big endian. The data of block compressed
+formats, those ending in `*_BLOCK`, does not need endian converting.
+
+If an application on a big-endian machine intends to use the sample
+information in the Data Format Descriptor, the DFD must be rewritten
+for the endian-converted `data` as the samples describe the data as
+laid out in memory.
+
+Writers must endian convert these items to little endian on writing
+the file.
+
+=== Packing
+Rows of uncompressed pixel data are tightly packed. Each row in
+memory immediately follows the end of the preceding row. I.e the
+data must be packed according to the rules described in section
+8.4.4.1 _Unpacking_ of the OpenGL 4.6 specification <<OPENGL46>>
+with `GL_UNPACK_ROW_LENGTH` = 0 and `GL_UNPACK_ALIGNMENT` = 1.
+
+== Predefined Key/Value Pairs
+
+=== KTXcubemapIncomplete
+A KTX file can be used to store an incomplete cubemap or an array of
+incomplete cubemaps. In such a case, <<faceCount,`faceCount`>> must
+be 1 and <<layerCount,`layerCount`>> must be equal to the number of
+faces present (in case of a single cubemap) or to the number of faces
+present times the number of cubemaps (in case of a cubemap array).
+The faces that are present must be indicated using the metadata key
+
+-   `KTXcubemapIncomplete`
+
+The value is a one-byte bitfield defined as:
+
+[listing]
+-----
+00xxxxx1 - +X is present
+00xxxx1x - -X is present
+00xxx1xx - +Y is present
+00xx1xxx - -Y is present
+00x1xxxx - +Z is present
+001xxxxx - -Z is present
+-----
+
+Any value, not matching the mask above is invalid.
+
+At least one face must be present, i.e., the value must not be 0.
+
+Within the <<levelImages>> structure, faces must be written in the
+same order as with complete cubemaps: +X, -X, +Y, -Y, +Z, -Z.
+
+When a texture is a cubemap array, missing/present faces must be
+the same for each element.
+
+As with complete cubemaps, <<dimensions,`pixelHeight`>> must be equal
+to <<dimensions,`pixelWidth`>>, and <<dimensions,`pixelDepth`>> must
+be 0.
+
+This metadata entry must not be used together with
+<<KTXanimData,`KTXanimData`>>.
+
+=== KTXorientation
+Texture data in a KTX file are arranged so that the first pixel in
+the data stream for each face and/or array element is closest to
+the origin of the texture coordinate system. In OpenGL that origin
+is conventionally described as being at the lower left, but this
+convention is not shared by all image file formats and content
+creation tools, so there is abundant room for confusion.
+
+The desired texture axis orientation is often predetermined by,
+e.g. a content creation tool's or existing application's use of the
+image. Therefore it is strongly recommended that tools for generating
+and manipulating KTX files clearly describe their behaviour, and
+provide an option to specify the texture axis origin and orientation
+relative to the logical orientation of the source image. At minimum
+they should provide a choice between top-left and bottom-left as
+origin for 2D source images, with the positive S axis pointing
+right. Where possible, the preferred default is to use the logical
+upper-left corner of the image as the texture origin. Note that
+this is contrary to the standard interpretation of GL texture
+coordinates. However, most other APIs and the majority of texture
+compression tools use this convention.
+
+When writing the logical orientation to the KTX file's metadata,
+image manipulation tools and viewers must use the key
+
+-   `KTXorientation`
+
+Note that this metadata affects only the logical interpretation of
+the data and has no effect on the mapping from pixels in the file
+byte stream to texture coordinates.
+
+The value is a NUL-terminated string formatted depending on the
+texture type.
+
+[options="header"]
+|====
+|Type|Format (<<REGEXP>>)
+|1D  |`/^[rl]$/`
+|2D or Cubemap  |`/^[rl][du]$/`
+|3D  |`/^[rl][du][oi]$/`
+|====
+
+where
+
+[no-bullet]
+- `r` indicates S values increasing to the right
+- `l` indicates S values increasing to the left
+- `d` indicates T values increasing downwards
+- `u` indicates T values increasing upwards
+- `o` indicates R values increasing out from the screen (moving towards viewer)
+- `i` indicates R values increasing in towards the screen (moving away from viewer)
+
+When a texture is an array, all its elements have the same orientation
+and when it is a cubemap, all faces have the same orientation.
+
+Values not matching the table above are invalid.
+
+It is recommended that viewing and editing tools support at least the following values:
+
+- `rd`
+- `ru`
+- `rdi`
+- `ruo`
+
+Although other orientations can be represented, it is recommended
+that tools that create KTX files use only the values listed above
+as other values may not be widely supported by other tools.
+
+[#formatMappingMetadata]
+=== Format Mapping
+
+The `vkFormat` field is the primary way of describing the format
+of the texture data stored in a KTX file. However when there is no
+matching Vulkan format, KTX writers may use the following key-value
+pairs to provide alternative API-specific enum values.
+
+These metadata entries must not be used when the `vkFormat`
+is not `VK_FORMAT_UNDEFINED`.
+
+==== KTXglFormat
+
+For OpenGL {,ES} the mapping is specified with the key
+
+- `KTXglFormat`
+
+The value is 12 bytes representing 3 Uint32 values:
+
+[source,c]
+----
+UInt32 glInternalformat
+UInt32 glFormat
+UInt32 glType
+----
+
+For compressed formats, `glFormat` and `glType` must be set to zero;
+and `glInternalformat` must be used for providing mapping.
+
+==== KTXdxgiFormat__
+
+For Direct3D the mapping is specified with the key
+
+- `KTXdxgiFormat__`
+
+The value is a UInt32 (4 bytes) giving the format enum value.
+
+==== KTXmetalPixelFormat
+
+For Metal, the mapping is specified with the key
+
+- `KTXmetalPixelFormat`
+
+The value is a UInt32 (4 bytes) giving the format enum value.
+
+=== KTXswizzle
+
+////
+[NOTE]
+.Differences between OpenGL and Vulkan Swizzle
+====
+* Vulkan uses an enum, VkComponentSwizzle, with values from 0 (IDENTITY)
+  to 6 (SWIZZLE_A). OpenGL uses the values of the existing constants
+  GL_RED (0x1903), GL_GREEN (0x1904), GL_BLUE (0x1905), GL_ALPHA (0x1906),
+  GL_ZERO (0) and GL_ONE (1).
+
+* OpenGL does not have an identity swizzle.
+
+* Vulkan has a struct VkComponentMapping while OpenGL uses an array of
+  component swizzle values.
+====
+////
+
+Desired component mapping for a texture can be indicated with the key
+
+-   `KTXswizzle`
+
+The value is a four-byte NUL-terminated string formatted as (<<REGEXP>>):
+
+[no-bullet]
+-   `/^[rgba01]{4}$/`
+
+where each symbol represents source component (or fixed value) that
+is used for red, green, blue and alpha values, thus `rgba` being
+a default swizzling state.
+
+For example, `rg01` means:
+
+- the red and green channels are sampled from the red and green texture
+  components respectively;
+- the blue channel is set to zero, ignoring texture data;
+- the alpha channel is set to one (fully saturated), ignoring texture data.
+
+When a channel is not present in the texture, a value of `0` must be
+used for colors (red, green and blue) and a value of `1` (fully
+saturated) must be used for alpha.
+
+This metadata has no effect on depth or stencil texture formats.
+
+==== Common Mappings
+
+Use the following formats and swizzles to map alpha-only, luminance and
+luminance-alpha formats.
+
+Alpha8::
+`vkFormat`: `VK_FORMAT_R8_UNORM` (9)
+ +
+`KTXswizzle`: 000r
+
+Luminance8::
+`vkFormat`: `VK_FORMAT_R8_UNORM` (9)
+ +
+`KTXswizzle`: rrr1
+
+Luminance8Alpha8::
+`vkFormat`: `VK_FORMAT_R8G8_UNORM` (16)
+ +
+`KTXswizzle`: rrrg
+
+Loaders may opt to detect these cases and use API-provided enums
+when available, e.g. for the first case  `GL_ALPHA8` (when using
+compatibility profile), `MTLPixelFormatA8Unorm` or `DXGI_FORMAT_A8_UNORM`.
+
+=== KTXwriter
+KTX file writers may, and are strongly encouraged to, identify
+themselves by including a value with the key
+
+-   `KTXwriter`
+
+The value is a NUL-terminated UTF-8 string that will uniquely identify
+the tool writing the file, for example:
+
+[no-bullet]
+-   `AcmeCo TexTool v1.0`
+
+Only the most recent writer should be identified.  Editing tools
+must overwrite this value when rewriting a file originally written
+by a different tool.
+
+=== KTXwriterScParams
+KTX file writers may, and are strongly encouraged to, identify any
+non-default Basis Universal, ASTC & other block-compression encoding
+and supercompression options specified when the file is created by
+including a value with the key
+
+-    `KTXwriterScParams`
+
+The value is a NUL-terminated UTF-8 string that shows the command-line
+or other options used when writing the file, for example:
+
+[no-bullet]
+-    `--uastc --uastc_rdo_l 2 --zcmp 5`
+
+If `KTXwriterScParams` is present, `KTXwriter` must also be present.
+
+In general only the most recent writer and most recently used options
+should be identified unless the writer is building on operations
+done previously. For example if a writer is adding Zstd supercompression
+to a file it previously encoded in UASTC, it should append the
+additional options to those previously used.
+
+=== KTXastcDecodeMode
+By default, ASTC decoders produce pixel values with half-float
+precision for HDR and linear LDR blocks. KTX file writers may
+indicate that the data is compatible with more compact decoding
+modes (as defined in
+{url-vk-docs-sp-appendices}/extensions.html#VK_EXT_astc_decode_mode[`VK_EXT_astc_decode_mode`]
+by using the key
+
+-   `KTXastcDecodeMode`
+
+The value is a NUL-terminated string.
+
+`rgb9e5` means that pixel values can be decoded with RGB9E5 mode.
+
+`unorm8` (valid only for LDR formats) means that pixel values can
+be decoded with UNORM8 mode.
+
+Other values are not allowed.
+
+This metadata entry has no effect on and should not be present in
+KTX files that use sRGB transfer function.
+
+This metadata entry has no effect on and should not be present in
+KTX files that use non-ASTC formats.
+
+=== KTXanimData
+The images of an array texture can be indicated to be the frames of a
+short animation by using the key
+
+-   `KTXanimData`
+
+The value is 12 bytes representing 3 Uint32 values:
+[source,c]
+----
+UInt32 duration
+UInt32 timescale
+UInt32 loopCount
+----
+
+`duration` is the number of _time units_ per frame. `timescale` is the
+number of _time units_ per 1 second. Thus the duration of a frame in
+seconds is stem:[\texttt{duration} / \texttt{timescale}].
+
+`loopCount` indicates how many times to loop the animation. Values are:
+
+[no-bullet]
+* 0 - loops infinitely
+* 1 - plays once
+* n - plays n times
+
+This metadata entry must not be used together with
+<<KTXcubemapIncomplete,`KTXcubemapIncomplete`>>.
+
+== An example KTX version 2 file:
+
+[source,c]
+----
+// Header
+0xAB, 0x4B, 0x54, 0x58, // first four bytes of Byte[12] identifier
+0x20, 0x32, 0x30, 0xBB, // next four bytes of Byte[12] identifier
+0x0D, 0x0A, 0x1A, 0x0A, // final four bytes of Byte[12] identifier
+0x00, 0x00, 0x00, 0x00, // UInt32 vkFormat = VK_FORMAT_UNDEFINED (0)
+0x01, 0x00, 0x00, 0x00, // UInt32 typeSize = 1
+0x08, 0x00, 0x00, 0x00, // UInt32 pixelWidth = 8
+0x08, 0x00, 0x00, 0x00, // UInt32 pixelHeight = 8
+0x00, 0x00, 0x00, 0x00, // UInt32 pixelDepth = 0
+0x00, 0x00, 0x00, 0x00, // UInt32 layerCount = 0
+0x01, 0x00, 0x00, 0x00, // UInt32 faceCount = 0
+0x01, 0x00, 0x00, 0x00, // UInt32 levelCount = 0
+0x01, 0x00, 0x00, 0x00, // UInt32 supercompressionScheme = 1 (BASISLZ)
+// Index
+0x68, 0x00, 0x00, 0x00, // Uint32 dfdByteOffset = 0x00000068
+0x3C, 0x00, 0x00, 0x00, // UInt32 dfdByteLength = 0x0000003C
+0xC4, 0x00, 0x00, 0x00, // UInt32 kvdByteOffset = 0x000000C4
+0x58, 0x00, 0x00, 0x00, // UInt32 kvdByteLength = 0x00000058
+0x20, 0x01, 0x00, 0x00, // UInt64 sgdByteOffset = 0x0000000000000120
+0x00, 0x00, 0x00, 0x00,
+0x90, 0x00, 0x00, 0x00, // UInt64 sgdByteLength = 0x0000000000000090
+0x00, 0x00, 0x00, 0x00,
+// Level Index
+0xB0, 0x01, 0x00, 0x00, // UInt64 level[0].byteOffset = 0x00000000000001B0
+0x00, 0x00, 0x00, 0x00,
+0x03, 0x00, 0x00, 0x00, // UInt64 level[0].byteLength = 0x0000000000000003
+0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, // UInt64 level[0].uncompressedByteLength = 0
+0x00, 0x00, 0x00, 0x00,
+// DFD
+0x3C, 0x00, 0x00, 0x00, // UInt32 dfdTotalSize = 0x3C (60)
+0x00, 0x00, 0x00, 0x00, // vendorId = 0 (17 bits), descriptorType = 0
+0x02, 0x00, 0x38, 0x00, // versionNumber = 2, descriptorBlockSize = 0x38 (56)
+0xA3, 0x01, 0x02, 0x00, // colorModel = ETC1S (163), primaries = BT709 (1)
+                        // transferFunction = SRGB (2), flags = 0
+0x03, 0x03, 0x00, 0x00, // texelBlockDimension[[0-3] = 3, 3, 0, 0
+0x00, 0x00, 0x00, 0x00, // bytesPlane[0-3] = 0
+0x00, 0x00, 0x00, 0x00, // bytesPlane[4-7] = 0
+// DFD sample information, sample 0
+0x00, 0x00, 0x3F, 0x00, // bitOffset = 0 bitLength = 0x3F (63),
+                        // channelType = RGB (0), qualifiers = 0
+0x00, 0x00, 0x00, 0x00, // samplePosition[0-3] = 0
+0x00, 0x00, 0x00, 0x00, // sampleLower = 0
+0xFF, 0xFF, 0xFF, 0xFF, // sampleUpper = 0xFFFFFFFF (UINT_MAX)
+// Sample 1
+0x40, 0x00, 0x3F, 0x0F, // bitOffset = 0x40 (64) bitLength = 0x3F (63),
+                        // channelType = AAA (0x0F), qualifiers = 0
+0x00, 0x00, 0x00, 0x00, // samplePosition[0-3] = 0
+0x00, 0x00, 0x00, 0x00, // sampleLower = 0
+0xFF, 0xFF, 0xFF, 0xFF, // sampleUpper = 0xFFFFFFFF (UINT_MAX)
+// Key/Value Data
+0x12, 0x00, 0x00, 0x00, // keyAndValueByteLength = 18 (0x12)
+0x4B, 0x54, 0x58, 0x6F, // KTXo
+0x72, 0x69, 0x65, 0x6E, // rien
+0x74, 0x61, 0x74, 0x69, // tati
+0x6F, 0x6E, 0x00, 0x72, // on NUL r
+0x64, 0x00, 0x00, 0x00, // d  <3 bytes of valuePadding>
+0x3B, 0x00, 0x00, 0x00, // keyAndValueByteLength = 59 (0x3B)
+0x4B, 0x54, 0x58, 0x77, // KTXw
+0x72, 0x69, 0x74, 0x65, // rite
+0x72, 0x00, 0x74, 0x6F, // r NUL to
+0x6B, 0x74, 0x78, 0x20, // ktx SPACE
+0x76, 0x34, 0x2E, 0x30, // v4.0
+0x2E, 0x5F, 0x5F, 0x64, // .__d
+0x65, 0x66, 0x61, 0x75, // efau
+0x6C, 0x74, 0x5F, 0x5F, // lt__
+0x20, 0x2F, 0x20, 0x6C, // SPACE / SPACE l
+0x69, 0x62, 0x6B, 0x74, // ibkt
+0x78, 0x20, 0x76, 0x34, // x v4
+0x2E, 0x30, 0x2E, 0x5F, // .0._
+0x5F, 0x64, 0x65, 0x66, // _def
+0x61, 0x75, 0x6C, 0x74, // ault
+0x5F, 0x5F, 0x00, 0x00, // __ <2 bytes of valuePadding>
+0x00, 0x00, 0x00, 0x00, // 4 bytes of padding.
+// Supercompression Global Data
+0x02, 0x00, 0x02, 0x00, // UInt16 endpointCount = 2, UInt16 selectorCount = 2
+0x2D, 0x00, 0x00, 0x00, // UInt32 endpointsByteLength = 0x2D
+0x09, 0x00, 0x00, 0x00, // UInt32 selectorsByteLength = 0x09
+0x2E, 0x00, 0x00, 0x00, // Uint32 tablesByteLength = 0x2E
+0x00, 0x00, 0x00, 0x00, // Uint32 extendedByteLength = 0
+// imageDesc[0]
+0x00, 0x00, 0x00, 0x00, // UInt32 flags = 0
+0x00, 0x00, 0x00, 0x00, // UInt32 rgbSliceByteOffset = 0
+0x02, 0x00, 0x00, 0x00, // UInt32 rgbSliceByteLength = 2
+0x02, 0x00, 0x00, 0x00, // UInt32 alphaSliceByteOffset = 0x02
+0x01, 0x00, 0x00, 0x00, // UInt32 alphaSliceByteLength = 1
+// endpointsData
+0x01, 0xC0, 0x04, 0x00,
+0x00, 0x00, 0x00, 0x00,
+0x00, 0x02, 0x04, 0x98,
+0x1B, 0x20, 0x00, 0x00,
+0x00, 0x08, 0xC3, 0x36,
+0x91, 0x3E, 0x91, 0x00,
+0x60, 0x02, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00,
+0x81, 0x00, 0x4C, 0x01,
+0x10, 0x00, 0x00, 0x00,
+0x00, 0x20, 0x59, 0xC0,
+0x3D,
+// selectorsData
+      0x54, 0x55, 0x55,
+0x55, 0xAD, 0xAA, 0xAA,
+0xAA, 0x02,
+// tablesData
+            0x14, 0xC0,
+0x44, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x12,
+0x41, 0x00, 0x98, 0x00,
+0x00, 0x00, 0x00, 0x00,
+0x00, 0x40, 0x18, 0x02,
+0xA2, 0x04, 0x0C, 0x00,
+0x00, 0x00, 0x83, 0x76,
+0x7B, 0x49, 0x04, 0xA2,
+0x20, 0x00, 0x4C, 0x00,
+0x08, 0x00, 0x00, 0x00,
+0x00, 0x20, 0x02, 0x01,
+// Level 0 image data
+0x4E, 0x0E, 0x04
+----
+
+== IANA Media-Type Registration Information
+
+[.legal]
+_Permission is expressly granted to IANA to copy this section as
+necessary for managing the Media Types registry._
+
+include::ktx-media-registration.adoc[]
+
+== Issues
+[qanda]
+How to refer to the DF descriptor block?::
+  _Discussion:_ There is no such data type as `dfDesriptorBlock` but
+  using primitive types would effectively mean repeating the
+  definition of a descriptor block here which we do not want to do.
++
+_Resolved:_ Show that `dfDescriptorBlock` is used as a shorthand for
+<<KDF14>>'s _Descriptor block_.
+
+How to handle endianness of the DF descriptor block?::
+  _Discussion_: The DF spec says data structures are assumed to be
+  little-endian for purposes of data transfer. This is incompatible
+  with the net which is big-endian and incompatible with `endianness`.
+  What should we do?
++
+_Resolved._All fields and data in KTX files will be little endian as
+that is the endianness of the vast majority of machines.
+
+Can we guarantee the DF descriptor blocks are always a multiple of 4 bytes?::
+  _Discussion_ The _Khronos Basic Data Format Descriptor Block_ is
+  a multiple of 4 bytes (24 + 16 x number of samples). Is there
+  anything to require that extensions' block sizes be a multiple of
+  4 bytes? Need to maintain alignment.
++
+_Resolved:_ The Data Format Specification has been updated to
+recommend but not require padding. This spec. will require padding.
+
+Should KTX support level sizes > 4GB?::
+  _Discussion:_ Users have reported having base levels > 4GB for 3D
+  textures.  For this the `imageSize` field needs to be 64-bits. Loaders
+  on 32-bit systems will have to ensure correct handling of this and
+  check that `imageSize` \<= 4GB, before loading.
++
+_Resolved:_ Be future proof and make all image-size related fields 64
+bits.
+
+Should KTX provide a way to distinguish between rectangle and regular 2D textures?::
+  _Discussion:_ The difference is that unnormalized texel coordinates
+  are used for sampling via a special sampler type in GLSL and, in the
+  case of OpenGL {,ES}, the special TEXTURE_RECTANGLE target is used. If
+  needed this could be supported by a metadata item instructing to use
+  unnormalized texel coordinates.
++
+_Resolved:_ Not at this time. Should the need emerge, a metadata item
+can be added.
+
+Should KTX provide a way to distinguish between 1D textures and buffer textures?::
+  _Discussion:_ The difference is how you use the data in OpenGL.
+  With buffer textures the image data is stored in a buffer object.
+  Note that a TextureView can be used to give a different view of the
+  data so supporting buffer textures probably requires metadata to
+  indicate a preferred view as well as metadata to indicate
+  the data should be loaded in a buffer.
++
+_Resolved:_ Not at this time. Should the need emerge, metadata items
+can be added.
+
+Should KTX drop the `gl*` fields?::
+  _Discussion:_ Narrowing down and enforcing the valid combinations
+  of `glFormat`, `glInternalFormat` and `glType` is fraught with
+  issues. The spec. could be simplified by dropping them and having
+  only `vkFormat`.  The spec can include a table showing a standard
+  mapping from the `vkFormat` value to a `glInternalFormat`,
+  `glFormat` and `glType` combination.
++
+_Resolved:_ Drop the `gl*` fields. OpenGL and OpenGL ES loaders
+can include code to do the mapping based on table which has been
+added to the spec. Such code is estimated to be about 6 kbytes.
+
+Use alphanumeric characters or binary values for component swizzles?::
+  _Discussion:_ Values in the swizzle metadata could be either a
+  character from the set [01rgba] or numeric values corresponding to the
+  VkComponentSwizzle enum values from 0 to 6. In the latter case values
+  could be expressed in binary or as numeric characters. The
+  GL token values have been eliminated from this choice because they
+  are not user friendly.
++
+_Resolved:_ Use alphanumeric characters from the set [01rgba].
+
+Is anything needed to support sparse textures?::
+  _Discussion:_ Sparse textures are provided by the
+  `GL_ARB_sparse_textures` extension and are a standard feature of
+  Vulkan. Are any additional KTX features needed to support them?
++
+_Resolved:_ No. Nothing is seen to be required.
+
+Should KTX support metadata for effective use of Vulkan SCALED formats?::
+  _Discussion:_ Vulkan SCALED formats convert int (or uint) values
+  to unnormalized floating point values, equivalent to specifying a
+  value of `GL_FALSE` for the `normalized` parameter to
+  `glVertexAttribFormat`. Generally when using such data, associated
+  scale and bias values are folded into the transformation matrix.
+  Should KTX specify standard metadata for these?
++
+_Resolved:_ No. These formats will not be supported. They are
+primarily for vertex data and several Vulkan vendors have said they
+can't support them as texture formats. Also a DFD cannot distinguish
+these from `int` values having the same bit pattern.
+
+Should the supercompression scheme be applied per-mip-level?::
+  _Discussion:_ Should each mip level be supercompressed independently
+  or should the scheme, zlib, zstd, etc., be applied to all levels
+  as a unit? The latter may result in slightly smaller size though
+  that is unclear. However it would also mean levels could not be
+  streamed or randomly accessed.
++
+_Resolved:_ Yes. The benefits of streaming and random access outweigh
+what is expected to be a small increase in size.
+
+Should we remove row padding from uncompressed image data?::
+  _Discussion:_ Row padding was added to KTX so that data would have the
+  default GL_UNPACK_ALIGNMENT of 4, which was chosen to help speed up DMA
+  of rows by the GPU. Modern architectures are apparently not sensitive
+  to this as evidenced by Vulkan deliberately omitting any equivalent of
+  GL_UNPACK_ALIGNMENT. Thus an annoying chunk of code is required to
+  upload row-padded images to Vulkan.
++
+_Resolved:_ Remove this and cube padding. Formats that would need
+padding have texel sizes that are less than 4 bytes so no benefit
+is obtained by starting cube faces or rows of such images at 4-byte
+multiples.
+
+Should we require content checksums anywhere?::
+  _Discussion:_ Modern transmission mechanisms, e.g, HTTP2, provide good
+  robustness so checksums are less important than they used to be. Some
+  supercompressions schemes have checksum which may be optional.
++
+_Resolved:_ No. We can rely on modern transmission mechanisms. However if
+the supercompression scheme includes a checksum readers should verify
+it.
+
+Should we use the DFD to indicate the number of components in Basis Universal supercompressed data?::
+  _Discussion:_ Basis Universal compressed data may have 1, 2, 3
+  or 4 components. The number of components affects the choice of
+  transcode target format. The information could be provided within
+  the supercompression global data or by the DFD. Currently presence
+  of alpha slices, but not necessarily an alpha component, is indicated
+  by a flag in the global data. The number of components is needed by
+  applications that may have no knowledge of the original images.
++
+_Resolved:_ Yes. The supercompression global data gives information
+about the Basis Universal compressed data not about the images. The
+DFD contains this information prior to supercompression. It makes sense
+to preserve it. Implementations will then have a consistent place to
+query this information.
+
+== References
+[bibliography]
+=== Normative References
+
+- [[[KDF14]]] {url-khr-reg}/DataFormat/specs/1.4/dataformat.1.4.html[Khronos
+  Data Format Specification 1.4].
+  Andrew Garrard. The Khronos Group.
+
+- [[[OESCPT]]] {url-khr-reg}/OpenGL/extensions/OES/OES_compressed_paletted_texture.txt[GL_OES_compressed_paletted_texture].
+  Aaftab Munshi. The Khronos Group, July 2003.
+
+- [[[OPENGL46]]] {url-khr-reg}/OpenGL/specs/gl/glspec46.core.pdf[The
+  OpenGL^®^ Graphics System, A Specification (Version 4.6 (Core Profile))].
+  Mark Segal, Kurt Akeley; Editor: Jon Leech. The Khronos Group, July 2017.
+
+- [[[REGEXP]]] https://www.ecma-international.org/ecma-262/5.1/index.html#sec-15.10[Standard
+ ECMA-262 5.1{nbsp}Edition, Section 15.10: _RegExp (Regular Expression)
+ Objects_]. Ecma International, June 2011.
+
+////
+// "L." after the doc. title is to make the correct author name
+// L. Peter Deutsch. If I put it at the start of the line following
+// the title, Asciidoctor thinks I am trying to make a list.
+////
+- [[[RFC1950]]] https://tools.ietf.org/html/rfc1950[ZLib Compressed Data
+  Data Format Specification version 3.3]. L.
+Peter Deutsch, Jean-Loup Gailly. IETF Network Working Group, May 1996.
+
+// "L.", "S." and "Y." after doc titles avoid the Asciidoctor list issue.
+- [[[RFC1951]]] https://tools.ietf.org/html/rfc1951[DEFLATE Compressed
+  Data Format Specification version 1.3]. L.
+Peter Deutsch. IETF Network Working Group, May 1996.
+
+- [[[RFC2119]]] https://www.ietf.org/rfc/rfc2119.txt[Key words for use in RFCs
+  to Indicate Requirement Levels]. S.
+Bradner. IETF Network Working Group, March 1997.
+
+- [[[RFC8478]]] https://tools.ietf.org/html/rfc8478[Zstandard Compression
+  and the application/zstd Media Type.]. Y.
+  Collet, M. Kucherawy, Ed. Internet Engineering Task Force (IETF),
+  October 2018.
+
+- [[[VULKAN]]] {url-vk-spec}[Vulkan^®^ 1.n.p - A Specification].
+  The Khronos Group, February 2025.
+
+- [[[VULKAN-DOCS]]] {url-vk-docs}[Vulkan^®^ Documentation] site. An
+  alternative view of the Vulkan specification.
+  The Khronos Group, February 2025.
+
+[NOTE]
+====
+The Vulkan specification is a living document that is updated weekly
+with corrections, clarifications and newly released extensions. The
+version as of this writing is 1.4.308. References to the specification
+do not imply that KTX header field values are limited solely to
+those in the referenced sections or tables of 1.4.308. These values
+may be supplemented by extensions or new core versions. They also
+do not imply that all of the texture types can be loaded in any
+particular version of OpenGL {,ES} or Vulkan.
+====
+
+[bibliography]
+=== Non-Normative References
+
+- [[[RDO]]]
+  https://fgiesen.wordpress.com/2018/12/10/rate-distortion-optimization/[Rate-distortion
+  optimization]. The ryg blog, December 18th, 2018.
+
+[appendix#cubemapOrientation]
+== Cubemap Orientation
+
+The KTX cubemap coordinate system in <<faceCount>> is directly
+compatible with the Vulkan and OpenGL cube samplers described by
+the face selection tables and equations for calculating (s, t) in
+{url-vk-docs-sp-chapters}/textures.html#_cube_map_face_selection_and_transformations[
+Cube Map Face Selection and Transformations] of <<VULKAN-DOCS>> and
+{url-khr-reg}/OpenGL/specs/gl/glspec46.core.pdf#nameddest=section-8.13[section
+8.13 Cube Map Texture Selection] of <<OPENGL46>>.
+
+<<orientationFigure>> shows graphically how the cubemap images should be
+arranged.
+
+[[orientationFigure]]
+.Cubemap Coordinate System
+[.text-center]
+image::cubemap_coord_system.svg[]
+
+If the face orientation is not `rd`, maintaining compatibility with
+the cube samplers may require changing the relative positions of
+faces, e.g. swapping +Y and -Y faces. To keep things simple `rd` must
+always be used.
+
+If using a skybox to render the cubemap, the (s, t, r) coordinates
+passed to the cubemap sampler need to match the KTX cubemap coordinate
+system, that is left-handed with +Y up, +Z forward and +X on the right.
+
+A widely used object space in OpenGL is right-handed with +Y up,
++Z out of the screen and +X to the right. If using this, you can
+transform your skybox cube coordinates to the necessary left-handed
+system by multiplying either the X or the Z coordinate by -1. The
+former places the +Z face in the +Z direction so, if using OpenGL's
+default view, that face will be behind you. The latter places the
++Z face in the -Z direction so it will be in front of you. Failure
+to do one of these things will result in the skybox scene being a
+mirror image of reality, a common error in samples found on the
+web.
+
+Vulkan apps often use a similar but left-handed object space with
++Y down, +Z out of the screen (behind the default view) and +X to
+the right.  To transform these skybox coordinates to the cubemap's
+coordinate system, either
+
+* multiply both Y and Z by -1 to keep +Y up and place the +Z face
+in -Z direction, or
+* multiply both Y and X by -1 to keep +Y up and place the +Z face
+in +Z direction.
+
+Failure to do one of these will result in the cubemap top and bottom
+faces being swapped.
+
+[appendix#formatMapping]
+== Mapping of `vkFormat` values
+
+CAUTION: This appendix is non-normative.
+
+CAUTION: Provided mappings for BGR(A) formats are based on non-ES OpenGL specifications. See the relevant OpenGL ES extensions for more options.
+
+CAUTION: On OpenGL ES 2.0 and WebGL 1.0, half-float data type is provided via `GL_OES_texture_half_float` extension that defines different enum name (`GL_HALF_FLOAT_OES`) and value (`0x8D61`) than other GL APIs.
+
+CAUTION: Some vendor-specific extensions (e.g. `GL_NV_depth_buffer_float`) define custom enum values for symbols used in the ratified specifications.
+
+.Mapping of `vkFormat` values to OpenGL, Direct3D and Metal
+[%collapsible]
+=====
+include::formats.json[]
+=====
+
+include::appendices/basislz-gdata.adoc[]
+
+include::appendices/basislz-bitstream.adoc[]
+
+include::appendices/vendor-metadata.adoc[]
+
+[appendix]
+== Changes compared to KTX version 1
+
+- `vkFormat` added.
+- OpenGL format information fields removed.
+- Data format descriptor added.
+- Supercompression added.
+- Transcodable format support added.
+- Files always little endian.
+- Swizzle and writer id metadata added.
+- Row and cube padding removed.
+- Mip level alignment (`mipPadding`) changed to match GPU requirements.
+- Mip level order changed so smallest level is first.
+
+[discrete]
+== Revision History
+////
+// You must insert a new row containing the current values of the
+// revnumber and revdate attributes into the table when creating
+// a new revision.
+////
+
+[.revhistory,cols="^25,^20,<55a",options="header"]
+|===
+| Document Revision |    Date    ^|              Remark
+|      pr-draft1    | 2020-08-01  | - Remove width & height
+                                      restrictions.
+                                    - Update draft Media Type
+                                      registration.
+|      pr-draft2    | 2020-09-04  | - Update status to ratified.
+                                    - Add `KTXwriterScParams`.
+                                    - Update logo.
+                                    - Make clarifications in size
+                                      restriction tips.
+                                    - Add a tip about `byteLength`.
+|         0         | 2021-04-18  | - Polish abstract.
+                                    - Allow `KTXanimData` for any
+                                      kind of array texture.
+                                    - Add `VK_EXT_4444_formats` to
+                                      mapping.
+                                    - Remove "`required`" from
+                                      key-value data.
+                                    - Bug fixes in ETC1S video spec.
+                                    - Define coordinate system for
+                                      cubemaps.
+|          1        | 2022-12-09  | - Disallow 3D block-compressed
+                                      formats for non 3D textures.
+                                    - Adjust DFD transfer function
+                                      restrictions.
+                                    - Fix
+                                      `VK_FORMAT_X8_D24_UNORM_PACK32`
+                                      mapping entry.
+                                    - Clarify valid `mipPadding`
+                                      length.
+                                    - Define valid values for ETC1S
+                                      slice byte lengths and offsets.
+                                    - Clarify descriptions of ETC1S
+                                      slices.
+                                    - Clarify 422 formats block size.
+                                    - Disallow block-compressed
+                                      formats for 1D textures.
+                                    - Clarify mip-level data layouts.
+                                    - Define valid size of
+                                      Supercompression Global Data
+                                      for BasisLZ.
+                                    - Remove non-normative notice
+                                      from Appendix A.
+                                    - Clarify format of `KTXwriter`
+                                      and `KTXwriterScParams`
+                                      metadata values.
+                                    - Remove single-plane formats
+                                      from the prohibited formats
+                                      list.
+                                    - Clarify valid usage of format
+                                      mapping and
+                                      `KTXcubemapIncomplete` metadata.
+                                    - Fix `block_pred_bits` size.
+                                    - Minor formatting and typo fixes.
+|          2        | 2023-09-07  | - Provide detailed instructions for
+                                      how to register supercompression
+                                      schemes and metadata.
+                                    - Adjust D24_UNORM_S8_UINT
+                                      description.
+                                    - Fix description of block ordering
+                                      in ETC1S slices and clarify that
+                                      decoder has no knowledge of image
+                                      orientation.
+                                    - Clarify level data layout for
+                                      BasisLz/ETC1S.
+                                    - Fix list of data that comprises a
+                                      mip level.
+                                    - Fix missing max(1, ...) in
+                                      num_blocks_x calculation.
+                                    - Clarify that `KTXwriterScParams`
+                                      can be used for ASTC and other
+                                      block-compression scheme encoding
+                                      parameters.
+                                    - Add VK_KHR_maintenance5 formats to
+                                      GL formats mapping.
+                                    - Increase document width from
+                                      55em to 60em.
+|          3       |  2024-02-20  | - Fix `typeSize` for formats with
+                                      `_nPACKxx` suffix.
+                                    - Prohibit YCbCr 2-plane 444 formats
+                                      recently added to Vulkan.
+                                    - Allow `A8B8G8R8*PACK32` formats.
+|      {docrev}     |  {revdate}  | - Relax restrictions on
+                                      `colorPrimaries` values.
+                                    - Fix bit size of descriptorType in
+                                      dfdBlock.
+                                    - Do not use "default" in describing
+                                      the object coordinate systems
+                                      commonly used with OpenGL and
+                                      Vulkan.
+                                    - Remove requirement for bytesPlane
+                                      0 in DFDs of supercompressed
+                                      files.
+                                    - Add rules for use of transfer
+                                      functions.
+                                    - Update KDFS references to 1.4 and
+                                      make the links active.
+|===
+
+[discrete]
+== Acknowledgements
+Thanks to Dominic Agoro-Ombaka for designing the KTX logo and icons.
+
+Thanks to Rich Geldreich for inventing transcodable textures and
+BasisLZ and providing documentation of them.
+
+Thanks to Alexey Knyazev for polishing Rich's documentation and for
+enormous help tightening the specification and removing potential
+conflicts.
+
+Thanks to David Wilkinson for chairing the initial effort.
+
+// vim: filetype=asciidoc ai expandtab tw=72 ts=4 sts=2 sw=2
+
