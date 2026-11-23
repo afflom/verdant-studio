@@ -1,0 +1,709 @@
+\begin{lexlean}{Studio.Ops}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Json}
+\importmodule{LexLeanStd.JsonRead}
+\importmodule{LexLeanStd.Text}
+\importmodule{LexLeanStd.Order}
+\importmodule{LexLeanStd.Sha256}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Check}
+\importmodule{Studio.Csv}
+\importmodule{Studio.Schema}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Plan,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: reads, fields: [(List Bytes)]},
+    {name: lists, fields: [(List Bytes)]},
+    {name: run, fields: [Bytes, (List Bytes), Bytes]},
+    {name: done, fields: [(List (Bytes * Bytes)), Bytes]},
+    {name: refuse, fields: [Bytes]}
+  ]
+}
+
+
+structure{
+  name: Seen,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: files, type: (List (Bytes * (Option Bytes)))},
+    {name: listed, type: (List (Bytes * (List Bytes)))},
+    {name: ran, type: (List Bytes)}
+  ]
+}
+
+
+definition{
+  name: negate,
+  parameters: [flag : Bool],
+  result: Bool,
+  body: (if flag then false else true),
+  executable: true
+}
+
+definition{
+  name: lookup,
+  parameters: [files : (List (Bytes * (Option Bytes))), path : Bytes],
+  result: (Option (Option Bytes)),
+  body: (match files
+    | List.nil => (ctor Option.none [(Option Bytes)])
+    | List.cons head rest => (if (Studio.Doc::same (first head) path) then (ctor Option.some [(Option Bytes)] (second head)) else (lookup rest path))),
+  recursive_argument: files,
+  executable: true
+}
+
+
+definition{
+  name: missing,
+  parameters: [seen : Seen, paths : (List Bytes)],
+  result: (List Bytes),
+  body: (match paths
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (lookup (project seen files) head)
+      | Option.none => (cons head (missing seen rest))
+      | Option.some found => (missing seen rest))),
+  recursive_argument: paths,
+  executable: true
+}
+
+
+definition{
+  name: contents,
+  parameters: [seen : Seen, path : Bytes],
+  result: Bytes,
+  body: (match (lookup (project seen files) path)
+    | Option.none => 0x
+    | Option.some found => (match found
+      | Option.none => 0x
+      | Option.some bytes => bytes)),
+  executable: true
+}
+
+
+definition{
+  name: present,
+  parameters: [seen : Seen, path : Bytes],
+  result: Bool,
+  body: (match (lookup (project seen files) path)
+    | Option.none => false
+    | Option.some found => (match found
+      | Option.none => false
+      | Option.some bytes => true)),
+  executable: true
+}
+
+
+definition{
+  name: jsonOf,
+  parameters: [seen : Seen, path : Bytes],
+  result: (Option LexLeanStd.Json::Json),
+  body: (Studio.Doc::readAny (contents seen path)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: arrayOf,
+  parameters: [seen : Seen, path : Bytes],
+  result: (List LexLeanStd.Json::Json),
+  body: (Studio.Doc::itemsOf (jsonOf seen path)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: escapeFrom,
+  parameters: [text : Bytes, offset : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (match (prim index text offset : (Option UInt8))
+      | Option.none => out
+      | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if ((value =? 34) || (value =? 92)) then (escapeFrom text (offset + 1) rest (prim append out (prim append 0x5c (LexLeanStd.Text::sliceOr text offset 1) : Bytes) : Bytes)) else (if (value =? 10) then (escapeFrom text (offset + 1) rest (prim append out 0x5c6e : Bytes)) else (escapeFrom text (offset + 1) rest (prim append out (LexLeanStd.Text::sliceOr text offset 1) : Bytes))))))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: tomlString,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons 0x22 (cons (escapeFrom text 0 (prim length text : Nat) 0x) (cons 0x22 (nil Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: tomlLine,
+  parameters: [key : String, value : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit key) (cons (Studio.Doc::lit " = ") (cons (tomlString value) (cons 0x0a (nil Bytes)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: tomlStrings,
+  parameters: [items : (List Bytes)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (tomlString head) (tomlStrings rest))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: tomlList,
+  parameters: [items : (List Bytes)],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "[") (cons (Studio.Schema::joinWith (tomlStrings items) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]") (nil Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: blocksFrom,
+  parameters: [lines : (List Bytes), current : (List Bytes), blocks : (List (List Bytes))],
+  result: (List (List Bytes)),
+  body: (match lines
+    | List.nil => (cons (Studio.Schema::reverseBytes current (nil Bytes)) blocks)
+    | List.cons head rest => (if (Studio.Doc::same head (Studio.Doc::lit "[[authority]]")) then (blocksFrom rest (cons head (nil Bytes)) (cons (Studio.Schema::reverseBytes current (nil Bytes)) blocks)) else (blocksFrom rest (cons head current) blocks))),
+  recursive_argument: lines,
+  executable: true
+}
+
+
+definition{
+  name: blockNamed,
+  parameters: [block : (List Bytes), entry : Bytes],
+  result: Bool,
+  body: (Studio.Doc::memberBytes entry (Studio.Check::tomlIds (Studio.Schema::joinWith block 0x0a))),
+  executable: true
+}
+
+
+definition{
+  name: dropEmptyList,
+  parameters: [lines : (List Bytes)],
+  result: (List Bytes),
+  body: (match lines
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::same head (Studio.Doc::lit "authority = []")) then (dropEmptyList rest) else (cons head (dropEmptyList rest)))),
+  recursive_argument: lines,
+  executable: true
+}
+
+
+definition{
+  name: keepBlocks,
+  parameters: [blocks : (List (List Bytes)), entry : Bytes, kept : (List Bytes)],
+  result: (List Bytes),
+  body: (match blocks
+    | List.nil => kept
+    | List.cons head rest => (if (blockNamed head entry) then (keepBlocks rest entry kept) else (keepBlocks rest entry (cons (Studio.Schema::joinWith (dropEmptyList head) 0x0a) kept)))),
+  recursive_argument: blocks,
+  executable: true
+}
+
+
+definition{
+  name: trimTrailing,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (LexLeanStd.Text::sliceOr text 0 (LexLeanStd.Text::trimEnd text)),
+  executable: true
+}
+
+
+definition{
+  name: upsertAuthority,
+  parameters: [register : Bytes, entry : Bytes, row : Bytes],
+  result: Bytes,
+  body: (let kept : (List Bytes) := (keepBlocks (blocksFrom (LexLeanStd.Text::lines register) (nil Bytes) (nil (List Bytes))) entry (nil Bytes)); (Studio.Doc::cat (cons (trimTrailing (Studio.Schema::joinWith kept 0x0a)) (cons (Studio.Doc::lit "\n\n") (cons row (nil Bytes)))))),
+  executable: true
+}
+
+
+definition{
+  name: jsonStrings,
+  parameters: [items : (List Bytes)],
+  result: LexLeanStd.Json::Json,
+  body: (match items
+    | List.nil => (ctor LexLeanStd.Json::Json.JNil)
+    | List.cons head rest => (ctor LexLeanStd.Json::Json.JItem (ctor LexLeanStd.Json::Json.JStr head) (jsonStrings rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+
+definition{
+  name: jsonItems,
+  parameters: [items : (List LexLeanStd.Json::Json)],
+  result: LexLeanStd.Json::Json,
+  body: (match items
+    | List.nil => (ctor LexLeanStd.Json::Json.JNil)
+    | List.cons head rest => (ctor LexLeanStd.Json::Json.JItem head (jsonItems rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+
+definition{
+  name: appendItem,
+  parameters: [items : (List LexLeanStd.Json::Json), item : LexLeanStd.Json::Json],
+  result: (List LexLeanStd.Json::Json),
+  body: (match items
+    | List.nil => (cons item (nil LexLeanStd.Json::Json))
+    | List.cons head rest => (cons head (appendItem rest item))),
+  recursive_argument: items,
+  executable: true
+}
+
+
+definition{
+  name: lockWith,
+  parameters: [seen : Seen, names : (List Bytes)],
+  result: (Bytes * Bytes),
+  body: ((Studio.Doc::lit "model/register-lock.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonStrings (LexLeanStd.Order::sortedSet (Studio.Check::concat names (Studio.Doc::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: lastPiece,
+  parameters: [pieces : (List Bytes)],
+  result: Bytes,
+  body: (match pieces
+    | List.nil => 0x
+    | List.cons head rest => (match rest
+      | List.nil => head
+      | List.cons next more => (lastPiece rest))),
+  recursive_argument: pieces,
+  executable: true
+}
+
+
+definition{
+  name: basename,
+  parameters: [path : Bytes],
+  result: Bytes,
+  body: (lastPiece (LexLeanStd.Text::splitOn path (47 : UInt8))),
+  executable: true
+}
+
+
+definition{
+  name: indexColumns,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "id") (cons (Studio.Doc::lit "domain") (cons (Studio.Doc::lit "name") (cons (Studio.Doc::lit "owner") (cons (Studio.Doc::lit "phases") (cons (Studio.Doc::lit "scope") (cons (Studio.Doc::lit "adoption") (cons (Studio.Doc::lit "adoption_code") (cons (Studio.Doc::lit "source") (nil Bytes)))))))))),
+  executable: true
+}
+
+
+definition{
+  name: sameList,
+  parameters: [left : (List Bytes), right : (List Bytes)],
+  result: Bool,
+  body: (match left
+    | List.nil => (match right
+      | List.nil => true
+      | List.cons head rest => false)
+    | List.cons head rest => (match right
+      | List.nil => false
+      | List.cons other more => ((Studio.Doc::same head other) && (sameList rest more)))),
+  recursive_argument: left,
+  executable: true
+}
+
+
+definition{
+  name: firstOf,
+  parameters: [records : (List (List Bytes))],
+  result: (List Bytes),
+  body: (match records
+    | List.nil => (nil Bytes)
+    | List.cons head rest => head),
+  executable: true
+}
+
+
+definition{
+  name: restOf,
+  parameters: [records : (List (List Bytes))],
+  result: (List (List Bytes)),
+  body: (match records
+    | List.nil => (nil (List Bytes))
+    | List.cons head rest => rest),
+  executable: true
+}
+
+definition{
+  name: rowIds,
+  parameters: [records : (List (List Bytes))],
+  result: (List Bytes),
+  body: (match records
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match head
+      | List.nil => (rowIds rest)
+      | List.cons entry others => (cons entry (rowIds rest)))),
+  recursive_argument: records,
+  executable: true
+}
+
+
+definition{
+  name: indexPath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "catalog/standards-index.csv"),
+  executable: true
+}
+
+
+definition{
+  name: catalogRows,
+  parameters: [seen : Seen],
+  result: (List Bytes),
+  body: (match (Studio.Csv::parse (contents seen (indexPath)))
+    | List.nil => (nil Bytes)
+    | List.cons header records => (rowIds records)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: registerPaths,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/ids.toml") (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/strata.json") (cons (Studio.Doc::lit "model/register-lock.json") (cons (indexPath) (nil Bytes)))))))),
+  executable: true
+}
+
+
+definition{
+  name: moduleRoots,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "app/src") (cons (Studio.Doc::lit "studio/src") (cons (Studio.Doc::lit "stdlib/src") (nil Bytes)))),
+  executable: true
+}
+
+
+definition{
+  name: isModule,
+  parameters: [name : Bytes],
+  result: Bool,
+  body: (LexLeanStd.Text::endsWith name (Studio.Doc::lit ".lex.tex")),
+  executable: true
+}
+
+
+definition{
+  name: join,
+  parameters: [directory : Bytes, name : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons directory (cons (Studio.Doc::lit "/") (cons name (nil Bytes))))),
+  executable: true
+}
+
+
+definition{
+  name: childrenOf,
+  parameters: [directory : Bytes, names : (List Bytes), modules : Bool],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (if modules then (isModule head) else (negate (isModule head))) then (cons (join directory head) (childrenOf directory rest modules)) else (childrenOf directory rest modules))),
+  recursive_argument: names,
+  executable: true
+}
+
+
+definition{
+  name: walked,
+  parameters: [listed : (List (Bytes * (List Bytes))), modules : Bool],
+  result: (List Bytes),
+  body: (match listed
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (Studio.Check::concat (childrenOf (first head) (second head) modules) (walked rest modules))),
+  recursive_argument: listed,
+  executable: true
+}
+
+
+definition{
+  name: isListed,
+  parameters: [listed : (List (Bytes * (List Bytes))), path : Bytes],
+  result: Bool,
+  body: (match listed
+    | List.nil => false
+    | List.cons head rest => ((Studio.Doc::same (first head) path) || (isListed rest path))),
+  recursive_argument: listed,
+  executable: true
+}
+
+
+definition{
+  name: unlisted,
+  parameters: [listed : (List (Bytes * (List Bytes))), candidates : (List Bytes)],
+  result: (List Bytes),
+  body: (match candidates
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (isListed listed head) then (unlisted listed rest) else (cons head (unlisted listed rest)))),
+  recursive_argument: candidates,
+  executable: true
+}
+
+
+definition{
+  name: unreadable,
+  parameters: [seen : Seen, paths : (List Bytes)],
+  result: (List Bytes),
+  body: (match paths
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if ((present seen head) && (LexLeanStd.Text::endsWith head (Studio.Doc::lit ".json"))) then (match (jsonOf seen head)
+      | Option.none => (cons head (unreadable seen rest))
+      | Option.some found => (unreadable seen rest)) else (unreadable seen rest))),
+  recursive_argument: paths,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planCheck,
+  parameters: [seen : Seen],
+  result: Plan,
+  body: (match (missing seen (registerPaths))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (unreadable seen (registerPaths))
+      | List.cons broken others => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "register is not JSON: ") (cons broken (cons 0x0a (nil Bytes))))))
+      | List.nil => (match (unlisted (project seen listed) (Studio.Check::concat (moduleRoots) (walked (project seen listed) false)))
+      | List.cons head rest => (ctor Plan.lists (cons head rest))
+      | List.nil => (let verdict : (Bool * Bytes) := (Studio.Check::verdict (record Studio.Check::Inputs {names := (record Studio.Check::Names {authorities := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))), rows := (catalogRows seen), requirements := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")), ids := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/ids.toml"))), constructs := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct"))}), admissions := (arrayOf seen (Studio.Doc::lit "model/admissions.json")), strata := (arrayOf seen (Studio.Doc::lit "model/strata.json")), locked := (Studio.Doc::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))), modules := (walked (project seen listed) true)})); (if (first verdict) then (ctor Plan.done (nil (Bytes * Bytes)) (second verdict)) else (ctor Plan.refuse (second verdict))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: sourceField,
+  parameters: [source : (Option LexLeanStd.Json::Json), key : Bytes],
+  result: Bytes,
+  body: (match source
+    | Option.none => 0x
+    | Option.some found => (Studio.Doc::str found key)),
+  executable: true
+}
+
+definition{
+  name: authorityRow,
+  parameters: [binding : LexLeanStd.Json::Json, artifact : (Option (Bytes * Bytes))],
+  result: Bytes,
+  body: (let source : (Option LexLeanStd.Json::Json) := (Studio.Doc::field binding (Studio.Doc::lit "source")); (Studio.Doc::cat (cons (Studio.Doc::lit "[[authority]]\n") (cons (tomlLine "id" (Studio.Doc::str binding (Studio.Doc::lit "id"))) (cons (tomlLine "name" (Studio.Doc::str binding (Studio.Doc::lit "name"))) (cons (tomlLine "issuer" (Studio.Doc::str binding (Studio.Doc::lit "issuer"))) (cons (tomlLine "edition" (Studio.Doc::str binding (Studio.Doc::lit "edition"))) (cons (tomlLine "canonical_id" (Studio.Doc::str binding (Studio.Doc::lit "canonical_id"))) (cons (tomlLine "source_role" (Studio.Doc::str binding (Studio.Doc::lit "source_role"))) (cons (tomlLine "retrieval_date" (Studio.Doc::str binding (Studio.Doc::lit "retrieval_date"))) (cons (tomlLine "url" (sourceField source (Studio.Doc::lit "url"))) (cons (tomlLine "media_type" (sourceField source (Studio.Doc::lit "media_type"))) (cons (tomlLine "license" (sourceField source (Studio.Doc::lit "license"))) (cons (tomlLine "redistribution" (sourceField source (Studio.Doc::lit "redistribution"))) (cons (tomlLine "statement" (Studio.Doc::str binding (Studio.Doc::lit "statement"))) (cons (match artifact
+        | Option.none => (Studio.Doc::cat (cons (tomlLine "checksum" (Studio.Doc::lit "none")) (cons (tomlLine "checksum_reason" (Studio.Doc::lit "The authority is citation-only, so no artifact is committed.")) (nil Bytes))))
+        | Option.some pinned => (Studio.Doc::cat (cons (tomlLine "artifact" (first pinned)) (cons (tomlLine "checksum" (second pinned)) (nil Bytes))))) (cons (Studio.Doc::cat (cons (Studio.Doc::lit "realized_by = ") (cons (tomlList (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field binding (Studio.Doc::lit "realized_by"))))) (cons 0x0a (nil Bytes))))) (nil Bytes)))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: bindingSchema,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "prismpm/authority-binding/1"),
+  executable: true
+}
+
+
+definition{
+  name: finishAuthority,
+  parameters: [seen : Seen, binding : LexLeanStd.Json::Json, entry : Bytes, saved : (Bytes * Bytes), artifact : (Option (Bytes * Bytes))],
+  result: Plan,
+  body: (ctor Plan.done (cons saved (cons ((Studio.Doc::lit "model/authorities.toml"), (upsertAuthority (contents seen (Studio.Doc::lit "model/authorities.toml")) entry (authorityRow binding artifact))) (cons (lockWith seen (cons entry (nil Bytes))) (nil (Bytes * Bytes))))) (Studio.Doc::cat (cons (Studio.Doc::lit "ingested authority ") (cons entry (cons 0x0a (nil Bytes)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planIngestAuthority,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/register-lock.json") (nil Bytes)))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (jsonOf seen path)
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the binding is not JSON\n"))
+      | Option.some binding => (if (negate (Studio.Doc::same (Studio.Doc::str binding (Studio.Doc::lit "schema")) (bindingSchema))) then (ctor Plan.refuse (Studio.Doc::lit "the binding is not prismpm/authority-binding/1\n")) else (let entry : Bytes := (Studio.Doc::str binding (Studio.Doc::lit "id")); (let source : LexLeanStd.Json::Json := (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
+          | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+          | Option.some found => found); (let pinned : (Option Bytes) := (Studio.Doc::strOf (Studio.Doc::field source (Studio.Doc::lit "sha256"))); (let directory : Bytes := (join (Studio.Doc::lit "authorities") entry); (let saved : (Bytes * Bytes) := ((join directory (Studio.Doc::lit "binding.json")), (contents seen path)); (match pinned
+          | Option.none => (finishAuthority seen binding entry saved (ctor Option.none [(Bytes * Bytes)]))
+          | Option.some digest => (if (negate (Studio.Doc::same (Studio.Doc::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable"))) then (finishAuthority seen binding entry saved (ctor Option.none [(Bytes * Bytes)])) else (let artifact : Bytes := (join directory (basename (Studio.Doc::str source (Studio.Doc::lit "url")))); (if (negate (Studio.Doc::memberBytes artifact (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "curl") (cons (Studio.Doc::lit "-fsSL") (cons (Studio.Doc::lit "--create-dirs") (cons (Studio.Doc::lit "-o") (cons artifact (cons (Studio.Doc::str source (Studio.Doc::lit "url")) (nil Bytes)))))) artifact) else (match (missing seen (cons artifact (nil Bytes)))
+            | List.cons head rest => (ctor Plan.reads (cons head rest))
+            | List.nil => (if (Studio.Doc::same (LexLeanStd.Sha256::sha256Hex (contents seen artifact)) digest) then (finishAuthority seen binding entry saved (ctor Option.some [(Bytes * Bytes)] (artifact, digest))) else (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "checksum mismatch: ") (cons artifact (cons (Studio.Doc::lit " is not the sha256 the binding pins\n") (nil Bytes)))))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: planIngestIndex,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/register-lock.json") (nil Bytes)))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (let text : Bytes := (contents seen path); (let records : (List (List Bytes)) := (Studio.Csv::parse text); (if (negate (sameList (firstOf records) (indexColumns))) then (ctor Plan.refuse (Studio.Doc::lit "the index header is not id,domain,name,owner,phases,scope,adoption,adoption_code,source\n")) else (let entry : Bytes := (Studio.Doc::lit "FATELINES-STANDARDS-INDEX"); (let row : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "[[authority]]\n") (cons (tomlLine "id" entry) (cons (tomlLine "statement" (Studio.Doc::lit "The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims.")) (cons (tomlLine "artifact" (indexPath)) (cons (tomlLine "checksum" (LexLeanStd.Sha256::sha256Hex text)) (cons (Studio.Doc::lit "realized_by = []\n") (nil Bytes)))))))); (ctor Plan.done (cons ((indexPath), text) (cons ((Studio.Doc::lit "model/authorities.toml"), (upsertAuthority (contents seen (Studio.Doc::lit "model/authorities.toml")) entry row)) (cons (lockWith seen (cons entry (nil Bytes))) (nil (Bytes * Bytes))))) (Studio.Doc::cat (cons (Studio.Doc::lit "ingested the standards index: ") (cons (LexLeanStd.Text::joinWith (rowIds (restOf records)) (Studio.Doc::lit " ")) (cons 0x0a (nil Bytes)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: citationJson,
+  parameters: [args : (List Bytes)],
+  result: (Option LexLeanStd.Json::Json),
+  body: (match args
+    | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+    | List.cons kind rest => (if (Studio.Doc::same kind (Studio.Doc::lit "req")) then (match rest
+      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+      | List.cons requirement more => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "req") (ctor LexLeanStd.Json::Json.JStr requirement) (ctor LexLeanStd.Json::Json.JNil)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "std")) then (match rest
+      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+      | List.cons authority more => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "std") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "authority") (ctor LexLeanStd.Json::Json.JStr authority) (match more
+        | List.nil => (ctor LexLeanStd.Json::Json.JNil)
+        | List.cons row tail => (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "row") (ctor LexLeanStd.Json::Json.JStr row) (ctor LexLeanStd.Json::Json.JNil))))) (ctor LexLeanStd.Json::Json.JNil)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "der")) then (match rest
+      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+      | List.cons rule more => (match more
+        | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+        | List.cons check inputs => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "der") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "check") (ctor LexLeanStd.Json::Json.JStr check) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "inputs") (ctor LexLeanStd.Json::Json.JArr (jsonStrings inputs)) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "rule") (ctor LexLeanStd.Json::Json.JStr rule) (ctor LexLeanStd.Json::Json.JNil))))) (ctor LexLeanStd.Json::Json.JNil))))) else (ctor Option.none [LexLeanStd.Json::Json]))))),
+  executable: true
+}
+
+
+definition{
+  name: everyOther,
+  parameters: [pieces : (List Bytes), keep : Bool],
+  result: (List Bytes),
+  body: (match pieces
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if keep then (cons head (everyOther rest false)) else (everyOther rest true))),
+  recursive_argument: pieces,
+  executable: true
+}
+
+definition{
+  name: entrypointLines,
+  parameters: [lines : (List Bytes), entry : Bytes],
+  result: (List Bytes),
+  body: (match lines
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (LexLeanStd.Text::startsWith head (Studio.Doc::lit "entrypoints = [")) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "entrypoints = [") (cons (Studio.Schema::joinWith (tomlStrings (LexLeanStd.Order::sortedSet (cons entry (everyOther (LexLeanStd.Text::splitOn head (34 : UInt8)) false)))) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]") (nil Bytes))))) rest) else (cons head (entrypointLines rest entry)))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: withEntrypoint,
+  parameters: [manifest : Bytes, entry : Bytes],
+  result: Bytes,
+  body: (Studio.Schema::joinWith (entrypointLines (LexLeanStd.Text::lines manifest) entry) 0x0a),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: planProposeEncoding,
+  parameters: [seen : Seen, path : Bytes, name : Bytes, citation : (List Bytes)],
+  result: Plan,
+  body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/strata.json") (cons (Studio.Doc::lit "model/register-lock.json") (cons (Studio.Doc::lit "app/lexlean.toml") (nil Bytes)))))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (citationJson citation)
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "a citation is required: req ID | std AUTHORITY [ROW] | der RULE CHECK INPUT...\n"))
+      | Option.some cited => (match (jsonOf seen path)
+        | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the encoding is not JSON\n"))
+        | Option.some schema => (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (match (Studio.Schema::translateSchema schema module (Studio.Schema::pascal name))
+          | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "the encoding does not translate: ") (cons reason (cons 0x0a (nil Bytes))))))
+          | Result.ok text => (ctor Plan.done (cons ((Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))), (contents seen path)) (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (appendItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (appendItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "path") (ctor LexLeanStd.Json::Json.JStr source) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "role") (ctor LexLeanStd.Json::Json.JStr (Studio.Doc::lit "Encoding entered through propose-encoding.")) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "stratum") (ctor LexLeanStd.Json::Json.JInt false 0) (ctor LexLeanStd.Json::Json.JNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) 0x0a : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons 0x0a (nil Bytes)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+definition{
+  name: workflow,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "# Generated by `verdant-studio publish` from studio/src/Studio/Ops.lex.tex. Do not edit.\nname: pages\n\non:\n  pull_request:\n  push:\n    branches: [main]\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: pages-${{ github.ref }}\n  cancel-in-progress: true\n\njobs:\n  studio:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    permissions:\n      contents: read\n      pages: write\n      id-token: write\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    steps:\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2\n        with:\n          persist-credentials: false\n      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38\n        with:\n          node-version: '24'\n      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: |\n            ~/.cargo/registry\n            ~/.cargo/bin\n            target\n            ~/.npm\n          key: studio-${{ hashFiles('certified/result.json', 'studio/lexlean.lock') }}\n      - name: replay the certified bundle, then build its command\n        run: |\n          set -euo pipefail\n          test -x ~/.cargo/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root ~/.cargo\n          ~/.cargo/bin/lexlean production verify-artifact certified\n          cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target\n      - name: check, build and publish through the API\n        run: |\n          set -euo pipefail\n          target/release/verdant_studio check\n          target/release/verdant_studio build\n          target/release/verdant_studio publish\n          git diff --exit-code\n      - if: github.event_name == 'push'\n        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0\n      - if: github.event_name == 'push'\n        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1\n        with:\n          path: app/.prism/site\n      - if: github.event_name == 'push'\n        id: deployment\n        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5\n"),
+  executable: true
+}
+
+
+definition{
+  name: workflowPath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit ".github/workflows/pages.yml"),
+  executable: true
+}
+
+
+definition{
+  name: prismCode,
+  parameters: [command : String],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "--yes") (cons (Studio.Doc::lit "prism-code@0.11.1") (cons (Studio.Doc::lit command) (cons (Studio.Doc::lit "--project") (cons (Studio.Doc::lit "app") (cons (Studio.Doc::lit ".") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: planBuild,
+  parameters: [seen : Seen],
+  result: Plan,
+  body: (if (negate (Studio.Doc::memberBytes (Studio.Doc::lit "prism-code lock") (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "npx") (prismCode "lock") (Studio.Doc::lit "prism-code lock")) else (if (negate (Studio.Doc::memberBytes (Studio.Doc::lit "prism-code build") (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "npx") (prismCode "build") (Studio.Doc::lit "prism-code build")) else (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "built: prism-code lock, then build (which checks), passed\n")))),
+  executable: true
+}
+
+
+definition{
+  name: usage,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "usage: verdant_studio check | ingest-index CSV | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
+  executable: true
+}
+
+
+definition{
+  name: plan,
+  parameters: [args : (List Bytes), seen : Seen],
+  result: Plan,
+  body: (match args
+    | List.nil => (ctor Plan.refuse (usage))
+    | List.cons op rest => (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheck seen) else (if (Studio.Doc::same op (Studio.Doc::lit "build")) then (planBuild seen) else (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (ctor Plan.done (cons ((workflowPath), (workflow)) (nil (Bytes * Bytes))) (Studio.Doc::lit "published .github/workflows/pages.yml\n")) else (match rest
+      | List.nil => (ctor Plan.refuse (usage))
+      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
+        | List.nil => (ctor Plan.refuse (usage))
+        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage)))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}

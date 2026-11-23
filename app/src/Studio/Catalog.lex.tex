@@ -1,0 +1,272 @@
+\begin{lexlean}{Studio.Catalog}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SourceRole,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bindingOnly, fields: []},
+    {name: informative, fields: []},
+    {name: normative, fields: []}
+  ]
+}
+
+inductive{
+  name: Redistribution,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: citationOnly, fields: []},
+    {name: redistributable, fields: []}
+  ]
+}
+
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: license, type: Bytes},
+    {name: mediaType, type: Bytes},
+    {name: redistribution, type: Redistribution},
+    {name: revision, type: (Option Bytes)},
+    {name: sha256, type: (Option Bytes)},
+    {name: signature, type: Bytes},
+    {name: url, type: Bytes}
+  ]
+}
+
+inductive{
+  name: TrustAlgorithm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: openpgp, fields: []},
+    {name: ssh, fields: []}
+  ]
+}
+
+structure{
+  name: TrustRoot,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: algorithm, type: TrustAlgorithm},
+    {name: fingerprint, type: Bytes},
+    {name: license, type: Bytes},
+    {name: owner, type: Bytes},
+    {name: path, type: Bytes},
+    {name: redistribution, type: Bytes},
+    {name: sha256, type: Bytes},
+    {name: sourceRecordId, type: Bytes},
+    {name: sourceUrl, type: Bytes}
+  ]
+}
+
+structure{
+  name: Authority,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: canonicalId, type: Bytes},
+    {name: edition, type: Bytes},
+    {name: id, type: Bytes},
+    {name: issuer, type: Bytes},
+    {name: name, type: Bytes},
+    {name: oracleIds, type: (List Bytes)},
+    {name: realizedBy, type: (List Bytes)},
+    {name: retrievalDate, type: Bytes},
+    {name: source, type: Source},
+    {name: sourceRole, type: SourceRole},
+    {name: signatureTrustRoot, type: (Option TrustRoot)},
+    {name: statement, type: Bytes}
+  ]
+}
+
+structure{
+  name: Standard,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: domain, type: Bytes},
+    {name: name, type: Bytes},
+    {name: owner, type: Bytes},
+    {name: phases, type: (List Bytes)},
+    {name: scope, type: Bytes},
+    {name: adoption, type: Bytes},
+    {name: adoptionCode, type: Bytes},
+    {name: source, type: Bytes}
+  ]
+}
+
+structure{
+  name: Oracle,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: authority, type: Bytes},
+    {name: artifact, type: Bytes},
+    {name: checksum, type: Bytes}
+  ]
+}
+
+structure{
+  name: Facet,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: domain, type: Bytes}, {name: phase, type: Bytes}]
+}
+
+structure{
+  name: Attribution,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: entity, type: Bytes}, {name: agent, type: Bytes}]
+}
+
+inductive{
+  name: Verdict,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: external, fields: []},
+    {name: local, fields: []},
+    {name: none, fields: []}
+  ]
+}
+
+structure{
+  name: StratumModule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: path, type: Bytes},
+    {name: stratum, type: Nat},
+    {name: role, type: Bytes}
+  ]
+}
+
+structure{
+  name: Stakeholder,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: id, type: Bytes}, {name: concerns, type: (List Bytes)}]
+}
+
+structure{
+  name: Concern,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: id, type: Bytes}]
+}
+
+structure{
+  name: Viewpoint,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: frames, type: (List Bytes)},
+    {name: stakeholders, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: View,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: viewpoint, type: Bytes},
+    {name: addresses, type: (List Bytes)}
+  ]
+}
+
+inductive{
+  name: Evidence,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: identity, fields: [Bytes, Bytes]},
+    {name: refinement, fields: [(List Bytes)]},
+    {name: constraint, fields: [Bytes, Bytes]}
+  ]
+}
+
+structure{
+  name: Requirement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: statement, type: Bytes},
+    {name: stakeholder, type: Bytes},
+    {name: evidence, type: Evidence}
+  ]
+}
+
+structure{
+  name: ConceptScheme,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: iri, type: Bytes}, {name: concepts, type: (List Bytes)}]
+}
+
+inductive{
+  name: MatchKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: exactMatch, fields: []},
+    {name: broadMatch, fields: []},
+    {name: narrowMatch, fields: []},
+    {name: closeMatch, fields: []},
+    {name: relatedMatch, fields: []}
+  ]
+}
+
+structure{
+  name: Mapping,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: subject, type: Bytes},
+    {name: kind, type: MatchKind},
+    {name: object, type: Bytes}
+  ]
+}
+
+inductive{
+  name: Settlement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: standard, fields: []},
+    {name: pattern, fields: []},
+    {name: extrapolated, fields: []}
+  ]
+}
+
+inductive{
+  name: Citation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: std, fields: [Nat, (Option Nat)]},
+    {name: req, fields: [Nat]},
+    {name: der, fields: [Settlement, (List Nat), Nat]}
+  ]
+}
+
+structure{
+  name: Decl,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: construct, type: Nat}, {name: citation, type: Citation}]
+}
+\end{semanticmodule}
+\end{lexlean}

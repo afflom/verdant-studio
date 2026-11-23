@@ -1,0 +1,185 @@
+\begin{lexlean}{Studio.Check}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Json}
+\importmodule{LexLeanStd.Text}
+\importmodule{VerdantStudio.Studio.Catalog}
+\importmodule{VerdantStudio.Studio.Admission}
+\importmodule{Studio.Doc}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: quotedOf,
+  parameters: [line : Bytes, prefix : Bytes],
+  result: (Option Bytes),
+  body: (if (LexLeanStd.Text::startsWith line prefix) then (match (LexLeanStd.Text::splitOn line (34 : UInt8))
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons opening rest => (match rest
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons value tail => (ctor Option.some [Bytes] value))) else (ctor Option.none [Bytes])),
+  executable: true
+}
+
+definition{
+  name: quotedLines,
+  parameters: [lines : (List Bytes), prefix : Bytes],
+  result: (List Bytes),
+  body: (match lines
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (quotedOf head prefix)
+      | Option.none => (quotedLines rest prefix)
+      | Option.some value => (cons value (quotedLines rest prefix)))),
+  recursive_argument: lines,
+  executable: true
+}
+
+definition{
+  name: tomlIds,
+  parameters: [text : Bytes],
+  result: (List Bytes),
+  body: (quotedLines (LexLeanStd.Text::lines text) (Studio.Doc::lit "id = \"")),
+  executable: true
+}
+
+definition{
+  name: idsOf,
+  parameters: [items : (List LexLeanStd.Json::Json), key : Bytes],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (Studio.Doc::str head key) (idsOf rest key))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: settlementOf,
+  parameters: [rule : Bytes],
+  result: (Option VerdantStudio.Studio.Catalog::Settlement),
+  body: (if (Studio.Doc::same rule (Studio.Doc::lit "standard")) then (ctor Option.some [VerdantStudio.Studio.Catalog::Settlement] (ctor VerdantStudio.Studio.Catalog::Settlement.standard)) else (if (Studio.Doc::same rule (Studio.Doc::lit "pattern")) then (ctor Option.some [VerdantStudio.Studio.Catalog::Settlement] (ctor VerdantStudio.Studio.Catalog::Settlement.pattern)) else (if (Studio.Doc::same rule (Studio.Doc::lit "extrapolated")) then (ctor Option.some [VerdantStudio.Studio.Catalog::Settlement] (ctor VerdantStudio.Studio.Catalog::Settlement.extrapolated)) else (ctor Option.none [VerdantStudio.Studio.Catalog::Settlement])))),
+  executable: true
+}
+
+structure{
+  name: Names,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: authorities, type: (List Bytes)},
+    {name: rows, type: (List Bytes)},
+    {name: requirements, type: (List Bytes)},
+    {name: ids, type: (List Bytes)},
+    {name: constructs, type: (List Bytes)}
+  ]
+}
+
+definition{
+  name: registersOf,
+  parameters: [names : Names],
+  result: VerdantStudio.Studio.Admission::Registers,
+  body: (record VerdantStudio.Studio.Admission::Registers {authorities := (Studio.Doc::positions (project names authorities) 0), rows := (Studio.Doc::positions (project names rows) 0), requirements := (Studio.Doc::positions (project names requirements) 0), ids := (Studio.Doc::positions (project names ids) 0)}),
+  executable: true
+}
+
+definition{
+  name: unresolvable,
+  parameters: [names : Names],
+  result: VerdantStudio.Studio.Catalog::Citation,
+  body: (ctor VerdantStudio.Studio.Catalog::Citation.req (prim length (project names requirements) : Nat)),
+  executable: true
+}
+
+definition{
+  name: citationOf,
+  parameters: [names : Names, item : LexLeanStd.Json::Json],
+  result: VerdantStudio.Studio.Catalog::Citation,
+  body: (match (Studio.Doc::field item (Studio.Doc::lit "std"))
+    | Option.some standard => (match (Studio.Doc::strOf (Studio.Doc::field standard (Studio.Doc::lit "row")))
+      | Option.none => (ctor VerdantStudio.Studio.Catalog::Citation.std (Studio.Doc::intern (Studio.Doc::str standard (Studio.Doc::lit "authority")) (project names authorities)) (ctor Option.none [Nat]))
+      | Option.some row => (ctor VerdantStudio.Studio.Catalog::Citation.std (Studio.Doc::intern (Studio.Doc::str standard (Studio.Doc::lit "authority")) (project names authorities)) (ctor Option.some [Nat] (Studio.Doc::intern row (project names rows)))))
+    | Option.none => (match (Studio.Doc::strOf (Studio.Doc::field item (Studio.Doc::lit "req")))
+      | Option.some requirement => (ctor VerdantStudio.Studio.Catalog::Citation.req (Studio.Doc::intern requirement (project names requirements)))
+      | Option.none => (match (Studio.Doc::field item (Studio.Doc::lit "der"))
+        | Option.none => (unresolvable names)
+        | Option.some derivation => (match (settlementOf (Studio.Doc::str derivation (Studio.Doc::lit "rule")))
+          | Option.none => (unresolvable names)
+          | Option.some rule => (ctor VerdantStudio.Studio.Catalog::Citation.der rule (Studio.Doc::internAll (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field derivation (Studio.Doc::lit "inputs")))) (project names constructs)) (Studio.Doc::intern (Studio.Doc::str derivation (Studio.Doc::lit "check")) (project names ids))))))),
+  executable: true
+}
+
+definition{
+  name: declsOf,
+  parameters: [names : Names, items : (List LexLeanStd.Json::Json), position : Nat],
+  result: (List VerdantStudio.Studio.Catalog::Decl),
+  body: (match items
+    | List.nil => (nil VerdantStudio.Studio.Catalog::Decl)
+    | List.cons head rest => (cons (record VerdantStudio.Studio.Catalog::Decl {construct := position, citation := (citationOf names head)}) (declsOf names rest (position + 1)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: stratumOf,
+  parameters: [item : LexLeanStd.Json::Json],
+  result: Nat,
+  body: (match (Studio.Doc::natOf (Studio.Doc::field item (Studio.Doc::lit "stratum")))
+    | Option.none => 8
+    | Option.some stratum => stratum),
+  executable: true
+}
+
+definition{
+  name: strataOf,
+  parameters: [items : (List LexLeanStd.Json::Json)],
+  result: (List Nat),
+  body: (match items
+    | List.nil => (nil Nat)
+    | List.cons head rest => (cons (stratumOf head) (strataOf rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: concat,
+  parameters: [left : (List Bytes), right : (List Bytes)],
+  result: (List Bytes),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (concat rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: everyName,
+  parameters: [names : Names],
+  result: (List Bytes),
+  body: (concat (project names authorities) (concat (project names requirements) (concat (project names ids) (project names constructs)))),
+  executable: true
+}
+
+structure{
+  name: Inputs,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: names, type: Names},
+    {name: admissions, type: (List LexLeanStd.Json::Json)},
+    {name: strata, type: (List LexLeanStd.Json::Json)},
+    {name: locked, type: (List Bytes)},
+    {name: modules, type: (List Bytes)}
+  ]
+}
+
+definition{
+  name: verdict,
+  parameters: [inputs : Inputs],
+  result: (Bool * Bytes),
+  body: (let names : Names := (project inputs names); (let registers : VerdantStudio.Studio.Admission::Registers := (registersOf names); (let everything : (List Bytes) := (everyName names); (let declaredPaths : (List Bytes) := (idsOf (project inputs strata) (Studio.Doc::lit "path")); (match (VerdantStudio.Studio.Admission::firstUnresolved registers (nil Nat) (declsOf names (project inputs admissions) 0))
+    | Option.some construct => (false, (Studio.Doc::cat (cons (Studio.Doc::lit "unresolved citation: ") (cons (Studio.Doc::nameAt (project names constructs) construct) (cons 0x0a (nil Bytes))))))
+    | Option.none => (if (VerdantStudio.Studio.Admission::grounded (Studio.Doc::internAll (project inputs modules) (concat (project inputs modules) declaredPaths)) (Studio.Doc::internAll declaredPaths (concat (project inputs modules) declaredPaths)) (strataOf (project inputs strata))) then (match (VerdantStudio.Studio.Admission::firstOutside (Studio.Doc::internAll (project inputs locked) (concat everything (project inputs locked))) (Studio.Doc::internAll everything (concat everything (project inputs locked))))
+      | Option.some dropped => (false, (Studio.Doc::cat (cons (Studio.Doc::lit "register entry dropped: ") (cons (Studio.Doc::nameAt (concat everything (project inputs locked)) dropped) (cons 0x0a (nil Bytes))))))
+      | Option.none => (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admitted: ") (cons (LexLeanStd.Text::joinWith (cons (Studio.Doc::lit "constructs") (nil Bytes)) 0x) (cons 0x0a (nil Bytes))))))) else (false, (Studio.Doc::lit "ungrounded module: every module needs one stratum row and every row one module\n")))))))),
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}

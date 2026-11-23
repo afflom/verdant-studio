@@ -1,0 +1,169 @@
+\begin{lexlean}{Studio.Admission}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Catalog}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Registers,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: authorities, type: (List Nat)},
+    {name: rows, type: (List Nat)},
+    {name: requirements, type: (List Nat)},
+    {name: ids, type: (List Nat)}
+  ]
+}
+
+definition{
+  name: member,
+  parameters: [item : Nat, items : (List Nat)],
+  result: Bool,
+  body: (match items
+    | List.nil => false
+    | List.cons head rest => ((head =? item) || (member item rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: allMembers,
+  parameters: [items : (List Nat), within : (List Nat)],
+  result: Bool,
+  body: (match items
+    | List.nil => true
+    | List.cons head rest => ((member head within) && (allMembers rest within))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: firstOutside,
+  parameters: [items : (List Nat), within : (List Nat)],
+  result: (Option Nat),
+  body: (match items
+    | List.nil => (ctor Option.none [Nat])
+    | List.cons head rest => (if (member head within) then (firstOutside rest within) else (ctor Option.some [Nat] head))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: rowResolves,
+  parameters: [registers : Registers, row : (Option Nat)],
+  result: Bool,
+  body: (match row
+    | Option.none => true
+    | Option.some named => (member named (project registers rows))),
+  executable: true
+}
+
+definition{
+  name: resolves,
+  parameters: [registers : Registers, admitted : (List Nat), citation : Studio.Catalog::Citation],
+  result: Bool,
+  body: (match citation
+    | Studio.Catalog::Citation.std authority row => ((member authority (project registers authorities)) && (rowResolves registers row))
+    | Studio.Catalog::Citation.req requirement => (member requirement (project registers requirements))
+    | Studio.Catalog::Citation.der rule inputs check => ((allMembers inputs admitted) && (member check (project registers ids)))),
+  executable: true
+}
+
+definition{
+  name: firstUnresolved,
+  parameters: [registers : Registers, admitted : (List Nat), decls : (List Studio.Catalog::Decl)],
+  result: (Option Nat),
+  body: (match decls
+    | List.nil => (ctor Option.none [Nat])
+    | List.cons head rest => (if (resolves registers admitted (project head citation)) then (firstUnresolved registers (cons (project head construct) admitted) rest) else (ctor Option.some [Nat] (project head construct)))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: admitsAll,
+  parameters: [registers : Registers, decls : (List Studio.Catalog::Decl)],
+  result: Bool,
+  body: (match (firstUnresolved registers (nil Nat) decls)
+    | Option.none => true
+    | Option.some construct => false),
+  executable: true
+}
+
+definition{
+  name: strataBounded,
+  parameters: [strata : (List Nat)],
+  result: Bool,
+  body: (match strata
+    | List.nil => true
+    | List.cons head rest => ((head <=? 7) && (strataBounded rest))),
+  recursive_argument: strata,
+  executable: true
+}
+
+definition{
+  name: grounded,
+  parameters: [modules : (List Nat), declared : (List Nat), strata : (List Nat)],
+  result: Bool,
+  body: ((allMembers modules declared) && ((allMembers declared modules) && (strataBounded strata))),
+  executable: true
+}
+
+definition{
+  name: monotone,
+  parameters: [locked : (List Nat), current : (List Nat)],
+  result: Bool,
+  body: (allMembers locked current),
+  executable: true
+}
+
+theorem{
+  name: req_resolves_exactly_when_registered,
+  parameters: [registers : Registers, admitted : (List Nat), requirement : Nat],
+  statement: ((resolves registers admitted (ctor Studio.Catalog::Citation.req requirement)) = (member requirement (project registers requirements))),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: std_resolves_exactly_when_cited_authority_registered,
+  parameters: [registers : Registers, admitted : (List Nat), authority : Nat, row : (Option Nat)],
+  statement: ((resolves registers admitted (ctor Studio.Catalog::Citation.std authority row)) = ((member authority (project registers authorities)) && (rowResolves registers row))),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: der_resolves_exactly_when_inputs_admitted,
+  parameters: [registers : Registers, admitted : (List Nat), rule : Studio.Catalog::Settlement, input : Nat, rest : (List Nat), check : Nat],
+  statement: ((resolves registers admitted (ctor Studio.Catalog::Citation.der rule (cons input rest) check)) = (((member input admitted) && (allMembers rest admitted)) && (member check (project registers ids)))),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: first_decl_decides_admission,
+  parameters: [registers : Registers, admitted : (List Nat), decl : Studio.Catalog::Decl, rest : (List Studio.Catalog::Decl)],
+  statement: ((firstUnresolved registers admitted (cons decl rest)) = (if (resolves registers admitted (project decl citation)) then (firstUnresolved registers (cons (project decl construct) admitted) rest) else (ctor Option.some [Nat] (project decl construct)))),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: module_grounded_only_when_declared,
+  parameters: [module : Nat, modules : (List Nat), declared : (List Nat), strata : (List Nat)],
+  statement: ((grounded (cons module modules) declared strata) = (((member module declared) && (allMembers modules declared)) && ((allMembers declared (cons module modules)) && (strataBounded strata)))),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: monotone_keeps_every_locked_entry,
+  parameters: [entry : Nat, locked : (List Nat), current : (List Nat)],
+  statement: ((monotone (cons entry locked) current) = ((member entry current) && (monotone locked current))),
+  proof: reflexivity{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
