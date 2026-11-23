@@ -7,7 +7,7 @@ name: operate
 on:
   push:
     branches: [main]
-    paths: ['model/bindings/**']
+    paths: ['model/bindings/**', 'model/authorities.toml']
   workflow_dispatch:
     inputs:
       args:
@@ -76,6 +76,7 @@ jobs:
             target/elan-init -y --no-modify-path --default-toolchain leanprover/lean4:v4.32.2
           fi
           export PATH="$HOME/.elan/bin:$PATH"
+          test -d "$HOME/.elan/toolchains/leanprover--lean4---v4.32.2" || elan toolchain install leanprover/lean4:v4.32.2
           test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
           ll="$PWD/target/lexlean/bin/lexlean"
           if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
@@ -112,8 +113,13 @@ jobs:
           ARGS: ${{ inputs.args || 'advance' }}
           INPUT: ${{ inputs.input }}
           INPUT_NAME: ${{ inputs.input_name }}
+          GH_TOKEN: ${{ steps.app.outputs.token }}
         run: |
           set -euo pipefail -f
+          if [ "$ARGS" = advance ] && [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '[.[] | select(.title == "verdant_studio advance")] | length')" != 0 ]; then
+            echo "::notice::an advance pull request is open; its merge changes model/authorities.toml, which runs advance again"
+            exit 0
+          fi
           if [ -n "$INPUT" ] && [ "$ARGS" != propose-command ]; then
             case "$INPUT_NAME" in */*|.*|'') echo "input_name must be a plain file name" >&2; exit 1;; esac
             mkdir -p target/input; cat > "target/input/$INPUT_NAME" <<< "$INPUT"
