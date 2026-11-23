@@ -1,0 +1,359 @@
+\begin{lexlean}{Studio.Schema}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Json}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Job,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: translate, fields: [Bytes, LexLeanStd.Json::Json]},
+    {name: emit, fields: [Bytes]}
+  ]
+}
+
+definition{
+  name: isSeparator,
+  parameters: [byte : Nat],
+  result: Bool,
+  body: ((byte =? 95) || ((byte =? 45) || ((byte =? 32) || ((byte =? 46) || (byte =? 47))))),
+  executable: true
+}
+
+definition{
+  name: lowerLetter,
+  parameters: [byte : Nat],
+  result: Bool,
+  body: ((97 <=? byte) && (byte <=? 122)),
+  executable: true
+}
+
+definition{
+  name: upperLetter,
+  parameters: [byte : Nat],
+  result: Bool,
+  body: ((65 <=? byte) && (byte <=? 90)),
+  executable: true
+}
+
+definition{
+  name: digit,
+  parameters: [byte : Nat],
+  result: Bool,
+  body: ((48 <=? byte) && (byte <=? 57)),
+  executable: true
+}
+
+definition{
+  name: caseFrom,
+  parameters: [text : Bytes, offset : Nat, remaining : Nat, raise : Bool, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (match (prim index text offset : (Option UInt8))
+      | Option.none => out
+      | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if (isSeparator value) then (caseFrom text (offset + 1) rest true out) else (if ((lowerLetter value) && raise) then (caseFrom text (offset + 1) rest false (prim append out (LexLeanStd.Text::sliceOr (prim utf8_encode "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : Bytes) (prim subtract value 97 : Nat) 1) : Bytes)) else (if ((lowerLetter value) || ((upperLetter value) || (digit value))) then (caseFrom text (offset + 1) rest false (prim append out (LexLeanStd.Text::sliceOr text offset 1) : Bytes)) else (caseFrom text (offset + 1) rest raise out))))))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: pascal,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (caseFrom text 0 (prim length text : Nat) true 0x),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: camel,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (let raised : Bytes := (caseFrom text 0 (prim length text : Nat) false 0x); (match (prim index raised 0 : (Option UInt8))
+    | Option.none => raised
+    | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if (upperLetter value) then (prim append (LexLeanStd.Text::sliceOr (prim utf8_encode "abcdefghijklmnopqrstuvwxyz" : Bytes) (prim subtract value 65 : Nat) 1) (LexLeanStd.Text::sliceOr raised 1 (prim subtract (prim length raised : Nat) 1 : Nat)) : Bytes) else raised)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: nameable,
+  parameters: [name : Bytes],
+  result: Bool,
+  body: (match (prim index name 0 : (Option UInt8))
+    | Option.none => false
+    | Option.some byte => ((lowerLetter (prim to_nat byte : Nat)) || (upperLetter (prim to_nat byte : Nat)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: shapeKeywords,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "type") (cons (Studio.Doc::lit "properties") (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "items") (cons (Studio.Doc::lit "enum") (cons (Studio.Doc::lit "const") (cons (Studio.Doc::lit "$ref") (cons (Studio.Doc::lit "oneOf") (cons (Studio.Doc::lit "$defs") (cons (Studio.Doc::lit "$schema") (cons (Studio.Doc::lit "$id") (cons (Studio.Doc::lit "$comment") (cons (Studio.Doc::lit "title") (cons (Studio.Doc::lit "description") (nil Bytes))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: validationKeywords,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "additionalProperties") (cons (Studio.Doc::lit "pattern") (cons (Studio.Doc::lit "minLength") (cons (Studio.Doc::lit "maxLength") (cons (Studio.Doc::lit "minItems") (cons (Studio.Doc::lit "maxItems") (cons (Studio.Doc::lit "uniqueItems") (cons (Studio.Doc::lit "format") (cons (Studio.Doc::lit "minimum") (cons (Studio.Doc::lit "maximum") (cons (Studio.Doc::lit "exclusiveMinimum") (cons (Studio.Doc::lit "exclusiveMaximum") (cons (Studio.Doc::lit "multipleOf") (cons (Studio.Doc::lit "default") (cons (Studio.Doc::lit "examples") (nil Bytes)))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: unknownKeyword,
+  parameters: [members : (List (Bytes * LexLeanStd.Json::Json))],
+  result: (Option Bytes),
+  body: (match members
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if ((Studio.Doc::memberBytes (first head) (shapeKeywords)) || (Studio.Doc::memberBytes (first head) (validationKeywords))) then (unknownKeyword rest) else (ctor Option.some [Bytes] (first head)))),
+  recursive_argument: members,
+  executable: true
+}
+
+definition{
+  name: refused,
+  parameters: [reason : Bytes, at : Bytes],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (ctor Result.error [(Bytes * (List Job)), Bytes] (Studio.Doc::cat (cons reason (cons (Studio.Doc::lit " at ") (cons at (nil Bytes)))))),
+  executable: true
+}
+
+definition{
+  name: typed,
+  parameters: [text : Bytes, jobs : (List Job)],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (ctor Result.ok [(Bytes * (List Job)), Bytes] (text, jobs)),
+  executable: true
+}
+
+definition{
+  name: refName,
+  parameters: [reference : Bytes],
+  result: (Option Bytes),
+  body: (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/$defs/")) then (ctor Option.some [Bytes] (pascal (LexLeanStd.Text::sliceOr reference 8 (prim subtract (prim length reference : Nat) 8 : Nat)))) else (ctor Option.none [Bytes])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: integerType,
+  parameters: [schema : LexLeanStd.Json::Json],
+  result: Bytes,
+  body: (match (Studio.Doc::natOf (Studio.Doc::field schema (Studio.Doc::lit "minimum")))
+    | Option.none => (Studio.Doc::lit "Int")
+    | Option.some least => (Studio.Doc::lit "Nat")),
+  executable: true
+}
+
+definition{
+  name: baseType,
+  parameters: [schema : LexLeanStd.Json::Json, context : Bytes],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (match (unknownKeyword (Studio.Doc::memberSpine schema))
+    | Option.some keyword => (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported keyword ") (cons keyword (nil Bytes)))) context)
+    | Option.none => (match (Studio.Doc::strOf (Studio.Doc::field schema (Studio.Doc::lit "$ref")))
+      | Option.some reference => (match (refName reference)
+        | Option.none => (refused (Studio.Doc::lit "unsupported reference") context)
+        | Option.some named => (typed named (nil Job)))
+      | Option.none => (match (Studio.Doc::field schema (Studio.Doc::lit "enum"))
+        | Option.some values => (typed context (cons (ctor Job.translate context schema) (nil Job)))
+        | Option.none => (match (Studio.Doc::field schema (Studio.Doc::lit "const"))
+          | Option.some constant => (match (Studio.Doc::strOf (ctor Option.some [LexLeanStd.Json::Json] constant))
+            | Option.some text => (typed (Studio.Doc::lit "Bytes") (nil Job))
+            | Option.none => (refused (Studio.Doc::lit "unsupported const") context))
+          | Option.none => (let kind : Bytes := (Studio.Doc::str schema (Studio.Doc::lit "type")); (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType schema) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (typed context (cons (ctor Job.translate context schema) (nil Job))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context)))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: isNull,
+  parameters: [schema : LexLeanStd.Json::Json],
+  result: Bool,
+  body: (Studio.Doc::same (Studio.Doc::str schema (Studio.Doc::lit "type")) (Studio.Doc::lit "null")),
+  executable: true
+}
+
+definition{
+  name: nullable,
+  parameters: [schema : LexLeanStd.Json::Json],
+  result: (Option LexLeanStd.Json::Json),
+  body: (match (Studio.Doc::itemsOf (Studio.Doc::field schema (Studio.Doc::lit "oneOf")))
+    | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+    | List.cons left rest => (match rest
+      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+      | List.cons right tail => (match tail
+        | List.cons extra more => (ctor Option.none [LexLeanStd.Json::Json])
+        | List.nil => (if (isNull right) then (ctor Option.some [LexLeanStd.Json::Json] left) else (if (isNull left) then (ctor Option.some [LexLeanStd.Json::Json] right) else (ctor Option.none [LexLeanStd.Json::Json])))))),
+  executable: true
+}
+
+definition{
+  name: wrapped,
+  parameters: [prefix : Bytes, result : (Result (Bytes * (List Job)) Bytes)],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (match result
+    | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
+    | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons prefix (cons (Studio.Doc::lit " ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes))))))) (second found))),
+  executable: true
+}
+
+definition{
+  name: innerType,
+  parameters: [schema : LexLeanStd.Json::Json, context : Bytes],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (match (nullable schema)
+    | Option.some inner => (wrapped (Studio.Doc::lit "Option") (baseType inner context))
+    | Option.none => (if (Studio.Doc::same (Studio.Doc::str schema (Studio.Doc::lit "type")) (Studio.Doc::lit "array")) then (match (Studio.Doc::field schema (Studio.Doc::lit "items"))
+      | Option.none => (refused (Studio.Doc::lit "array without items") context)
+      | Option.some items => (wrapped (Studio.Doc::lit "List") (baseType items (prim append context (Studio.Doc::lit "Item") : Bytes)))) else (baseType schema context))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: fieldType,
+  parameters: [schema : LexLeanStd.Json::Json, context : Bytes],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (match (nullable schema)
+    | Option.some inner => (wrapped (Studio.Doc::lit "Option") (innerType inner context))
+    | Option.none => (if (Studio.Doc::same (Studio.Doc::str schema (Studio.Doc::lit "type")) (Studio.Doc::lit "array")) then (match (Studio.Doc::field schema (Studio.Doc::lit "items"))
+      | Option.none => (refused (Studio.Doc::lit "array without items") context)
+      | Option.some items => (wrapped (Studio.Doc::lit "List") (innerType items (prim append context (Studio.Doc::lit "Item") : Bytes)))) else (innerType schema context))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: appendJobs,
+  parameters: [left : (List Job), right : (List Job)],
+  result: (List Job),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendJobs rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: fieldsOf,
+  parameters: [owner : Bytes, properties : (List (Bytes * LexLeanStd.Json::Json)), required : (List Bytes)],
+  result: (Result ((List Bytes) * (List Job)) Bytes),
+  body: (match properties
+    | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
+    | List.cons head rest => (let name : Bytes := (camel (first head)); (if (nameable name) then (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
+      | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
+      | Result.ok found => (let typeText : Bytes := (if (Studio.Doc::memberBytes (first head) required) then (first found) else (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes)))))); (match (fieldsOf owner rest required)
+        | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
+        | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", type: ") (cons typeText (cons (Studio.Doc::lit "}") (nil Bytes))))))) (first others)), (appendJobs (second found) (second others))))))) else (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable property ") (cons (first head) (nil Bytes)))))))),
+  recursive_argument: properties,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: joinWith,
+  parameters: [items : (List Bytes), separator : Bytes],
+  result: Bytes,
+  body: (match items
+    | List.nil => 0x
+    | List.cons head rest => (match rest
+      | List.nil => head
+      | List.cons next more => (prim append head (prim append separator (joinWith rest separator) : Bytes) : Bytes))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: constructorsOf,
+  parameters: [values : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (match values
+    | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
+    | List.cons head rest => (let name : Bytes := (camel head); (if (nameable name) then (match (constructorsOf rest)
+      | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+      | Result.ok others => (ctor Result.ok [(List Bytes), Bytes] (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: []}") (nil Bytes))))) others))) else (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable enum value ") (cons head (nil Bytes)))))))),
+  recursive_argument: values,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: declaration,
+  parameters: [name : Bytes, schema : LexLeanStd.Json::Json],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (match (Studio.Doc::field schema (Studio.Doc::lit "enum"))
+    | Option.some values => (match (constructorsOf (Studio.Doc::strings (Studio.Doc::spineItems values)))
+      | Result.error reason => (refused reason name)
+      | Result.ok constructors => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "inductive{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  constructors: [\n") (cons (joinWith constructors (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ]\n}\n") (nil Bytes))))))) (nil Job)))
+    | Option.none => (match (fieldsOf name (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "properties"))) (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field schema (Studio.Doc::lit "required")))))
+      | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
+      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [") (cons (match (first found)
+        | List.nil => 0x
+        | List.cons head rest => (Studio.Doc::cat (cons (Studio.Doc::lit "\n") (cons (joinWith (first found) (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ") (nil Bytes)))))) (cons (Studio.Doc::lit "]\n}\n") (nil Bytes))))))) (second found)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: expand,
+  parameters: [fuel : Nat, jobs : (List Job), done : (List Bytes), out : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::lit "schema nests deeper than the translator's bound"))
+    | Nat.succ rest => (match jobs
+      | List.nil => (ctor Result.ok [(List Bytes), Bytes] out)
+      | List.cons head tail => (match head
+        | Job.emit text => (expand rest tail done (cons text out))
+        | Job.translate name schema => (if (Studio.Doc::memberBytes name done) then (expand rest tail done out) else (match (declaration name schema)
+          | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+          | Result.ok found => (expand rest (appendJobs (second found) (cons (ctor Job.emit (first found)) tail)) (cons name done) out)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: defJobs,
+  parameters: [definitions : (List (Bytes * LexLeanStd.Json::Json))],
+  result: (List Job),
+  body: (match definitions
+    | List.nil => (nil Job)
+    | List.cons head rest => (cons (ctor Job.translate (pascal (first head)) (second head)) (defJobs rest))),
+  recursive_argument: definitions,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: reverseBytes,
+  parameters: [items : (List Bytes), onto : (List Bytes)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => onto
+    | List.cons head rest => (reverseBytes rest (cons head onto))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: translateSchema,
+  parameters: [schema : LexLeanStd.Json::Json, module : Bytes, root : Bytes],
+  result: (Result Bytes Bytes),
+  body: (match (expand 4096 (appendJobs (defJobs (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "$defs")))) (cons (ctor Job.translate root schema) (nil Job))) (nil Bytes) (nil Bytes))
+    | Result.error reason => (ctor Result.error [Bytes, Bytes] reason)
+    | Result.ok declarations => (ctor Result.ok [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "\\begin{lexlean}{") (cons module (cons (Studio.Doc::lit "}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\title{Natural number addition}\n\\begin{semanticmodule}\n") (cons (joinWith (reverseBytes declarations (nil Bytes)) (Studio.Doc::lit "\n")) (cons (Studio.Doc::lit "\\end{semanticmodule}\n\\end{lexlean}\n") (nil Bytes))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}

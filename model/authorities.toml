@@ -21,9 +21,218 @@
 # realizes the cited fact. Evidence is not proof, and the meta-gate fails the
 # build if any document blurs the two registers.
 #
-# Empty. The first authority this repository cites goes here, before any claim
-# is allowed to say `some-true`.
+# Rows after the seed enter only through `verdant_studio ingest-authority` and
+# `verdant_studio ingest-index`.
 
 spec = "template/2"
 
-authority = []
+[[authority]]
+id = "VERDANT-STUDIO-PLAN-4"
+name = "Verdant Studio implementation plan, v4"
+issuer = "afflom"
+edition = "4"
+canonical_id = "verdant-studio-plan-v4"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://github.com/afflom/verdant-studio/blob/main/docs/verdant-studio-plan.md"
+media_type = "text/markdown"
+license = "Repository owner"
+redistribution = "redistributable"
+statement = "The plan, its decisions D1 to D12 and its rules, all made by the repository owner on 2026-11-23. It is the evidence artifact for every seed requirement."
+artifact = "docs/verdant-studio-plan.md"
+checksum = "f11e0d55fcb7abb480f6510aee1d28d0333847872ba86f02d6ca38173ce20e50"
+realized_by = []
+
+[[authority]]
+id = "PRISMPM-AUTHORITY-BINDING-1"
+name = "PrismPM authority binding schema"
+issuer = "UOR Foundation"
+edition = "1"
+canonical_id = "https://schemas.uor.foundation/prismpm/authority-binding/1"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://raw.githubusercontent.com/UOR-Foundation/prismpm/31fc5a9a673abcd59acb45dd43cfc6f0de683d89/schemas/authority-binding.schema.json"
+media_type = "application/schema+json"
+license = "Apache-2.0 OR MIT"
+redistribution = "redistributable"
+statement = "The JSON Schema 2020-12 shape of an authority binding: identity, edition, source, license, redistribution, trust root and statement."
+artifact = "authorities/PRISMPM-AUTHORITY-BINDING-1/authority-binding.schema.json"
+checksum = "8af0680e1e07ebebd079d89ba14b5858be0d1b895fb9cd3a839519367fa3f2d1"
+realized_by = []
+
+[[authority]]
+id = "LEXLEAN-STDLIB-0.4.3"
+name = "LexLean standard library"
+issuer = "UOR Foundation"
+edition = "0.4.3"
+canonical_id = "https://github.com/UOR-Foundation/LexLean/tree/v0.4.3/stdlib/src"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://github.com/UOR-Foundation/LexLean/tree/2a262c93f3c533b81677b8f58e8c090164d55b10/stdlib/src"
+media_type = "text/x-tex"
+license = "Apache-2.0 OR MIT"
+redistribution = "redistributable"
+statement = "The LexLean standard library at tag v0.4.3: JSON, text, ordering, SHA-256 and the host protocol of a production command."
+artifact = "stdlib/src"
+checksum = "f8aec93aebdb4295a34b1053c146c645fec7894e9568407b0cfb7d3e5c23148d"
+realized_by = []
+
+[[authority]]
+id = "PRISM-TEMPLATE-CONTRACT-2"
+name = "Prism repository template contract"
+issuer = "UOR Foundation"
+edition = "2"
+canonical_id = "template/2"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://github.com/afflom/verdant-studio/blob/main/TEMPLATE-CONTRACT.md"
+media_type = "text/markdown"
+license = "Apache-2.0 OR MIT"
+redistribution = "redistributable"
+statement = "The template contract R1 to R6 that prism-code check enforces over model/ and features/."
+artifact = "TEMPLATE-CONTRACT.md"
+checksum = "1e267d62da9f218b70d7f6b14ea87bf5ac4ac7a2b2c754f15e943f206ca24bfa"
+realized_by = []
+
+[[authority]]
+id = "VERDANT-ENGINE-2.19.0"
+name = "Verdant Engine"
+issuer = "afflom"
+edition = "2.19.0"
+canonical_id = "https://github.com/afflom/verdant-engine/releases/tag/v2.19.0"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://github.com/afflom/verdant-engine/releases/tag/v2.19.0"
+media_type = "text/html"
+license = "See release"
+redistribution = "citation-only"
+statement = "The engine release Verdant Studio pins, with its catalogs, its ratchet over strata, authority entries and monotone registers, and its MCP API."
+checksum = "none"
+checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
+realized_by = []
+
+[[authority]]
+id = "W3C-PROV-O"
+name = "PROV-O: The PROV Ontology"
+issuer = "W3C"
+edition = "2013-04-30"
+canonical_id = "http://www.w3.org/ns/prov#"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.w3.org/TR/2013/REC-prov-o-20130430/"
+media_type = "text/html"
+license = "W3C Document License"
+redistribution = "citation-only"
+statement = "Agent, Entity and wasAttributedTo, used for stakeholders as producers and consumers."
+checksum = "none"
+checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
+realized_by = []
+
+[[authority]]
+id = "ISO-IEC-IEEE-42010-2022"
+name = "Software, systems and enterprise: Architecture description"
+issuer = "ISO/IEC/IEEE"
+edition = "2022"
+canonical_id = "ISO/IEC/IEEE 42010:2022"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.iso.org/standard/74393.html"
+media_type = "text/html"
+license = "ISO copyright"
+redistribution = "citation-only"
+statement = "Stakeholder, concern, viewpoint and view of an architecture description."
+checksum = "none"
+checksum_reason = "ISO text is not redistributable, so it is cited and nothing is committed."
+realized_by = []
+
+[[authority]]
+id = "ISO-IEC-IEEE-29148-2018"
+name = "Systems and software engineering: Requirements engineering"
+issuer = "ISO/IEC/IEEE"
+edition = "2018"
+canonical_id = "ISO/IEC/IEEE 29148:2018"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.iso.org/standard/72089.html"
+media_type = "text/html"
+license = "ISO copyright"
+redistribution = "citation-only"
+statement = "A stakeholder requirement with its source and rationale."
+checksum = "none"
+checksum_reason = "ISO text is not redistributable, so it is cited and nothing is committed."
+realized_by = []
+
+[[authority]]
+id = "ISO-25964-1-2011"
+name = "Thesauri and interoperability with other vocabularies, part 1"
+issuer = "ISO"
+edition = "2011"
+canonical_id = "ISO 25964-1:2011"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.iso.org/standard/53657.html"
+media_type = "text/html"
+license = "ISO copyright"
+redistribution = "citation-only"
+statement = "Facets of a thesaurus."
+checksum = "none"
+checksum_reason = "ISO text is not redistributable, so it is cited and nothing is committed."
+realized_by = []
+
+[[authority]]
+id = "W3C-SKOS-2009"
+name = "SKOS Simple Knowledge Organization System Reference"
+issuer = "W3C"
+edition = "2009-08-18"
+canonical_id = "http://www.w3.org/2004/02/skos/core#"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.w3.org/TR/2009/REC-skos-reference-20090818/"
+media_type = "text/html"
+license = "W3C Document License"
+redistribution = "citation-only"
+statement = "Concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch."
+checksum = "none"
+checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
+realized_by = []
+
+[[authority]]
+id = "JSON-SCHEMA-2020-12"
+name = "JSON Schema 2020-12"
+issuer = "JSON Schema"
+edition = "2020-12"
+canonical_id = "https://json-schema.org/draft/2020-12/schema"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://json-schema.org/draft/2020-12/schema"
+media_type = "application/schema+json"
+license = "BSD-3-Clause"
+redistribution = "citation-only"
+statement = "The JSON Schema core and validation vocabularies the translator reads."
+checksum = "none"
+checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
+realized_by = []
+
+[[authority]]
+id = "IETF-RFC-4180"
+name = "Common Format and MIME Type for CSV Files"
+issuer = "IETF"
+edition = "RFC 4180"
+canonical_id = "https://www.rfc-editor.org/rfc/rfc4180"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://www.rfc-editor.org/rfc/rfc4180.txt"
+media_type = "text/plain"
+license = "IETF Trust"
+redistribution = "citation-only"
+statement = "The CSV record, field and quoting rules the index reader follows."
+checksum = "none"
+checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
+realized_by = []
+
+[[authority]]
+id = "FATELINES-STANDARDS-INDEX"
+statement = "The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims."
+artifact = "catalog/standards-index.csv"
+checksum = "0765d3a3a4c79fc00452a6a007dd431066e000312e1635e70f4caafb3461a7ac"
+realized_by = []

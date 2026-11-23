@@ -23,12 +23,37 @@ The three honesty levels (R2):
 | `TC-01` | `build` | The checker answers conformant exactly when every universal policy file's observed label equals its locked label | `Contract.conformant_decides` |
 | `TC-02` | `build` | The checker answers invalid request to a request that is not exactly one locked and one observed label for each universal policy file | `Contract.accepts_exactly_a_request`, refuses with `invalid request` |
 
+## admission
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-01` | `build` | A requirement citation resolves exactly when its requirement is in the requirements register | `Studio.Admission.req_resolves_exactly_when_registered` |
+| `VS-02` | `build` | A standard citation resolves exactly when its authority is registered and its catalog row, if it names one, is registered | `Studio.Admission.std_resolves_exactly_when_cited_authority_registered` |
+| `VS-03` | `build` | A derivation citation resolves exactly when every input is already admitted and its check is a registered ID | `Studio.Admission.der_resolves_exactly_when_inputs_admitted` |
+| `VS-04` | `build` | Admission walks the declarations in order: the first whose citation does not resolve is refused, and each admitted one becomes an input for those after it | `Studio.Admission.first_decl_decides_admission` |
+| `VS-05` | `build` | The modules are grounded only when every module has a stratum row, every stratum row names a module, and every stratum is at most 7 | `Studio.Admission.module_grounded_only_when_declared` |
+| `VS-06` | `build` | The registers are monotone only when every locked entry is still present | `Studio.Admission.monotone_keeps_every_locked_entry` |
+| `VS-07` | `some-true` | An authority's committed artifact is refused when its bytes are not the checksum its row records |  |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
 
 | Authority | Citation | Realized by |
 | --- | --- | --- |
+| `VERDANT-STUDIO-PLAN-4` | The plan, its decisions D1 to D12 and its rules, all made by the repository owner on 2026-11-23. It is the evidence artifact for every seed requirement. |  |
+| `PRISMPM-AUTHORITY-BINDING-1` | The JSON Schema 2020-12 shape of an authority binding: identity, edition, source, license, redistribution, trust root and statement. |  |
+| `LEXLEAN-STDLIB-0.4.3` | The LexLean standard library at tag v0.4.3: JSON, text, ordering, SHA-256 and the host protocol of a production command. |  |
+| `PRISM-TEMPLATE-CONTRACT-2` | The template contract R1 to R6 that prism-code check enforces over model/ and features/. |  |
+| `VERDANT-ENGINE-2.19.0` | The engine release Verdant Studio pins, with its catalogs, its ratchet over strata, authority entries and monotone registers, and its MCP API. |  |
+| `W3C-PROV-O` | Agent, Entity and wasAttributedTo, used for stakeholders as producers and consumers. |  |
+| `ISO-IEC-IEEE-42010-2022` | Stakeholder, concern, viewpoint and view of an architecture description. |  |
+| `ISO-IEC-IEEE-29148-2018` | A stakeholder requirement with its source and rationale. |  |
+| `ISO-25964-1-2011` | Facets of a thesaurus. |  |
+| `W3C-SKOS-2009` | Concept schemes and the mapping relations exactMatch, closeMatch, broadMatch, narrowMatch and relatedMatch. |  |
+| `JSON-SCHEMA-2020-12` | The JSON Schema core and validation vocabularies the translator reads. |  |
+| `IETF-RFC-4180` | The CSV record, field and quoting rules the index reader follows. |  |
+| `FATELINES-STANDARDS-INDEX` | The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims. |  |
 
 ## Claims that are not conformance IDs
 

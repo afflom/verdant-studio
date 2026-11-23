@@ -12,3 +12,7 @@
 
 # What prism-code records about the last check and build, per machine.
 **/session.json
+
+# Cargo output of the certified command, and its child-process logs.
+/target/
+/certified/packages/rust-std/*/Cargo.lock

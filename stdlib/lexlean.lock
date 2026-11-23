@@ -1,0 +1,47 @@
+spec = "lexlean/lock/2"
+language = "1.2"
+compiler_semantics = "4b3ed2378d6c43bb32a41d466cf140337e8b1cedc5e1f345aaf3395f488f63a9"
+project_config_sha256 = "fa3c9469ad798c690c46cee22ece7a9e02b529ec455a473456057c4cc425c4c4"
+lean_toolchain = "leanprover/lean4:v4.32.2"
+
+[[workspace_file]]
+path = "lake-manifest.json"
+sha256 = "56e2ea627849a53364b38bcc31443b42b321167ec74e189ac95ff8edd8c87665"
+
+[[workspace_file]]
+path = "lakefile.toml"
+sha256 = "0ed43ca31866dc005a09bc7573c78fcabe669050ddab81e20f0f0624f4806074"
+
+[[workspace_file]]
+path = "lean-toolchain"
+sha256 = "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273"
+
+[[package]]
+id = "lexlean.core"
+version = "1.2.0"
+kind = "builtin"
+source = "embedded"
+revision = "compiler-semantics"
+tree_sha256 = "827317cae68c162f3a96c8a8de4e53ab348e7d3724fd2b834fa85ecde1a1b392"
+manifest_sha256 = "271079763d269cc873531f515e56da960cd6321393b9460ff0e617666fa01d71"
+imports = []
+
+[[package]]
+id = "lexlean.std.bool"
+version = "1.2.0"
+kind = "builtin"
+source = "embedded"
+revision = "compiler-semantics"
+tree_sha256 = "3bc0fb09d706ffa7d5a1363302ea87c049acc7c7dcafde63c62682620c11be9b"
+manifest_sha256 = "de58de2cf18a7a5a62d8c20649139d6dfe1f7b16b3130c75f150fbac5440a71e"
+imports = ["lexlean.core@1.2.0"]
+
+[[package]]
+id = "lexlean.std.nat"
+version = "1.2.0"
+kind = "builtin"
+source = "embedded"
+revision = "compiler-semantics"
+tree_sha256 = "e0db021e01b91d651c43921d66f6b0023c8efbf17cac2ec53192ce5305e4e1ac"
+manifest_sha256 = "6fb446b39e3c1c18a5f10cfa1f7aa2bd431837719eb0eb7489aadf452c9420a7"
+imports = ["lexlean.core@1.2.0", "lexlean.std.bool@1.2.0"]

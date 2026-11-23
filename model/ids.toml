@@ -47,3 +47,52 @@ statement = "The checker answers invalid request to a request that is not exactl
 theorems = ["Contract.accepts_exactly_a_request"]
 failure = "invalid request"
 negative = "TC-02"
+
+[[id]]
+id = "VS-01"
+level = "build"
+suite = "admission"
+statement = "A requirement citation resolves exactly when its requirement is in the requirements register"
+theorems = ["Studio.Admission.req_resolves_exactly_when_registered"]
+
+[[id]]
+id = "VS-02"
+level = "build"
+suite = "admission"
+statement = "A standard citation resolves exactly when its authority is registered and its catalog row, if it names one, is registered"
+theorems = ["Studio.Admission.std_resolves_exactly_when_cited_authority_registered"]
+
+[[id]]
+id = "VS-03"
+level = "build"
+suite = "admission"
+statement = "A derivation citation resolves exactly when every input is already admitted and its check is a registered ID"
+theorems = ["Studio.Admission.der_resolves_exactly_when_inputs_admitted"]
+
+[[id]]
+id = "VS-04"
+level = "build"
+suite = "admission"
+statement = "Admission walks the declarations in order: the first whose citation does not resolve is refused, and each admitted one becomes an input for those after it"
+theorems = ["Studio.Admission.first_decl_decides_admission"]
+
+[[id]]
+id = "VS-05"
+level = "build"
+suite = "admission"
+statement = "The modules are grounded only when every module has a stratum row, every stratum row names a module, and every stratum is at most 7"
+theorems = ["Studio.Admission.module_grounded_only_when_declared"]
+
+[[id]]
+id = "VS-06"
+level = "build"
+suite = "admission"
+statement = "The registers are monotone only when every locked entry is still present"
+theorems = ["Studio.Admission.monotone_keeps_every_locked_entry"]
+
+[[id]]
+id = "VS-07"
+level = "some-true"
+suite = "admission"
+statement = "An authority's committed artifact is refused when its bytes are not the checksum its row records"
+authority = "PRISM-TEMPLATE-CONTRACT-2"

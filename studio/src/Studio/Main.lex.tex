@@ -1,0 +1,257 @@
+\begin{lexlean}{Studio.Main}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Host}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Ops}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Session,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: args, type: (List Bytes)},
+    {name: environment, type: (List (Bytes * Bytes))},
+    {name: seen, type: Studio.Ops::Seen},
+    {name: phase, type: Nat},
+    {name: current, type: Bytes},
+    {name: program, type: Bytes},
+    {name: arguments, type: (List Bytes)},
+    {name: handle, type: Nat},
+    {name: writes, type: (List (Bytes * Bytes))},
+    {name: message, type: Bytes}
+  ]
+}
+
+definition{
+  name: emptySeen,
+  parameters: [],
+  result: Studio.Ops::Seen,
+  body: (record Studio.Ops::Seen {files := (nil (Bytes * (Option Bytes))), listed := (nil (Bytes * (List Bytes))), ran := (nil Bytes)}),
+  executable: true
+}
+
+definition{
+  name: fresh,
+  parameters: [],
+  result: Session,
+  body: (record Session {args := (nil Bytes), environment := (nil (Bytes * Bytes)), seen := (emptySeen), phase := 0, current := 0x, program := 0x, arguments := (nil Bytes), handle := 0, writes := (nil (Bytes * Bytes)), message := 0x}),
+  executable: true
+}
+
+definition{
+  name: texts,
+  parameters: [items : (List Bytes)],
+  result: (List String),
+  body: (match items
+    | List.nil => (nil String)
+    | List.cons head rest => (cons (Studio.Doc::text head) (texts rest))),
+  recursive_argument: items,
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: pairTexts,
+  parameters: [items : (List (Bytes * Bytes))],
+  result: (List (String * String)),
+  body: (match items
+    | List.nil => (nil (String * String))
+    | List.cons head rest => (cons ((Studio.Doc::text (first head)), (Studio.Doc::text (second head))) (pairTexts rest))),
+  recursive_argument: items,
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: parentOf,
+  parameters: [path : Bytes],
+  result: Bytes,
+  body: (let pieces : (List Bytes) := (LexLeanStd.Text::splitOn path (47 : UInt8)); (let name : Bytes := (Studio.Ops::lastPiece pieces); (if ((prim length path : Nat) =? (prim length name : Nat)) then (Studio.Doc::lit ".") else (LexLeanStd.Text::sliceOr path 0 (prim subtract (prim length path : Nat) ((prim length name : Nat) + 1) : Nat))))),
+  executable: true
+}
+
+definition{
+  name: withPhase,
+  parameters: [session : Session, phase : Nat, current : Bytes],
+  result: Session,
+  body: (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := phase, current := current, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
+  executable: true
+}
+
+definition{
+  name: withSeen,
+  parameters: [session : Session, seen : Studio.Ops::Seen],
+  result: Session,
+  body: (record Session {args := (project session args), environment := (project session environment), seen := seen, phase := 0, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
+  executable: true
+}
+
+definition{
+  name: quit,
+  parameters: [session : Session, code : UInt8, output : Bytes, errors : Bytes],
+  result: (Session * LexLeanStd.Host::Request),
+  body: ((withPhase session 9 0x), (ctor LexLeanStd.Host::Request.exit code output errors)),
+  executable: true
+}
+
+definition{
+  name: childOut,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/verdant_studio.child.out"),
+  executable: true
+}
+
+definition{
+  name: childErr,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/verdant_studio.child.err"),
+  executable: true
+}
+
+definition{
+  name: writeNext,
+  parameters: [session : Session],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (match (project session writes)
+    | List.nil => (quit session (0 : UInt8) (project session message) 0x)
+    | List.cons head rest => ((withPhase session 5 (first head)), (ctor LexLeanStd.Host::Request.createDir (Studio.Doc::text (parentOf (first head)))))),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: advance,
+  parameters: [session : Session],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (match (Studio.Ops::plan (project session args) (project session seen))
+    | Studio.Ops::Plan.reads paths => (match paths
+      | List.nil => (quit session (1 : UInt8) 0x (Studio.Doc::lit "internal: an empty read plan\n"))
+      | List.cons head rest => ((withPhase session 1 head), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text head))))
+    | Studio.Ops::Plan.lists paths => (match paths
+      | List.nil => (quit session (1 : UInt8) 0x (Studio.Doc::lit "internal: an empty list plan\n"))
+      | List.cons head rest => ((withPhase session 2 head), (ctor LexLeanStd.Host::Request.list (Studio.Doc::text head))))
+    | Studio.Ops::Plan.run program arguments tag => ((record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 3, current := tag, program := program, arguments := arguments, handle := 0, writes := (project session writes), message := (project session message)}), (ctor LexLeanStd.Host::Request.createDir "target"))
+    | Studio.Ops::Plan.done writes message => (writeNext (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := writes, message := message}))
+    | Studio.Ops::Plan.refuse reason => (quit session (1 : UInt8) 0x reason)),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: recordRead,
+  parameters: [session : Session, found : (Option Bytes)],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (cons ((project session current), found) (project seen files)), listed := (project seen listed), ran := (project seen ran)})))),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: recordListing,
+  parameters: [session : Session, names : (List Bytes)],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (project seen files), listed := (cons ((project session current), names) (project seen listed)), ran := (project seen ran)})))),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: recordRan,
+  parameters: [session : Session],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (project seen files), listed := (project seen listed), ran := (cons (project session current) (project seen ran))})))),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: spawnChild,
+  parameters: [session : Session],
+  result: (Session * LexLeanStd.Host::Request),
+  body: ((withPhase session 4 (project session current)), (ctor LexLeanStd.Host::Request.spawn (record LexLeanStd.Host::Child {program := (Studio.Doc::text (project session program)), arguments := (texts (project session arguments)), directory := ".", environment := (pairTexts (project session environment)), output := (Studio.Doc::text (childOut)), errors := (Studio.Doc::text (childErr))}))),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: exitOf,
+  parameters: [finished : (List (Nat * (Option Int32))), handle : Nat],
+  result: (Option (Option Int32)),
+  body: (match finished
+    | List.nil => (ctor Option.none [(Option Int32)])
+    | List.cons head rest => (if ((first head) =? handle) then (ctor Option.some [(Option Int32)] (second head)) else (exitOf rest handle))),
+  recursive_argument: finished,
+  executable: true
+}
+
+definition{
+  name: succeeded,
+  parameters: [code : (Option Int32)],
+  result: Bool,
+  body: (match code
+    | Option.none => false
+    | Option.some value => (prim equal value (0 : Int32) : Bool)),
+  executable: true
+}
+
+definition{
+  name: waitAgain,
+  parameters: [session : Session],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (session, (ctor LexLeanStd.Host::Request.wait (cons (project session handle) (nil Nat)) 600000)),
+  executable: true
+}
+
+definition{
+  name: failed,
+  parameters: [session : Session, what : Bytes],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (quit session (1 : UInt8) 0x (Studio.Doc::cat (cons what (cons (Studio.Doc::lit ": ") (cons (project session current) (cons 0x0a (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: run,
+  parameters: [previous : (Option Session), event : LexLeanStd.Host::Event],
+  result: (Session * LexLeanStd.Host::Request),
+  body: (let session : Session := (match previous
+      | Option.none => (fresh)
+      | Option.some known => known); (match event
+    | LexLeanStd.Host::Event.start start => (advance (record Session {args := (project start arguments), environment := (project start environment), seen := (emptySeen), phase := 0, current := 0x, program := 0x, arguments := (nil Bytes), handle := 0, writes := (nil (Bytes * Bytes)), message := 0x}))
+    | LexLeanStd.Host::Event.read result => (if ((project session phase) =? 7) then ((record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 8, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (match result
+        | Result.ok text => text
+        | Result.error reason => 0x)}), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text (childErr)))) else (if ((project session phase) =? 8) then (quit session (1 : UInt8) (project session message) (Studio.Doc::cat (cons (match result
+        | Result.ok text => text
+        | Result.error reason => 0x) (cons (Studio.Doc::lit "command failed: ") (cons (project session current) (cons 0x0a (nil Bytes))))))) else (match result
+        | Result.ok text => (recordRead session (ctor Option.some [Bytes] text))
+        | Result.error reason => (recordRead session (ctor Option.none [Bytes])))))
+    | LexLeanStd.Host::Event.listed result => (match result
+      | Result.ok names => (recordListing session names)
+      | Result.error reason => (recordListing session (nil Bytes)))
+    | LexLeanStd.Host::Event.finished result => (match result
+      | Result.error reason => (failed session (Studio.Doc::lit "could not write"))
+      | Result.ok done => (if ((project session phase) =? 3) then (spawnChild session) else (if ((project session phase) =? 5) then (match (project session writes)
+          | List.nil => (writeNext session)
+          | List.cons head rest => ((withPhase session 6 (first head)), (ctor LexLeanStd.Host::Request.write (Studio.Doc::text (first head)) (second head)))) else (match (project session writes)
+          | List.nil => (writeNext session)
+          | List.cons head rest => (writeNext (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := rest, message := (project session message)}))))))
+    | LexLeanStd.Host::Event.spawned result => (match result
+      | Result.error reason => (failed session (Studio.Doc::lit "could not start"))
+      | Result.ok started => (waitAgain (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 4, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (first started), writes := (project session writes), message := (project session message)})))
+    | LexLeanStd.Host::Event.waited result => (match result
+      | Result.error reason => (failed session (Studio.Doc::lit "could not wait for"))
+      | Result.ok waited => (match (exitOf (project waited finished) (project session handle))
+        | Option.none => (waitAgain session)
+        | Option.some code => (if (succeeded code) then (recordRan session) else ((withPhase session 7 (project session current)), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text (childOut)))))))
+    | LexLeanStd.Host::Event.stat result => (failed session (Studio.Doc::lit "internal: unexpected stat"))
+    | LexLeanStd.Host::Event.canonical result => (failed session (Studio.Doc::lit "internal: unexpected canonical")))),
+  axioms: [Classical.choice, Quot.sound, propext],
+  executable: true,
+  production: {effects: [allocation, files, overflow, process, recursion], targets: [rust-std]}
+}
+\end{semanticmodule}
+\end{lexlean}

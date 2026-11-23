@@ -1,7 +1,7 @@
 spec = "lexlean/project/1"
-name = "prism-template-contract"
+name = "verdant-studio-core"
 language = "1.2"
-module_prefix = "PrismTemplateContract"
+module_prefix = "VerdantStudio"
 source_roots = ["src"]
 entrypoints = ["src/Contract.lex.tex"]
 build_root = ".lexlean"
@@ -12,11 +12,6 @@ lean_toolchain = "leanprover/lean4:v4.32.2"
 [[lexicon_source]]
 package = "lexlean.std.nat"
 kind = "builtin"
-
-[[lexicon_source]]
-package = "prism.arch"
-kind = "path"
-path = "language/prism.arch"
 
 [limits]
 max_file_bytes = 4194304

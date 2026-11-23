@@ -1,6 +1,6 @@
-name = "PrismTemplateContract"
+name = "VerdantStudio"
 version = "0.1.0"
-defaultTargets = ["PrismTemplateContract"]
+defaultTargets = ["VerdantStudio"]
 
 [[lean_lib]]
-name = "PrismTemplateContract"
+name = "VerdantStudio"

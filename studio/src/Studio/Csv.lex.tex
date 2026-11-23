@@ -1,0 +1,93 @@
+\begin{lexlean}{Studio.Csv}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Doc}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Scan,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: quoted, type: Bool},
+    {name: skip, type: Bool},
+    {name: field, type: Bytes},
+    {name: record, type: (List Bytes)},
+    {name: records, type: (List (List Bytes))}
+  ]
+}
+
+definition{
+  name: reverseFields,
+  parameters: [items : (List Bytes), onto : (List Bytes)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => onto
+    | List.cons head rest => (reverseFields rest (cons head onto))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: reverseRecords,
+  parameters: [items : (List (List Bytes)), onto : (List (List Bytes))],
+  result: (List (List Bytes)),
+  body: (match items
+    | List.nil => onto
+    | List.cons head rest => (reverseRecords rest (cons head onto))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: byteAt,
+  parameters: [text : Bytes, offset : Nat],
+  result: Nat,
+  body: (match (prim index text offset : (Option UInt8))
+    | Option.none => 256
+    | Option.some byte => (prim to_nat byte : Nat)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: pushByte,
+  parameters: [field : Bytes, text : Bytes, offset : Nat],
+  result: Bytes,
+  body: (match (prim slice text offset 1 : (Option Bytes))
+    | Option.none => field
+    | Option.some one => (prim append field one : Bytes)),
+  executable: true
+}
+
+definition{
+  name: endRecord,
+  parameters: [scan : Scan],
+  result: Scan,
+  body: (record Scan {quoted := false, skip := false, field := 0x, record := (nil Bytes), records := (cons (reverseFields (cons (project scan field) (project scan record)) (nil Bytes)) (project scan records))}),
+  executable: true
+}
+
+definition{
+  name: scanFrom,
+  parameters: [text : Bytes, offset : Nat, remaining : Nat, scan : Scan],
+  result: Scan,
+  body: (match remaining
+    | Nat.zero => scan
+    | Nat.succ rest => (let byte : Nat := (byteAt text offset); (if (project scan skip) then (scanFrom text (offset + 1) rest (record Scan {quoted := true, skip := false, field := (project scan field), record := (project scan record), records := (project scan records)})) else (if (project scan quoted) then (if (byte =? 34) then (if ((byteAt text (offset + 1)) =? 34) then (scanFrom text (offset + 1) rest (record Scan {quoted := true, skip := true, field := (pushByte (project scan field) text offset), record := (project scan record), records := (project scan records)})) else (scanFrom text (offset + 1) rest (record Scan {quoted := false, skip := false, field := (project scan field), record := (project scan record), records := (project scan records)}))) else (scanFrom text (offset + 1) rest (record Scan {quoted := true, skip := false, field := (pushByte (project scan field) text offset), record := (project scan record), records := (project scan records)}))) else (if (byte =? 34) then (scanFrom text (offset + 1) rest (record Scan {quoted := true, skip := false, field := (project scan field), record := (project scan record), records := (project scan records)})) else (if (byte =? 44) then (scanFrom text (offset + 1) rest (record Scan {quoted := false, skip := false, field := 0x, record := (cons (project scan field) (project scan record)), records := (project scan records)})) else (if (byte =? 13) then (scanFrom text (offset + 1) rest scan) else (if (byte =? 10) then (scanFrom text (offset + 1) rest (endRecord scan)) else (scanFrom text (offset + 1) rest (record Scan {quoted := false, skip := false, field := (pushByte (project scan field) text offset), record := (project scan record), records := (project scan records)})))))))))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: parse,
+  parameters: [text : Bytes],
+  result: (List (List Bytes)),
+  body: (let scan : Scan := (scanFrom text 0 (prim length text : Nat) (record Scan {quoted := false, skip := false, field := 0x, record := (nil Bytes), records := (nil (List Bytes))})); (let closed : Scan := (if (((prim length (project scan field) : Nat) =? 0) && (match (project scan record)
+      | List.nil => true
+      | List.cons head rest => false)) then scan else (endRecord scan)); (reverseRecords (project closed records) (nil (List Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}
