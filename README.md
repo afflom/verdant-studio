@@ -1,4 +1,28 @@
-# UOR Prism template
+# Verdant Studio
+
+A video-game Lifecycle Management model, built only in Prism, on the UOR Prism
+template below.
+
+**This repository changes only through its API.** An agent dispatches the
+`operate` workflow with one operation of `verdant_studio`:
+
+| Operation | What it does |
+| --- | --- |
+| `check` | Every construct resolves to one Std, Req or Der citation; every module has a stratum; no locked register entry was dropped |
+| `ingest-index CSV` | Commits the standards index and pins its sha256 |
+| `ingest-authority BINDING` | Fetches a PrismPM authority binding's pinned source and refuses a sha256 mismatch |
+| `propose-encoding SCHEMA NAME CITATION...` | Translates a JSON Schema 2020-12 encoding into LexLean, admitted only with its citation |
+| `build` | `prism-code lock`, then `prism-code build`, which checks |
+| `publish` | Writes the workflows and `CODEOWNERS` |
+
+The workflow runs the certified command in `certified/`, then opens a pull
+request as the `afflom-verdant-studio` GitHub App for the owner to approve. CI
+refuses a pull request that the App did not make, and re-runs `check`, `build`
+and `publish`, refusing any file that differs from what they write.
+
+---
+
+## UOR Prism template
 
 The starting point for every Prism application: a repository whose every claim
 is registered, specified as a scenario, and proved by Lean's kernel, all
