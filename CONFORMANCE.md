@@ -46,7 +46,6 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `LEXLEAN-STDLIB-0.4.3` | The LexLean standard library at tag v0.4.3: JSON, text, ordering, SHA-256 and the host protocol of a production command. |  |
 | `PRISM-TEMPLATE-CONTRACT-2` | The template contract R1 to R6 that prism-code check enforces over model/ and features/. |  |
 | `VERDANT-ENGINE-2.19.0` | The engine release Verdant Studio pins, with its catalogs, its ratchet over strata, authority entries and monotone registers, and its MCP API. |  |
-| `W3C-PROV-O` | Agent, Entity and wasAttributedTo, used for stakeholders as producers and consumers. |  |
 | `ISO-IEC-IEEE-42010-2022` | Stakeholder, concern, viewpoint and view of an architecture description. |  |
 | `ISO-IEC-IEEE-29148-2018` | A stakeholder requirement with its source and rationale. |  |
 | `ISO-25964-1-2011` | Facets of a thesaurus. |  |
@@ -54,6 +53,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `IETF-RFC-4180` | The CSV record, field and quoting rules the index reader follows. |  |
 | `FATELINES-STANDARDS-INDEX` | The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims. |  |
 | `JSON-SCHEMA-2020-12` | The JSON Schema 2020-12 meta-schema, the official machine-readable form the translator reads. |  |
+| `W3C-PROV-O` | The PROV-O ontology in its official Turtle form: Agent, Entity, Activity and wasAttributedTo, used for stakeholders as producers and consumers. |  |
 
 ## Claims that are not conformance IDs
 
