@@ -64,6 +64,25 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `OPENUSD-USDSKEL-SCHEMA-26.11.1` | The UsdSkel schema for skeletal animation: SkelRoot, Skeleton, SkelAnimation, BlendShape and SkelBindingAPI. Index row E06. |  |
 | `SMPTE-OPENTRACKIO-SCHEMA` | The OpenTrackIO JSON Schema 2020-12 for camera tracking samples: static, tracker, timing, lens and transforms. Index row F03. |  |
 | `WDAS-DISNEY-BRDF-2012` | The Disney principled BRDF as published by Walt Disney Animation Studios in BRDF Explorer: its parameters and analytic evaluation. Index row D08. |  |
+| `ALLAR-UE-STYLE-GUIDE` | The community Unreal Engine style guide: asset naming prefixes and suffixes, directory structure, and Blueprint conventions. Index row D20. |  |
+| `ASWF-OPENEXR-FILE-LAYOUT-3.5.5` | The byte-level layout of an OpenEXR file: magic number, version field, header attributes, offset tables and scan line, tile and deep data. Index row D13. |  |
+| `ASWF-OPENTIMELINEIO-0.18.1` | Every OpenTimelineIO class that serializes to and from JSON, with its schema version and fields, as generated from the implementation. Index row F05. |  |
+| `BREAKPAD-MINIDUMP-FORMAT` | The Breakpad project's C declaration of the minidump file format, following Microsoft's MINIDUMP structures: header, stream directory, thread, module, exception and system-info streams used by Breakpad and Crashpad crash reports. Index row O06. |  |
+| `CVE-RECORD-FORMAT-5.2.0` | The official CVE JSON 5.2.0 record schema: CVE metadata, CNA and ADP containers, affected products, problem types, references and metrics. Index row T10. |  |
+| `ECMA-424-CYCLONEDX-1.6` | The official CycloneDX 1.6 JSON Schema: BOM metadata, components, services, dependencies, vulnerabilities and attestations. Index row T09. |  |
+| `FIRST-CVSS-4.0` | The official CVSS v4.0 JSON Schema: the vector string and the base, threat, environmental and supplemental metrics with their scores and severities. Index row T10. |  |
+| `IETF-RFC-8493` | BagIt V1.0 in the RFC's official plain-text form: bag declaration, payload manifests, tag files and validity rules for packaging archived game builds. Index row Y05. |  |
+| `IFTF-TWEE-3.0.2` | The Twee 3 text format for Twine stories: passages, headers, tags, metadata and the StoryData and StoryTitle passages. Index row C07. |  |
+| `INKLE-INK-JSON-1.2.1` | The JSON format that compiled ink is written to and the runtime reads: containers, control commands, diverts, variables and choices. Index row C05. |  |
+| `KHRONOS-COLLADA-1.5.0` | The COLLADA 1.5.0 XML Schema for digital asset exchange: geometry, materials, effects, animation, kinematics and physics. Index row D15. |  |
+| `LOC-METS-1.12.1` | The official METS 1.12.1 XML Schema: header, descriptive and administrative metadata sections, file section and structural map of a digital object. Index row Y02. |  |
+| `LOC-PREMIS-3.0` | The official PREMIS 3.0 XML Schema: Object, Event, Agent and Rights entities and their semantic units for preservation metadata. Index row Y02. |  |
+| `OPENFEATURE-SPEC-0.9.0` | The official machine-readable OpenFeature specification.json: every numbered requirement and condition of the flag evaluation API, providers, hooks, events and tracking. Index row W05. |  |
+| `OWASP-ASVS-5.0.0` | The official ASVS 5.0.0 JSON export: chapters, sections and each verification requirement with its identifier and level. Index row T02. |  |
+| `US-CFR-16-312-2026` | The COPPA Rule as codified in the official annual CFR edition in GPO's XML form, including the 2025 amendments: definitions, notice, verifiable parental consent, mixed audience services, data retention and safe harbor programs. Index row R02. |  |
+| `VRMC-VRM-1.0` | The root JSON Schema of the VRMC_vrm 1.0 glTF extension for humanoid avatars: meta, humanoid, firstPerson, lookAt and expressions. Index row E05. |  |
+| `WEB3D-X3D-4.0-XSD` | The X3D 4.0 XML Schema, which encodes the HAnim component nodes of ISO/IEC 19774-1:2019 (HAnimHumanoid, HAnimJoint, HAnimSegment, HAnimSite, HAnimDisplacer, HAnimMotion). Index row E04. |  |
+| `YARNSPINNER-PARSER-3.3.1` | The ANTLR parser grammar of the Yarn language: nodes, headers, lines, options, commands and expressions. Index row C06. |  |
 
 ## Claims that are not conformance IDs
 
