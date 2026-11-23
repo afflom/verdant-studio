@@ -197,23 +197,6 @@ checksum_reason = "Cited by the seed. Its official machine-readable form enters 
 realized_by = []
 
 [[authority]]
-id = "JSON-SCHEMA-2020-12"
-name = "JSON Schema 2020-12"
-issuer = "JSON Schema"
-edition = "2020-12"
-canonical_id = "https://json-schema.org/draft/2020-12/schema"
-source_role = "normative"
-retrieval_date = "2026-11-23"
-url = "https://json-schema.org/draft/2020-12/schema"
-media_type = "application/schema+json"
-license = "BSD-3-Clause"
-redistribution = "citation-only"
-statement = "The JSON Schema core and validation vocabularies the translator reads."
-checksum = "none"
-checksum_reason = "Cited by the seed. Its official machine-readable form enters later through ingest-authority, which pins and checks its sha256."
-realized_by = []
-
-[[authority]]
 id = "IETF-RFC-4180"
 name = "Common Format and MIME Type for CSV Files"
 issuer = "IETF"
@@ -235,4 +218,21 @@ id = "FATELINES-STANDARDS-INDEX"
 statement = "The Fatelines game lifecycle standards index: one row per standard, with its domain, owner, phases, scope and adoption. Its rows are citations, not claims."
 artifact = "catalog/standards-index.csv"
 checksum = "0765d3a3a4c79fc00452a6a007dd431066e000312e1635e70f4caafb3461a7ac"
+realized_by = []
+
+[[authority]]
+id = "JSON-SCHEMA-2020-12"
+name = "JSON Schema 2020-12 meta-schema"
+issuer = "JSON Schema"
+edition = "2020-12"
+canonical_id = "https://json-schema.org/draft/2020-12/schema"
+source_role = "normative"
+retrieval_date = "2026-11-23"
+url = "https://json-schema.org/draft/2020-12/schema"
+media_type = "application/schema+json"
+license = "BSD-3-Clause"
+redistribution = "redistributable"
+statement = "The JSON Schema 2020-12 meta-schema, the official machine-readable form the translator reads."
+artifact = "authorities/JSON-SCHEMA-2020-12/schema"
+checksum = "41da76f5afb7ce062d248f762463a92f7ca47e4e0f905b224ba6afeef91ded0f"
 realized_by = []
