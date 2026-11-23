@@ -69,7 +69,7 @@ jobs:
           test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
           target/lexlean/bin/lexlean production verify-artifact certified
           cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
-      - name: run the operation, then check and build through the API
+      - name: run the operation, then check, build and publish through the API, as the studio check does
         env:
           ARGS: ${{ inputs.args || 'advance' }}
           INPUT: ${{ inputs.input }}
@@ -91,8 +91,9 @@ jobs:
           else
             target/release/verdant_studio $ARGS | tee target/operation.txt
           fi
-          target/release/verdant_studio build
           target/release/verdant_studio check
+          target/release/verdant_studio build
+          target/release/verdant_studio publish
       - name: open a pull request as the Verdant Studio app
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}

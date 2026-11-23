@@ -72,7 +72,7 @@ jobs:
           target/release/verdant_studio check
           target/release/verdant_studio build
           target/release/verdant_studio publish
-          git diff --exit-code
+          if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
       - if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
