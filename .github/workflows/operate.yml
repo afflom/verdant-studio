@@ -129,10 +129,18 @@ jobs:
           elif [ "$ARGS" = advance ]; then
             : > target/operation.txt
             last=''
-            while op=$(target/release/verdant_studio next) && [ -n "$op" ]; do
+            skipped=''
+            while op=$(target/release/verdant_studio next $skipped) && [ -n "$op" ]; do
               if [ "$op" = "$last" ]; then echo "::error::$op did not settle"; exit 1; fi
-              target/release/verdant_studio $op | tee -a target/operation.txt
-              last=$op
+              if target/release/verdant_studio $op | tee -a target/operation.txt; then
+                last=$op
+              else
+                binding=${op#ingest-authority }
+                echo "::warning::$op was refused; the other bindings continue"
+                echo "refused: $op" >> target/operation.txt
+                git clean -fdq -- "authorities/$(basename "$binding" .json)"
+                skipped="$skipped $binding"
+              fi
             done
           else
             target/release/verdant_studio $ARGS | tee target/operation.txt
