@@ -111,7 +111,8 @@ jobs:
           branch="studio/${GITHUB_RUN_ID}"
           git push origin "HEAD:refs/heads/${branch}"
           gh pr create --head "$branch" --base main --title "verdant_studio $ARGS" --body-file target/operation.txt
-          if gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" --jq '[.[] | select(.type == "required_status_checks") | .parameters.required_status_checks[].context] | any(. == "studio")' | grep -qx true; then
+          gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
+          if [ "$(target/release/verdant_studio merge-gate target/rules.json)" = merge ]; then
             gh pr merge "$branch" --auto --squash --delete-branch
           else
             echo "::notice::main does not require the studio check, so this pull request waits for the owner's merge"
