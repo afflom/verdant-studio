@@ -143,6 +143,16 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-WEBXR-20261109` | The WebXR API for immersive sessions, reference spaces, poses and input sources. |  |
 | `W3C-WGSL-20261106` | The WGSL shader language: its grammar, types and execution model. |  |
 | `WIPO-NICE-NCL-13-2026` | WIPO's official Nice Classification master file of class headings, explanatory notes and goods and services, including classes 9, 28 and 41. Index row V04. |  |
+| `AGONES-1.62.0-INSTALL` | The Agones custom resource definitions (GameServer, Fleet, GameServerAllocation) and controllers in its official Kubernetes YAML form. |  |
+| `AMPAS-ACES-2.0-OUTPUT-TRANSFORM` | The ACES 2.0 output transform functions (tonescale, gamut compression, display encoding) in the Academy's official CTL form. |  |
+| `ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0` | The OpenColorIO configuration of the ACES 2.0 colorspaces, displays and views, in the ASWF's official OCIO form. |  |
+| `GIT-LFS-SPEC-3.8.1` | The Git LFS pointer file format and its smudge and clean behavior. |  |
+| `LUA-5.5.1` | The Lua 5.5.1 release: its reference manual and reference implementation, pinned to the sha256 lua.org publishes. |  |
+| `OPEN-MATCH-1.8.1-MESSAGES` | The Open Match matchmaking messages (Ticket, Match, MatchProfile, Pool) in its official protobuf form. |  |
+| `OPENUSD-USDPHYSICS-26.11.1` | The USD Physics schema: rigid bodies, colliders, joints, materials and scene in its official USDA form. |  |
+| `SDL-GAMECONTROLLERDB` | The community game controller mappings in SDL's GameController mapping string form. |  |
+| `SEMVER-2.0.0` | The Semantic Versioning 2.0.0 rules for version numbers, precedence and pre-release identifiers. |  |
+| `UNICODE-UCD-17.0.0` | The Unicode 17.0.0 code point properties in the Consortium's official UCD text form. |  |
 
 ## Claims that are not conformance IDs
 
