@@ -1,0 +1,1 @@
+{"name":"breakpad-memory-state","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"MDMemoryState","enum":["MD_MEMORY_STATE_COMMIT","MD_MEMORY_STATE_RESERVE","MD_MEMORY_STATE_FREE"],"$comment":"minidump_format.h, enum MDMemoryState, as declared in the pinned header"},"citation":["std","BREAKPAD-MINIDUMP-FORMAT","O06"]}
