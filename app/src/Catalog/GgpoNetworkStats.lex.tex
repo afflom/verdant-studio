@@ -1,0 +1,86 @@
+\begin{lexlean}{Catalog.GgpoNetworkStats}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GgpoPlayerType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gGPOPLAYERTYPELOCAL, fields: []},
+    {name: gGPOPLAYERTYPEREMOTE, fields: []},
+    {name: gGPOPLAYERTYPESPECTATOR, fields: []}
+  ]
+}
+
+inductive{
+  name: GgpoEventCode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gGPOEVENTCODECONNECTEDTOPEER, fields: []},
+    {name: gGPOEVENTCODESYNCHRONIZINGWITHPEER, fields: []},
+    {name: gGPOEVENTCODESYNCHRONIZEDWITHPEER, fields: []},
+    {name: gGPOEVENTCODERUNNING, fields: []},
+    {name: gGPOEVENTCODEDISCONNECTEDFROMPEER, fields: []},
+    {name: gGPOEVENTCODETIMESYNC, fields: []},
+    {name: gGPOEVENTCODECONNECTIONINTERRUPTED, fields: []},
+    {name: gGPOEVENTCODECONNECTIONRESUMED, fields: []}
+  ]
+}
+
+inductive{
+  name: GgpoErrorCode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gGPOOK, fields: []},
+    {name: gGPOERRORCODESUCCESS, fields: []},
+    {name: gGPOERRORCODEGENERALFAILURE, fields: []},
+    {name: gGPOERRORCODEINVALIDSESSION, fields: []},
+    {name: gGPOERRORCODEINVALIDPLAYERHANDLE, fields: []},
+    {name: gGPOERRORCODEPLAYEROUTOFRANGE, fields: []},
+    {name: gGPOERRORCODEPREDICTIONTHRESHOLD, fields: []},
+    {name: gGPOERRORCODEUNSUPPORTED, fields: []},
+    {name: gGPOERRORCODENOTSYNCHRONIZED, fields: []},
+    {name: gGPOERRORCODEINROLLBACK, fields: []},
+    {name: gGPOERRORCODEINPUTDROPPED, fields: []},
+    {name: gGPOERRORCODEPLAYERDISCONNECTED, fields: []},
+    {name: gGPOERRORCODETOOMANYSPECTATORS, fields: []},
+    {name: gGPOERRORCODEINVALIDREQUEST, fields: []}
+  ]
+}
+
+structure{
+  name: GgpoNetworkStatsNetwork,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: sendQueueLen, type: Int},
+    {name: recvQueueLen, type: Int},
+    {name: ping, type: Int},
+    {name: kbpsSent, type: Int}
+  ]
+}
+
+structure{
+  name: GgpoNetworkStatsTimesync,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: localFramesBehind, type: Int},
+    {name: remoteFramesBehind, type: Int}
+  ]
+}
+
+structure{
+  name: GgpoNetworkStats,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: network, type: GgpoNetworkStatsNetwork},
+    {name: timesync, type: GgpoNetworkStatsTimesync}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

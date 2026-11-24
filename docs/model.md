@@ -97,3 +97,6 @@ Each construct and the citation that admits it.
 - `Catalog.NarrativeArchitecture`: std JENKINS-NARRATIVE-ARCHITECTURE-2004 row C11
 - `Catalog.ScrumGuide2020`: std SCRUM-GUIDE-2020 row A07
 - `Catalog.ThreeActStructure`: std WIKIPEDIA-THREE-ACT-STRUCTURE row C02
+- `Catalog.DoraSoftwareDeliveryMetric`: std DORA-SOFTWARE-DELIVERY-METRICS row H14
+- `Catalog.FpsUiDesignSpaceElement`: std FAGERHOLT-LORENTZON-BEYOND-THE-HUD-2009 row L10
+- `Catalog.GgpoNetworkStats`: std GGPO-GGPONET-H row K03
