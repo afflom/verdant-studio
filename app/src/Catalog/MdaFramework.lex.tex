@@ -1,0 +1,32 @@
+\begin{lexlean}{Catalog.MdaFramework}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Aesthetic,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sensation, fields: []},
+    {name: fantasy, fields: []},
+    {name: narrative, fields: []},
+    {name: challenge, fields: []},
+    {name: fellowship, fields: []},
+    {name: discovery, fields: []},
+    {name: expression, fields: []},
+    {name: submission, fields: []}
+  ]
+}
+
+structure{
+  name: MdaFramework,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mechanics, type: (List Bytes)},
+    {name: dynamics, type: (List Bytes)},
+    {name: aesthetics, type: (List Aesthetic)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

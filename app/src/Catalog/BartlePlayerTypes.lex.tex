@@ -1,0 +1,48 @@
+\begin{lexlean}{Catalog.BartlePlayerTypes}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: PlayerType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: achievers, fields: []},
+    {name: explorers, fields: []},
+    {name: socialisers, fields: []},
+    {name: killers, fields: []}
+  ]
+}
+
+inductive{
+  name: Mode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: acting, fields: []},
+    {name: interacting, fields: []}
+  ]
+}
+
+inductive{
+  name: Focus,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: players, fields: []},
+    {name: world, fields: []}
+  ]
+}
+
+structure{
+  name: BartlePlayerTypes,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mode, type: Mode},
+    {name: focus, type: Focus},
+    {name: playerType, type: PlayerType}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
