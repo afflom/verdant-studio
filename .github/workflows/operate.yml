@@ -150,6 +150,9 @@ jobs:
           GH_TOKEN: ${{ steps.app.outputs.token }}
         run: |
           set -euo pipefail -f
+          # A GitHub API call that fails (a 5xx answer or a dropped connection) is tried again,
+          # at most 4 tries, 2, 4 and 8 seconds apart, so a transient error never stops the queue.
+          gh() { local try out; for try in 1 2 3 4; do if out=$(command gh "$@"); then if [ -n "$out" ]; then echo "$out"; fi; return 0; fi; if [ "$try" -lt 4 ]; then echo "::warning::gh $1 failed (try $try of 4)" >&2; sleep $((2 ** try)); fi; done; return 1; }
           # An App pull request whose files already hold on main has nothing left to merge,
           # so it is closed; the propose-command ones are the owner's to review and stay open.
           for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.user.type == "Bot" and (.title | startswith("verdant_studio ")) and (.title | startswith("verdant_studio propose-command") | not)) | .number'); do
@@ -160,10 +163,17 @@ jobs:
             fi
           done
           if [ "$ARGS" = advance ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
+            gate=$(target/release/verdant_studio merge-gate target/rules.json)
             for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.title == "verdant_studio advance") | .number'); do
               if [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .mergeable_state)" = dirty ]; then
                 gh api --silent -X PATCH "repos/${GITHUB_REPOSITORY}/pulls/${pr}" -f state=closed
                 echo "::notice::closed advance pull request #${pr}: it conflicts with main, and this run supersedes it"
+              # Where main lets an App pull request merge itself, one without auto-merge was left by a
+              # run that failed after opening it, so nothing would ever merge it: this run supersedes it.
+              elif [ "$gate" = merge ] && [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.auto_merge != null')" = false ]; then
+                gh api --silent -X PATCH "repos/${GITHUB_REPOSITORY}/pulls/${pr}" -f state=closed
+                echo "::notice::closed advance pull request #${pr}: auto-merge was never enabled on it, and this run supersedes it"
               else
                 echo "::notice::advance pull request #${pr} is open; its merge changes model/authorities.toml, which runs advance again"
                 exit 0
@@ -215,6 +225,9 @@ jobs:
           ARGS: ${{ inputs.args || 'advance' }}
         run: |
           set -euo pipefail
+          # A GitHub API call that fails (a 5xx answer or a dropped connection) is tried again,
+          # at most 4 tries, 2, 4 and 8 seconds apart, so a transient error never stops the queue.
+          gh() { local try out; for try in 1 2 3 4; do if out=$(command gh "$@"); then if [ -n "$out" ]; then echo "$out"; fi; return 0; fi; if [ "$try" -lt 4 ]; then echo "::warning::gh $1 failed (try $try of 4)" >&2; sleep $((2 ** try)); fi; done; return 1; }
           git add -A
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           id=$(gh api "users/${SLUG}[bot]" --jq .id)
