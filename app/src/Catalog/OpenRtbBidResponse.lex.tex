@@ -1,0 +1,70 @@
+\begin{lexlean}{Catalog.OpenRtbBidResponse}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Bid,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: impid, type: Bytes},
+    {name: price, type: (Int * Int)},
+    {name: nurl, type: (Option Bytes)},
+    {name: burl, type: (Option Bytes)},
+    {name: lurl, type: (Option Bytes)},
+    {name: adm, type: (Option Bytes)},
+    {name: adid, type: (Option Bytes)},
+    {name: adomain, type: (Option (List Bytes))},
+    {name: bundle, type: (Option Bytes)},
+    {name: iurl, type: (Option Bytes)},
+    {name: cid, type: (Option Bytes)},
+    {name: crid, type: (Option Bytes)},
+    {name: tactic, type: (Option Bytes)},
+    {name: cattax, type: (Option Int)},
+    {name: cat, type: (Option (List Bytes))},
+    {name: attr, type: (Option (List Int))},
+    {name: apis, type: (Option (List Int))},
+    {name: api, type: (Option Int)},
+    {name: protocol, type: (Option Int)},
+    {name: qagmediarating, type: (Option Int)},
+    {name: language, type: (Option Bytes)},
+    {name: langb, type: (Option Bytes)},
+    {name: dealid, type: (Option Bytes)},
+    {name: w, type: (Option Int)},
+    {name: h, type: (Option Int)},
+    {name: wratio, type: (Option Int)},
+    {name: hratio, type: (Option Int)},
+    {name: exp, type: (Option Int)},
+    {name: dur, type: (Option Int)},
+    {name: mtype, type: (Option Int)},
+    {name: slotinpod, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: SeatBid,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bid, type: (List Bid)},
+    {name: seat, type: (Option Bytes)},
+    {name: group, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: OpenRtbBidResponse,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: seatbid, type: (Option (List SeatBid))},
+    {name: bidid, type: (Option Bytes)},
+    {name: cur, type: (Option Bytes)},
+    {name: customdata, type: (Option Bytes)},
+    {name: nbr, type: (Option Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

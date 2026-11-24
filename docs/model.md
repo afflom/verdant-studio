@@ -174,3 +174,5 @@ Each construct and the citation that admits it.
 - `Catalog.OwaspGameSecurityFramework`: std OWASP-GAME-SECURITY-FRAMEWORK row T01
 - `Catalog.SoftwareCarbonIntensity`: std GSF-SCI-1.1 row X07
 - `Catalog.SreServiceLevelObjective`: std GOOGLE-SRE-BOOK-CH4-SLO row W01
+- `Catalog.OpenRtbBidRequest`: std IAB-OPENRTB-2.6 row U10
+- `Catalog.OpenRtbBidResponse`: std IAB-OPENRTB-2.6 row U10
