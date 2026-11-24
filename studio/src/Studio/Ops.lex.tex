@@ -1056,16 +1056,6 @@ definition{
   executable: true
 }
 
-definition{
-  name: planAgenda,
-  parameters: [seen : Seen],
-  result: Plan,
-  body: (match (missing seen (cons (indexPath) (cons (Studio.Doc::lit "model/admissions.json") (nil Bytes))))
-    | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (uncited (rowIds (restOf (Studio.Csv::parse (contents seen (indexPath))))) (citedRows (arrayOf seen (Studio.Doc::lit "model/admissions.json"))))))),
-  axioms: [Quot.sound, propext],
-  executable: true
-}
 
 definition{
   name: citationText,
@@ -1180,12 +1170,498 @@ definition{
 }
 
 definition{
+  name: jsonlIn,
+  parameters: [directory : Bytes, names : (List Bytes)],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (LexLeanStd.Text::endsWith head (Studio.Doc::lit ".jsonl")) then (cons (join directory head) (jsonlIn directory rest)) else (jsonlIn directory rest))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: mappingsDir,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "model/mappings"),
+  executable: true
+}
+
+definition{
+  name: matrixDir,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "model/matrix"),
+  executable: true
+}
+
+definition{
+  name: skosRelations,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "exactMatch") (cons (Studio.Doc::lit "closeMatch") (cons (Studio.Doc::lit "broadMatch") (cons (Studio.Doc::lit "narrowMatch") (cons (Studio.Doc::lit "relatedMatch") (nil Bytes)))))),
+  executable: true
+}
+
+definition{
+  name: provRelations,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "producer") (cons (Studio.Doc::lit "consumer") (cons (Studio.Doc::lit "attributed") (cons (Studio.Doc::lit "onBehalfOf") (cons (Studio.Doc::lit "observation") (cons (Studio.Doc::lit "esco:hasEssentialSkill") (cons (Studio.Doc::lit "esco:hasOptionalSkill") (nil Bytes)))))))),
+  executable: true
+}
+
+definition{
+  name: nestedFilled,
+  parameters: [entry : LexLeanStd.Json::Json, outer : Bytes, inner : Bytes],
+  result: Bool,
+  body: (match (Studio.Doc::field entry outer)
+    | Option.none => false
+    | Option.some found => (filled found inner)),
+  executable: true
+}
+
+definition{
+  name: mappingLine,
+  parameters: [entry : LexLeanStd.Json::Json],
+  result: Bool,
+  body: ((filled entry (Studio.Doc::lit "subject")) && ((filled entry (Studio.Doc::lit "object")) && ((filled entry (Studio.Doc::lit "evidence")) && (Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "relation")) (skosRelations))))),
+  executable: true
+}
+
+definition{
+  name: matrixLine,
+  parameters: [entry : LexLeanStd.Json::Json],
+  result: Bool,
+  body: ((filled entry (Studio.Doc::lit "domain")) && ((filled entry (Studio.Doc::lit "row")) && ((Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "relation")) (provRelations)) && ((nestedFilled entry (Studio.Doc::lit "role") (Studio.Doc::lit "term")) && ((nestedFilled entry (Studio.Doc::lit "evidence") (Studio.Doc::lit "authority")) && ((nestedFilled entry (Studio.Doc::lit "evidence") (Studio.Doc::lit "quote")) && (nestedFilled entry (Studio.Doc::lit "origin") (Studio.Doc::lit "kind")))))))),
+  executable: true
+}
+
+definition{
+  name: stagedJson,
+  parameters: [lines : (List Bytes), matrix : Bool],
+  result: (Option (List LexLeanStd.Json::Json)),
+  body: (match lines
+    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stagedJson rest matrix) else (match (Studio.Doc::readAny line)
+      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+      | Option.some entry => (if (if matrix then (matrixLine entry) else (mappingLine entry)) then (match (stagedJson rest matrix)
+        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+        | Option.some later => (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry later))) else (ctor Option.none [(List LexLeanStd.Json::Json)])))))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planStageInto,
+  parameters: [seen : Seen, path : Bytes, matrix : Bool],
+  result: Plan,
+  body: (match (missing seen (cons path (nil Bytes)))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (let target : Bytes := (join (if matrix then (matrixDir) else (mappingsDir)) (basename path)); (if (negate (LexLeanStd.Text::endsWith path (Studio.Doc::lit ".jsonl"))) then (ctor Plan.refuse (Studio.Doc::lit "a staged file is named NAME.jsonl\n")) else (match (stagedJson (LexLeanStd.Text::lines (contents seen path)) matrix)
+      | Option.none => (ctor Plan.refuse (if matrix then (Studio.Doc::lit "every line must be a stakeholder edge: domain, row, relation (PROV-O producer, consumer, attributed or onBehalfOf, SOSA observation, or ESCO esco:hasEssentialSkill or esco:hasOptionalSkill), role.term, evidence.authority, evidence.quote and origin.kind\n") else (Studio.Doc::lit "every line must be a SKOS mapping: subject, relation (exactMatch, closeMatch, broadMatch, narrowMatch or relatedMatch), object and evidence, with scheme naming the authority of a concept URI\n")))
+      | Option.some entries => (if ((prim length entries : Nat) =? 0) then (ctor Plan.refuse (Studio.Doc::lit "the file has no lines\n")) else (ctor Plan.done (cons (target, (contents seen path)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "staged ") (cons target (cons (Studio.Doc::lit ": its ends resolve against the index, the authorities, the constructs, or a concept of a named scheme\n") (nil Bytes))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: entriesOf,
+  parameters: [seen : Seen, paths : (List Bytes)],
+  result: (List LexLeanStd.Json::Json),
+  body: (match paths
+    | List.nil => (nil LexLeanStd.Json::Json)
+    | List.cons head rest => (match (stagedJson (LexLeanStd.Text::lines (contents seen head)) (LexLeanStd.Text::startsWith head (matrixDir)))
+      | Option.none => (entriesOf seen rest)
+      | Option.some entries => (appendJson entries (entriesOf seen rest)))),
+  recursive_argument: paths,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+structure{
+  name: Known,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: rows, type: (List Bytes)},
+    {name: authorities, type: (List Bytes)},
+    {name: constructs, type: (List Bytes)}
+  ]
+}
+
+definition{
+  name: knownOf,
+  parameters: [seen : Seen],
+  result: Known,
+  body: (record Known {rows := (catalogRows seen), authorities := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))), constructs := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct"))}),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: endResolves,
+  parameters: [known : Known, entry : LexLeanStd.Json::Json, value : Bytes],
+  result: Bool,
+  body: ((Studio.Doc::memberBytes value (project known rows)) || ((Studio.Doc::memberBytes value (project known authorities)) || ((Studio.Doc::memberBytes value (project known constructs)) || ((filled entry (Studio.Doc::lit "scheme")) && (Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "scheme")) (project known authorities)))))),
+  executable: true
+}
+
+definition{
+  name: mappingResolves,
+  parameters: [known : Known, entry : LexLeanStd.Json::Json],
+  result: Bool,
+  body: ((endResolves known entry (Studio.Doc::str entry (Studio.Doc::lit "subject"))) && (endResolves known entry (Studio.Doc::str entry (Studio.Doc::lit "object")))),
+  executable: true
+}
+
+definition{
+  name: edgeAuthority,
+  parameters: [entry : LexLeanStd.Json::Json],
+  result: Bytes,
+  body: (match (Studio.Doc::field entry (Studio.Doc::lit "evidence"))
+    | Option.none => 0x
+    | Option.some evidence => (Studio.Doc::str evidence (Studio.Doc::lit "authority"))),
+  executable: true
+}
+
+definition{
+  name: edgeResolves,
+  parameters: [known : Known, entry : LexLeanStd.Json::Json],
+  result: Bool,
+  body: ((Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "row")) (project known rows)) && (Studio.Doc::memberBytes (edgeAuthority entry) (project known authorities))),
+  executable: true
+}
+
+definition{
+  name: unresolvedWaits,
+  parameters: [known : Known, entries : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match entries
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (filled head (Studio.Doc::lit "subject")) then (if (mappingResolves known head) then (unresolvedWaits known rest) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "waiting mapping: ") (cons (Studio.Doc::str head (Studio.Doc::lit "subject")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "object")) (cons (Studio.Doc::lit " has an end that is not in the model yet\n") (nil Bytes))))))))) (unresolvedWaits known rest))) else (if (edgeResolves known head) then (unresolvedWaits known rest) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "waiting matrix edge: row ") (cons (Studio.Doc::str head (Studio.Doc::lit "row")) (cons (Studio.Doc::lit " of ") (cons (edgeAuthority head) (cons (Studio.Doc::lit " is not in the model yet\n") (nil Bytes))))))) (unresolvedWaits known rest))))),
+  recursive_argument: entries,
+  executable: true
+}
+
+definition{
+  name: resolvedMappings,
+  parameters: [known : Known, entries : (List LexLeanStd.Json::Json)],
+  result: (List LexLeanStd.Json::Json),
+  body: (match entries
+    | List.nil => (nil LexLeanStd.Json::Json)
+    | List.cons head rest => (if ((filled head (Studio.Doc::lit "subject")) && (mappingResolves known head)) then (cons head (resolvedMappings known rest)) else (resolvedMappings known rest))),
+  recursive_argument: entries,
+  executable: true
+}
+
+definition{
+  name: citedPairs,
+  parameters: [items : (List LexLeanStd.Json::Json)],
+  result: (List (Bytes * Bytes)),
+  body: (match items
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+      | Option.none => (citedPairs rest)
+      | Option.some cited => (if (filled cited (Studio.Doc::lit "row")) then (cons ((Studio.Doc::str cited (Studio.Doc::lit "row")), (Studio.Doc::str cited (Studio.Doc::lit "authority"))) (citedPairs rest)) else (citedPairs rest)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: stagedPairs,
+  parameters: [known : Known, mappings : (List LexLeanStd.Json::Json)],
+  result: (List (Bytes * Bytes)),
+  body: (match mappings
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (let subject : Bytes := (Studio.Doc::str head (Studio.Doc::lit "subject")); (let object : Bytes := (Studio.Doc::str head (Studio.Doc::lit "object")); (if ((Studio.Doc::memberBytes subject (project known rows)) && (Studio.Doc::memberBytes object (project known authorities))) then (cons (subject, object) (stagedPairs known rest)) else (if ((Studio.Doc::memberBytes object (project known rows)) && (Studio.Doc::memberBytes subject (project known authorities))) then (cons (object, subject) (stagedPairs known rest)) else (stagedPairs known rest)))))),
+  recursive_argument: mappings,
+  executable: true
+}
+
+definition{
+  name: samePair,
+  parameters: [left : (Bytes * Bytes), right : (Bytes * Bytes)],
+  result: Bool,
+  body: ((Studio.Doc::same (first left) (first right)) && (Studio.Doc::same (second left) (second right))),
+  executable: true
+}
+
+definition{
+  name: memberPair,
+  parameters: [pair : (Bytes * Bytes), pairs : (List (Bytes * Bytes))],
+  result: Bool,
+  body: (match pairs
+    | List.nil => false
+    | List.cons head rest => ((samePair pair head) || (memberPair pair rest))),
+  recursive_argument: pairs,
+  executable: true
+}
+
+definition{
+  name: authoritiesOfRow,
+  parameters: [target : Bytes, pairs : (List (Bytes * Bytes))],
+  result: (List Bytes),
+  body: (match pairs
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::same (first head) target) then (cons (second head) (authoritiesOfRow target rest)) else (authoritiesOfRow target rest))),
+  recursive_argument: pairs,
+  executable: true
+}
+
+structure{
+  name: Derived,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: row, type: Bytes},
+    {name: relation, type: Bytes},
+    {name: authority, type: Bytes}
+  ]
+}
+
+definition{
+  name: deriveFrom,
+  parameters: [cited : (List (Bytes * Bytes)), every : (List (Bytes * Bytes)), staged : (List (Bytes * Bytes)), emitted : (List (Bytes * Bytes))],
+  result: (List Derived),
+  body: (match cited
+    | List.nil => (nil Derived)
+    | List.cons head rest => (if ((memberPair head staged) || (memberPair head emitted)) then (deriveFrom rest every staged emitted) else (cons (record Derived {row := (first head), relation := (if ((prim length (LexLeanStd.Order::sortedSet (authoritiesOfRow (first head) every)) : Nat) =? 1) then (Studio.Doc::lit "exactMatch") else (Studio.Doc::lit "narrowMatch")), authority := (second head)}) (deriveFrom rest every staged (cons head emitted))))),
+  recursive_argument: cited,
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: derivedMappings,
+  parameters: [known : Known, admissions : (List LexLeanStd.Json::Json), mappings : (List LexLeanStd.Json::Json)],
+  result: (List Derived),
+  body: (let cited : (List (Bytes * Bytes)) := (citedPairs admissions); (let staged : (List (Bytes * Bytes)) := (stagedPairs known mappings); (deriveFrom cited (appendPairs cited staged) staged (nil (Bytes * Bytes))))),
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: derivedEdges,
+  parameters: [derived : (List Derived)],
+  result: (List (Bytes * Bytes)),
+  body: (match derived
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (cons ((project head row), (project head authority)) (derivedEdges rest))),
+  recursive_argument: derived,
+  executable: true
+}
+
+definition{
+  name: mappingEdges,
+  parameters: [mappings : (List LexLeanStd.Json::Json)],
+  result: (List (Bytes * Bytes)),
+  body: (match mappings
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (cons ((Studio.Doc::str head (Studio.Doc::lit "subject")), (Studio.Doc::str head (Studio.Doc::lit "object"))) (mappingEdges rest))),
+  recursive_argument: mappings,
+  executable: true
+}
+
+definition{
+  name: originsOf,
+  parameters: [items : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+      | Option.none => (originsOf rest)
+      | Option.some cited => (cons (Studio.Doc::str cited (Studio.Doc::lit "authority")) (if (filled cited (Studio.Doc::lit "row")) then (cons (Studio.Doc::str cited (Studio.Doc::lit "row")) (originsOf rest)) else (originsOf rest))))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: stepFrom,
+  parameters: [reached : (List Bytes), edges : (List (Bytes * Bytes))],
+  result: (List Bytes),
+  body: (match edges
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::memberBytes (first head) reached) then (cons (second head) (stepFrom reached rest)) else (if (Studio.Doc::memberBytes (second head) reached) then (cons (first head) (stepFrom reached rest)) else (stepFrom reached rest)))),
+  recursive_argument: edges,
+  executable: true
+}
+
+definition{
+  name: closure,
+  parameters: [reached : (List Bytes), edges : (List (Bytes * Bytes)), fuel : Nat],
+  result: (List Bytes),
+  body: (match fuel
+    | Nat.zero => reached
+    | Nat.succ rest => (let grown : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::concat reached (stepFrom reached edges))); (if ((prim length grown : Nat) =? (prim length reached : Nat)) then reached else (closure grown edges rest)))),
+  recursive_argument: fuel,
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: relevant,
+  parameters: [known : Known, admissions : (List LexLeanStd.Json::Json), mappings : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (let edges : (List (Bytes * Bytes)) := (appendPairs (mappingEdges mappings) (derivedEdges (derivedMappings known admissions mappings))); (closure (LexLeanStd.Order::sortedSet (originsOf admissions)) edges ((prim length edges : Nat) + 1))),
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: unreached,
+  parameters: [rows : (List Bytes), reached : (List Bytes)],
+  result: (List Bytes),
+  body: (match rows
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::memberBytes head reached) then (unreached rest reached) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "unreached-row ") (cons head (cons 0x0a (nil Bytes))))) (unreached rest reached)))),
+  recursive_argument: rows,
+  executable: true
+}
+
+definition{
+  name: stagedPaths,
+  parameters: [seen : Seen],
+  result: (List Bytes),
+  body: (Studio.Check::concat (LexLeanStd.Order::sortedSet (jsonlIn (mappingsDir) (listingOf (project seen listed) (mappingsDir)))) (LexLeanStd.Order::sortedSet (jsonlIn (matrixDir) (listingOf (project seen listed) (matrixDir))))),
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: unlistedStaging,
+  parameters: [seen : Seen],
+  result: (List Bytes),
+  body: (if (isListed (project seen listed) (mappingsDir)) then (if (isListed (project seen listed) (matrixDir)) then (nil Bytes) else (cons (matrixDir) (nil Bytes))) else (cons (mappingsDir) (nil Bytes))),
+  executable: true
+}
+
+definition{
+  name: mappingNeeds,
+  parameters: [seen : Seen],
+  result: (List Bytes),
+  body: (missing seen (cons (indexPath) (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/admissions.json") (stagedPaths seen))))),
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: headBytes,
+  parameters: [values : (List Bytes)],
+  result: Bytes,
+  body: (match values
+    | List.nil => 0x
+    | List.cons head rest => head),
+  executable: true
+}
+
+definition{
+  name: rowLabel,
+  parameters: [records : (List (List Bytes)), target : Bytes],
+  result: Bytes,
+  body: (match records
+    | List.nil => 0x
+    | List.cons head rest => (match head
+      | List.nil => (rowLabel rest target)
+      | List.cons entry others => (if (Studio.Doc::same entry target) then (match others
+        | List.nil => 0x
+        | List.cons domain more => (Studio.Doc::cat (cons (headBytes more) (cons (Studio.Doc::lit " (") (cons domain (cons (Studio.Doc::lit ")") (nil Bytes))))))) else (rowLabel rest target)))),
+  recursive_argument: records,
+  executable: true
+}
+
+definition{
+  name: derivedLinks,
+  parameters: [target : Bytes, derived : (List Derived)],
+  result: (List Bytes),
+  body: (match derived
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::same (project head row) target) then (cons (Studio.Doc::cat (cons (project head relation) (cons (Studio.Doc::lit " ") (cons (project head authority) (cons (Studio.Doc::lit " (derived from its citation)") (nil Bytes)))))) (derivedLinks target rest)) else (derivedLinks target rest))),
+  recursive_argument: derived,
+  executable: true
+}
+
+definition{
+  name: stagedLinks,
+  parameters: [target : Bytes, mappings : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match mappings
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "subject")) target) then (cons (Studio.Doc::cat (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "object")) (cons (Studio.Doc::lit " (staged)") (nil Bytes)))))) (stagedLinks target rest)) else (if (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "object")) target) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "inverse of ") (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " from ") (cons (Studio.Doc::str head (Studio.Doc::lit "subject")) (cons (Studio.Doc::lit " (staged)") (nil Bytes))))))) (stagedLinks target rest)) else (stagedLinks target rest)))),
+  recursive_argument: mappings,
+  executable: true
+}
+
+definition{
+  name: catalogLines,
+  parameters: [records : (List (List Bytes)), rows : (List Bytes), derived : (List Derived), mappings : (List LexLeanStd.Json::Json), reached : (List Bytes)],
+  result: (List Bytes),
+  body: (match rows
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (let links : (List Bytes) := (Studio.Check::concat (derivedLinks head derived) (stagedLinks head mappings)); (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- **") (cons head (cons (Studio.Doc::lit "** ") (cons (rowLabel records head) (cons (if (Studio.Doc::memberBytes head reached) then 0x else (Studio.Doc::lit ", not reached from any origin")) (cons (Studio.Doc::lit ": ") (cons (if ((prim length links : Nat) =? 0) then (Studio.Doc::lit "no mapping yet") else (LexLeanStd.Text::joinWith links (Studio.Doc::lit "; "))) (cons 0x0a (nil Bytes)))))))))) (catalogLines records rest derived mappings reached)))),
+  recursive_argument: rows,
+  executable: true
+}
+
+definition{
+  name: catalogView,
+  parameters: [seen : Seen],
+  result: Bytes,
+  body: (let known : Known := (knownOf seen); (let admissions : (List LexLeanStd.Json::Json) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let mappings : (List LexLeanStd.Json::Json) := (resolvedMappings known (entriesOf seen (stagedPaths seen))); (let records : (List (List Bytes)) := (restOf (Studio.Csv::parse (contents seen (indexPath)))); (Studio.Doc::cat (cons (Studio.Doc::lit "# The Verdant Studio catalog\n\nGenerated by `verdant_studio publish` from catalog/standards-index.csv, model/admissions.json and model/mappings/. Do not edit.\nEach index row with its SKOS mappings. A mapping derived from a citation is exactMatch only when the row cites one authority in every source, and narrowMatch otherwise; a staged mapping overrides it. A row is reached when the mappings connect it to an origin, an authority or row that an admission cites.\n\n") (cons (Studio.Doc::cat (catalogLines records (rowIds records) (derivedMappings known admissions mappings) mappings (relevant known admissions mappings))) (nil Bytes)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: matrixLines,
+  parameters: [known : Known, edges : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match edges
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if ((filled head (Studio.Doc::lit "domain")) && (edgeResolves known head)) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- ") (cons (Studio.Doc::str head (Studio.Doc::lit "domain")) (cons (Studio.Doc::lit ", row ") (cons (Studio.Doc::str head (Studio.Doc::lit "row")) (cons (Studio.Doc::lit ": **") (cons (match (Studio.Doc::field head (Studio.Doc::lit "role"))
+        | Option.none => 0x
+        | Option.some role => (Studio.Doc::str role (Studio.Doc::lit "term"))) (cons (Studio.Doc::lit "** is ") (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " of ") (cons (Studio.Doc::str head (Studio.Doc::lit "artifact")) (cons (Studio.Doc::lit " under ") (cons (edgeAuthority head) (cons (Studio.Doc::lit " (") (cons (match (Studio.Doc::field head (Studio.Doc::lit "origin"))
+        | Option.none => 0x
+        | Option.some origin => (Studio.Doc::str origin (Studio.Doc::lit "kind"))) (cons (Studio.Doc::lit ")\n  > ") (cons (match (Studio.Doc::field head (Studio.Doc::lit "evidence"))
+        | Option.none => 0x
+        | Option.some evidence => (Studio.Doc::str evidence (Studio.Doc::lit "quote"))) (cons 0x0a (nil Bytes))))))))))))))))))) (matrixLines known rest)) else (matrixLines known rest))),
+  recursive_argument: edges,
+  executable: true
+}
+
+definition{
+  name: matrixView,
+  parameters: [seen : Seen],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "# The Verdant Studio stakeholder matrix\n\nGenerated by `verdant_studio publish` from model/matrix/. Do not edit.\nEach PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, consumer is prov:used, attributed is prov:wasAttributedTo, onBehalfOf is prov:actedOnBehalfOf, observation is a SOSA sosa:Observation, and the esco: relations are ESCO occupation-skill relations. Every edge quotes its pinned source, and only edges whose row and quoted authority are in the model are shown.\n\n") (cons (Studio.Doc::cat (matrixLines (knownOf seen) (entriesOf seen (stagedPaths seen)))) (nil Bytes)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planAgenda,
+  parameters: [seen : Seen],
+  result: Plan,
+  body: (match (unlistedStaging seen)
+    | List.cons head rest => (ctor Plan.lists (cons head rest))
+    | List.nil => (match (mappingNeeds seen)
+      | List.cons head rest => (ctor Plan.reads (cons head rest))
+      | List.nil => (let known : Known := (knownOf seen); (let admissions : (List LexLeanStd.Json::Json) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (Studio.Check::concat (uncited (project known rows) (citedRows admissions)) (unreached (project known rows) (relevant known admissions (resolvedMappings known (entriesOf seen (stagedPaths seen)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: planPublish,
   parameters: [seen : Seen],
   result: Plan,
-  body: (match (missing seen (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (decisionsPath) (nil Bytes)))))
+  body: (match (unlistedStaging seen)
+    | List.cons head rest => (ctor Plan.lists (cons head rest))
+    | List.nil => (match (Studio.Check::concat (missing seen (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (decisionsPath) (nil Bytes))))) (mappingNeeds seen))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (ctor Plan.done (appendPairs (decisionFiles seen) (cons ((workflowPath), (workflow)) (cons ((Studio.Doc::lit ".github/workflows/operate.yml"), (operateWorkflow)) (cons ((Studio.Doc::lit ".github/workflows/refresh.yml"), (refreshWorkflow)) (cons ((Studio.Doc::lit ".github/CODEOWNERS"), (codeOwners)) (cons ((Studio.Doc::lit "docs/model.md"), (modelView seen)) (cons ((Studio.Doc::lit ".github/secret_scanning.yml"), (secretScanning)) (nil (Bytes * Bytes))))))))) (Studio.Doc::lit "published the workflows, CODEOWNERS, secret scanning, docs/model.md and docs/owner-decisions.md\n"))),
+    | List.nil => (ctor Plan.done (appendPairs (decisionFiles seen) (cons ((workflowPath), (workflow)) (cons ((Studio.Doc::lit ".github/workflows/operate.yml"), (operateWorkflow)) (cons ((Studio.Doc::lit ".github/workflows/refresh.yml"), (refreshWorkflow)) (cons ((Studio.Doc::lit ".github/CODEOWNERS"), (codeOwners)) (cons ((Studio.Doc::lit "docs/catalog.md"), (catalogView seen)) (cons ((Studio.Doc::lit "docs/matrix.md"), (matrixView seen)) (cons ((Studio.Doc::lit "docs/model.md"), (modelView seen)) (cons ((Studio.Doc::lit ".github/secret_scanning.yml"), (secretScanning)) (nil (Bytes * Bytes))))))))))) (Studio.Doc::lit "published the workflows, CODEOWNERS, secret scanning, docs/model.md, docs/catalog.md, docs/matrix.md and docs/owner-decisions.md\n")))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1450,7 +1926,11 @@ definition{
   result: Plan,
   body: (if (negate (isListed (project seen listed) (queueDir))) then (ctor Plan.lists (cons (queueDir) (nil Bytes))) else (let paths : (List Bytes) := (unskipped (LexLeanStd.Order::sortedSet (queuedFiles (listingOf (project seen listed) (queueDir)))) skipped); (match (missing seen (cons (decisionsPath) (cons (indexPath) (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/authorities.toml") paths))))))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (let found : (Bool * Bytes) := (queueScan seen paths); (ctor Plan.done (nil (Bytes * Bytes)) (if (first found) then (second found) else (prim append (second found) (inferenceWait seen) : Bytes))))))),
+    | List.nil => (let found : (Bool * Bytes) := (queueScan seen paths); (if (first found) then (ctor Plan.done (nil (Bytes * Bytes)) (second found)) else (match (unlistedStaging seen)
+      | List.cons head rest => (ctor Plan.lists (cons head rest))
+      | List.nil => (match (mappingNeeds seen)
+        | List.cons head rest => (ctor Plan.reads (cons head rest))
+        | List.nil => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (second found) (cons (Studio.Doc::cat (LexLeanStd.Order::sortedSet (unresolvedWaits (knownOf seen) (entriesOf seen (stagedPaths seen))))) (cons (inferenceWait seen) (nil Bytes))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1527,7 +2007,7 @@ definition{
   name: usage,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::lit "usage: verdant_studio check | next [SKIP...] | agenda | stage-bindings JSONL | stage-admissions JSONL | stage-decisions JSONL | admit JSONL | record-decision JSONL | stage-encodings JSONL | admit-encoding STAGED | merge-gate RULES | ingest-index CSV | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
+  body: (Studio.Doc::lit "usage: verdant_studio check | next [SKIP...] | agenda | stage-bindings JSONL | stage-admissions JSONL | stage-decisions JSONL | stage-mappings JSONL | stage-matrix JSONL | admit JSONL | record-decision JSONL | stage-encodings JSONL | admit-encoding STAGED | merge-gate RULES | ingest-index CSV | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
   executable: true
 }
 
@@ -1540,9 +2020,9 @@ definition{
     | List.nil => (ctor Plan.refuse (usage))
     | List.cons op rest => (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheck seen) else (if (Studio.Doc::same op (Studio.Doc::lit "next")) then (planNext seen rest) else (if (Studio.Doc::same op (Studio.Doc::lit "build")) then (planBuild seen) else (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else (if (Studio.Doc::same op (Studio.Doc::lit "agenda")) then (planAgenda seen) else (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (planStage seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (planStageQueue seen path false) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (planStageQueue seen path true) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (planStageEncodings seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
+      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (planStage seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-mappings")) then (planStageInto seen path false) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-matrix")) then (planStageInto seen path true) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (planStageQueue seen path false) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (planStageQueue seen path true) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (planStageEncodings seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
         | List.nil => (ctor Plan.refuse (usage))
-        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage)))))))))))))))))))),
+        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage)))))))))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
