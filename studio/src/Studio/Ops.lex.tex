@@ -2096,6 +2096,27 @@ definition{
 
 
 definition{
+  name: blankIn,
+  parameters: [lines : (List Bytes)],
+  result: Bool,
+  body: (match lines
+    | List.nil => false
+    | List.cons head rest => (if ((prim length (LexLeanStd.Text::trim head) : Nat) =? 0) then true else (blankIn rest))),
+  recursive_argument: lines,
+  executable: true
+}
+
+definition{
+  name: stageGuard,
+  parameters: [seen : Seen, path : Bytes, staged : Plan],
+  result: Plan,
+  body: (match (missing seen (cons path (nil Bytes)))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (if (blankIn (LexLeanStd.Text::lines (contents seen path))) then (ctor Plan.refuse (Studio.Doc::lit "the input has a blank line; send one record per line and no trailing newline, because the workflow adds the final one\n")) else staged)),
+  executable: true
+}
+
+definition{
   name: route,
   parameters: [args : (List Bytes), seen : Seen],
   result: Plan,
@@ -2103,7 +2124,7 @@ definition{
     | List.nil => (ctor Plan.refuse (usage))
     | List.cons op rest => (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheck seen) else (if (Studio.Doc::same op (Studio.Doc::lit "next")) then (planNext seen rest) else (if (Studio.Doc::same op (Studio.Doc::lit "build")) then (planBuild seen) else (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else (if (Studio.Doc::same op (Studio.Doc::lit "agenda")) then (planAgenda seen) else (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (planStage seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-mappings")) then (planStageInto seen path false) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-matrix")) then (planStageInto seen path true) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (planStageQueue seen path false) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (planStageQueue seen path true) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (planStageEncodings seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
+      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (stageGuard seen path (planStage seen path)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-mappings")) then (stageGuard seen path (planStageInto seen path false)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-matrix")) then (stageGuard seen path (planStageInto seen path true)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (stageGuard seen path (planStageQueue seen path false)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (stageGuard seen path (planStageQueue seen path true)) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (stageGuard seen path (planStageEncodings seen path)) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
         | List.nil => (ctor Plan.refuse (usage))
         | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage)))))))))))))))))))))),
   axioms: [Quot.sound, propext],
