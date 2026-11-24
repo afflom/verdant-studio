@@ -1,0 +1,1 @@
+{"$comment":"WebAssembly 3.0 SpecTec, 1.2-syntax.types.spectec at wg-3.0 9d36019973201a19f9c9ebb0f10828b2fe2374aa","$schema":"https://json-schema.org/draft/2020-12/schema","description":"address type","enum":["I32","I64"],"title":"syntax addrtype","type":"string"}

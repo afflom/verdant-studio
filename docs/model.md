@@ -180,3 +180,13 @@ Each construct and the citation that admits it.
 - `Catalog.IarcGenericRating`: std IARC-RATINGS-DEFINITIONS row Q03
 - `Catalog.GracRating`: std IARC-RATINGS-DEFINITIONS row Q06
 - `Catalog.JpPremiumsRepresentationsAct`: std JP-ACT-134-1962 row U05
+- `Catalog.WasmAddrtype`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmBit`: std WASM-3.0-SPECTEC-SYNTAX-VALUES row H04
+- `Catalog.WasmFnn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmInn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmNull`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmNumtype`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmPacktype`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmPnn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmVectype`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmVnn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
