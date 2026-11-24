@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"The structural pattern a choice-based work follows.","enum":["Time Cave","Gauntlet","Branch and Bottleneck","Quest","Open Map","Sorting Hat","Floating Modules","Loop and Grow"],"title":"Standard patterns in choice-based games"}

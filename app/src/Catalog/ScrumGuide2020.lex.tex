@@ -1,0 +1,119 @@
+\begin{lexlean}{Catalog.ScrumGuide2020}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Accountability,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: developers, fields: []},
+    {name: productOwner, fields: []},
+    {name: scrumMaster, fields: []}
+  ]
+}
+
+inductive{
+  name: ScrumEvent,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sprint, fields: []},
+    {name: sprintPlanning, fields: []},
+    {name: dailyScrum, fields: []},
+    {name: sprintReview, fields: []},
+    {name: sprintRetrospective, fields: []}
+  ]
+}
+
+inductive{
+  name: ScrumArtifact,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: productBacklog, fields: []},
+    {name: sprintBacklog, fields: []},
+    {name: increment, fields: []}
+  ]
+}
+
+inductive{
+  name: Commitment,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: productGoal, fields: []},
+    {name: sprintGoal, fields: []},
+    {name: definitionOfDone, fields: []}
+  ]
+}
+
+inductive{
+  name: ScrumValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: commitment, fields: []},
+    {name: focus, fields: []},
+    {name: openness, fields: []},
+    {name: respect, fields: []},
+    {name: courage, fields: []}
+  ]
+}
+
+inductive{
+  name: Pillar,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: transparency, fields: []},
+    {name: inspection, fields: []},
+    {name: adaptation, fields: []}
+  ]
+}
+
+structure{
+  name: ProductBacklog,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: productGoal, type: Bytes},
+    {name: items, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: SprintBacklog,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: sprintGoal, type: Bytes},
+    {name: selectedItems, type: (List Bytes)},
+    {name: plan, type: Bytes}
+  ]
+}
+
+structure{
+  name: Increment,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definitionOfDone, type: Bytes}
+  ]
+}
+
+structure{
+  name: ScrumGuide2020,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: scrumMaster, type: Bytes},
+    {name: productOwner, type: Bytes},
+    {name: developers, type: (List Bytes)},
+    {name: productBacklog, type: ProductBacklog},
+    {name: sprintBacklog, type: (Option SprintBacklog)},
+    {name: increments, type: (Option (List Increment))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

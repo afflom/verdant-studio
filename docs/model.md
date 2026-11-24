@@ -88,3 +88,12 @@ Each construct and the citation that admits it.
 - `P7`: std PRISM-TEMPLATE-CONTRACT-2
 - `P12`: std PRISM-TEMPLATE-CONTRACT-2
 - `Studio.ContentBoundary`: std ISO-IEC-IEEE-42010-2022
+- `Catalog.AnimationPrinciple`: std WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION row E01
+- `Catalog.ArkitBlendShapeLocation`: std APPLE-ARKIT-BLENDSHAPELOCATION row E03
+- `Catalog.BartlePlayerTypes`: std BARTLE-HCDS-1996 row B12
+- `Catalog.ChoiceStructurePattern`: std ASHWELL-STANDARD-PATTERNS-2015 row C04
+- `Catalog.KanbanGuide`: std KANBAN-GUIDE-2.1 row A08
+- `Catalog.MdaFramework`: std HUNICKE-MDA-2004 row B01
+- `Catalog.NarrativeArchitecture`: std JENKINS-NARRATIVE-ARCHITECTURE-2004 row C11
+- `Catalog.ScrumGuide2020`: std SCRUM-GUIDE-2020 row A07
+- `Catalog.ThreeActStructure`: std WIKIPEDIA-THREE-ACT-STRUCTURE row C02

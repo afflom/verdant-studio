@@ -184,6 +184,16 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `DORA-SOFTWARE-DELIVERY-METRICS` | The five software delivery performance metrics, grouped into throughput and instability. Index row H14. |  |
 | `FAGERHOLT-LORENTZON-BEYOND-THE-HUD-2009` | The UI design space of FPS games: the fiction and spatiality dimensions and the six categories of UI elements (section 7.3). Index row L10. |  |
 | `GGPO-GGPONET-H` | GGPO rollback networking SDK types: player types, event codes, error codes and network statistics. Index row K03. |  |
+| `ARXIV-1709.00084-V6` | The classical behavior tree formulation: control flow and execution node types and their return statuses (Table 1.1). Index row J02. |  |
+| `EBU-R128-2023` | The loudness measures EBU R 128 recommends: Programme Loudness, Loudness Range, Maximum True Peak Level, Maximum Momentary Loudness and Maximum Short-term Loudness, the Target Level and tolerances. Index row I02. |  |
+| `EBU-TECH-3285-2` | The Broadcast Wave Format: the broadcast audio extension (bext) chunk and its fields. Index row I09. |  |
+| `GAME-ACCESSIBILITY-GUIDELINES` | Accessibility guidelines categorised by impairment (Motor, Cognitive, Vision, Hearing, Speech, General) and by level (Basic, Intermediate, Advanced). Index row M01. |  |
+| `ITU-R-BT-2100-3` | HDR-TV image parameters: image container, colorimetry, PQ and HLG transfer functions, signal formats and integer signal ranges. Index row G08. |  |
+| `MS-XAG-3.2` | XAG 101 to 123 and the sections each XAG contains. Index row M02. |  |
+| `NYSTROM-GAME-PROGRAMMING-PATTERNS` | The catalogue of game programming patterns and their grouping, from the book's table of contents. Index row H08. |  |
+| `REYNOLDS-STEERING-BEHAVIORS-1999` | The three-layer motion hierarchy (action selection, steering, locomotion) and the named steering behaviors. Index row J08. |  |
+| `TRIBES-ENGINE-NETWORKING-MODEL` | Data delivery requirement classes, the connection, stream and simulation layers, and the stream managers. Index row K04. |  |
+| `USB-HID-HUT-1.6` | The HID usage pages and usages, summarised in Table 3.1 Usage Page Summary. Index row H10. |  |
 
 ## Claims that are not conformance IDs
 

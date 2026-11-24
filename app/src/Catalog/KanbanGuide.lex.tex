@@ -1,0 +1,77 @@
+\begin{lexlean}{Catalog.KanbanGuide}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: ChangeManagementPrinciple,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: startWithWhatYouDoNow, fields: []},
+    {name: agreeToPursueImprovementThroughEvolutionaryChange, fields: []},
+    {name: encourageActsOfLeadershipAtAllLevels, fields: []}
+  ]
+}
+
+inductive{
+  name: ServiceDeliveryPrinciple,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: understandAndFocusOnCustomerNeedsAndExpectations, fields: []},
+    {name: manageTheWorkLetPeopleSelfOrganizeAroundIt, fields: []},
+    {name: regularlyReviewTheNetworkOfServicesAndItsPoliciesInOrderToImproveOutcomes, fields: []}
+  ]
+}
+
+inductive{
+  name: GeneralPractice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: visualize, fields: []},
+    {name: limitWIP, fields: []},
+    {name: manageFlow, fields: []},
+    {name: makePoliciesExplicit, fields: []},
+    {name: useFeedbackLoops, fields: []},
+    {name: evolveExperimentally, fields: []}
+  ]
+}
+
+structure{
+  name: WipLimit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: scope, type: Bytes},
+    {name: limit, type: Nat}
+  ]
+}
+
+structure{
+  name: Board,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: columns, type: (List Bytes)},
+    {name: commitmentPoint, type: Bytes},
+    {name: deliveryPoint, type: Bytes},
+    {name: swimlanes, type: (Option (List Bytes))},
+    {name: wipLimits, type: (Option (List WipLimit))}
+  ]
+}
+
+structure{
+  name: KanbanGuide,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: board, type: Board},
+    {name: workItems, type: (List Bytes)},
+    {name: policies, type: (List Bytes)},
+    {name: metrics, type: (List Bytes)},
+    {name: cadences, type: (List Bytes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
