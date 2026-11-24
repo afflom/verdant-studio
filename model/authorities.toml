@@ -3347,3 +3347,20 @@ statement = "The GSF risk components: attack surfaces, vulnerabilities, exploits
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "IAB-OPENRTB-2.6"
+name = "OpenRTB API Specification Version 2.6"
+issuer = "IAB Technology Laboratory"
+edition = "2.6"
+canonical_id = "https://github.com/InteractiveAdvertisingBureau/openrtb2.x/blob/main/2.6.md"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://raw.githubusercontent.com/InteractiveAdvertisingBureau/openrtb2.x/21109db5519c20422d413f3a45732fe9916a93e4/2.6.md"
+media_type = "text/markdown"
+license = "Creative Commons Attribution 3.0"
+redistribution = "redistributable"
+statement = "The OpenRTB 2.6 bid request (section 3.2) and bid response (section 4.2) objects and their attributes. Index row U10."
+artifact = "authorities/IAB-OPENRTB-2.6/2.6.md"
+checksum = "f2db50d6cb6d1a428e6acab84ba24f2de40e228927557c344c85e2b91b0f082f"
+realized_by = []
