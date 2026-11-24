@@ -1,0 +1,72 @@
+\begin{lexlean}{Catalog.AStarSearch}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AStarSearchCostPart,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: g, fields: []},
+    {name: h, fields: []}
+  ]
+}
+
+inductive{
+  name: AStarSearchNodeMark,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: open, fields: []},
+    {name: closed, fields: []}
+  ]
+}
+
+inductive{
+  name: AStarSearchResult,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: lemma1, fields: []},
+    {name: corollary, fields: []},
+    {name: theorem1, fields: []},
+    {name: lemma2, fields: []},
+    {name: lemma3, fields: []},
+    {name: theorem2, fields: []},
+    {name: theorem3, fields: []},
+    {name: corollary1, fields: []},
+    {name: corollary2, fields: []}
+  ]
+}
+
+inductive{
+  name: AStarSearchSubsection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iATheProblemOfFindingPathsThroughGraphs, fields: []},
+    {name: iBSomeDefinitionsAboutGraphs, fields: []},
+    {name: iIADescriptionOfTheAlgorithm, fields: []},
+    {name: iIBTheEvaluationFunction, fields: []},
+    {name: iICTheAdmissibilityOfA, fields: []},
+    {name: iIIALimitationOfSubgraphsByInformationFromTheProblem, fields: []},
+    {name: iIIBAConsistencyAssumption, fields: []},
+    {name: iIICProofOfTheOptimalityOfA, fields: []},
+    {name: iVAComparisonsBetweenAAndOtherSearchTechniques, fields: []},
+    {name: iVBTheHeuristicPowerOfTheEstimateH, fields: []}
+  ]
+}
+
+structure{
+  name: AStarSearch,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: costPart, type: (Option AStarSearchCostPart)},
+    {name: nodeMark, type: (Option AStarSearchNodeMark)},
+    {name: result, type: (Option AStarSearchResult)},
+    {name: subsection, type: (Option AStarSearchSubsection)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
