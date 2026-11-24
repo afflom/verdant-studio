@@ -1,0 +1,1 @@
+{"name":"detour-find-path-options","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"dtFindPathOptions","enum":["DT_FINDPATH_ANY_ANGLE"],"$comment":"DetourNavMesh.h, enum dtFindPathOptions, as declared in the pinned header"},"citation":["std","RECAST-DETOUR-NAVMESH-H","J07"]}

@@ -1,0 +1,1 @@
+{"name":"detour-detail-tri-edge-flags","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"dtDetailTriEdgeFlags","enum":["DT_DETAIL_EDGE_BOUNDARY"],"$comment":"DetourNavMesh.h, enum dtDetailTriEdgeFlags, as declared in the pinned header"},"citation":["std","RECAST-DETOUR-NAVMESH-H","J07"]}
