@@ -324,6 +324,65 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WIPO-BERNE-1979` | Copyright protection of literary and artistic works, covering game code, art, audio and narrative. Index row X01. |  |
 | `WIPO-LEGAL-STATUS-VIDEO-GAMES-2013` | WIPO's comparative study of how national laws classify and protect video games. Index row X01. |  |
 | `XBOX-GAME-CONTENT-USAGE-RULES` | Terms under which players may use and share Microsoft game content, including video. Index row S09. |  |
+| `ALEMBIC-1.8.9` | The Alembic interchange format and its reference library at tag 1.8.9. Index row D04. |  |
+| `APPLE-HIG` | Apple's platform human interface guidelines. Index row L09 (Apple HIG; Xbox design guidance and Material for Play not bound). |  |
+| `APPLE-MSL-4.1` | The Metal Shading Language, version 4.1. Index row G03. |  |
+| `APPLE-UPCOMING-REQUIREMENTS` | Apple's minimum SDK and Xcode requirements for App Store submissions (Xcode 26 and the iOS 26 family SDKs). Index row H16. |  |
+| `ARNHEIM-ART-VISUAL-PERCEPTION-1974` | Gestalt principles of visual perception: balance, shape, form, space, light and color. Index row D18 (Gestalt; Munsell and Itten not bound). |  |
+| `ARTICY-DRAFT-X-JSON-EXPORT` | The articy:draft X JSON export: packages, models, hierarchy and global variables of a narrative project. Index row C08. |  |
+| `ARXIV-1711.08527-V1` | A systematic review of the game development software engineering process life cycle across pre-production, production and post-production. Index row A02. |  |
+| `ATLASSIAN-JIRA-CLOUD-REST-V3-OPENAPI` | The Jira Cloud work-item tracking data model and operations as an OpenAPI 3.0.1 document. Index row A16 (Jira; Flow Production Tracking and Hansoft publish no equivalent form). |  |
+| `AUTODESK-FBX-SDK-2020.3.11` | The FBX SDK 2020.3.11 that reads and writes the proprietary FBX scene format. Index row D03. |  |
+| `BETTNER-TERRANO-1500-ARCHERS-2001` | Deterministic lockstep networking: synchronized simulation of player commands with turn timing. Index row K02. |  |
+| `BJORK-LUNDGREN-HOLOPAINEN-GDP-2003` | The game design pattern template: name, description, consequences, using the pattern and relations. Index row B06. |  |
+| `BROOKE-SUS-1996` | The ten-item System Usability Scale and its 0 to 100 scoring. Index row L08. |  |
+| `CHANDLER-GAME-PRODUCTION-TOOLBOX-2020` | Game production practice: planning, scheduling, milestones, team and outsourcing management. Index row A19. |  |
+| `COLLINS-GAME-SOUND-2008` | Interactive and adaptive game audio, including horizontal resequencing and vertical layering. Index row I05. |  |
+| `COOPER-STAGE-GATE-1990` | The Stage-Gate new product process: stages of work separated by go/kill gates with deliverables and criteria. Index row A05. |  |
+| `DRACHEN-MIRZA-BABAEI-NACKE-GUR-2018` | Games user research methods: playtesting, usability testing, surveys, biometrics and analytics. Index row L05. |  |
+| `EKMAN-FACS-2002` | The facial action units of FACS, 2002 manual (the current version per its issuer). Index row E02. |  |
+| `EPIC-UE-5.9-CINEMATICS` | Unreal Engine Sequencer as a cinematic data model: level sequences, tracks, sections and keys. Index row F07 (Unreal Sequencer; Unity Timeline not bound). |  |
+| `EPIC-UE-5.9-CPP-CODING-STANDARD` | Epic's C++ coding standard: naming, type and formatting conventions. Index row H09 (Epic C++; Unity C# style not bound). |  |
+| `EPIC-UE-5.9-IK-RIG` | The Unreal Engine IK Rig: goals, solvers and retarget chains. Index row E08 (Unreal IK Rig; Unity Humanoid and MetaHuman not bound). |  |
+| `FULLERTON-GDW-5E-2024` | Formal and dramatic elements of games, the playcentric design process and design documentation (one-pager, treatment, design document). Index rows A17 and B04. |  |
+| `GOOGLE-PLAY-TARGET-API-LEVEL` | Google Play's target API level requirement for new apps and updates. Index row H16. |  |
+| `GREGORY-GAME-ENGINE-ARCHITECTURE-4E-2026` | The runtime engine architecture reference model: layers, subsystems and the game loop. Index row H06. |  |
+| `HART-NILSSON-RAPHAEL-ASTAR-1968` | The A* search algorithm and its admissibility under a consistent heuristic. Index row J06. |  |
+| `HODENT-GAMERS-BRAIN-2E-2026` | The game UX framework of usability and engage-ability grounded in perception, attention, memory and motivation. Index row L03. |  |
+| `HOLDEN-LEARNED-MOTION-MATCHING-2020` | Motion matching and its learned decompression, stepping and projection networks. Index row E09. |  |
+| `IEC-61966-2-1-1999` | The sRGB default RGB colour space: primaries, white point and transfer function. Index row G07. |  |
+| `IEEE-754-2019` | Binary and decimal floating-point formats, rounding, operations and exceptions. Index row H03. |  |
+| `IJSSELSTEIJN-GEQ-2013` | The GEQ core, social presence and post-game modules and their scoring. Index row L06. |  |
+| `ISO-31000-2018` | Risk management principles, framework and process, edition 2 (ISO Open Data record 65694). Index row A18. |  |
+| `ISO-9241-11-2018` | Usability as effectiveness, efficiency and satisfaction in a context of use, edition 2 (ISO Open Data record 63500). Index row L02. |  |
+| `ISO-9241-210-2019` | Human-centred design principles and activities for interactive systems, edition 2 (ISO Open Data record 77520). Index row L01. |  |
+| `ISO-9241-392-2015` | Recommendations that reduce visual fatigue from stereoscopic images, edition 1 (ISO Open Data record 60317). Index row G15. |  |
+| `ISO-IEC-42001-2023` | Requirements for an AI management system, edition 1 (ISO Open Data record 81230). Index row J15. |  |
+| `ISO-IEC-IEEE-12207-2026` | The software life cycle processes, edition 2 (ISO Open Data record 90219). Index row A12. |  |
+| `ISO-IEC-IEEE-15288-2023` | The system life cycle processes, edition 2 (ISO Open Data record 81702). Index row A13. |  |
+| `ISO-IEC-IEEE-24748-1-2024` | Guidelines for life cycle management, Part 1 of the 24748 series, edition 2 (ISO Open Data record 84709). Index row A14. |  |
+| `JENKINS-CONVERGENCE-CULTURE` | Transmedia storytelling across media platforms and participatory culture. Index row C13. |  |
+| `KOENITZ-IDN-2015` | Interactive digital narrative theory, including the system, process and product (SPP) model. Index row C03. |  |
+| `MILLINGTON-AI-FOR-GAMES-3E-2019` | Game AI techniques, including finite state machines and hierarchical state machines. Index row J01. |  |
+| `MORI-UNCANNY-VALLEY-2012` | The authorized translation of Mori's 1970 uncanny valley essay: affinity against human likeness. Index row D19. |  |
+| `OMI-GLTF-EXTENSIONS` | The OMI glTF extensions for interoperable worlds, each with its JSON schema. Index row D17 (OMI; the Metaverse Standards Forum publishes no specification). |  |
+| `PINELLE-WONG-STACH-HEURISTICS-2008` | Ten usability heuristics for video games derived from game reviews. Index row L04 (Pinelle heuristics; PLAY and HEP not bound). |  |
+| `PROPP-MORPHOLOGY-1968` | Propp's thirty-one narrative functions and seven spheres of action. Index row C12. |  |
+| `RAMADAN-WIDYANI-GDLC-2013` | The Game Development Life Cycle phases: initiation, pre-production, production, testing, beta and release. Index row A01. |  |
+| `SAI-SAFE-6.0` | The Scaled Agile Framework 6.0 roles, events, artifacts and configurations for scaling agile delivery. Index row A09. |  |
+| `SCHELL-ART-OF-GAME-DESIGN-3E-2019` | The elemental tetrad (mechanics, story, aesthetics, technology) and the design lenses. Index row B03. |  |
+| `SCHREIBER-ROMERO-GAME-BALANCE-2021` | Game balance methods: economies, progression, probability, cost curves and analytics. Index row B17. |  |
+| `SMPTE-ST-12-1-2014` | SMPTE time and control code: the hours, minutes, seconds and frames address and its binary groups. Index row F04. |  |
+| `SMPTE-ST-2084-2014` | The PQ electro-optical transfer function. Index row G09 (PQ; HDR10+ and Dolby Vision are proprietary and not bound). |  |
+| `STRATEGYZER-BUSINESS-MODEL-CANVAS` | The nine building blocks of the Business Model Canvas. Index row A20 (Business Model Canvas; Lean Canvas not bound). |  |
+| `SWEETSER-WYETH-GAMEFLOW-2005` | The GameFlow model: eight elements of player enjoyment derived from flow theory. Index row B10. |  |
+| `TONDELLO-HEXAD-SCALE-2016` | The six Hexad user types and the validated scale that measures them. Index row B16 (Hexad; Octalysis not bound). |  |
+| `UNITY-6-RELEASES-SUPPORT` | The Unity 6 release model: LTS releases, update releases and their support windows. Index row A23 (Unity LTS; Unreal hotfix branches not bound). |  |
+| `VANDEN-ABEELE-PXI-2020` | The Player Experience Inventory: functional and psychosocial consequence constructs and their validated items. Index row L07. |  |
+| `W3C-WASM-CORE-3.0` | The WebAssembly core specification, release 3.0: structure, validation, execution and binary and text formats. Index row H04. |  |
+| `WALK-GORLICH-BARRETT-DDE-2017` | The DDE framework: design, dynamics and experience as a revision of MDA. Index row B02. |  |
+| `YANNAKAKIS-TOGELIUS-AI-AND-GAMES-2018` | The academic reference model of AI in games: playing games, generating content and modeling players. Index row J10. |  |
+| `ZAGAL-MATEAS-GOP-2005` | The Game Ontology Project's hierarchy of game elements (interface, rules, entity manipulation, goals). Index row B07. |  |
 
 ## Claims that are not conformance IDs
 
