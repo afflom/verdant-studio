@@ -82,4 +82,3 @@
 {"subject": "Z06", "relation": "exactMatch", "object": "APPLETON-EXPERIENCE-OF-LANDSCAPE-REV", "evidence": "model/bindings/APPLETON-EXPERIENCE-OF-LANDSCAPE-REV.json statement: \"Prospect-refuge theory of safety and vista, used for encounter and pacing design. Index row Z06.\""}
 {"subject": "Z07", "relation": "exactMatch", "object": "LEVEL-DESIGN-BOOK-METRICS", "evidence": "model/bindings/LEVEL-DESIGN-BOOK-METRICS.json statement: \"Gameplay metrics for blockout: player capsule, jump and cover heights and grid units. Index row Z07.\""}
 {"subject": "Z08", "relation": "exactMatch", "object": "LEVEL-DESIGN-BOOK", "evidence": "model/bindings/LEVEL-DESIGN-BOOK.json statement: \"The open practitioner reference for level design process, typology and analysis. Index row Z08.\""}
-
