@@ -35,13 +35,19 @@ jobs:
           set -euo pipefail
           stale=''
           for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq ".[] | select((.title | startswith(\"verdant_studio propose-command\")) and .user.login == \"${SLUG}[bot]\") | .number"); do
-            state=unknown
+            # mergeable is null while GitHub computes it, and it stays meaningful for a draft,
+            # which a cancelled run may have left behind.
+            mergeable=null
             for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
-              state=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .mergeable_state)
-              if [ "$state" != unknown ]; then break; fi
+              mergeable=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.mergeable | tostring')
+              if [ "$mergeable" != null ]; then break; fi
               sleep 10
             done
-            if [ "$state" = dirty ]; then stale="$stale $pr"; fi
+            if [ "$mergeable" = false ]; then
+              stale="$stale $pr"
+            elif [ "$mergeable" = true ] && [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .draft)" = true ]; then
+              gh pr ready "$pr" --repo "$GITHUB_REPOSITORY" || true
+            fi
           done
           echo "stale=$stale" >> "$GITHUB_OUTPUT"
           echo "propose-command pull requests to regenerate:${stale:- none}"
@@ -92,6 +98,9 @@ jobs:
           failed=''
           for pr in $STALE; do
             branch=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .head.ref)
+            # While it is regenerated (an export takes minutes), the pull request is a draft, so
+            # the owner never sees it as conflicting; it is marked ready again either way.
+            gh pr ready --undo "$pr" || true
             git fetch -q origin "$branch" main
             git checkout -q -B refresh origin/main
             git clean -fdq
@@ -100,12 +109,14 @@ jobs:
               sed 's/^/::error::#'"$pr"' does not apply to main: /' target/apply.err | head -20
               git reset -q --hard origin/main
               failed="$failed $pr"
+              gh pr ready "$pr" || true
               continue
             fi
             if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
               grep -m 20 'error' target/export.log | sed 's/^/::error::#'"$pr"': /'
               git reset -q --hard origin/main
               failed="$failed $pr"
+              gh pr ready "$pr" || true
               continue
             fi
             rm -rf certified
@@ -121,6 +132,7 @@ jobs:
             { echo "verdant_studio propose-command"; echo; echo "regenerated on main $(git rev-parse --short origin/main)"; git diff --cached --stat -- studio/src README.md; } > target/message.txt
             git -c user.name="${SLUG}[bot]" -c user.email="${id}+${SLUG}[bot]@users.noreply.github.com" commit -q -F target/message.txt
             git push -q --force-with-lease="${branch}:origin/${branch}" origin "HEAD:refs/heads/${branch}"
+            gh pr ready "$pr" || true
             echo "::notice::regenerated #${pr} on the new main"
           done
           if [ -n "$failed" ]; then echo "::error::these pull requests could not be regenerated:$failed"; exit 1; fi
