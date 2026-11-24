@@ -2,6 +2,20 @@
 \useglossary{lexlean.std.nat@1.2.0}
 \title{Natural number addition}
 \begin{semanticmodule}
+inductive{
+  name: JsonValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: null, fields: []},
+    {name: boolean, fields: [Bool]},
+    {name: number, fields: [(Int * Int)]},
+    {name: string, fields: [Bytes]},
+    {name: array, fields: [(List JsonValue)]},
+    {name: object, fields: [(List (Bytes * JsonValue))]}
+  ]
+}
+
 structure{
   name: Bid,
   type_parameters: [],
@@ -38,7 +52,8 @@ structure{
     {name: exp, type: (Option Int)},
     {name: dur, type: (Option Int)},
     {name: mtype, type: (Option Int)},
-    {name: slotinpod, type: (Option Int)}
+    {name: slotinpod, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -49,7 +64,8 @@ structure{
   fields: [
     {name: bid, type: (List Bid)},
     {name: seat, type: (Option Bytes)},
-    {name: group, type: (Option Int)}
+    {name: group, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -63,7 +79,8 @@ structure{
     {name: bidid, type: (Option Bytes)},
     {name: cur, type: (Option Bytes)},
     {name: customdata, type: (Option Bytes)},
-    {name: nbr, type: (Option Int)}
+    {name: nbr, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 \end{semanticmodule}
