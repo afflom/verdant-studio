@@ -213,6 +213,17 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `HE-COHEN-SALESIN-VC-1996` | The Virtual Cinematographer: camera placements relative to the line of interest, camera modules, and film idioms encoded as hierarchical finite state machines. Index row F06. |  |
 | `MACHINATIONS-DOCS` | The Machinations internal-economy diagram language: its node types, gate types and connection types. Index row B08. |  |
 | `OPENTYPE-1.9.1` | The OpenType font file organisation and its font tables by tag: required tables, outline, bitmap, advanced typographic, variation, colour and other tables. Index row N11. |  |
+| `APPLE-APP-REVIEW-GUIDELINES` | The App Review Guidelines: sections 1 Safety to 5 Legal and their numbered guidelines. Index row P05. |  |
+| `BR-LEI-13709-2018` | The LGPD: its Art. 5 definitions, Art. 7 legal bases for processing and Art. 18 rights of the data subject. Index row R05 (Brazil). |  |
+| `CCSDS-650.0-M-3` | The OAIS reference model: its environment, functional entities, information package types and Preservation Description Information. Index row Y01. |  |
+| `CERO-RATING-SYSTEM` | The CERO age division marks (A, B, C, D, Z) and other marks. Index row Q05. |  |
+| `EC-ESCO-1.2.1` | The ESCO occupations pillar in its official CSV form: each occupation by concept URI with its preferred and alternative labels, definition and ISCO-08 unit group (iscoGroup), plus the ISCO-08 groups it reproduces (ISCOGroups_en.csv). Includes digital games developer (2513.1), digital games designer (2166.6) and digital games tester (2519). Source of stakeholder roles for the D10 matrix. |  |
+| `GHG-PROTOCOL-CORPORATE-REVISED` | The GHG Protocol Corporate Standard: the six greenhouse gases, consolidation approaches and Scopes 1 to 3. Index row X08. |  |
+| `ICO-AADC-STANDARDS` | The 15 standards of the Children's Code. Index row R03. |  |
+| `OTEL-SPEC-1.40.0-TRACE-API` | The OpenTelemetry Tracing API: SpanKind and Status (StatusCode). Index row W04. |  |
+| `STEAMWORKS-DECK-COMPAT` | The Steam Deck compatibility categories. Index row O08. |  |
+| `STEAMWORKS-STORE-ASSETS` | The standard Steam store graphical assets and their sizes. Index row V05. |  |
+| `SWHID-1.2-SYNTAX` | The SWHID grammar: core identifier (scheme version, object type, object id) and its qualifiers. Index row Y06. |  |
 
 ## Claims that are not conformance IDs
 
