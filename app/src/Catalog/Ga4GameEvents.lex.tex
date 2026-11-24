@@ -1,0 +1,67 @@
+\begin{lexlean}{Catalog.Ga4GameEvents}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: LevelEnd,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: levelName, type: (Option Bytes)},
+    {name: success, type: (Option Bool)}
+  ]
+}
+
+structure{
+  name: LevelStart,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: levelName, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: LevelUp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: level, type: (Option (Int * Int))},
+    {name: character, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: PostScore,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: score, type: (Int * Int)},
+    {name: level, type: (Option (Int * Int))},
+    {name: character, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: UnlockAchievement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: achievementId, type: Bytes}
+  ]
+}
+
+structure{
+  name: Ga4GameEvents,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: levelEnd, type: (Option LevelEnd)},
+    {name: levelStart, type: (Option LevelStart)},
+    {name: levelUp, type: (Option LevelUp)},
+    {name: postScore, type: (Option PostScore)},
+    {name: unlockAchievement, type: (Option UnlockAchievement)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

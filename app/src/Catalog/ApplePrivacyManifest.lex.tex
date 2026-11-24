@@ -1,0 +1,109 @@
+\begin{lexlean}{Catalog.ApplePrivacyManifest}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CollectedDataTypeNSPrivacyCollectedDataType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nSPrivacyCollectedDataTypeAdvertisingData, fields: []},
+    {name: nSPrivacyCollectedDataTypeAudioData, fields: []},
+    {name: nSPrivacyCollectedDataTypeBrowsingHistory, fields: []},
+    {name: nSPrivacyCollectedDataTypeCoarseLocation, fields: []},
+    {name: nSPrivacyCollectedDataTypeContacts, fields: []},
+    {name: nSPrivacyCollectedDataTypeCrashData, fields: []},
+    {name: nSPrivacyCollectedDataTypeCreditInfo, fields: []},
+    {name: nSPrivacyCollectedDataTypeCustomerSupport, fields: []},
+    {name: nSPrivacyCollectedDataTypeDeviceID, fields: []},
+    {name: nSPrivacyCollectedDataTypeEmailAddress, fields: []},
+    {name: nSPrivacyCollectedDataTypeEmailsOrTextMessages, fields: []},
+    {name: nSPrivacyCollectedDataTypeEnvironmentScanning, fields: []},
+    {name: nSPrivacyCollectedDataTypeFitness, fields: []},
+    {name: nSPrivacyCollectedDataTypeGameplayContent, fields: []},
+    {name: nSPrivacyCollectedDataTypeHands, fields: []},
+    {name: nSPrivacyCollectedDataTypeHead, fields: []},
+    {name: nSPrivacyCollectedDataTypeHealth, fields: []},
+    {name: nSPrivacyCollectedDataTypeName, fields: []},
+    {name: nSPrivacyCollectedDataTypeOtherDataTypes, fields: []},
+    {name: nSPrivacyCollectedDataTypeOtherDiagnosticData, fields: []},
+    {name: nSPrivacyCollectedDataTypeOtherFinancialInfo, fields: []},
+    {name: nSPrivacyCollectedDataTypeOtherUsageData, fields: []},
+    {name: nSPrivacyCollectedDataTypeOtherUserContactInfo, fields: []},
+    {name: nSPrivacyCollectedDataTypeOtherUserContent, fields: []},
+    {name: nSPrivacyCollectedDataTypePaymentInfo, fields: []},
+    {name: nSPrivacyCollectedDataTypePerformanceData, fields: []},
+    {name: nSPrivacyCollectedDataTypePhoneNumber, fields: []},
+    {name: nSPrivacyCollectedDataTypePhotosorVideos, fields: []},
+    {name: nSPrivacyCollectedDataTypePhysicalAddress, fields: []},
+    {name: nSPrivacyCollectedDataTypePreciseLocation, fields: []},
+    {name: nSPrivacyCollectedDataTypeProductInteraction, fields: []},
+    {name: nSPrivacyCollectedDataTypePurchaseHistory, fields: []},
+    {name: nSPrivacyCollectedDataTypeSearchHistory, fields: []},
+    {name: nSPrivacyCollectedDataTypeSensitiveInfo, fields: []},
+    {name: nSPrivacyCollectedDataTypeUserID, fields: []}
+  ]
+}
+
+inductive{
+  name: CollectedDataTypeNSPrivacyCollectedDataTypePurposesItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nSPrivacyCollectedDataTypePurposeThirdPartyAdvertising, fields: []},
+    {name: nSPrivacyCollectedDataTypePurposeDeveloperAdvertising, fields: []},
+    {name: nSPrivacyCollectedDataTypePurposeAnalytics, fields: []},
+    {name: nSPrivacyCollectedDataTypePurposeProductPersonalization, fields: []},
+    {name: nSPrivacyCollectedDataTypePurposeAppFunctionality, fields: []},
+    {name: nSPrivacyCollectedDataTypePurposeOther, fields: []}
+  ]
+}
+
+structure{
+  name: CollectedDataType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: nSPrivacyCollectedDataType, type: (Option CollectedDataTypeNSPrivacyCollectedDataType)},
+    {name: nSPrivacyCollectedDataTypeLinked, type: (Option Bool)},
+    {name: nSPrivacyCollectedDataTypeTracking, type: (Option Bool)},
+    {name: nSPrivacyCollectedDataTypePurposes, type: (Option (List CollectedDataTypeNSPrivacyCollectedDataTypePurposesItem))}
+  ]
+}
+
+inductive{
+  name: AccessedApiTypeNSPrivacyAccessedAPIType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nSPrivacyAccessedAPICategoryFileTimestamp, fields: []},
+    {name: nSPrivacyAccessedAPICategorySystemBootTime, fields: []},
+    {name: nSPrivacyAccessedAPICategoryDiskSpace, fields: []},
+    {name: nSPrivacyAccessedAPICategoryActiveKeyboards, fields: []},
+    {name: nSPrivacyAccessedAPICategoryUserDefaults, fields: []}
+  ]
+}
+
+structure{
+  name: AccessedApiType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: nSPrivacyAccessedAPIType, type: (Option AccessedApiTypeNSPrivacyAccessedAPIType)},
+    {name: nSPrivacyAccessedAPITypeReasons, type: (Option (List Bytes))}
+  ]
+}
+
+structure{
+  name: ApplePrivacyManifest,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: nSPrivacyTracking, type: (Option Bool)},
+    {name: nSPrivacyTrackingDomains, type: (Option (List Bytes))},
+    {name: nSPrivacyCollectedDataTypes, type: (Option (List CollectedDataType))},
+    {name: nSPrivacyAccessedAPITypes, type: (Option (List AccessedApiType))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

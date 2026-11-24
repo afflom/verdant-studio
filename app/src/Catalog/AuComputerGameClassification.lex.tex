@@ -1,0 +1,43 @@
+\begin{lexlean}{Catalog.AuComputerGameClassification}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AuComputerGameClassificationCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: g, fields: []},
+    {name: pG, fields: []},
+    {name: m, fields: []},
+    {name: mA15, fields: []},
+    {name: r18, fields: []},
+    {name: rC, fields: []}
+  ]
+}
+
+inductive{
+  name: AuComputerGameClassificationClassifiableElement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: themes, fields: []},
+    {name: violence, fields: []},
+    {name: sex, fields: []},
+    {name: language, fields: []},
+    {name: drugUse, fields: []},
+    {name: nudity, fields: []}
+  ]
+}
+
+structure{
+  name: AuComputerGameClassification,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: category, type: AuComputerGameClassificationCategory},
+    {name: classifiableElement, type: (Option AuComputerGameClassificationClassifiableElement)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

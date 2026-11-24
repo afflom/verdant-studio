@@ -167,3 +167,10 @@ Each construct and the citation that admits it.
 - `Catalog.Glicko2PlayerRating`: std GLICKMAN-GLICKO-2-2022 row K08
 - `Catalog.MlagentsAgentInfo`: std UNITY-MLAGENTS-AGENT-INFO-PROTO row J13
 - `Catalog.TrueskillSkillBelief`: std MSR-TRUESKILL-NIPS-2006 row K09
+- `Catalog.ApplePrivacyManifest`: std APPLE-PRIVACY-MANIFEST row R10
+- `Catalog.AuComputerGameClassification`: std AU-F2023L01424 row Q07
+- `Catalog.Ga4GameEvents`: std GOOGLE-GA4-RECOMMENDED-EVENTS row W11
+- `Catalog.IstqbGameTesting`: std ISTQB-CT-GAME-1.0.1 row O04
+- `Catalog.OwaspGameSecurityFramework`: std OWASP-GAME-SECURITY-FRAMEWORK row T01
+- `Catalog.SoftwareCarbonIntensity`: std GSF-SCI-1.1 row X07
+- `Catalog.SreServiceLevelObjective`: std GOOGLE-SRE-BOOK-CH4-SLO row W01

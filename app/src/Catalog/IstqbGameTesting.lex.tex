@@ -1,0 +1,121 @@
+\begin{lexlean}{Catalog.IstqbGameTesting}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IstqbGameTestingChapter,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: specificityOfGameTesting, fields: []},
+    {name: testingGameMechanics, fields: []},
+    {name: graphicsTesting, fields: []},
+    {name: soundTesting, fields: []},
+    {name: gameLevelTesting, fields: []},
+    {name: gameControllersTesting, fields: []},
+    {name: localizationTesting, fields: []}
+  ]
+}
+
+inductive{
+  name: IstqbGameTestingLearningObjective,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gaMe111, fields: []},
+    {name: gaMe112, fields: []},
+    {name: gaMe113, fields: []},
+    {name: gaMe114, fields: []},
+    {name: gaMe115, fields: []},
+    {name: gaMe121, fields: []},
+    {name: gaMe131, fields: []},
+    {name: gaMe211, fields: []},
+    {name: gaMe212, fields: []},
+    {name: gaMe213, fields: []},
+    {name: gaMe214, fields: []},
+    {name: gaMe215, fields: []},
+    {name: gaMe221, fields: []},
+    {name: gaMe222, fields: []},
+    {name: gaMe223, fields: []},
+    {name: gaMe224, fields: []},
+    {name: gaMe311, fields: []},
+    {name: gaMe312, fields: []},
+    {name: gaMe321, fields: []},
+    {name: gaMe322, fields: []},
+    {name: gaMe323, fields: []},
+    {name: gaMe331, fields: []},
+    {name: gaMe332, fields: []},
+    {name: gaMe341, fields: []},
+    {name: gaMe411, fields: []},
+    {name: gaMe421, fields: []},
+    {name: gaMe422, fields: []},
+    {name: gaMe431, fields: []},
+    {name: gaMe432, fields: []},
+    {name: gaMe433, fields: []},
+    {name: gaMe441, fields: []},
+    {name: gaMe442, fields: []},
+    {name: gaMe443, fields: []},
+    {name: gaMe444, fields: []},
+    {name: gaMe451, fields: []},
+    {name: gaMe511, fields: []},
+    {name: gaMe512, fields: []},
+    {name: gaMe521, fields: []},
+    {name: gaMe522, fields: []},
+    {name: gaMe531, fields: []},
+    {name: gaMe611, fields: []},
+    {name: gaMe612, fields: []},
+    {name: gaMe613, fields: []},
+    {name: gaMe614, fields: []},
+    {name: gaMe621, fields: []},
+    {name: gaMe622, fields: []},
+    {name: gaMe631, fields: []},
+    {name: gaMe711, fields: []},
+    {name: gaMe712, fields: []},
+    {name: gaMe713, fields: []},
+    {name: gaMe721, fields: []},
+    {name: gaMe731, fields: []},
+    {name: gaMe732, fields: []},
+    {name: gaMe733, fields: []},
+    {name: gaMe741, fields: []}
+  ]
+}
+
+inductive{
+  name: IstqbGameTestingRole,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: businessOwner, fields: []},
+    {name: projectManager, fields: []},
+    {name: analyst, fields: []},
+    {name: developer, fields: []},
+    {name: gameDesigner, fields: []},
+    {name: tester, fields: []}
+  ]
+}
+
+inductive{
+  name: IstqbGameTestingLifecycleStage,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: conceptStage, fields: []},
+    {name: preProductionStage, fields: []},
+    {name: productionStage, fields: []},
+    {name: postProductionStage, fields: []}
+  ]
+}
+
+structure{
+  name: IstqbGameTesting,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: chapter, type: (Option IstqbGameTestingChapter)},
+    {name: learningObjective, type: (Option IstqbGameTestingLearningObjective)},
+    {name: role, type: (Option IstqbGameTestingRole)},
+    {name: lifecycleStage, type: (Option IstqbGameTestingLifecycleStage)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
