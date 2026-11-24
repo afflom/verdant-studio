@@ -3296,3 +3296,54 @@ statement = "The protobuf definition of the per-agent information ML-Agents send
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "AU-F2023L01424"
+name = "Guidelines for the Classification of Computer Games 2023"
+issuer = "Commonwealth of Australia"
+edition = "F2023L01424, registered 27/10/2023"
+canonical_id = "https://www.legislation.gov.au/F2023L01424"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://legislation.gov.au/F2023L01424/asmade/2023-10-27/text/original/pdf"
+media_type = "application/pdf"
+license = "CC BY 4.0 (Federal Register of Legislation)"
+redistribution = "citation-only"
+statement = "The Australian classification categories for computer games, the six classifiable elements and the gambling-like content rules. Index row Q07."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "ISTQB-CT-GAME-1.0.1"
+name = "ISTQB Certified Tester Game Testing (CT-GaMe) Syllabus"
+issuer = "International Software Testing Qualifications Board (ISTQB)"
+edition = "v1.0.1 (October 21, 2022)"
+canonical_id = "https://www.istqb.org/certifications/game-testing/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT_GaMe_Syllabus_v1.0.1_LtrKuyi.pdf"
+media_type = "application/pdf"
+license = "ISTQB copyright notice"
+redistribution = "citation-only"
+statement = "The CT-GaMe syllabus: its chapters, learning objectives, typical roles of the game development team and lifecycle stages. Index row O04."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "OWASP-GAME-SECURITY-FRAMEWORK"
+name = "OWASP Game Security Framework"
+issuer = "OWASP Foundation"
+edition = "wiki project page as retrieved 2026-11-24"
+canonical_id = "https://wiki.owasp.org/index.php/OWASP_Game_Security_Framework_Project"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://wiki.owasp.org/index.php/OWASP_Game_Security_Framework_Project"
+media_type = "text/html"
+license = "unstated in source"
+redistribution = "citation-only"
+statement = "The GSF risk components: attack surfaces, vulnerabilities, exploits, attacker goals, negative outcomes and defenses. Index row T01."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []

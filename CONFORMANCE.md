@@ -234,6 +234,9 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `MSR-TRUESKILL-NIPS-2006` | The TrueSkill model: a Gaussian skill belief per player (mean and standard deviation), performance variance, dynamics variance and draw margin. Index row K09. |  |
 | `RECAST-DETOUR-NAVMESH-H` | The Detour navigation mesh data structures: tiles, polygons, links, off-mesh connections and navigation mesh parameters. Index row J07. |  |
 | `UNITY-MLAGENTS-AGENT-INFO-PROTO` | The protobuf definition of the per-agent information ML-Agents sends to the trainer: reward, done, max_step_reached, id, action_mask, observations, group_id and group_reward. Index row J13. |  |
+| `AU-F2023L01424` | The Australian classification categories for computer games, the six classifiable elements and the gambling-like content rules. Index row Q07. |  |
+| `ISTQB-CT-GAME-1.0.1` | The CT-GaMe syllabus: its chapters, learning objectives, typical roles of the game development team and lifecycle stages. Index row O04. |  |
+| `OWASP-GAME-SECURITY-FRAMEWORK` | The GSF risk components: attack surfaces, vulnerabilities, exploits, attacker goals, negative outcomes and defenses. Index row T01. |  |
 
 ## Claims that are not conformance IDs
 
