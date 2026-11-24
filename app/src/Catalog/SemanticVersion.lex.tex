@@ -1,0 +1,18 @@
+\begin{lexlean}{Catalog.SemanticVersion}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: SemanticVersion,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: major, type: Nat},
+    {name: minor, type: Nat},
+    {name: patch, type: Nat},
+    {name: preRelease, type: (Option (List Bytes))},
+    {name: buildMetadata, type: (Option (List Bytes))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

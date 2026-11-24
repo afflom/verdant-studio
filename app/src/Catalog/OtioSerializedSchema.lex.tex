@@ -1,0 +1,449 @@
+\begin{lexlean}{Catalog.OtioSerializedSchema}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: JsonValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: null, fields: []},
+    {name: boolean, fields: [Bool]},
+    {name: number, fields: [(Int * Int)]},
+    {name: string, fields: [Bytes]},
+    {name: array, fields: [(List JsonValue)]},
+    {name: object, fields: [(List (Bytes * JsonValue))]}
+  ]
+}
+
+structure{
+  name: Adapter,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: filepath, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: suffixes, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Color,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: a, type: (Option JsonValue)},
+    {name: b, type: (Option JsonValue)},
+    {name: g, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: r, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Composable,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Composition,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: color, type: (Option JsonValue)},
+    {name: effects, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: markers, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: sourceRange, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Item,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: color, type: (Option JsonValue)},
+    {name: effects, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: markers, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: sourceRange, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: MediaReference,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: availableImageBounds, type: (Option JsonValue)},
+    {name: availableRange, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: SerializableObjectWithMetadata,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: HookScript,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: filepath, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: MediaLinker,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: filepath, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: RationalTime,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: rate, type: (Option JsonValue)},
+    {name: value, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: TimeRange,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: duration, type: (Option JsonValue)},
+    {name: startTime, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: TimeTransform,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: offset, type: (Option JsonValue)},
+    {name: rate, type: (Option JsonValue)},
+    {name: scale, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: PluginManifest,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: adapters, type: (Option JsonValue)},
+    {name: hookScripts, type: (Option JsonValue)},
+    {name: hooks, type: (Option JsonValue)},
+    {name: mediaLinkers, type: (Option JsonValue)},
+    {name: schemadefs, type: (Option JsonValue)},
+    {name: versionManifests, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: SerializableObject,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: filepath, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Clip,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: activeMediaReferenceKey, type: (Option JsonValue)},
+    {name: color, type: (Option JsonValue)},
+    {name: effects, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: markers, type: (Option JsonValue)},
+    {name: mediaReferences, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: sourceRange, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Effect,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: effectName, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: ExternalReference,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: availableImageBounds, type: (Option JsonValue)},
+    {name: availableRange, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: targetUrl, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: FreezeFrame,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: effectName, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: timeScalar, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Gap,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: color, type: (Option JsonValue)},
+    {name: effects, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: markers, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: sourceRange, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: GeneratorReference,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: availableImageBounds, type: (Option JsonValue)},
+    {name: availableRange, type: (Option JsonValue)},
+    {name: generatorKind, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: parameters, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: ImageSequenceReference,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: availableImageBounds, type: (Option JsonValue)},
+    {name: availableRange, type: (Option JsonValue)},
+    {name: frameStep, type: (Option JsonValue)},
+    {name: frameZeroPadding, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: missingFramePolicy, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: namePrefix, type: (Option JsonValue)},
+    {name: nameSuffix, type: (Option JsonValue)},
+    {name: rate, type: (Option JsonValue)},
+    {name: startFrame, type: (Option JsonValue)},
+    {name: targetUrlBase, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: LinearTimeWarp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: effectName, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: timeScalar, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Marker,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: color, type: (Option JsonValue)},
+    {name: comment, type: (Option JsonValue)},
+    {name: markedRange, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: MissingReference,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: availableImageBounds, type: (Option JsonValue)},
+    {name: availableRange, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: SerializableCollection,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Stack,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: color, type: (Option JsonValue)},
+    {name: effects, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: markers, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: sourceRange, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: TimeEffect,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: effectName, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Timeline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: globalStartTime, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: tracks, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Track,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: color, type: (Option JsonValue)},
+    {name: effects, type: (Option JsonValue)},
+    {name: enabled, type: (Option JsonValue)},
+    {name: kind, type: (Option JsonValue)},
+    {name: markers, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: sourceRange, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: Transition,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: inOffset, type: (Option JsonValue)},
+    {name: metadata, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)},
+    {name: outOffset, type: (Option JsonValue)},
+    {name: transitionType, type: (Option JsonValue)}
+  ]
+}
+
+structure{
+  name: SchemaDef,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: filepath, type: (Option JsonValue)},
+    {name: name, type: (Option JsonValue)}
+  ]
+}
+
+inductive{
+  name: OtioSerializedSchema,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: adapter1, fields: []},
+    {name: color1, fields: []},
+    {name: composable1, fields: []},
+    {name: composition1, fields: []},
+    {name: item1, fields: []},
+    {name: mediaReference1, fields: []},
+    {name: serializableObjectWithMetadata1, fields: []},
+    {name: hookScript1, fields: []},
+    {name: mediaLinker1, fields: []},
+    {name: rationalTime1, fields: []},
+    {name: timeRange1, fields: []},
+    {name: timeTransform1, fields: []},
+    {name: pluginManifest1, fields: []},
+    {name: serializableObject1, fields: []},
+    {name: clip2, fields: []},
+    {name: effect1, fields: []},
+    {name: externalReference1, fields: []},
+    {name: freezeFrame1, fields: []},
+    {name: gap1, fields: []},
+    {name: generatorReference1, fields: []},
+    {name: imageSequenceReference1, fields: []},
+    {name: linearTimeWarp1, fields: []},
+    {name: marker2, fields: []},
+    {name: missingReference1, fields: []},
+    {name: serializableCollection1, fields: []},
+    {name: stack1, fields: []},
+    {name: timeEffect1, fields: []},
+    {name: timeline1, fields: []},
+    {name: track1, fields: []},
+    {name: transition1, fields: []},
+    {name: schemaDef1, fields: []}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
