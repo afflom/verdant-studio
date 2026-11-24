@@ -1,0 +1,25 @@
+\begin{lexlean}{Catalog.BreakpadRawDirectory}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadRawDirectory,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: streamType, type: Nat},
+    {name: location, type: MDLocationDescriptor}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

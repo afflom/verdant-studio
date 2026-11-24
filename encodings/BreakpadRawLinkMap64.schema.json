@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, struct MDRawLinkMap64, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"addr":{"minimum":0,"type":"integer"},"ld":{"minimum":0,"type":"integer"},"name":{"minimum":0,"type":"integer"}},"required":["addr","name","ld"],"title":"MDRawLinkMap64","type":"object"}

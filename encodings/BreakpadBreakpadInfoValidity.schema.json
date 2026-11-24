@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, enum MDBreakpadInfoValidity, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["MD_BREAKPAD_INFO_VALID_DUMP_THREAD_ID","MD_BREAKPAD_INFO_VALID_REQUESTING_THREAD_ID"],"title":"MDBreakpadInfoValidity"}

@@ -1,0 +1,25 @@
+\begin{lexlean}{Catalog.BreakpadMemoryDescriptor}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadMemoryDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: startOfMemoryRange, type: Nat},
+    {name: memory, type: MDLocationDescriptor}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

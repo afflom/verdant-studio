@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, struct MDRawSimpleStringDictionaryEntry, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"key":{"minimum":0,"type":"integer"},"value":{"minimum":0,"type":"integer"}},"required":["key","value"],"title":"MDRawSimpleStringDictionaryEntry","type":"object"}

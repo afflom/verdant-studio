@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, struct MDRawThreadName, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"thread_id":{"minimum":0,"type":"integer"},"thread_name_rva":{"minimum":0,"type":"integer"}},"required":["thread_id","thread_name_rva"],"title":"MDRawThreadName","type":"object"}

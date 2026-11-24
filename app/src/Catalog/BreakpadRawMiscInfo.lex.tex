@@ -1,0 +1,86 @@
+\begin{lexlean}{Catalog.BreakpadRawMiscInfo}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDSystemTime,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: year, type: Nat},
+    {name: month, type: Nat},
+    {name: dayOfWeek, type: Nat},
+    {name: day, type: Nat},
+    {name: hour, type: Nat},
+    {name: minute, type: Nat},
+    {name: second, type: Nat},
+    {name: milliseconds, type: Nat}
+  ]
+}
+
+structure{
+  name: MDTimeZoneInformation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bias, type: Int},
+    {name: standardName, type: (List Nat)},
+    {name: standardDate, type: MDSystemTime},
+    {name: standardBias, type: Int},
+    {name: daylightName, type: (List Nat)},
+    {name: daylightDate, type: MDSystemTime},
+    {name: daylightBias, type: Int}
+  ]
+}
+
+structure{
+  name: MDXStateFeature,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: offset, type: Nat},
+    {name: size, type: Nat}
+  ]
+}
+
+structure{
+  name: MDXStateConfigFeatureMscInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: sizeOfInfo, type: Nat},
+    {name: contextSize, type: Nat},
+    {name: enabledFeatures, type: Nat},
+    {name: features, type: (List MDXStateFeature)}
+  ]
+}
+
+structure{
+  name: BreakpadRawMiscInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: sizeOfInfo, type: Nat},
+    {name: flags1, type: Nat},
+    {name: processId, type: Nat},
+    {name: processCreateTime, type: Nat},
+    {name: processUserTime, type: Nat},
+    {name: processKernelTime, type: Nat},
+    {name: processorMaxMhz, type: Nat},
+    {name: processorCurrentMhz, type: Nat},
+    {name: processorMhzLimit, type: Nat},
+    {name: processorMaxIdleState, type: Nat},
+    {name: processorCurrentIdleState, type: Nat},
+    {name: processIntegrityLevel, type: Nat},
+    {name: processExecuteFlags, type: Nat},
+    {name: protectedProcess, type: Nat},
+    {name: timeZoneId, type: Nat},
+    {name: timeZone, type: MDTimeZoneInformation},
+    {name: buildString, type: (List Nat)},
+    {name: dbgBldStr, type: (List Nat)},
+    {name: xstateData, type: MDXStateConfigFeatureMscInfo},
+    {name: processCookie, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

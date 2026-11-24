@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, enum MDAssertionInfoData, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["MD_ASSERTION_INFO_TYPE_UNKNOWN","MD_ASSERTION_INFO_TYPE_INVALID_PARAMETER","MD_ASSERTION_INFO_TYPE_PURE_VIRTUAL_CALL"],"title":"MDAssertionInfoData"}

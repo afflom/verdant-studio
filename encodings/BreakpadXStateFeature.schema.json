@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, struct MDXStateFeature, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"offset":{"minimum":0,"type":"integer"},"size":{"minimum":0,"type":"integer"}},"required":["offset","size"],"title":"MDXStateFeature","type":"object"}

@@ -1,0 +1,42 @@
+\begin{lexlean}{Catalog.BreakpadRawExceptionStream}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDException,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: exceptionCode, type: Nat},
+    {name: exceptionFlags, type: Nat},
+    {name: exceptionRecord, type: Nat},
+    {name: exceptionAddress, type: Nat},
+    {name: numberParameters, type: Nat},
+    {name: align, type: Nat},
+    {name: exceptionInformation, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadRawExceptionStream,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: threadId, type: Nat},
+    {name: align, type: Nat},
+    {name: exceptionRecord, type: MDException},
+    {name: threadContext, type: MDLocationDescriptor}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

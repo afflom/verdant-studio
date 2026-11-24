@@ -1,0 +1,50 @@
+\begin{lexlean}{Catalog.BreakpadRawThreadList}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: MDMemoryDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: startOfMemoryRange, type: Nat},
+    {name: memory, type: MDLocationDescriptor}
+  ]
+}
+
+structure{
+  name: MDRawThread,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: threadId, type: Nat},
+    {name: suspendCount, type: Nat},
+    {name: priorityClass, type: Nat},
+    {name: priority, type: Nat},
+    {name: teb, type: Nat},
+    {name: stack, type: MDMemoryDescriptor},
+    {name: threadContext, type: MDLocationDescriptor}
+  ]
+}
+
+structure{
+  name: BreakpadRawThreadList,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: numberOfThreads, type: Nat},
+    {name: threads, type: (List MDRawThread)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
