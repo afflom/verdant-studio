@@ -1,0 +1,55 @@
+\begin{lexlean}{Catalog.ClassIndClassificacaoIndicativa}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: ClassIndClassificacaoIndicativaSimbolo,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: l, fields: []},
+    {name: n10, fields: []},
+    {name: n12, fields: []},
+    {name: n14, fields: []},
+    {name: n16, fields: []},
+    {name: n18, fields: []}
+  ]
+}
+
+inductive{
+  name: ClassIndClassificacaoIndicativaSimboloAutoclassificacao,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: aL, fields: []},
+    {name: a10, fields: []},
+    {name: a12, fields: []},
+    {name: a14, fields: []},
+    {name: a16, fields: []},
+    {name: a18, fields: []}
+  ]
+}
+
+inductive{
+  name: ClassIndClassificacaoIndicativaEixoTematico,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sexoENudez, fields: []},
+    {name: violncia, fields: []},
+    {name: drogas, fields: []}
+  ]
+}
+
+structure{
+  name: ClassIndClassificacaoIndicativa,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: simbolo, type: (Option ClassIndClassificacaoIndicativaSimbolo)},
+    {name: simboloAutoclassificacao, type: (Option ClassIndClassificacaoIndicativaSimboloAutoclassificacao)},
+    {name: eixoTematico, type: (Option ClassIndClassificacaoIndicativaEixoTematico)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

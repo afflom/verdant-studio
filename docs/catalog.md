@@ -228,12 +228,12 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **P08** Epic Games Store publishing requirements (Platform certification and storefront requirements), not reached from any origin: no mapping yet
 - **Q01** ESRB (incl. Interactive Elements, In-Game Purchases (Includes Random Items)) (Age ratings and content classification): exactMatch ESRB-RATINGS-GUIDE (derived from its citation)
 - **Q02** PEGI (2026 criteria update: interactive risk categories) (Age ratings and content classification): exactMatch PEGI-LABELS (derived from its citation)
-- **Q03** IARC (International Age Rating Coalition) (Age ratings and content classification), not reached from any origin: no mapping yet
+- **Q03** IARC (International Age Rating Coalition) (Age ratings and content classification): exactMatch IARC-RATINGS-DEFINITIONS (derived from its citation)
 - **Q04** USK (Germany) (Age ratings and content classification): exactMatch USK-AGE-RATINGS (derived from its citation)
 - **Q05** CERO (Japan) (Age ratings and content classification): exactMatch CERO-RATING-SYSTEM (derived from its citation)
 - **Q06** GRAC / GCRB (South Korea) (Age ratings and content classification), not reached from any origin: no mapping yet
 - **Q07** Australian Classification (gambling-like content rules, Sept 2024) (Age ratings and content classification): exactMatch AU-F2023L01424 (derived from its citation)
-- **Q08** ClassInd (Brazil) (Age ratings and content classification), not reached from any origin: no mapping yet
+- **Q08** ClassInd (Brazil) (Age ratings and content classification): exactMatch BR-PORTARIA-MJSP-502-2021 (derived from its citation)
 - **Q09** China game licensing (NPPA ISBN approval) and minors' playtime rules (Age ratings and content classification), not reached from any origin: no mapping yet
 - **R01** GDPR (Regulation (EU) 2016/679) and UK GDPR (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
 - **R02** COPPA Rule (2025 amendments; compliance by April 2026) (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
