@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"The six threat categories the tool's threats page defines.","enum":["Spoofing","Tampering","Repudiation","Information Disclosure","Denial of Service","Elevation of Privilege"],"title":"STRIDE threat categories (Microsoft Threat Modeling Tool)"}

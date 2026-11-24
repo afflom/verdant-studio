@@ -1,0 +1,47 @@
+\begin{lexlean}{Catalog.PtexHeader}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: ExtHeader,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ubordermode, type: Nat},
+    {name: pad, type: Nat},
+    {name: vbordermode, type: Nat},
+    {name: edgefiltermode, type: Nat},
+    {name: lmdheaderzipsize, type: Nat},
+    {name: lmdheadermemsize, type: Nat},
+    {name: lmddatasize, type: Nat},
+    {name: obsolete, type: Nat},
+    {name: obsolete2, type: Nat}
+  ]
+}
+
+structure{
+  name: PtexHeader,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: magic, type: Nat},
+    {name: version, type: Nat},
+    {name: meshtype, type: Nat},
+    {name: datatype, type: Nat},
+    {name: alphachan, type: Int},
+    {name: nchannels, type: Nat},
+    {name: nlevels, type: Nat},
+    {name: nfaces, type: Nat},
+    {name: extheadersize, type: Nat},
+    {name: faceinfosize, type: Nat},
+    {name: constdatasize, type: Nat},
+    {name: levelinfosize, type: Nat},
+    {name: minorversion, type: Nat},
+    {name: leveldatasize, type: Nat},
+    {name: metadatazipsize, type: Nat},
+    {name: metadatamemsize, type: Nat},
+    {name: extHeader, type: ExtHeader}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

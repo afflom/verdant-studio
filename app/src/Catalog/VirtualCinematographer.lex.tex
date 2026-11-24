@@ -1,0 +1,54 @@
+\begin{lexlean}{Catalog.VirtualCinematographer}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CameraPlacement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: external, fields: []},
+    {name: internal, fields: []},
+    {name: apex, fields: []}
+  ]
+}
+
+inductive{
+  name: CameraModule,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: apex, fields: []},
+    {name: closeapex, fields: []},
+    {name: external, fields: []},
+    {name: internal, fields: []},
+    {name: ext1to2, fields: []},
+    {name: track, fields: []},
+    {name: pan, fields: []},
+    {name: follow, fields: []}
+  ]
+}
+
+structure{
+  name: IdiomState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: cameraModule, type: CameraModule},
+    {name: actors, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: VirtualCinematographer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: states, type: (List IdiomState)},
+    {name: subIdioms, type: (Option (List Bytes))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

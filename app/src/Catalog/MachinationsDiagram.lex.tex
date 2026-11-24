@@ -1,0 +1,88 @@
+\begin{lexlean}{Catalog.MachinationsDiagram}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: NodeType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: source, fields: []},
+    {name: pool, fields: []},
+    {name: sink, fields: []},
+    {name: converter, fields: []},
+    {name: trader, fields: []},
+    {name: gate, fields: []},
+    {name: register, fields: []},
+    {name: delay, fields: []},
+    {name: queue, fields: []},
+    {name: endCondition, fields: []}
+  ]
+}
+
+inductive{
+  name: GateType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: triggerGate, fields: []},
+    {name: mixedGate, fields: []},
+    {name: sortingGate, fields: []}
+  ]
+}
+
+inductive{
+  name: StateConnectionType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: activator, fields: []},
+    {name: trigger, fields: []},
+    {name: nodeModifier, fields: []},
+    {name: formulaModifier, fields: []}
+  ]
+}
+
+structure{
+  name: Node,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: nodeType, type: NodeType}
+  ]
+}
+
+structure{
+  name: ResourceConnection,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: origin, type: Bytes},
+    {name: target, type: Bytes}
+  ]
+}
+
+structure{
+  name: StateConnection,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: origin, type: Bytes},
+    {name: target, type: Bytes},
+    {name: connectionType, type: StateConnectionType}
+  ]
+}
+
+structure{
+  name: MachinationsDiagram,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: nodes, type: (List Node)},
+    {name: resourceConnections, type: (List ResourceConnection)},
+    {name: stateConnections, type: (List StateConnection)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

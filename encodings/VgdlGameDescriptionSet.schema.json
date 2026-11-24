@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","enum":["Sprite Set","Interaction Set","Termination Set","Mapping Set"],"title":"VGDL game description set"}

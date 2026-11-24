@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"The PENS measures, elaborated from self-determination theory: the basic psychological needs for autonomy, competence and relatedness, with presence and intuitive controls.","enum":["Autonomy","Competence","Relatedness","Presence","Intuitive Controls"],"title":"Player Experience of Need Satisfaction (PENS)"}

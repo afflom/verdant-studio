@@ -208,6 +208,11 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `STEAM-AI-CONTENT-DISCLOSURE-2024` | The AI disclosure section of the Steam Content Survey and its two categories of AI usage, Pre-Generated and Live-Generated. Index row J18. |  |
 | `VES-EPIC-VP-GLOSSARY` | The defined terms of the Virtual Production Glossary and its categories. Index row F02. |  |
 | `WDAS-PTEX-IO-2.5.4` | The Ptex per-face texture file format: its Header and ExtHeader records, as the library's PtexIO.h declares them. Index row D14 (Ptex; UDIM is a convention with no specification). |  |
+| `ABLEGAMERS-APX` | The APX design language: the Access and Challenge categories, the 12 Access patterns (Control and Presentation) and the 10 Challenge patterns. Index row M04. |  |
+| `ETSI-EN-301-549-3.2.1` | Functional performance statements (clause 4.2) and the requirement clauses 5 to 13. Directive 2019/882 is bound separately. Index row M08. |  |
+| `HE-COHEN-SALESIN-VC-1996` | The Virtual Cinematographer: camera placements relative to the line of interest, camera modules, and film idioms encoded as hierarchical finite state machines. Index row F06. |  |
+| `MACHINATIONS-DOCS` | The Machinations internal-economy diagram language: its node types, gate types and connection types. Index row B08. |  |
+| `OPENTYPE-1.9.1` | The OpenType font file organisation and its font tables by tag: required tables, outline, bitmap, advanced typographic, variation, colour and other tables. Index row N11. |  |
 
 ## Claims that are not conformance IDs
 

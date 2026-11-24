@@ -1,0 +1,82 @@
+\begin{lexlean}{Catalog.EsrbRating}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: EsrbRatingRatingCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: everyone, fields: []},
+    {name: everyone10, fields: []},
+    {name: teen, fields: []},
+    {name: mature17, fields: []},
+    {name: adultsOnly18, fields: []},
+    {name: ratingPending, fields: []},
+    {name: ratingPendingLikelyMature17, fields: []}
+  ]
+}
+
+inductive{
+  name: EsrbRatingContentDescriptorsItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: alcoholReference, fields: []},
+    {name: animatedBlood, fields: []},
+    {name: blood, fields: []},
+    {name: bloodAndGore, fields: []},
+    {name: comicMischief, fields: []},
+    {name: crudeHumor, fields: []},
+    {name: drugReference, fields: []},
+    {name: fantasyViolence, fields: []},
+    {name: gamblingThemes, fields: []},
+    {name: intenseViolence, fields: []},
+    {name: language, fields: []},
+    {name: lyrics, fields: []},
+    {name: matureHumor, fields: []},
+    {name: nudity, fields: []},
+    {name: partialNudity, fields: []},
+    {name: realGambling, fields: []},
+    {name: sexualContent, fields: []},
+    {name: sexualThemes, fields: []},
+    {name: sexualViolence, fields: []},
+    {name: simulatedGambling, fields: []},
+    {name: strongLanguage, fields: []},
+    {name: strongLyrics, fields: []},
+    {name: strongSexualContent, fields: []},
+    {name: suggestiveThemes, fields: []},
+    {name: tobaccoReference, fields: []},
+    {name: useOfAlcohol, fields: []},
+    {name: useOfDrugs, fields: []},
+    {name: useOfTobacco, fields: []},
+    {name: violence, fields: []},
+    {name: violentReferences, fields: []}
+  ]
+}
+
+inductive{
+  name: EsrbRatingInteractiveElementsItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: inGamePurchases, fields: []},
+    {name: inGamePurchasesIncludesRandomItems, fields: []},
+    {name: usersInteract, fields: []},
+    {name: sharesLocation, fields: []},
+    {name: unrestrictedInternet, fields: []}
+  ]
+}
+
+structure{
+  name: EsrbRating,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ratingCategory, type: EsrbRatingRatingCategory},
+    {name: contentDescriptors, type: (Option (List EsrbRatingContentDescriptorsItem))},
+    {name: interactiveElements, type: (Option (List EsrbRatingInteractiveElementsItem))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
