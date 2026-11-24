@@ -1,0 +1,623 @@
+\begin{lexlean}{Catalog.OpenRtbBidRequest}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Channel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: domain, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Segment,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: value, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Data,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: cids, type: (Option (List Bytes))},
+    {name: segment, type: (Option (List Segment))}
+  ]
+}
+
+structure{
+  name: Network,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: domain, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Producer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: cattax, type: (Option Int)},
+    {name: cat, type: (Option (List Bytes))},
+    {name: domain, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Content,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: episode, type: (Option Int)},
+    {name: title, type: (Option Bytes)},
+    {name: series, type: (Option Bytes)},
+    {name: season, type: (Option Bytes)},
+    {name: artist, type: (Option Bytes)},
+    {name: genre, type: (Option Bytes)},
+    {name: gtax, type: (Option Int)},
+    {name: genres, type: (Option (List Bytes))},
+    {name: album, type: (Option Bytes)},
+    {name: isrc, type: (Option Bytes)},
+    {name: producer, type: (Option Producer)},
+    {name: url, type: (Option Bytes)},
+    {name: cattax, type: (Option Int)},
+    {name: cat, type: (Option (List Bytes))},
+    {name: prodq, type: (Option Int)},
+    {name: context, type: (Option Int)},
+    {name: contentrating, type: (Option Bytes)},
+    {name: userrating, type: (Option Bytes)},
+    {name: qagmediarating, type: (Option Int)},
+    {name: keywords, type: (Option Bytes)},
+    {name: kwarray, type: (Option (List Bytes))},
+    {name: livestream, type: (Option Int)},
+    {name: sourcerelationship, type: (Option Int)},
+    {name: len, type: (Option Int)},
+    {name: language, type: (Option Bytes)},
+    {name: langb, type: (Option Bytes)},
+    {name: embeddable, type: (Option Int)},
+    {name: data, type: (Option (List Data))},
+    {name: network, type: (Option Network)},
+    {name: channel, type: (Option Channel)},
+    {name: realtime, type: (Option Int)},
+    {name: firstbroadcast, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: Publisher,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: cattax, type: (Option Int)},
+    {name: cat, type: (Option (List Bytes))},
+    {name: domain, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: App,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: bundle, type: (Option Bytes)},
+    {name: domain, type: (Option Bytes)},
+    {name: storeurl, type: (Option Bytes)},
+    {name: cattax, type: (Option Int)},
+    {name: cat, type: (Option (List Bytes))},
+    {name: sectioncat, type: (Option (List Bytes))},
+    {name: pagecat, type: (Option (List Bytes))},
+    {name: ver, type: (Option Bytes)},
+    {name: privacypolicy, type: (Option Int)},
+    {name: paid, type: (Option Int)},
+    {name: publisher, type: (Option Publisher)},
+    {name: content, type: (Option Content)},
+    {name: keywords, type: (Option Bytes)},
+    {name: kwarray, type: (Option (List Bytes))},
+    {name: inventorypartnerdomain, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: DOOH,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: venuetype, type: (Option (List Bytes))},
+    {name: venuetypetax, type: (Option Int)},
+    {name: publisher, type: (Option Publisher)},
+    {name: domain, type: (Option Bytes)},
+    {name: keywords, type: (Option Bytes)},
+    {name: content, type: (Option Content)}
+  ]
+}
+
+structure{
+  name: Geo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: lat, type: (Option (Int * Int))},
+    {name: lon, type: (Option (Int * Int))},
+    {name: type, type: (Option Int)},
+    {name: accuracy, type: (Option Int)},
+    {name: lastfix, type: (Option Int)},
+    {name: ipservice, type: (Option Int)},
+    {name: country, type: (Option Bytes)},
+    {name: region, type: (Option Bytes)},
+    {name: regionfips104, type: (Option Bytes)},
+    {name: metro, type: (Option Bytes)},
+    {name: city, type: (Option Bytes)},
+    {name: zip, type: (Option Bytes)},
+    {name: utcoffset, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: BrandVersion,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: brand, type: Bytes},
+    {name: version, type: (Option (List Bytes))}
+  ]
+}
+
+structure{
+  name: UserAgent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: browsers, type: (Option (List BrandVersion))},
+    {name: platform, type: (Option BrandVersion)},
+    {name: mobile, type: (Option Int)},
+    {name: architecture, type: (Option Bytes)},
+    {name: bitness, type: (Option Bytes)},
+    {name: model, type: (Option Bytes)},
+    {name: source, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: Device,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: geo, type: (Option Geo)},
+    {name: dnt, type: (Option Int)},
+    {name: lmt, type: (Option Int)},
+    {name: ua, type: (Option Bytes)},
+    {name: sua, type: (Option UserAgent)},
+    {name: ip, type: (Option Bytes)},
+    {name: ipv6, type: (Option Bytes)},
+    {name: devicetype, type: (Option Int)},
+    {name: make, type: (Option Bytes)},
+    {name: model, type: (Option Bytes)},
+    {name: os, type: (Option Bytes)},
+    {name: osv, type: (Option Bytes)},
+    {name: hwv, type: (Option Bytes)},
+    {name: h, type: (Option Int)},
+    {name: w, type: (Option Int)},
+    {name: ppi, type: (Option Int)},
+    {name: pxratio, type: (Option (Int * Int))},
+    {name: js, type: (Option Int)},
+    {name: geofetch, type: (Option Int)},
+    {name: flashver, type: (Option Bytes)},
+    {name: language, type: (Option Bytes)},
+    {name: langb, type: (Option Bytes)},
+    {name: carrier, type: (Option Bytes)},
+    {name: mccmnc, type: (Option Bytes)},
+    {name: connectiontype, type: (Option Int)},
+    {name: ifa, type: (Option Bytes)},
+    {name: didsha1, type: (Option Bytes)},
+    {name: didmd5, type: (Option Bytes)},
+    {name: dpidsha1, type: (Option Bytes)},
+    {name: dpidmd5, type: (Option Bytes)},
+    {name: macsha1, type: (Option Bytes)},
+    {name: macmd5, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Format,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: w, type: (Option Int)},
+    {name: h, type: (Option Int)},
+    {name: wratio, type: (Option Int)},
+    {name: hratio, type: (Option Int)},
+    {name: wmin, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: Banner,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: format, type: (Option (List Format))},
+    {name: w, type: (Option Int)},
+    {name: h, type: (Option Int)},
+    {name: btype, type: (Option (List Int))},
+    {name: battr, type: (Option (List Int))},
+    {name: pos, type: (Option Int)},
+    {name: mimes, type: (Option (List Bytes))},
+    {name: topframe, type: (Option Int)},
+    {name: expdir, type: (Option (List Int))},
+    {name: api, type: (Option (List Int))},
+    {name: id, type: (Option Bytes)},
+    {name: vcm, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: DurFloors,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mindur, type: (Option Int)},
+    {name: maxdur, type: (Option Int)},
+    {name: bidfloor, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: Audio,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mimes, type: (List Bytes)},
+    {name: minduration, type: (Option Int)},
+    {name: maxduration, type: (Option Int)},
+    {name: poddur, type: (Option Int)},
+    {name: protocols, type: (Option (List Int))},
+    {name: startdelay, type: (Option Int)},
+    {name: rqddurs, type: (Option (List Int))},
+    {name: podid, type: (Option Bytes)},
+    {name: podseq, type: (Option Int)},
+    {name: sequence, type: (Option Int)},
+    {name: slotinpod, type: (Option Int)},
+    {name: mincpmpersec, type: (Option (Int * Int))},
+    {name: battr, type: (Option (List Int))},
+    {name: maxextended, type: (Option Int)},
+    {name: minbitrate, type: (Option Int)},
+    {name: maxbitrate, type: (Option Int)},
+    {name: delivery, type: (Option (List Int))},
+    {name: companionad, type: (Option (List Banner))},
+    {name: api, type: (Option (List Int))},
+    {name: companiontype, type: (Option (List Int))},
+    {name: maxseq, type: (Option Int)},
+    {name: feed, type: (Option Int)},
+    {name: stitched, type: (Option Int)},
+    {name: nvol, type: (Option Int)},
+    {name: durfloors, type: (Option (List DurFloors))}
+  ]
+}
+
+structure{
+  name: Metric,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: Bytes},
+    {name: value, type: (Int * Int)},
+    {name: vendor, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Native,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: request, type: Bytes},
+    {name: ver, type: (Option Bytes)},
+    {name: api, type: (Option (List Int))},
+    {name: battr, type: (Option (List Int))}
+  ]
+}
+
+structure{
+  name: Deal,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: bidfloor, type: (Option (Int * Int))},
+    {name: bidfloorcur, type: (Option Bytes)},
+    {name: at, type: (Option Int)},
+    {name: wseat, type: (Option (List Bytes))},
+    {name: wadomain, type: (Option (List Bytes))},
+    {name: guar, type: (Option Int)},
+    {name: mincpmpersec, type: (Option (Int * Int))},
+    {name: durfloors, type: (Option (List DurFloors))}
+  ]
+}
+
+structure{
+  name: Pmp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: privateAuction, type: (Option Int)},
+    {name: deals, type: (Option (List Deal))}
+  ]
+}
+
+structure{
+  name: Qty,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: multiplier, type: (Int * Int)},
+    {name: sourcetype, type: (Option Int)},
+    {name: vendor, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: RefSettings,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: reftype, type: (Option Int)},
+    {name: minint, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: Refresh,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: refsettings, type: (Option (List RefSettings))},
+    {name: count, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: Video,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mimes, type: (List Bytes)},
+    {name: minduration, type: (Option Int)},
+    {name: maxduration, type: (Option Int)},
+    {name: startdelay, type: (Option Int)},
+    {name: maxseq, type: (Option Int)},
+    {name: poddur, type: (Option Int)},
+    {name: protocols, type: (Option (List Int))},
+    {name: w, type: (Option Int)},
+    {name: h, type: (Option Int)},
+    {name: podid, type: (Option Bytes)},
+    {name: podseq, type: (Option Int)},
+    {name: rqddurs, type: (Option (List Int))},
+    {name: placement, type: (Option Int)},
+    {name: plcmt, type: (Option Int)},
+    {name: linearity, type: (Option Int)},
+    {name: skip, type: (Option Int)},
+    {name: skipmin, type: (Option Int)},
+    {name: skipafter, type: (Option Int)},
+    {name: sequence, type: (Option Int)},
+    {name: slotinpod, type: (Option Int)},
+    {name: mincpmpersec, type: (Option (Int * Int))},
+    {name: battr, type: (Option (List Int))},
+    {name: maxextended, type: (Option Int)},
+    {name: minbitrate, type: (Option Int)},
+    {name: maxbitrate, type: (Option Int)},
+    {name: boxingallowed, type: (Option Int)},
+    {name: playbackmethod, type: (Option (List Int))},
+    {name: playbackend, type: (Option Int)},
+    {name: delivery, type: (Option (List Int))},
+    {name: pos, type: (Option Int)},
+    {name: companionad, type: (Option (List Banner))},
+    {name: api, type: (Option (List Int))},
+    {name: companiontype, type: (Option (List Int))},
+    {name: poddedupe, type: (Option (List Int))},
+    {name: durfloors, type: (Option (List DurFloors))}
+  ]
+}
+
+structure{
+  name: Imp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: metric, type: (Option (List Metric))},
+    {name: banner, type: (Option Banner)},
+    {name: video, type: (Option Video)},
+    {name: audio, type: (Option Audio)},
+    {name: native, type: (Option Native)},
+    {name: pmp, type: (Option Pmp)},
+    {name: displaymanager, type: (Option Bytes)},
+    {name: displaymanagerver, type: (Option Bytes)},
+    {name: instl, type: (Option Int)},
+    {name: tagid, type: (Option Bytes)},
+    {name: bidfloor, type: (Option (Int * Int))},
+    {name: bidfloorcur, type: (Option Bytes)},
+    {name: clickbrowser, type: (Option Int)},
+    {name: secure, type: (Option Int)},
+    {name: iframebuster, type: (Option (List Bytes))},
+    {name: rwdd, type: (Option Int)},
+    {name: ssai, type: (Option Int)},
+    {name: exp, type: (Option Int)},
+    {name: qty, type: (Option Qty)},
+    {name: dt, type: (Option (Int * Int))},
+    {name: refresh, type: (Option Refresh)}
+  ]
+}
+
+structure{
+  name: Regs,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: coppa, type: (Option Int)},
+    {name: gdpr, type: (Option Int)},
+    {name: usPrivacy, type: (Option Bytes)},
+    {name: gpp, type: (Option Bytes)},
+    {name: gppSid, type: (Option (List Int))}
+  ]
+}
+
+structure{
+  name: Site,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: domain, type: (Option Bytes)},
+    {name: cattax, type: (Option Int)},
+    {name: cat, type: (Option (List Bytes))},
+    {name: sectioncat, type: (Option (List Bytes))},
+    {name: pagecat, type: (Option (List Bytes))},
+    {name: page, type: (Option Bytes)},
+    {name: ref, type: (Option Bytes)},
+    {name: search, type: (Option Bytes)},
+    {name: mobile, type: (Option Int)},
+    {name: privacypolicy, type: (Option Int)},
+    {name: publisher, type: (Option Publisher)},
+    {name: content, type: (Option Content)},
+    {name: keywords, type: (Option Bytes)},
+    {name: kwarray, type: (Option (List Bytes))},
+    {name: inventorypartnerdomain, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: SupplyChainNode,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: asi, type: Bytes},
+    {name: sid, type: Bytes},
+    {name: rid, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: domain, type: (Option Bytes)},
+    {name: hp, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: SupplyChain,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ver, type: Bytes},
+    {name: complete, type: Int},
+    {name: nodes, type: (List SupplyChainNode)}
+  ]
+}
+
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: fd, type: (Option Int)},
+    {name: tid, type: (Option Bytes)},
+    {name: pchain, type: (Option Bytes)},
+    {name: schain, type: (Option SupplyChain)}
+  ]
+}
+
+structure{
+  name: UID,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: atype, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: EID,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: inserter, type: (Option Bytes)},
+    {name: source, type: (Option Bytes)},
+    {name: matcher, type: (Option Bytes)},
+    {name: mm, type: (Option Int)},
+    {name: uids, type: (Option (List UID))}
+  ]
+}
+
+structure{
+  name: User,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (Option Bytes)},
+    {name: buyeruid, type: (Option Bytes)},
+    {name: yob, type: (Option Int)},
+    {name: gender, type: (Option Bytes)},
+    {name: keywords, type: (Option Bytes)},
+    {name: kwarray, type: (Option (List Bytes))},
+    {name: customdata, type: (Option Bytes)},
+    {name: geo, type: (Option Geo)},
+    {name: data, type: (Option (List Data))},
+    {name: consent, type: (Option Bytes)},
+    {name: eids, type: (Option (List EID))}
+  ]
+}
+
+structure{
+  name: OpenRtbBidRequest,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: Bytes},
+    {name: imp, type: (List Imp)},
+    {name: site, type: (Option Site)},
+    {name: app, type: (Option App)},
+    {name: dooh, type: (Option DOOH)},
+    {name: device, type: (Option Device)},
+    {name: user, type: (Option User)},
+    {name: test, type: (Option Int)},
+    {name: at, type: (Option Int)},
+    {name: tmax, type: (Option Int)},
+    {name: wseat, type: (Option (List Bytes))},
+    {name: bseat, type: (Option (List Bytes))},
+    {name: allimps, type: (Option Int)},
+    {name: cur, type: (Option (List Bytes))},
+    {name: wlang, type: (Option (List Bytes))},
+    {name: wlangb, type: (Option (List Bytes))},
+    {name: acat, type: (Option (List Bytes))},
+    {name: bcat, type: (Option (List Bytes))},
+    {name: cattax, type: (Option Int)},
+    {name: badv, type: (Option (List Bytes))},
+    {name: bapp, type: (Option (List Bytes))},
+    {name: source, type: (Option Source)},
+    {name: regs, type: (Option Regs)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
