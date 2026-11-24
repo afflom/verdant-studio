@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           stale=''
-          for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq ".[] | select(.title == \"verdant_studio propose-command\" and .user.login == \"${SLUG}[bot]\") | .number"); do
+          for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq ".[] | select((.title | startswith(\"verdant_studio propose-command\")) and .user.login == \"${SLUG}[bot]\") | .number"); do
             state=unknown
             for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
               state=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .mergeable_state)
