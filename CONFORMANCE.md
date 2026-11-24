@@ -158,6 +158,10 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `NIST-AI-RMF-PLAYBOOK` | The AI RMF 1.0 Govern, Map, Measure and Manage subcategories with suggested actions, in NIST's official JSON form. |  |
 | `SOFA-SIMPLEFREEFIELDHRIR-1.0` | The AES69 SOFA SimpleFreeFieldHRIR attribute and variable definitions in the reference toolbox's convention table form. |  |
 | `XIPH-VORBIS-I` | The Vorbis I audio codec decoding specification. |  |
+| `VERDANT-ENGINE-AUTHORITIES-2.20.1` | The engine's imported authorities, each catalog pinned by sha256 and mapped to the IDs that realize it (realized_by). |  |
+| `VERDANT-ENGINE-IDS-2.20.1` | The engine's 130 conformance IDs (VE, FR, FI, VTK), each with level, suite, refusal and statement. Every engine capability Verdant Studio uses is cited by one of these IDs. |  |
+| `VERDANT-ENGINE-RELEASE-LEDGER-2.20.1` | The engine's verdant/release-ledger/1: current SemVer version 2.20.1, release epoch and change history. |  |
+| `VERDANT-ENGINE-STANDARDS-LOCK-2.20.1` | The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them. |  |
 
 ## Claims that are not conformance IDs
 
