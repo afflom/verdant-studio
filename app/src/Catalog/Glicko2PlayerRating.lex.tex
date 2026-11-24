@@ -1,0 +1,25 @@
+\begin{lexlean}{Catalog.Glicko2PlayerRating}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Glicko2SystemConstant,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: tau, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: Glicko2PlayerRating,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: rating, type: (Int * Int)},
+    {name: ratingDeviation, type: (Int * Int)},
+    {name: volatility, type: (Int * Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

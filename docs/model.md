@@ -163,3 +163,7 @@ Each construct and the citation that admits it.
 - `Catalog.SteamDeckCompatibility`: std STEAMWORKS-DECK-COMPAT row O08
 - `Catalog.SteamStoreAssets`: std STEAMWORKS-STORE-ASSETS row V05
 - `Catalog.Swhid`: std SWHID-1.2-SYNTAX row Y06
+- `Catalog.Bs1770ChannelWeighting`: std ITU-R-BS-1770-5 row I01
+- `Catalog.Glicko2PlayerRating`: std GLICKMAN-GLICKO-2-2022 row K08
+- `Catalog.MlagentsAgentInfo`: std UNITY-MLAGENTS-AGENT-INFO-PROTO row J13
+- `Catalog.TrueskillSkillBelief`: std MSR-TRUESKILL-NIPS-2006 row K09

@@ -1,0 +1,20 @@
+\begin{lexlean}{Catalog.MlagentsAgentInfo}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MlagentsAgentInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: reward, type: (Int * Int)},
+    {name: done, type: Bool},
+    {name: maxStepReached, type: Bool},
+    {name: id, type: Int},
+    {name: actionMask, type: (List Bool)},
+    {name: groupId, type: Int},
+    {name: groupReward, type: (Int * Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,39 @@
+\begin{lexlean}{Catalog.Bs1770ChannelWeighting}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Bs1770Channel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: left, fields: []},
+    {name: right, fields: []},
+    {name: centre, fields: []},
+    {name: leftSurround, fields: []},
+    {name: rightSurround, fields: []}
+  ]
+}
+
+structure{
+  name: Bs1770Gating,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: gatingBlockDuration, type: (Int * Int)},
+    {name: overlap, type: (Int * Int)},
+    {name: absoluteThreshold, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: Bs1770ChannelWeighting,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: channel, type: Bs1770Channel},
+    {name: weighting, type: (Int * Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
