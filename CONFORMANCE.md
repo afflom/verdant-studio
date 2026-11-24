@@ -240,6 +240,48 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `IAB-OPENRTB-2.6` | The OpenRTB 2.6 bid request (section 3.2) and bid response (section 4.2) objects and their attributes. Index row U10. |  |
 | `BR-PORTARIA-MJSP-502-2021` | The Brazilian indicative classification (ClassInd) process: the categories (Art. 11), the thematic axes (Art. 12), and the definitive (Art. 17) and self-classification (Art. 18) symbols. Index row Q08. |  |
 | `IARC-RATINGS-DEFINITIONS` | The IARC ratings definitions: the generic IARC age ratings 3+, 7+, 12+, 16+ and 18+, and the ratings of each participating rating authority. Index row Q03. |  |
+| `CN-NPPA-2021-14` | Online game services to minors limited to one hour on Fridays, weekends and public holidays, under the real-name registration and anti-addiction system. Index row Q09. |  |
+| `EPIC-EGS-REQUIREMENTS-GUIDELINES` | The Epic Games Store publishing requirements, including crossplay, ratings and account integration. Index row P08. |  |
+| `EPIC-UE-GAUNTLET` | The Gauntlet framework for running automated sessions and tests of Unreal Engine builds. Index row O07. |  |
+| `ESRB-PRIVACY-CERTIFIED` | ESRB Privacy Certified, an FTC-approved COPPA Safe Harbor program, and its Kids and Privacy Certified seals. Index row R06. |  |
+| `GOOGLE-PLAY-DEVELOPER-POLICY-CENTER` | Google Play developer policies, including the Families policy, payments and randomized item odds disclosure. Index row P06. |  |
+| `IEEE-2089-2021` | The process standard for designing digital services for children. Index row R08. |  |
+| `IEEE-2089.1-2024` | The framework for online age verification. Index row R08. |  |
+| `IGDA-GASIG-RESOURCES` | The Game Accessibility SIG's advocacy, curricula and best-practice resources. Index row M05. |  |
+| `ISO-10002-2018` | Guidelines for complaints handling in organizations (ISO Open Data deliverable 71580). Index row W09. |  |
+| `ISO-10668-2010` | Requirements for monetary brand valuation (ISO Open Data deliverable 46032). Index row V03. |  |
+| `ISO-17100-2015` | Requirements for translation service providers (amended by ISO 17100:2015/Amd 1:2017) (ISO Open Data deliverable 59149). Index row N07. |  |
+| `ISO-18295-1-2017` | Requirements for customer contact centres (ISO Open Data deliverable 64739). Index row W09. |  |
+| `ISO-18295-2-2017` | Requirements for clients using the services of customer contact centres (ISO Open Data deliverable 64740). Index row W09. |  |
+| `ISO-18587-2017` | Requirements for full human post-editing of machine translation output (ISO Open Data deliverable 62970). Index row N08. |  |
+| `ISO-20671-1-2021` | Brand evaluation principles and fundamentals (ISO Open Data deliverable 81739). Index row V03. |  |
+| `ISO-30042-2019` | TermBase eXchange (TBX), the XML terminology interchange format (ISO Open Data deliverable 62510). Index row N05. |  |
+| `ISO-45003-2021` | Guidelines for managing psychosocial risks within an occupational health and safety management system (ISO Open Data deliverable 64283). Index row X05. |  |
+| `ISO-IEC-20000-1-2018` | Service management system requirements (amended by ISO/IEC 20000-1:2018/Amd 1:2024) (ISO Open Data deliverable 70636). Index row W03. |  |
+| `ISO-IEC-25010-2023` | The SQuaRE product quality model and its quality characteristics (ISO Open Data deliverable 78176). Index row O01. |  |
+| `ISO-IEC-25022-2016` | Measures of quality in use for the SQuaRE quality model (ISO Open Data deliverable 35746). Index row O02. |  |
+| `ISO-IEC-25023-2016` | Measures of system and software product quality for the SQuaRE quality model (ISO Open Data deliverable 35747). Index row O02. |  |
+| `ISO-IEC-27001-2022` | Information security management system requirements (amended by ISO/IEC 27001:2022/Amd 1:2024) (ISO Open Data deliverable 82875). Index row T06. |  |
+| `ISO-IEC-27566-1-2025` | The age assurance systems framework: verification, estimation and inference (ISO Open Data deliverable 88143). Index row R09. |  |
+| `ISO-IEC-27701-2025` | Privacy information management system requirements and guidance (ISO Open Data deliverable 85819). Index row R07. |  |
+| `ISO-IEC-29100-2024` | The privacy framework: actors, roles, principles and terminology (ISO Open Data deliverable 85938). Index row R07. |  |
+| `ISO-IEC-IEEE-29119-1-2022` | Software testing, part 1: general concepts (ISO Open Data deliverable 81291). Index row O03. |  |
+| `ISO-IEC-IEEE-29119-2-2021` | Software testing, part 2: test processes (ISO Open Data deliverable 79428). Index row O03. |  |
+| `ISO-IEC-IEEE-29119-3-2021` | Software testing, part 3: test documentation (ISO Open Data deliverable 79429). Index row O03. |  |
+| `ISO-IEC-IEEE-29119-4-2021` | Software testing, part 4: test techniques (ISO Open Data deliverable 79430). Index row O03. |  |
+| `ISO-IEC-IEEE-29119-5-2024` | Software testing, part 5: keyword-driven testing (ISO Open Data deliverable 87233). Index row O03. |  |
+| `ITU-R-BT.1702-3` | Flash and red-flash thresholds and the spatial pattern limits for photosensitive seizure risk. Index row M09. |  |
+| `KIDSAFE-SEAL-PROGRAM` | The kidSAFE Seal Program, an FTC-approved COPPA Safe Harbor program. Index row R06. |  |
+| `META-HORIZON-VRC` | The performance, comfort and functional VRCs that Quest apps must pass. Index row P07. |  |
+| `PRIVO-SAFE-HARBOR` | PRIVO's FTC-approved COPPA Safe Harbor program. Index row R06. |  |
+| `SAC-GB-18030-2022` | The mandatory Chinese coded character set and its implementation levels. Index row N12. |  |
+| `STEAMWORKS-DOCUMENTATION` | Steamworks store presence, review process, store asset, pricing and content rules. Index row P04. |  |
+| `UNITY-TEST-FRAMEWORK-1.4.6` | Edit Mode and Play Mode automated tests integrated with CI. Index row O07. |  |
+| `US-CA-CCPA-REGULATIONS-2026` | The CCPA regulations: notices, consumer requests, opt-out preference signals and minors. Index row R04. |  |
+| `US-CA-CCPA-STATUTE-2026` | CCPA as amended by CPRA: consumer rights, sale and share opt-out, and opt-in for consumers under 16. Index row R04. |  |
+| `US-LA-HB-570-2025` | Age verification and parental consent at the app store, and developer use of age signals (Louisiana). Index row R12. |  |
+| `US-TX-SB-2420-89R` | Age verification and parental consent at the app store, and developer use of age signals (Texas). Index row R12. |  |
+| `US-UT-SB-142-2025` | Age verification and parental consent at the app store, and developer use of age signals (Utah). Index row R12. |  |
 
 ## Claims that are not conformance IDs
 
