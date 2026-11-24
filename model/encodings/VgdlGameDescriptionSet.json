@@ -1,0 +1,1 @@
+{"name":"vgdl-game-description-set","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"VGDL game description set","enum":["Sprite Set","Interaction Set","Termination Set","Mapping Set"]},"citation":["std","ARXIV-1802.10363-V4","J12"]}
