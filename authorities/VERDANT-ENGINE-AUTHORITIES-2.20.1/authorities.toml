@@ -1,0 +1,134 @@
+# model/authorities.toml --- what this repository cites rather than proves.
+#
+# An authority is cited, never re-derived, and never gated on: what it states is
+# not claimed as established here, so the claim that reproduces it stays
+# `some-true`, and that is all "gated on" excludes. Its artifact (a standard's
+# text, a corpus) may be committed when its row names the path in `artifact` and
+# records in `checksum` a SHA-256 over the committed bytes, which
+# `cargo xtask check-model` recomputes; a conformance test may then use a
+# committed corpus as its oracle, as evidence for a `build` claim. With nothing
+# committed, `checksum` is `none` and `checksum_reason` says why.
+#
+# A file's checksum is the SHA-256 of its bytes. A directory's is the SHA-256 of
+# its manifest: one `<sha256 of file>  <path>` line per file, the path relative
+# to the directory, in byte order of the paths. Both are 64 lowercase hex digits.
+#
+# This file is where the authority is named well enough for a third party to find
+# it.
+#
+# `realized_by` lists the conformance IDs that are *evidence* this repository
+# realizes the cited fact. Evidence is not proof, and the meta-gate fails the
+# build if any document blurs the two registers.
+#
+# Empty. The first authority this repository cites goes here, before any claim
+# is allowed to say `some-true`.
+
+spec = "template/1"
+
+[[authority]]
+id = "AUTH-SCHEMA-ORG"
+name = "Schema.org Vocabulary v28.1"
+citation = "Schema.org Community Group, Schema.org Vocabulary v28.1 (CC-BY-SA-3.0), https://schema.org/version/latest/"
+artifact = "catalogs/schema-org/vocabulary.json"
+checksum = "7392c00803e1d61c42a76315bd9ad37220ec15b7c1c6fa236da9ecf338a0961f"
+statement = "Schema.org defines the class hierarchy (Thing, CreativeWork, 3DModel, VideoGame, SoftwareApplication, Person, Place, IndividualProduct, Action, CommunicateAction) and property domainIncludes/rangeIncludes rules coupling typed entities."
+realized_by = ["VE-38"]
+
+[[authority]]
+id = "AUTH-W3C-SOSA-PROVO"
+name = "W3C SOSA/SSN & W3C PROV-O Ontologies"
+citation = "W3C Recommendation, Semantic Sensor Network Ontology (https://www.w3.org/TR/vocab-ssn/) and PROV-O: The PROV Ontology (https://www.w3.org/TR/prov-o/)"
+artifact = "catalogs/w3c/sosa-provo-shapes.json"
+checksum = "7d4e3c36e438491a505a85d5044e36074c67ce7948ea9cbf0d4480ec37d91df8"
+statement = "W3C SOSA and PROV-O define Observation, Actuation, Sensor, FeatureOfInterest, Entity, Activity, Agent, and acyclic wasDerivedFrom lineage constraints."
+realized_by = ["VE-38", "FI-01", "FI-06"]
+
+[[authority]]
+id = "AUTH-KHRONOS-GLTF2"
+name = "Khronos glTF 2.0 & Ratified PBR Material Extensions"
+citation = "Khronos Group / ISO/IEC 12113:2022 glTF 2.0 Specification and ratified KHR_materials_{ior,specular,transmission,clearcoat,emissive_strength} extensions, https://registry.khronos.org/glTF/"
+artifact = "catalogs/khronos/gltf-hd-materials-rigs.json"
+checksum = "99432a0820b00a3480b1bbe0850ac327bfe6699531aed370e15aff16552bda70"
+statement = "Khronos glTF 2.0 and its ratified PBR extensions define binary GLB chunk framing, skeletal skinning (JOINTS_0, WEIGHTS_0, inverseBindMatrices), and physically based dielectric/metallic/transmissive surface descriptors."
+realized_by = ["VE-04", "VE-19", "VE-38"]
+
+[[authority]]
+id = "AUTH-ISO-24617-DMN"
+name = "ISO 24617-2 Dialogue Acts & OMG DMN 1.5 FIRST-Hit Model Admission"
+citation = "ISO 24617-2:2020 Language resource management — Semantic annotation framework Part 2: Dialogue acts; OMG Decision Model and Notation (DMN) 1.5"
+artifact = "catalogs/language/iso24617-dmn-dialogue.json"
+checksum = "9e4a2ffb231260e60e5aa23683777bb6c2bba76b4243334fb92535ee91c4c321"
+statement = "ISO 24617-2 classifies communicative dialogue acts and epistemic abstention, and OMG DMN 1.5 FIRST-hit decision tables govern locked Verdant-only model admission."
+realized_by = ["VE-22", "VE-38"]
+
+[[authority]]
+id = "AUTH-DOMAIN-PACKS"
+name = "Verdant Imported Multi-Domain World, Character, Item & Automation Catalog"
+citation = "Verdant Platform Imported Domain Catalogs (Sunspire Harbor, Meridian Observatory, Glasshouse Chronicle, Starfall Bastion)"
+artifact = "catalogs/domains/world-packs.json"
+checksum = "9126c51aaf92eff57190870c1f909978b08d83b91ea064a2a9cd9c72d1d4009c"
+statement = "Cataloged multi-domain packs supply differentiated environments, acoustic rooms, HD 3D models, conserved items, and 22-joint character profiles coupled via Schema.org."
+realized_by = ["VE-32", "VE-38"]
+
+[[authority]]
+id = "AUTH-VSM-CYBERNETICS"
+name = "Stafford Beer Viable System Model (VSM S1-S5 + S3*)"
+citation = "Stafford Beer, Brain of the Firm (2nd ed., Wiley, 1981) & Diagnosing the System for Organizations (Wiley, 1985); ISO/IEC/IEEE 15288:2023"
+artifact = "catalogs/governance/vsm-viable-system.json"
+checksum = "629f96d9d1d8e1467b625f95a38642edb6a8e974a3cfb69cc9dd67e35b881921"
+statement = "Stafford Beer's Viable System Model defines recursive S1 operational managers, S2 coordination, S3 control, S3* independent audit, S4 environmental intelligence, and S5 executive policy with total ownership and standards-only anti-contrivance governance."
+realized_by = ["VE-42"]
+
+[[authority]]
+id = "AUTH-ISO-42010-VIEWPOINTS"
+name = "ISO/IEC/IEEE 42010:2022 Architecture Viewpoints, ISO/IEC/IEEE 12207:2017 ALM & Stitch App Catalog"
+citation = "ISO/IEC/IEEE 42010:2022 Software, systems and enterprise — Architecture description; ISO/IEC/IEEE 12207:2017 Software life cycle processes; ISO 9241-210:2019; W3C DTCG 2025.10; WCAG 2.2 AA; afflom/stitch"
+artifact = "catalogs/governance/iso42010-viewpoints.json"
+checksum = "c0da292f17fc268fc4895239cc121163e6fd8bc7037004ca5a3cce1860e8675f"
+statement = "ISO/IEC/IEEE 42010:2022 binds every Verdant surface, crate, Observer part, stream, and Stitch App Catalog archetype to an accountable Manager with explicit required elements, forbidden cross-contamination, and correspondence rules."
+realized_by = ["VE-42", "VE-44", "VE-45", "VE-47", "VE-52", "VE-53", "VE-54", "VE-55", "VE-61", "VE-63", "VE-65", "VE-67", "VE-68", "VE-71", "VE-72", "VE-73", "VE-75", "VE-76", "VE-77", "VE-78", "VE-79"]
+
+[[authority]]
+id = "AUTH-ISO-25010-TENSOR-SCALING"
+name = "ISO/IEC 25010:2023 Performance Efficiency, ITU-R BT.2020/2100 UHDTV, W3C WebGPU/WebNN & Paged Coded Tensor Memory"
+citation = "ISO/IEC 25010:2023 SQuaRE Performance Efficiency; ITU-R BT.2020-2 & BT.2100-2 UHDTV (4K/8K & Beyond); W3C WebGPU & WGSL; W3C WebNN; PagedAttention/FlashAttention Tiled Memory; UOR-Foundation uor-matmul CodedMatrix"
+artifact = "catalogs/governance/iso25010-tensor-scaling.json"
+checksum = "bb3bd31f42e171fe501b852577f9047d77fbbca2a8cd93a939761776bebd43e2"
+statement = "ISO/IEC 25010:2023 and ITU-R BT.2020/2100 govern closed-loop dynamic workload scaling across FHD-to-16K+ displays and arbitrary AI/3D workloads through bounded-RAM PagedTensorArena zero-decode tensor core paging with zero manual Studio resolution toggles."
+realized_by = ["VE-41", "VE-42", "VE-50"]
+
+[[authority]]
+id = "AUTH-STITCH-SELF-HOSTING"
+name = "afflom/stitch Zero-Account Sovereign Custody, Encrypt-Before-Shard Boundary Privacy & Reed-Solomon GF(2^8) Self-Hosting"
+citation = "afflom/stitch (identity/stitch.lock commit 68a9222a); RFC 2104 HMAC-SHA256 & RFC 7366 Encrypt-then-MAC AEAD; Systematic Reed-Solomon GF(2^8) k-of-n Erasure Coding; W3C Service Workers & OPFS; W3C PROV-O; OCI Artifact Distribution; RFC 2789 Cargo Sparse Registry; Zenodo Archive (https://zenodo.org/records/24383968)"
+artifact = "catalogs/governance/stitch-self-hosting.json"
+checksum = "06d6593e8d813a82ea1ca78e674e8d4224df0116bbdfb2e0685946d371b6c669"
+statement = "Zero-account Prism-ID boundary encryption, k-of-n systematic Reed-Solomon erasure coding across multiple independent origins and public-benefit Stitch carriers, reciprocal WebRTC peer seeding, monotonic quorum release pointers, budgeted peer admission, in-Verdant PROV-O Merkle revision control, live RFC 2789 Cargo Sparse Registry, and Zenodo archival provide uniform CIA guarantees without requiring external user accounts or non-GitHub commercial cloud registrations."
+realized_by = ["VE-43", "VE-44", "VE-46", "VE-47", "VE-48", "VE-49", "VE-51", "VE-54", "VE-60", "VE-70", "VE-72", "VE-74", "VE-77", "VE-78", "VE-79"]
+
+[[authority]]
+id = "AUTH-SEMVER-CHANGE-KPI"
+name = "SemVer 2.0.0 Change/Version Governance, ISO/IEC/IEEE 12207 ALM & ISO/IEC/IEEE 15939 Observer KPIs"
+citation = "Semantic Versioning 2.0.0; ISO/IEC/IEEE 12207:2017 §6.3.5 Configuration Management & §6.3.7 Measurement; ISO/IEC/IEEE 15939:2017 Measurement process; Stafford Beer VSM S3/S4/S5"
+artifact = "catalogs/governance/change-roadmap-kpi.json"
+checksum = "a0d7a6ec7f4ed8e3ce6cecd4ef22516af05de2cebcbf7484356d6f80ec5737af"
+statement = "Accountable VSM Managers govern every Verdant and Prism facet including Knowledge, Change/Version, Security, Architecture, and Stakeholder Roadmap/KPIs across M1-M27, advancing SemVer Major/Minor/Patch versions exclusively when the Ratchet is applied and all Release Gates pass."
+realized_by = ["VE-45", "VE-46", "VE-47", "VE-48", "VE-49", "VE-50", "VE-51", "VE-52", "VE-53", "VE-54", "VE-55", "VE-56", "VE-57", "VE-58", "VE-59", "VE-60", "VE-61", "VE-62", "VE-63", "VE-64", "VE-65", "VE-66", "VE-67", "VE-68", "VE-69", "VE-70", "VE-71", "VE-72", "VE-73", "VE-74", "VE-75", "VE-76", "VE-77", "VE-78", "VE-79"]
+
+[[authority]]
+id = "BERKELEY-SOFTFLOAT"
+name = "Berkeley SoftFloat Release 3e"
+citation = "https://github.com/ucb-bar/berkeley-softfloat-3/tree/07ebd29db0cfb55723a79fbbffe99103ef38e305"
+artifact = "tests/oracles/softfloat/source.tar.gz"
+checksum = "a43936117a4b62b2c942b62144ab903f7d93c5fb313389caecbd6e790d416e34"
+statement = "Defines f64_add, f32_to_f64, f64_to_f32, ui64_to_f32, ui64_to_f64, f64_div, f32_eq and f32_lt with nearest-even IEEE rounding and NaN predicates."
+realized_by = ["VTK-07", "VTK-08", "VTK-15"]
+
+[[authority]]
+id = "GGML-TENSOR-CPU"
+name = "GGML CPU Tensor oracle"
+citation = "https://github.com/ggml-org/llama.cpp/tree/9a080f44b503c64f66c84a6274b9d9ee5d5b09d5/ggml/src"
+artifact = "tests/oracles/ggml/source.tar.gz"
+checksum = "4eec816a907885c31932e0ab4fa1ee2278af43000dc19d514929cd03cb4ff8a0"
+statement = "Defines F32 dot/scalar operations, byte copies, F16/BF16 conversions, scale/bias/clamp/leaky ReLU and thirteen typed unary CPU kernels; packed fields, scales, codebooks, F8 and complete CPU GET_ROWS block decoding and normalized weighted rows in FLASH_ATTN_EXT."
+realized_by = ["VTK-01", "VTK-02", "VTK-03", "VTK-04", "VTK-05", "VTK-06", "VTK-11", "VTK-12", "VTK-13", "VTK-14", "VTK-16", "VTK-17", "VTK-18", "VTK-19", "VTK-20", "VTK-21", "VTK-22", "VTK-23", "VTK-24"]
