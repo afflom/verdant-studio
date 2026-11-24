@@ -1,0 +1,87 @@
+\begin{lexlean}{Catalog.Srgb}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SrgbClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3Definitions, fields: []},
+    {name: n4ReferenceConditions, fields: []},
+    {name: n41ReferenceImageDisplaySystemCharacteristics, fields: []},
+    {name: n42ReferenceViewingConditions, fields: []},
+    {name: n43ReferenceObserver, fields: []},
+    {name: n5EncodingTransformations, fields: []},
+    {name: n51Introduction, fields: []},
+    {name: n52TransformationFromRGBValuesToCIE1931XYZValues, fields: []},
+    {name: n53TransformationFromCIE1931XYZValuesToRGBValues, fields: []},
+    {name: annexAInformativeAmbiguityInTheDefinitionOfTheTermGamma, fields: []},
+    {name: annexBInformativeSRGBAndITURBT7093Compatibility, fields: []},
+    {name: annexCInformativeUsageGuidelines, fields: []},
+    {name: c1OverviewOfColourManagement, fields: []},
+    {name: c2SpecifyingColourOfPageElements, fields: []},
+    {name: c3SRGBInPractice, fields: []},
+    {name: c4DisplayApplicationScenarios, fields: []},
+    {name: c41ImageNotInSRGBDoesNotHaveAnEmbeddedICCProfileAndNoDisplayOrOutputDeviceICCProfile, fields: []},
+    {name: c42ImageNotInSRGBDoesNotHaveAnEmbeddedICCProfileAndSystemHasADisplayOrOutputDeviceICCProfile, fields: []},
+    {name: c43ImageInSRGBAndNoDisplayOutputDeviceICCProfile, fields: []},
+    {name: c44ImageInSRGBAndSystemHasADisplayOutputDeviceICCProfile, fields: []},
+    {name: c45ImageInSRGBAndDisplayOutputDeviceIsSRGBCompliant, fields: []},
+    {name: c46ImageNotInSRGBHasAnEmbeddedICCProfileAndNoDisplayOrOutputDeviceICCProfile, fields: []},
+    {name: c47ImageNotInSRGBHasAnEmbeddedICCProfileAndSystemHasADisplayOrOutputDeviceICCProfile, fields: []},
+    {name: c5AuthoringScenarios, fields: []},
+    {name: c51ImageCreatedOnADeviceThatHasNoICCProfilesAndIsNotSRGBCompliant, fields: []},
+    {name: c52ImageCreatedOnADeviceThatHasICCProfilesAndIsNotSRGBCompliant, fields: []},
+    {name: c53ImageCreatedOnADeviceThatIsSRGBCompliant, fields: []},
+    {name: c6PaletteIssues, fields: []},
+    {name: c61ImageDoesNotHaveAColourTable8BppAndClientGraphicsSubsystemIsNotPalletised, fields: []},
+    {name: c62ImageHasAColourTable8BppAndAClientDisplayIsNotPalletised, fields: []},
+    {name: c63ImageDoesNotHaveAColourTable8BppAndClientDisplayIsPalletised, fields: []},
+    {name: c64ImageHasAColourTable8BppAndWasCreatedUsingTheDefaultPaletteAndClientDisplayIsPalletised, fields: []},
+    {name: c65ImageHasAColourTable8BppAndWasCreatedUsingAnArbitraryPaletteAndClientDisplayIsPalletised, fields: []},
+    {name: annexDInformativeTypicalViewingConditions, fields: []},
+    {name: annexEInformativeRecommendedTreatmentForViewingConditions, fields: []}
+  ]
+}
+
+inductive{
+  name: SrgbReferenceDisplayCondition,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: displayLuminanceLevel, fields: []},
+    {name: displayWhitePoint, fields: []},
+    {name: displayModelOffset, fields: []},
+    {name: displayGunPhosphorGamma, fields: []}
+  ]
+}
+
+inductive{
+  name: SrgbReferenceViewingCondition,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: referenceBackground, fields: []},
+    {name: referenceSurround, fields: []},
+    {name: referenceProximalField, fields: []},
+    {name: referenceAmbientIlluminanceLevel, fields: []},
+    {name: referenceAmbientWhitePoint, fields: []},
+    {name: referenceVeilingGlare, fields: []}
+  ]
+}
+
+structure{
+  name: Srgb,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option SrgbClause)},
+    {name: referenceDisplayCondition, type: (Option SrgbReferenceDisplayCondition)},
+    {name: referenceViewingCondition, type: (Option SrgbReferenceViewingCondition)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

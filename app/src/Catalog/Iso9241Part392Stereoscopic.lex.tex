@@ -1,0 +1,71 @@
+\begin{lexlean}{Catalog.Iso9241Part392Stereoscopic}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso9241Part392StereoscopicClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4GuidingConcepts, fields: []},
+    {name: n41Framework, fields: []},
+    {name: n42ReviewOfFactors, fields: []},
+    {name: n421General, fields: []},
+    {name: n422InterocularGeometricDifferences, fields: []},
+    {name: n423InterocularPhotometricDifferences, fields: []},
+    {name: n424InterocularPhotometricInteraction, fields: []},
+    {name: n425AccommodationConvergenceMismatch, fields: []},
+    {name: n426OtherFactorsToBeConsideredForStereoscopicPresentation, fields: []},
+    {name: n427Summary, fields: []},
+    {name: n5ErgonomicRecommendations, fields: []},
+    {name: n51General, fields: []},
+    {name: n52ViewingConditions, fields: []},
+    {name: n521General, fields: []},
+    {name: n522DesignViewingDistance, fields: []},
+    {name: n523InterpupillaryDistance, fields: []},
+    {name: n53InterocularGeometricalDifferences, fields: []},
+    {name: n531InterocularVerticalMisalignment, fields: []},
+    {name: n532InterocularRotationalMisalignment, fields: []},
+    {name: n533InterocularMagnificationDifference, fields: []},
+    {name: n54InterocularPhotometricDifferences, fields: []},
+    {name: n541InterocularLuminanceDifference, fields: []},
+    {name: n542InterocularContrastDifference, fields: []},
+    {name: n543InterocularChromaticityDifference, fields: []},
+    {name: n55InterocularPhotometricInteraction, fields: []},
+    {name: n551Crosstalk, fields: []},
+    {name: u0035u002Eu0036u0020u0041u0063u0063u006Fu006Du006Du006Fu0064u0061u0074u0069u006Fu006Eu0020u2014u0020u0063u006Fu006Eu0076u0065u0072u0067u0065u006Eu0063u0065u0020u006Du0069u0073u006Du0061u0074u0063u0068, fields: []},
+    {name: n57OtherFactorsToBeConsideredForStereoscopicPresentation, fields: []},
+    {name: n6HowToUseTheErgonomicRecommendations, fields: []},
+    {name: n61General, fields: []},
+    {name: n62Report, fields: []},
+    {name: annexAInformativeOverviewOfTheISO9241Series, fields: []},
+    {name: annexBInformativeViewingConditions, fields: []},
+    {name: annexCInformativeNumericalValuesToBeConsideredForAssessmentOfVisualFatigueAndDiscomfort, fields: []},
+    {name: annexDInformativeOtherFactorsToBeConsideredForStereoscopicPresentations, fields: []},
+    {name: annexEInformativeSampleProcedureForAssessingApplicabilityAndConformance, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso9241Part392StereoscopicDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: stereopsis, fields: []}
+  ]
+}
+
+structure{
+  name: Iso9241Part392Stereoscopic,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso9241Part392StereoscopicClause)},
+    {name: definedTerm, type: (Option Iso9241Part392StereoscopicDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

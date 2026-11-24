@@ -1,0 +1,65 @@
+\begin{lexlean}{Catalog.Ieee754Revision2019}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Ieee754Revision2019ComparisonOutcome,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: equal, fields: []},
+    {name: lessThan, fields: []},
+    {name: greaterThan, fields: []},
+    {name: unordered, fields: []}
+  ]
+}
+
+inductive{
+  name: Ieee754Revision2019NewOperationClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n95AugmentedArithmeticOperations, fields: []},
+    {name: n96MinimumMaximumOperations, fields: []},
+    {name: n97PayloadOperations, fields: []}
+  ]
+}
+
+inductive{
+  name: Ieee754Revision2019NewRecommendedOperation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: quantum, fields: []},
+    {name: tanPi, fields: []},
+    {name: aSinPi, fields: []},
+    {name: aCosPi, fields: []},
+    {name: augmentedAddition, fields: []},
+    {name: augmentedSubtraction, fields: []},
+    {name: augmentedMultiplication, fields: []},
+    {name: minimum, fields: []},
+    {name: minimumNumber, fields: []},
+    {name: minimumMagnitude, fields: []},
+    {name: minimumMagnitudeNumber, fields: []},
+    {name: maximum, fields: []},
+    {name: maximumNumber, fields: []},
+    {name: maximumMagnitude, fields: []},
+    {name: maximumMagnitudeNumber, fields: []},
+    {name: getPayload, fields: []},
+    {name: setPayload, fields: []},
+    {name: setPayloadSignaling, fields: []}
+  ]
+}
+
+structure{
+  name: Ieee754Revision2019,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: comparisonOutcome, type: (Option Ieee754Revision2019ComparisonOutcome)},
+    {name: newOperationClause, type: (Option Ieee754Revision2019NewOperationClause)},
+    {name: newRecommendedOperation, type: (Option Ieee754Revision2019NewRecommendedOperation)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

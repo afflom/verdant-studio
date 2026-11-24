@@ -1,0 +1,113 @@
+\begin{lexlean}{Catalog.Iso9241Part11Usability}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso9241Part11UsabilityClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4RationaleAndBenefitsOfUsability, fields: []},
+    {name: n5UsabilityInAContextOfUse, fields: []},
+    {name: n51ConceptOfUsability, fields: []},
+    {name: n52SystemProductOrService, fields: []},
+    {name: u0035u002Eu0033u0020u0043u006Fu006Eu0073u0069u0064u0065u0072u0061u0074u0069u006Fu006Eu0020u006Fu0066u0020u0075u0073u0061u0062u0069u006Cu0069u0074u0079u0020u0066u006Fu0072u0020u201Cu0073u0070u0065u0063u0069u0066u0069u0065u0064u201Du0020u0063u0069u0072u0063u0075u006Du0073u0074u0061u006Eu0063u0065u0073, fields: []},
+    {name: n531General, fields: []},
+    {name: n532SpecifiedUsers, fields: []},
+    {name: n533SpecifiedGoals, fields: []},
+    {name: n534SpecifiedContextsOfUse, fields: []},
+    {name: n6OutcomesOfUse, fields: []},
+    {name: n61UsabilityAsAnOutcome, fields: []},
+    {name: n62Effectiveness, fields: []},
+    {name: n621General, fields: []},
+    {name: n622Accuracy, fields: []},
+    {name: n623Completeness, fields: []},
+    {name: n63Efficiency, fields: []},
+    {name: n631General, fields: []},
+    {name: n632TimeUsed, fields: []},
+    {name: n633HumanEffortExpended, fields: []},
+    {name: n634FinancialResourcesExpended, fields: []},
+    {name: n635MaterialsExpended, fields: []},
+    {name: n64Satisfaction, fields: []},
+    {name: n641General, fields: []},
+    {name: n642PhysicalResponses, fields: []},
+    {name: n643CognitiveResponses, fields: []},
+    {name: n644EmotionalResponses, fields: []},
+    {name: n65SpecificUsesOfTheConceptOfUsability, fields: []},
+    {name: n66OtherOutcomesOfUse, fields: []},
+    {name: n661General, fields: []},
+    {name: n662Accessibility, fields: []},
+    {name: n663UserExperience, fields: []},
+    {name: n664AvoidanceOfHarmFromUse, fields: []},
+    {name: n7ContextOfUse, fields: []},
+    {name: n71ComponentsOfTheContextOfUse, fields: []},
+    {name: n72UsersWithinTheContextOfUse, fields: []},
+    {name: n73GoalsWithinTheContextOfUse, fields: []},
+    {name: n74TasksWithinTheContextOfUse, fields: []},
+    {name: n75Resources, fields: []},
+    {name: n751General, fields: []},
+    {name: n752ReusableResources, fields: []},
+    {name: n753ExpendableResources, fields: []},
+    {name: n76Environment, fields: []},
+    {name: n761General, fields: []},
+    {name: n762TechnicalEnvironment, fields: []},
+    {name: n763PhysicalEnvironment, fields: []},
+    {name: n764SocialCulturalAndOrganizationalEnvironment, fields: []},
+    {name: n8ApplyingTheConceptOfUsability, fields: []},
+    {name: n81UsabilityThatResultsFromUseOfVariousObjectsOfInterest, fields: []},
+    {name: n82CharacteristicsOfUsersTasksAndEnvironmentsNeededForUsability, fields: []},
+    {name: n83AchievingUsabilityInDesignAndDevelopment, fields: []},
+    {name: n84UsabilityInProcurement, fields: []},
+    {name: n85UsabilityInAReviewOrWhenMakingAComparison, fields: []},
+    {name: n86UsabilityInputsToMarketingAndMarketResearch, fields: []},
+    {name: annexAInformativeRelationshipOfUsabilityToOtherConcepts, fields: []},
+    {name: annexBInformativeUsabilityMeasurement, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso9241Part11UsabilityDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: usability, fields: []},
+    {name: product, fields: []},
+    {name: consumerProduct, fields: []},
+    {name: system, fields: []},
+    {name: interactiveSystem, fields: []},
+    {name: service, fields: []},
+    {name: user, fields: []},
+    {name: userGroup, fields: []},
+    {name: stakeholder, fields: []},
+    {name: goal, fields: []},
+    {name: task, fields: []},
+    {name: effectiveness, fields: []},
+    {name: efficiency, fields: []},
+    {name: satisfaction, fields: []},
+    {name: contextOfUse, fields: []},
+    {name: humanCentredQuality, fields: []},
+    {name: accessibility, fields: []},
+    {name: userExperience, fields: []},
+    {name: harmFromUse, fields: []},
+    {name: ergonomics, fields: []},
+    {name: humanCentredDesign, fields: []},
+    {name: builtEnvironment, fields: []},
+    {name: requirement, fields: []},
+    {name: useError, fields: []}
+  ]
+}
+
+structure{
+  name: Iso9241Part11Usability,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso9241Part11UsabilityClause)},
+    {name: definedTerm, type: (Option Iso9241Part11UsabilityDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

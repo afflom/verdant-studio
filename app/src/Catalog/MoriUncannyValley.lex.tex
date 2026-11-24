@@ -1,0 +1,48 @@
+\begin{lexlean}{Catalog.MoriUncannyValley}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: MoriUncannyValleyAxis,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: humanLikeness, fields: []},
+    {name: affinity, fields: []}
+  ]
+}
+
+inductive{
+  name: MoriUncannyValleyCurve,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: still, fields: []},
+    {name: moving, fields: []}
+  ]
+}
+
+inductive{
+  name: MoriUncannyValleySection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: aValleyInOnesSenseOfAffinity, fields: []},
+    {name: theEffectOfMovement, fields: []},
+    {name: escapeByDesign, fields: []},
+    {name: anExplanationOfTheUncanny, fields: []}
+  ]
+}
+
+structure{
+  name: MoriUncannyValley,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: axis, type: (Option MoriUncannyValleyAxis)},
+    {name: curve, type: (Option MoriUncannyValleyCurve)},
+    {name: section, type: (Option MoriUncannyValleySection)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

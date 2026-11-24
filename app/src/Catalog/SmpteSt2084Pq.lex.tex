@@ -1,0 +1,80 @@
+\begin{lexlean}{Catalog.SmpteSt2084Pq}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SmpteSt2084PqClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2ConformanceNotation, fields: []},
+    {name: n3Terms, fields: []},
+    {name: n4ReferenceEOTF, fields: []},
+    {name: n41LinearizationAndScaling, fields: []},
+    {name: n42EOTFLinearizationEquation, fields: []},
+    {name: n43EOTFLevelCalibrationEquation, fields: []},
+    {name: n44MasteringReferenceViewingEnvironments, fields: []},
+    {name: n5ReferenceInverseEOTF, fields: []},
+    {name: n51LinearizationAndScaling, fields: []},
+    {name: n52InverseEOTFNormalizationEquation, fields: []},
+    {name: n53InverseEOTFNonlinearEncodingEquation, fields: []},
+    {name: annexAInformativeExampleDigitalRepresentations, fields: []},
+    {name: a1DigitalRepresentations, fields: []},
+    {name: a2FullRangeCodeValueMapping, fields: []},
+    {name: a3InverseFullRangeCodeValueMapping, fields: []},
+    {name: a4ReservedCodeValues, fields: []},
+    {name: a5SDIRangeCodeValueMapping, fields: []},
+    {name: a6InverseSDIRangeCodeValueMapping, fields: []},
+    {name: a7NarrowRangeCodeValueMapping, fields: []},
+    {name: a8InverseNarrowRangeCodeValueMapping, fields: []},
+    {name: a9ClampingFunctionForInverseCodeValueMapping, fields: []},
+    {name: a10InverseSDIRangeCodeValueMappingWithClamping, fields: []},
+    {name: a11InverseNarrowRangeCodeValueMappingWithClamping, fields: []},
+    {name: annexBInformativeExampleReferenceViewingEnvironments, fields: []},
+    {name: b1ConsistencyWithTraditionalProgramProductionEnvironments, fields: []},
+    {name: b2ReferenceViewingEnvironmentForHDTV, fields: []},
+    {name: b3ReferenceViewingEnvironmentForDigitalCinema, fields: []},
+    {name: annexCInformativeExampleInverseEOTFUseCase, fields: []}
+  ]
+}
+
+inductive{
+  name: SmpteSt2084PqDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: colorValue, fields: []},
+    {name: digitalCodeValue, fields: []},
+    {name: electroOpticalTransferFunctionEOTF, fields: []},
+    {name: highDynamicRange, fields: []},
+    {name: linearColorValue, fields: []},
+    {name: nonlinearColorValue, fields: []}
+  ]
+}
+
+inductive{
+  name: SmpteSt2084PqEquationConstant,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: m1, fields: []},
+    {name: m2, fields: []},
+    {name: c1, fields: []},
+    {name: c2, fields: []},
+    {name: c3, fields: []}
+  ]
+}
+
+structure{
+  name: SmpteSt2084Pq,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option SmpteSt2084PqClause)},
+    {name: definedTerm, type: (Option SmpteSt2084PqDefinedTerm)},
+    {name: equationConstant, type: (Option SmpteSt2084PqEquationConstant)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

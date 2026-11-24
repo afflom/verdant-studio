@@ -1,0 +1,120 @@
+\begin{lexlean}{Catalog.Iso17100TranslationServices}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso17100TranslationServicesClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2TermsAndDefinitions, fields: []},
+    {name: n21ConceptsRelatedToTranslationAndTranslationServices, fields: []},
+    {name: n22ConceptsRelatedToTranslationWorkflowAndTechnology, fields: []},
+    {name: n23ConceptsRelatedToLanguageAndContent, fields: []},
+    {name: n24ConceptsRelatedToThePeopleInvolvedInTranslationServices, fields: []},
+    {name: n25ConceptsRelatedToControlOfTheTranslationServiceProcess, fields: []},
+    {name: n3Resources, fields: []},
+    {name: n31HumanResources, fields: []},
+    {name: n311General, fields: []},
+    {name: n312ResponsibilityForSubContractedTasks, fields: []},
+    {name: n313ProfessionalCompetencesOfTranslators, fields: []},
+    {name: n314TranslatorQualifications, fields: []},
+    {name: n315ProfessionalCompetencesOfRevisers, fields: []},
+    {name: n316ProfessionalCompetencesOfReviewers, fields: []},
+    {name: n317CompetenceOfTranslationProjectManagers, fields: []},
+    {name: n318RecordingRegularMaintenanceAndUpdatingOfRequiredCompetences, fields: []},
+    {name: n32TechnicalAndTechnologicalResources, fields: []},
+    {name: n4PreProductionProcessesAndActivities, fields: []},
+    {name: n41General, fields: []},
+    {name: n42EnquiryAndFeasibility, fields: []},
+    {name: n43Quotation, fields: []},
+    {name: n44ClientTSPAgreement, fields: []},
+    {name: n45HandlingOfProjectRelatedClientInformation, fields: []},
+    {name: n46ProjectPreparation, fields: []},
+    {name: n461AdministrativeActivities, fields: []},
+    {name: n462TechnicalAspectsOfProjectPreparation, fields: []},
+    {name: n463LinguisticSpecification, fields: []},
+    {name: n5ProductionProcess, fields: []},
+    {name: n51General, fields: []},
+    {name: n52TranslationServiceProjectManagement, fields: []},
+    {name: n53TranslationProcess, fields: []},
+    {name: n531Translation, fields: []},
+    {name: n532Check, fields: []},
+    {name: n533Revision, fields: []},
+    {name: n534Review, fields: []},
+    {name: n535Proofreading, fields: []},
+    {name: n536FinalVerificationAndRelease, fields: []},
+    {name: n6PostProductionProcesses, fields: []},
+    {name: n61Feedback, fields: []},
+    {name: n62ClosingAdministration, fields: []},
+    {name: annexAInformativeISO17100TranslationWorkflow, fields: []},
+    {name: annexBInformativeAgreementsAndProjectSpecifications, fields: []},
+    {name: annexCInformativeProjectRegistrationAndReporting, fields: []},
+    {name: annexDInformativePreProductionTasks, fields: []},
+    {name: annexEInformativeTranslationTechnology, fields: []},
+    {name: annexFInformativeNonExhaustiveListOfValueAddedServices, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso17100TranslationServicesDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: translate, fields: []},
+    {name: translation, fields: []},
+    {name: translationWorkflow, fields: []},
+    {name: process, fields: []},
+    {name: product, fields: []},
+    {name: translationService, fields: []},
+    {name: interpret, fields: []},
+    {name: computerAidedTranslation, fields: []},
+    {name: machineTranslation, fields: []},
+    {name: machineTranslationOutput, fields: []},
+    {name: postEdit, fields: []},
+    {name: check, fields: []},
+    {name: revision, fields: []},
+    {name: review, fields: []},
+    {name: proofread, fields: []},
+    {name: projectManagement, fields: []},
+    {name: styleGuide, fields: []},
+    {name: content, fields: []},
+    {name: sourceLanguageContent, fields: []},
+    {name: targetLanguageContent, fields: []},
+    {name: text, fields: []},
+    {name: sourceLanguage, fields: []},
+    {name: targetLanguage, fields: []},
+    {name: languageRegister, fields: []},
+    {name: naturalLanguage, fields: []},
+    {name: textTypeConvention, fields: []},
+    {name: domain, fields: []},
+    {name: locale, fields: []},
+    {name: languageServiceProvider, fields: []},
+    {name: translationServiceProvider, fields: []},
+    {name: client, fields: []},
+    {name: translator, fields: []},
+    {name: reviser, fields: []},
+    {name: reviewer, fields: []},
+    {name: proofreader, fields: []},
+    {name: projectManager, fields: []},
+    {name: competence, fields: []},
+    {name: verification, fields: []},
+    {name: document, fields: []},
+    {name: record, fields: []},
+    {name: correction, fields: []},
+    {name: correctiveAction, fields: []}
+  ]
+}
+
+structure{
+  name: Iso17100TranslationServices,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso17100TranslationServicesClause)},
+    {name: definedTerm, type: (Option Iso17100TranslationServicesDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

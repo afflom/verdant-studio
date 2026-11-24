@@ -1,0 +1,89 @@
+\begin{lexlean}{Catalog.Iso18587PostEditing}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso18587PostEditingClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n31ConceptsRelatedToMachineTranslation, fields: []},
+    {name: n32ConceptsRelatedToLanguageAndContent, fields: []},
+    {name: n33ConceptsRelatedToPeopleOrOrganizations, fields: []},
+    {name: n34ConceptsRelatedToTranslation, fields: []},
+    {name: n4PostEditingProcess, fields: []},
+    {name: n41General, fields: []},
+    {name: n42PreProductionProcesses, fields: []},
+    {name: n43ProductionProcesses, fields: []},
+    {name: n431ObjectivesInThePostEditingProcess, fields: []},
+    {name: n432RequirementsOfPostEditingMTOutput, fields: []},
+    {name: u0034u002Eu0033u002Eu0033u0020u0050u006Fu0073u0074u002Du0065u0064u0069u0074u006Fu0072u2019u0073u0020u0074u0061u0073u006Bu0073, fields: []},
+    {name: n44PostProductionProcesses, fields: []},
+    {name: n441FinalVerificationAndDelivery, fields: []},
+    {name: n442Feedback, fields: []},
+    {name: n5CompetencesAndQualificationsOfPostEditors, fields: []},
+    {name: n51Competences, fields: []},
+    {name: n52Qualifications, fields: []},
+    {name: n53Professionalism, fields: []},
+    {name: n6RequirementsOfFullPostEditing, fields: []},
+    {name: annexAInformativePostEditorTraining, fields: []},
+    {name: annexBInformativeLightPostEditing, fields: []},
+    {name: annexCInformativePreEditing, fields: []},
+    {name: u0041u006Eu006Eu0065u0078u0020u0044u0020u0028u0069u006Eu0066u006Fu0072u006Du0061u0074u0069u0076u0065u0029u0020u0043u006Cu0069u0065u006Eu0074u2013u0054u0053u0050u0020u0061u0067u0072u0065u0065u006Du0065u006Eu0074u0073u0020u0061u006Eu0064u0020u0070u0072u006Fu006Au0065u0063u0074u0020u0073u0070u0065u0063u0069u0066u0069u0063u0061u0074u0069u006Fu006Eu0073, fields: []},
+    {name: annexEInformativeAutomaticPostEditing, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso18587PostEditingDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: machineTranslation, fields: []},
+    {name: machineTranslationOutput, fields: []},
+    {name: machineTranslationSystem, fields: []},
+    {name: postEdit, fields: []},
+    {name: fullPostEditing, fields: []},
+    {name: lightPostEditing, fields: []},
+    {name: content, fields: []},
+    {name: sourceLanguage, fields: []},
+    {name: sourceLanguageContent, fields: []},
+    {name: targetLanguage, fields: []},
+    {name: targetLanguageContent, fields: []},
+    {name: text, fields: []},
+    {name: naturalLanguage, fields: []},
+    {name: controlledNaturalLanguage, fields: []},
+    {name: segment, fields: []},
+    {name: locale, fields: []},
+    {name: languageRegister, fields: []},
+    {name: client, fields: []},
+    {name: translator, fields: []},
+    {name: reviser, fields: []},
+    {name: postEditor, fields: []},
+    {name: translationServiceProvider, fields: []},
+    {name: projectManager, fields: []},
+    {name: translate, fields: []},
+    {name: translation, fields: []},
+    {name: humanTranslation, fields: []},
+    {name: translationOutput, fields: []},
+    {name: translationService, fields: []},
+    {name: translationMemory, fields: []},
+    {name: revision, fields: []},
+    {name: verification, fields: []}
+  ]
+}
+
+structure{
+  name: Iso18587PostEditing,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso18587PostEditingClause)},
+    {name: definedTerm, type: (Option Iso18587PostEditingDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

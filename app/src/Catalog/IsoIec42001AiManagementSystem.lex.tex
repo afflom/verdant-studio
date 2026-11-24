@@ -1,0 +1,107 @@
+\begin{lexlean}{Catalog.IsoIec42001AiManagementSystem}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec42001AiManagementSystemClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4ContextOfTheOrganization, fields: []},
+    {name: n41UnderstandingTheOrganizationAndItsContext, fields: []},
+    {name: n42UnderstandingTheNeedsAndExpectationsOfInterestedParties, fields: []},
+    {name: n43DeterminingTheScopeOfTheAIManagementSystem, fields: []},
+    {name: n44AIManagementSystem, fields: []},
+    {name: n5Leadership, fields: []},
+    {name: n51LeadershipAndCommitment, fields: []},
+    {name: n52AIPolicy, fields: []},
+    {name: n53RolesResponsibilitiesAndAuthorities, fields: []},
+    {name: n6Planning, fields: []},
+    {name: n61ActionsToAddressRisksAndOpportunities, fields: []},
+    {name: n611General, fields: []},
+    {name: n612AIRiskAssessment, fields: []},
+    {name: n613AIRiskTreatment, fields: []},
+    {name: n614AISystemImpactAssessment, fields: []},
+    {name: n62AIObjectivesAndPlanningToAchieveThem, fields: []},
+    {name: n63PlanningOfChanges, fields: []},
+    {name: n7Support, fields: []},
+    {name: n71Resources, fields: []},
+    {name: n72Competence, fields: []},
+    {name: n73Awareness, fields: []},
+    {name: n74Communication, fields: []},
+    {name: n75DocumentedInformation, fields: []},
+    {name: n751General, fields: []},
+    {name: n752CreatingAndUpdatingDocumentedInformation, fields: []},
+    {name: n753ControlOfDocumentedInformation, fields: []},
+    {name: n8Operation, fields: []},
+    {name: n81OperationalPlanningAndControl, fields: []},
+    {name: n82AIRiskAssessment, fields: []},
+    {name: n83AIRiskTreatment, fields: []},
+    {name: n84AISystemImpactAssessment, fields: []},
+    {name: n9PerformanceEvaluation, fields: []},
+    {name: n91MonitoringMeasurementAnalysisAndEvaluation, fields: []},
+    {name: n92InternalAudit, fields: []},
+    {name: n921General, fields: []},
+    {name: n922InternalAuditProgramme, fields: []},
+    {name: n93ManagementReview, fields: []},
+    {name: n931General, fields: []},
+    {name: n932ManagementReviewInputs, fields: []},
+    {name: n933ManagementReviewResults, fields: []},
+    {name: n10Improvement, fields: []},
+    {name: n101ContinualImprovement, fields: []},
+    {name: n102NonconformityAndCorrectiveAction, fields: []},
+    {name: annexANormativeReferenceControlObjectivesAndControls, fields: []},
+    {name: annexBNormativeImplementationGuidanceForAIControls, fields: []},
+    {name: annexCInformativePotentialAIRelatedOrganizationalObjectivesAndRiskSources, fields: []},
+    {name: annexDInformativeUseOfTheAIManagementSystemAcrossDomainsOrSectors, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec42001AiManagementSystemDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: organization, fields: []},
+    {name: interestedParty, fields: []},
+    {name: topManagement, fields: []},
+    {name: managementSystem, fields: []},
+    {name: policy, fields: []},
+    {name: objective, fields: []},
+    {name: risk, fields: []},
+    {name: process, fields: []},
+    {name: competence, fields: []},
+    {name: documentedInformation, fields: []},
+    {name: performance, fields: []},
+    {name: continualImprovement, fields: []},
+    {name: effectiveness, fields: []},
+    {name: requirement, fields: []},
+    {name: conformity, fields: []},
+    {name: nonconformity, fields: []},
+    {name: correctiveAction, fields: []},
+    {name: audit, fields: []},
+    {name: measurement, fields: []},
+    {name: monitoring, fields: []},
+    {name: control, fields: []},
+    {name: governingBody, fields: []},
+    {name: informationSecurity, fields: []},
+    {name: aISystemImpactAssessment, fields: []},
+    {name: dataQuality, fields: []},
+    {name: statementOfApplicability, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec42001AiManagementSystem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec42001AiManagementSystemClause)},
+    {name: definedTerm, type: (Option IsoIec42001AiManagementSystemDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

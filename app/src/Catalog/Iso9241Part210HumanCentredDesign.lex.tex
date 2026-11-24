@@ -1,0 +1,97 @@
+\begin{lexlean}{Catalog.Iso9241Part210HumanCentredDesign}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso9241Part210HumanCentredDesignClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4RationaleForAdoptingHumanCentredDesign, fields: []},
+    {name: n5PrinciplesOfHumanCentredDesign, fields: []},
+    {name: n51General, fields: []},
+    {name: n52TheDesignIsBasedUponAnExplicitUnderstandingOfUsersTasksAndEnvironments, fields: []},
+    {name: n53UsersAreInvolvedThroughoutDesignAndDevelopment, fields: []},
+    {name: n54TheDesignIsDrivenAndRefinedByUserCentredEvaluation, fields: []},
+    {name: n55TheProcessIsIterative, fields: []},
+    {name: n56TheDesignAddressesTheWholeUserExperience, fields: []},
+    {name: n57TheDesignTeamIncludesMultidisciplinarySkillsAndPerspectives, fields: []},
+    {name: n6PlanningHumanCentredDesign, fields: []},
+    {name: n61General, fields: []},
+    {name: n62Responsibility, fields: []},
+    {name: n63ContentOfPlan, fields: []},
+    {name: n64IntegrationWithProjectPlan, fields: []},
+    {name: n65TimingAndResources, fields: []},
+    {name: n7HumanCentredDesignActivities, fields: []},
+    {name: n71General, fields: []},
+    {name: n72UnderstandingAndSpecifyingTheContextOfUse, fields: []},
+    {name: n721General, fields: []},
+    {name: n722ContextOfUseDescription, fields: []},
+    {name: n723SufficientDetailToSupportDesign, fields: []},
+    {name: n724ContextOfUseSpecifiedForDesign, fields: []},
+    {name: n73SpecifyingTheUserRequirements, fields: []},
+    {name: n731General, fields: []},
+    {name: n732IdentifyingUserAndOtherStakeholderNeeds, fields: []},
+    {name: n733DerivingUserRequirements, fields: []},
+    {name: n734ResolvingTradeOffsBetweenUserRequirements, fields: []},
+    {name: n735EnsuringTheQualityOfUserRequirementsSpecifications, fields: []},
+    {name: n74ProducingDesignSolutions, fields: []},
+    {name: n741General, fields: []},
+    {name: u0037u002Eu0034u002Eu0032u0020u0044u0065u0073u0069u0067u006Eu0069u006Eu0067u0020u0075u0073u0065u0072u0020u0074u0061u0073u006Bu0073u002Cu0020u0075u0073u0065u0072u2013u0073u0079u0073u0074u0065u006Du0020u0069u006Eu0074u0065u0072u0061u0063u0074u0069u006Fu006Eu0020u0061u006Eu0064u0020u0075u0073u0065u0072u0020u0069u006Eu0074u0065u0072u0066u0061u0063u0065u0020u0074u006Fu0020u006Du0065u0065u0074u0020u0075u0073u0065u0072u0020u0072u0065u0071u0075u0069u0072u0065u006Du0065u006Eu0074u0073u002Cu0020u0074u0061u006Bu0069u006Eu0067u0020u0069u006Eu0074u006Fu0020u0063u006Fu006Eu0073u0069u0064u0065u0072u0061u0074u0069u006Fu006Eu0020u0074u0068u0065u0020u0077u0068u006Fu006Cu0065u0020u0075u0073u0065u0072u0020u0065u0078u0070u0065u0072u0069u0065u006Eu0063u0065, fields: []},
+    {name: n743MakingDesignSolutionsMoreConcrete, fields: []},
+    {name: n744AlteringTheDesignSolutionsBasedOnUserCentredEvaluationAndFeedback, fields: []},
+    {name: n745CommunicatingTheDesignSolutionToThoseResponsibleForImplementation, fields: []},
+    {name: n75EvaluatingTheDesign, fields: []},
+    {name: n751General, fields: []},
+    {name: n752ConductingUserCentredEvaluation, fields: []},
+    {name: n753UserCentredEvaluationMethods, fields: []},
+    {name: n754UserBasedTesting, fields: []},
+    {name: n755InspectionBasedEvaluation, fields: []},
+    {name: n756LongTermMonitoring, fields: []},
+    {name: n8SustainabilityAndHumanCentredDesign, fields: []},
+    {name: n9Conformance, fields: []},
+    {name: annexAInformativeOverviewOfTheISO9241Series, fields: []},
+    {name: annexBInformativeSampleProcedureForAssessingApplicabilityAndConformance, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso9241Part210HumanCentredDesignDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: accessibility, fields: []},
+    {name: contextOfUse, fields: []},
+    {name: effectiveness, fields: []},
+    {name: efficiency, fields: []},
+    {name: ergonomics, fields: []},
+    {name: goal, fields: []},
+    {name: humanCentredDesign, fields: []},
+    {name: interactiveSystem, fields: []},
+    {name: prototype, fields: []},
+    {name: satisfaction, fields: []},
+    {name: stakeholder, fields: []},
+    {name: task, fields: []},
+    {name: usability, fields: []},
+    {name: user, fields: []},
+    {name: userExperience, fields: []},
+    {name: userInterface, fields: []},
+    {name: validation, fields: []},
+    {name: verification, fields: []}
+  ]
+}
+
+structure{
+  name: Iso9241Part210HumanCentredDesign,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso9241Part210HumanCentredDesignClause)},
+    {name: definedTerm, type: (Option Iso9241Part210HumanCentredDesignDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
