@@ -282,11 +282,117 @@ definition{
 }
 
 definition{
+  name: upperHex,
+  parameters: [digitValue : Nat],
+  result: Bytes,
+  body: (LexLeanStd.Text::sliceOr (prim utf8_encode "0123456789ABCDEF" : Bytes) digitValue 1),
+  executable: true
+}
+
+definition{
+  name: hexFrom,
+  parameters: [fuel : Nat, number : Nat, width : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (if ((number =? 0) && (width =? 0)) then out else (hexFrom rest (prim quotient number 16 0 : Nat) (prim subtract width 1 : Nat) (prim append (upperHex (prim remainder number 16 0 : Nat)) out : Bytes)))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: codePointName,
+  parameters: [point : Nat],
+  result: Bytes,
+  body: (prim append (Studio.Doc::lit "u") (hexFrom 8 point 4 0x) : Bytes),
+  executable: true
+}
+
+definition{
+  name: continuation,
+  parameters: [text : Bytes, offset : Nat],
+  result: (Option Nat),
+  body: (match (prim index text offset : (Option UInt8))
+    | Option.none => (ctor Option.none [Nat])
+    | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if ((128 <=? value) && (value <=? 191)) then (ctor Option.some [Nat] (prim subtract value 128 : Nat)) else (ctor Option.none [Nat])))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: scalarWithin,
+  parameters: [point : Nat, low : Nat, high : Nat, width : Nat],
+  result: (Option (Nat * Nat)),
+  body: (if ((low <=? point) && ((point <=? high) && ((point <? 55296) || (57343 <? point)))) then (ctor Option.some [(Nat * Nat)] (point, width)) else (ctor Option.none [(Nat * Nat)])),
+  executable: true
+}
+
+definition{
+  name: decodeAt,
+  parameters: [text : Bytes, offset : Nat],
+  result: (Option (Nat * Nat)),
+  body: (match (prim index text offset : (Option UInt8))
+    | Option.none => (ctor Option.none [(Nat * Nat)])
+    | Option.some byte => (let lead : Nat := (prim to_nat byte : Nat); (if (lead <? 128) then (ctor Option.some [(Nat * Nat)] (lead, 1)) else (if ((194 <=? lead) && (lead <=? 223)) then (match (continuation text (offset + 1))
+      | Option.none => (ctor Option.none [(Nat * Nat)])
+      | Option.some second1 => (scalarWithin ((prim multiply (prim subtract lead 192 : Nat) 64 : Nat) + second1) 128 2047 2)) else (if ((224 <=? lead) && (lead <=? 239)) then (match (continuation text (offset + 1))
+      | Option.none => (ctor Option.none [(Nat * Nat)])
+      | Option.some second1 => (match (continuation text (offset + 2))
+        | Option.none => (ctor Option.none [(Nat * Nat)])
+        | Option.some third1 => (scalarWithin ((prim multiply (prim subtract lead 224 : Nat) 4096 : Nat) + ((prim multiply second1 64 : Nat) + third1)) 2048 65535 3))) else (if ((240 <=? lead) && (lead <=? 244)) then (match (continuation text (offset + 1))
+      | Option.none => (ctor Option.none [(Nat * Nat)])
+      | Option.some second1 => (match (continuation text (offset + 2))
+        | Option.none => (ctor Option.none [(Nat * Nat)])
+        | Option.some third1 => (match (continuation text (offset + 3))
+          | Option.none => (ctor Option.none [(Nat * Nat)])
+          | Option.some fourth1 => (scalarWithin ((prim multiply (prim subtract lead 240 : Nat) 262144 : Nat) + ((prim multiply second1 4096 : Nat) + ((prim multiply third1 64 : Nat) + fourth1))) 65536 1114111 4)))) else (ctor Option.none [(Nat * Nat)]))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: codePointsFrom,
+  parameters: [fuel : Nat, text : Bytes, offset : Nat, out : Bytes],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] out)
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then (ctor Option.some [Bytes] out) else (match (decodeAt text offset)
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some decoded => (codePointsFrom rest text (offset + (second decoded)) (prim append out (codePointName (first decoded)) : Bytes))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: asciiOnly,
+  parameters: [fuel : Nat, text : Bytes, offset : Nat],
+  result: Bool,
+  body: (match fuel
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index text offset : (Option UInt8))
+      | Option.none => true
+      | Option.some byte => (if ((prim to_nat byte : Nat) <? 128) then (asciiOnly rest text (offset + 1)) else false))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: stringName,
+  parameters: [text : Bytes],
+  result: (Option Bytes),
+  body: (if (asciiOnly (prim length text : Nat) text 0) then (let name : Bytes := (camel text); (if (nameable name) then (ctor Option.some [Bytes] name) else (ctor Option.none [Bytes]))) else (codePointsFrom (prim length text : Nat) text 0 0x)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: enumName,
   parameters: [value : LexLeanStd.Json::Json],
   result: (Option Bytes),
   body: (match value
-    | LexLeanStd.Json::Json.JStr text => (let name : Bytes := (camel text); (if (nameable name) then (ctor Option.some [Bytes] name) else (ctor Option.none [Bytes])))
+    | LexLeanStd.Json::Json.JStr text => (stringName text)
     | LexLeanStd.Json::Json.JInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (negative && (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
     | LexLeanStd.Json::Json.JBool flag => (ctor Option.none [Bytes])
     | LexLeanStd.Json::Json.JArr items => (ctor Option.none [Bytes])
@@ -306,7 +412,7 @@ definition{
     | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
     | List.cons head rest => (match (enumName head)
       | Option.none => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable enum value ") (cons (LexLeanStd.Json::writeJson head) (nil Bytes)))))
-      | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two enum values derive the constructor name ") (cons name (cons (Studio.Doc::lit " (a string is named in camel case, an integer n is named nN, and a negative one nMinusN)") (nil Bytes)))))) else (match (constructorsOf rest (cons name named))
+      | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two enum values derive the constructor name ") (cons name (cons (Studio.Doc::lit " (an ASCII string is named in camel case, any other string by its code points as uXXXX, an integer n is named nN, and a negative one nMinusN)") (nil Bytes)))))) else (match (constructorsOf rest (cons name named))
         | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
         | Result.ok others => (ctor Result.ok [(List Bytes), Bytes] (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: []}") (nil Bytes))))) others)))))),
   recursive_argument: values,
