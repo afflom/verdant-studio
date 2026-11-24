@@ -1,0 +1,1 @@
+{"name":"breakpad-memory-type","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"MDMemoryType","enum":["MD_MEMORY_TYPE_PRIVATE","MD_MEMORY_TYPE_MAPPED","MD_MEMORY_TYPE_IMAGE"],"$comment":"minidump_format.h, enum MDMemoryType, as declared in the pinned header"},"citation":["std","BREAKPAD-MINIDUMP-FORMAT","O06"]}
