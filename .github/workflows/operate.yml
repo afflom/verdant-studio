@@ -7,7 +7,7 @@ name: operate
 on:
   push:
     branches: [main]
-    paths: ['model/bindings/**', 'model/authorities.toml']
+    paths: ['model/bindings/**', 'model/encodings/**', 'model/authorities.toml']
   workflow_dispatch:
     inputs:
       args:
@@ -144,7 +144,7 @@ jobs:
               if target/release/verdant_studio $op | tee -a target/operation.txt; then
                 last=$op
               else
-                binding=${op#ingest-authority }
+                binding=${op#* }
                 echo "::warning::$op was refused; the other bindings continue"
                 echo "refused: $op" >> target/operation.txt
                 git clean -fdq -- "authorities/$(basename "$binding" .json)"

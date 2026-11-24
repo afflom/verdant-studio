@@ -655,21 +655,33 @@ definition{
 
 
 definition{
-  name: planProposeEncoding,
-  parameters: [seen : Seen, path : Bytes, name : Bytes, citation : (List Bytes)],
+  name: encodingPlan,
+  parameters: [seen : Seen, schemaText : Bytes, schema : LexLeanStd.Json::Json, name : Bytes, citation : (List Bytes), reads : (List Bytes)],
   result: Plan,
-  body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/strata.json") (cons (Studio.Doc::lit "model/register-lock.json") (cons (Studio.Doc::lit "app/lexlean.toml") (nil Bytes)))))))
+  body: (match (missing seen (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/strata.json") (cons (Studio.Doc::lit "model/register-lock.json") (cons (Studio.Doc::lit "app/lexlean.toml") reads)))))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (citationJson citation)
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "a citation is required: req ID | std AUTHORITY [ROW] | der RULE CHECK INPUT...\n"))
-      | Option.some cited => (match (jsonOf seen path)
-        | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the encoding is not JSON\n"))
-        | Option.some schema => (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (match (Studio.Schema::translateSchema schema module (Studio.Schema::pascal name))
+      | Option.some cited => (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (match (Studio.Schema::translateSchema schema module (Studio.Schema::pascal name))
           | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "the encoding does not translate: ") (cons reason (cons 0x0a (nil Bytes))))))
-          | Result.ok text => (ctor Plan.done (cons ((Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))), (contents seen path)) (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (appendItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (appendItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "path") (ctor LexLeanStd.Json::Json.JStr source) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "role") (ctor LexLeanStd.Json::Json.JStr (Studio.Doc::lit "Encoding entered through propose-encoding.")) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "stratum") (ctor LexLeanStd.Json::Json.JInt false 0) (ctor LexLeanStd.Json::Json.JNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) 0x0a : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons 0x0a (nil Bytes)))))))))))),
+          | Result.ok text => (ctor Plan.done (cons ((Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))), schemaText) (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (appendItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (appendItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "path") (ctor LexLeanStd.Json::Json.JStr source) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "role") (ctor LexLeanStd.Json::Json.JStr (Studio.Doc::lit "Encoding entered through propose-encoding.")) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "stratum") (ctor LexLeanStd.Json::Json.JInt false 0) (ctor LexLeanStd.Json::Json.JNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) 0x0a : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons 0x0a (nil Bytes))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
+
+definition{
+  name: planProposeEncoding,
+  parameters: [seen : Seen, path : Bytes, name : Bytes, citation : (List Bytes)],
+  result: Plan,
+  body: (match (missing seen (cons path (nil Bytes)))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (jsonOf seen path)
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the encoding is not JSON\n"))
+      | Option.some schema => (encodingPlan seen (contents seen path) schema name citation (cons path (nil Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
 
 
 definition{
@@ -685,7 +697,7 @@ definition{
   name: operateWorkflow,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::lit "# Generated by `verdant-studio publish` from studio/src/Studio/Ops.lex.tex. Do not edit.\n# The one way an agent changes this repository: dispatch this workflow with an\n# operation of the API. It runs the certified command, and opens a pull request\n# as the Verdant Studio GitHub App for the owner to review.\nname: operate\n\non:\n  push:\n    branches: [main]\n    paths: ['model/bindings/**', 'model/authorities.toml']\n  workflow_dispatch:\n    inputs:\n      args:\n        description: 'The operation and its arguments, e.g. \"stage-bindings target/input/bindings.jsonl\", or \"advance\" to run every operation that next derives'\n        required: true\n        default: 'advance'\n        type: string\n      input:\n        description: 'Optional content, written to target/input/<input_name> before the operation runs'\n        required: false\n        type: string\n      input_name:\n        description: 'File name for input'\n        required: false\n        type: string\n        default: 'input'\n\npermissions:\n  contents: read\n\n# Only operations that write the registers share one group. GitHub keeps one\n# pending run per group, so a staging or propose-command run gets its own.\nconcurrency:\n  group: ${{ (startsWith(inputs.args, 'stage-') || startsWith(inputs.args, 'propose-command')) && format('operate-{0}', github.run_id) || 'operate' }}\n  cancel-in-progress: false\n\njobs:\n  operate:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    steps:\n      - id: app\n        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0\n        with:\n          app-id: ${{ vars.VERDANT_STUDIO_APP_ID }}\n          private-key: ${{ secrets.VERDANT_STUDIO_APP_KEY }}\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2\n        with:\n          token: ${{ steps.app.outputs.token }}\n      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38\n        with:\n          node-version: '24'\n      - if: inputs.args == 'propose-command'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.elan\n          key: lean-4.32.2-elan-4.1.2\n      - if: inputs.args == 'propose-command'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/lexlean\n          key: lexlean-0.4.3\n      - name: apply a change to the API's own sources, then export it again with Lean (propose-command only)\n        if: inputs.args == 'propose-command'\n        env:\n          INPUT: ${{ inputs.input }}\n        run: |\n          set -euo pipefail\n          mkdir -p target/input\n          cat > target/input/change.patch <<< \"$INPUT\"\n          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^README.md$' || true)\n          if [ -n \"$outside\" ]; then echo \"::error::propose-command changes only studio/src and README.md, not: $outside\"; exit 1; fi\n          git apply target/input/change.patch\n          if [ ! -x \"$HOME/.elan/bin/elan\" ]; then\n            curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz\n            echo \"f81c2e48c1588d4612cd2c8851947898a45ac8d72748a07dff3a5694f1cf589b  target/elan.tgz\" | sha256sum -c -\n            tar -xzf target/elan.tgz -C target\n            target/elan-init -y --no-modify-path --default-toolchain leanprover/lean4:v4.32.2\n          fi\n          export PATH=\"$HOME/.elan/bin:$PATH\"\n          test -d \"$HOME/.elan/toolchains/leanprover--lean4---v4.32.2\" || elan toolchain install leanprover/lean4:v4.32.2\n          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean\n          ll=\"$PWD/target/lexlean/bin/lexlean\"\n          if ! (cd studio && \"$ll\" lock && \"$ll\" check && \"$ll\" production build --request production-request.json) > target/export.log 2>&1; then\n            grep -m 20 'error' target/export.log | sed 's/^/::error::/'\n            exit 1\n          fi\n          rm -rf certified\n          cp -r studio/.lexlean/production/*/ certified\n          rm -f certified/packages/rust-std/verdant_studio/Cargo.lock\n          { echo \"proposed a change to the API's sources, exported again as $(basename studio/.lexlean/production/*/)\"; git diff --stat -- studio/src README.md; } > target/operation.txt\n      - id: command\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/release/verdant_studio\n          key: verdant-studio-${{ hashFiles('certified/**') }}\n      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.npm\n          key: npm-prism-code-0.11.1\n      - if: steps.command.outputs.cache-hit != 'true'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/lexlean\n          key: lexlean-0.4.3\n      - name: replay the certified bundle, then build its command (only when certified/ changed)\n        if: steps.command.outputs.cache-hit != 'true'\n        run: |\n          set -euo pipefail\n          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean\n          target/lexlean/bin/lexlean production verify-artifact certified\n          cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target\n      - name: run the operation, then check, build and publish through the API, as the studio check does\n        env:\n          ARGS: ${{ inputs.args || 'advance' }}\n          INPUT: ${{ inputs.input }}\n          INPUT_NAME: ${{ inputs.input_name }}\n          GH_TOKEN: ${{ steps.app.outputs.token }}\n        run: |\n          set -euo pipefail -f\n          if [ \"$ARGS\" = advance ]; then\n            for pr in $(gh api \"repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100\" --jq '.[] | select(.title == \"verdant_studio advance\") | .number'); do\n              if [ \"$(gh api \"repos/${GITHUB_REPOSITORY}/pulls/${pr}\" --jq .mergeable_state)\" = dirty ]; then\n                gh api --silent -X PATCH \"repos/${GITHUB_REPOSITORY}/pulls/${pr}\" -f state=closed\n                echo \"::notice::closed advance pull request #${pr}: it conflicts with main, and this run supersedes it\"\n              else\n                echo \"::notice::advance pull request #${pr} is open; its merge changes model/authorities.toml, which runs advance again\"\n                exit 0\n              fi\n            done\n          fi\n          if [ -n \"$INPUT\" ] && [ \"$ARGS\" != propose-command ]; then\n            case \"$INPUT_NAME\" in */*|.*|'') echo \"input_name must be a plain file name\" >&2; exit 1;; esac\n            mkdir -p target/input; cat > \"target/input/$INPUT_NAME\" <<< \"$INPUT\"\n          fi\n          if [ \"$ARGS\" = propose-command ]; then\n            cat target/operation.txt\n          elif [ \"$ARGS\" = advance ]; then\n            : > target/operation.txt\n            last=''\n            skipped=''\n            while op=$(target/release/verdant_studio next $skipped) && [ -n \"$op\" ]; do\n              if [ \"$op\" = \"$last\" ]; then echo \"::error::$op did not settle\"; exit 1; fi\n              if target/release/verdant_studio $op | tee -a target/operation.txt; then\n                last=$op\n              else\n                binding=${op#ingest-authority }\n                echo \"::warning::$op was refused; the other bindings continue\"\n                echo \"refused: $op\" >> target/operation.txt\n                git clean -fdq -- \"authorities/$(basename \"$binding\" .json)\"\n                skipped=\"$skipped $binding\"\n              fi\n            done\n          else\n            target/release/verdant_studio $ARGS | tee target/operation.txt\n          fi\n          target/release/verdant_studio check\n          target/release/verdant_studio build\n          target/release/verdant_studio publish\n      - name: open a pull request as the Verdant Studio app\n        env:\n          GH_TOKEN: ${{ steps.app.outputs.token }}\n          SLUG: ${{ steps.app.outputs.app-slug }}\n          ARGS: ${{ inputs.args || 'advance' }}\n        run: |\n          set -euo pipefail\n          git add -A\n          if git diff --cached --quiet; then echo \"no change\"; exit 0; fi\n          id=$(gh api \"users/${SLUG}[bot]\" --jq .id)\n          git -c user.name=\"${SLUG}[bot]\" -c user.email=\"${id}+${SLUG}[bot]@users.noreply.github.com\" commit -q -F - <<MSG\n          verdant_studio $ARGS\n\n          $(cat target/operation.txt)\n          MSG\n          branch=\"studio/${GITHUB_RUN_ID}\"\n          if ! git push origin \"HEAD:refs/heads/${branch}\" 2> target/push.err; then\n            grep -E 'GH013|error|rejected|path:' target/push.err | head -20 | sed 's/^/::error::/'\n            exit 1\n          fi\n          gh pr create --head \"$branch\" --base main --title \"verdant_studio $ARGS\" --body-file target/operation.txt\n          gh api \"repos/${GITHUB_REPOSITORY}/rules/branches/main\" > target/rules.json\n          if [ \"$ARGS\" = propose-command ]; then\n            echo \"::notice::a change to the API itself waits for the owner's review\"\n          elif [ \"$(target/release/verdant_studio merge-gate target/rules.json)\" = merge ]; then\n            gh pr merge \"$branch\" --auto --squash --delete-branch\n          else\n            echo \"::notice::main does not require the studio check, so this pull request waits for the owner's merge\"\n          fi\n"),
+  body: (Studio.Doc::lit "# Generated by `verdant-studio publish` from studio/src/Studio/Ops.lex.tex. Do not edit.\n# The one way an agent changes this repository: dispatch this workflow with an\n# operation of the API. It runs the certified command, and opens a pull request\n# as the Verdant Studio GitHub App for the owner to review.\nname: operate\n\non:\n  push:\n    branches: [main]\n    paths: ['model/bindings/**', 'model/encodings/**', 'model/authorities.toml']\n  workflow_dispatch:\n    inputs:\n      args:\n        description: 'The operation and its arguments, e.g. \"stage-bindings target/input/bindings.jsonl\", or \"advance\" to run every operation that next derives'\n        required: true\n        default: 'advance'\n        type: string\n      input:\n        description: 'Optional content, written to target/input/<input_name> before the operation runs'\n        required: false\n        type: string\n      input_name:\n        description: 'File name for input'\n        required: false\n        type: string\n        default: 'input'\n\npermissions:\n  contents: read\n\n# Only operations that write the registers share one group. GitHub keeps one\n# pending run per group, so a staging or propose-command run gets its own.\nconcurrency:\n  group: ${{ (startsWith(inputs.args, 'stage-') || startsWith(inputs.args, 'propose-command')) && format('operate-{0}', github.run_id) || 'operate' }}\n  cancel-in-progress: false\n\njobs:\n  operate:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    steps:\n      - id: app\n        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0\n        with:\n          app-id: ${{ vars.VERDANT_STUDIO_APP_ID }}\n          private-key: ${{ secrets.VERDANT_STUDIO_APP_KEY }}\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2\n        with:\n          token: ${{ steps.app.outputs.token }}\n      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38\n        with:\n          node-version: '24'\n      - if: inputs.args == 'propose-command'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.elan\n          key: lean-4.32.2-elan-4.1.2\n      - if: inputs.args == 'propose-command'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/lexlean\n          key: lexlean-0.4.3\n      - name: apply a change to the API's own sources, then export it again with Lean (propose-command only)\n        if: inputs.args == 'propose-command'\n        env:\n          INPUT: ${{ inputs.input }}\n        run: |\n          set -euo pipefail\n          mkdir -p target/input\n          cat > target/input/change.patch <<< \"$INPUT\"\n          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^README.md$' || true)\n          if [ -n \"$outside\" ]; then echo \"::error::propose-command changes only studio/src and README.md, not: $outside\"; exit 1; fi\n          git apply target/input/change.patch\n          if [ ! -x \"$HOME/.elan/bin/elan\" ]; then\n            curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz\n            echo \"f81c2e48c1588d4612cd2c8851947898a45ac8d72748a07dff3a5694f1cf589b  target/elan.tgz\" | sha256sum -c -\n            tar -xzf target/elan.tgz -C target\n            target/elan-init -y --no-modify-path --default-toolchain leanprover/lean4:v4.32.2\n          fi\n          export PATH=\"$HOME/.elan/bin:$PATH\"\n          test -d \"$HOME/.elan/toolchains/leanprover--lean4---v4.32.2\" || elan toolchain install leanprover/lean4:v4.32.2\n          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean\n          ll=\"$PWD/target/lexlean/bin/lexlean\"\n          if ! (cd studio && \"$ll\" lock && \"$ll\" check && \"$ll\" production build --request production-request.json) > target/export.log 2>&1; then\n            grep -m 20 'error' target/export.log | sed 's/^/::error::/'\n            exit 1\n          fi\n          rm -rf certified\n          cp -r studio/.lexlean/production/*/ certified\n          rm -f certified/packages/rust-std/verdant_studio/Cargo.lock\n          { echo \"proposed a change to the API's sources, exported again as $(basename studio/.lexlean/production/*/)\"; git diff --stat -- studio/src README.md; } > target/operation.txt\n      - id: command\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/release/verdant_studio\n          key: verdant-studio-${{ hashFiles('certified/**') }}\n      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.npm\n          key: npm-prism-code-0.11.1\n      - if: steps.command.outputs.cache-hit != 'true'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/lexlean\n          key: lexlean-0.4.3\n      - name: replay the certified bundle, then build its command (only when certified/ changed)\n        if: steps.command.outputs.cache-hit != 'true'\n        run: |\n          set -euo pipefail\n          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean\n          target/lexlean/bin/lexlean production verify-artifact certified\n          cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target\n      - name: run the operation, then check, build and publish through the API, as the studio check does\n        env:\n          ARGS: ${{ inputs.args || 'advance' }}\n          INPUT: ${{ inputs.input }}\n          INPUT_NAME: ${{ inputs.input_name }}\n          GH_TOKEN: ${{ steps.app.outputs.token }}\n        run: |\n          set -euo pipefail -f\n          if [ \"$ARGS\" = advance ]; then\n            for pr in $(gh api \"repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100\" --jq '.[] | select(.title == \"verdant_studio advance\") | .number'); do\n              if [ \"$(gh api \"repos/${GITHUB_REPOSITORY}/pulls/${pr}\" --jq .mergeable_state)\" = dirty ]; then\n                gh api --silent -X PATCH \"repos/${GITHUB_REPOSITORY}/pulls/${pr}\" -f state=closed\n                echo \"::notice::closed advance pull request #${pr}: it conflicts with main, and this run supersedes it\"\n              else\n                echo \"::notice::advance pull request #${pr} is open; its merge changes model/authorities.toml, which runs advance again\"\n                exit 0\n              fi\n            done\n          fi\n          if [ -n \"$INPUT\" ] && [ \"$ARGS\" != propose-command ]; then\n            case \"$INPUT_NAME\" in */*|.*|'') echo \"input_name must be a plain file name\" >&2; exit 1;; esac\n            mkdir -p target/input; cat > \"target/input/$INPUT_NAME\" <<< \"$INPUT\"\n          fi\n          if [ \"$ARGS\" = propose-command ]; then\n            cat target/operation.txt\n          elif [ \"$ARGS\" = advance ]; then\n            : > target/operation.txt\n            last=''\n            skipped=''\n            while op=$(target/release/verdant_studio next $skipped) && [ -n \"$op\" ]; do\n              if [ \"$op\" = \"$last\" ]; then echo \"::error::$op did not settle\"; exit 1; fi\n              if target/release/verdant_studio $op | tee -a target/operation.txt; then\n                last=$op\n              else\n                binding=${op#* }\n                echo \"::warning::$op was refused; the other bindings continue\"\n                echo \"refused: $op\" >> target/operation.txt\n                git clean -fdq -- \"authorities/$(basename \"$binding\" .json)\"\n                skipped=\"$skipped $binding\"\n              fi\n            done\n          else\n            target/release/verdant_studio $ARGS | tee target/operation.txt\n          fi\n          target/release/verdant_studio check\n          target/release/verdant_studio build\n          target/release/verdant_studio publish\n      - name: open a pull request as the Verdant Studio app\n        env:\n          GH_TOKEN: ${{ steps.app.outputs.token }}\n          SLUG: ${{ steps.app.outputs.app-slug }}\n          ARGS: ${{ inputs.args || 'advance' }}\n        run: |\n          set -euo pipefail\n          git add -A\n          if git diff --cached --quiet; then echo \"no change\"; exit 0; fi\n          id=$(gh api \"users/${SLUG}[bot]\" --jq .id)\n          git -c user.name=\"${SLUG}[bot]\" -c user.email=\"${id}+${SLUG}[bot]@users.noreply.github.com\" commit -q -F - <<MSG\n          verdant_studio $ARGS\n\n          $(cat target/operation.txt)\n          MSG\n          branch=\"studio/${GITHUB_RUN_ID}\"\n          if ! git push origin \"HEAD:refs/heads/${branch}\" 2> target/push.err; then\n            grep -E 'GH013|error|rejected|path:' target/push.err | head -20 | sed 's/^/::error::/'\n            exit 1\n          fi\n          gh pr create --head \"$branch\" --base main --title \"verdant_studio $ARGS\" --body-file target/operation.txt\n          gh api \"repos/${GITHUB_REPOSITORY}/rules/branches/main\" > target/rules.json\n          if [ \"$ARGS\" = propose-command ]; then\n            echo \"::notice::a change to the API itself waits for the owner's review\"\n          elif [ \"$(target/release/verdant_studio merge-gate target/rules.json)\" = merge ]; then\n            gh pr merge \"$branch\" --auto --squash --delete-branch\n          else\n            echo \"::notice::main does not require the studio check, so this pull request waits for the owner's merge\"\n          fi\n"),
   executable: true
 }
 
@@ -869,13 +881,57 @@ definition{
 }
 
 definition{
+  name: encodingsDir,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "model/encodings"),
+  executable: true
+}
+
+definition{
+  name: encodingModule,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: firstUnadmitted,
+  parameters: [seen : Seen, paths : (List Bytes), constructs : (List Bytes)],
+  result: (Option Bytes),
+  body: (match paths
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::memberBytes (encodingModule (Studio.Doc::str (match (jsonOf seen head)
+        | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+        | Option.some entry => entry) (Studio.Doc::lit "name"))) constructs) then (firstUnadmitted seen rest constructs) else (ctor Option.some [Bytes] head))),
+  recursive_argument: paths,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planNextEncoding,
+  parameters: [seen : Seen, skipped : (List Bytes)],
+  result: Plan,
+  body: (if (negate (isListed (project seen listed) (encodingsDir))) then (ctor Plan.lists (cons (encodingsDir) (nil Bytes))) else (let paths : (List Bytes) := (unskipped (LexLeanStd.Order::sortedSet (jsonFiles (encodingsDir) (listingOf (project seen listed) (encodingsDir)))) skipped); (match (missing seen (cons (Studio.Doc::lit "model/admissions.json") paths))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (firstUnadmitted seen paths (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct")))
+      | Option.none => (ctor Plan.done (nil (Bytes * Bytes)) 0x)
+      | Option.some path => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "admit-encoding ") (cons path (cons 0x0a (nil Bytes)))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: planNext,
   parameters: [seen : Seen, skipped : (List Bytes)],
   result: Plan,
   body: (if (negate (isListed (project seen listed) (bindingsDir))) then (ctor Plan.lists (cons (bindingsDir) (nil Bytes))) else (let paths : (List Bytes) := (LexLeanStd.Order::sortedSet (jsonFiles (bindingsDir) (listingOf (project seen listed) (bindingsDir)))); (match (missing seen (cons (Studio.Doc::lit "model/authorities.toml") paths))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (firstNeeding seen (unskipped paths skipped))
-      | Option.none => (ctor Plan.done (nil (Bytes * Bytes)) 0x)
+      | Option.none => (planNextEncoding seen skipped)
       | Option.some path => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "ingest-authority ") (cons path (cons 0x0a (nil Bytes)))))))))),
   axioms: [Quot.sound, propext],
   executable: true
@@ -1087,21 +1143,173 @@ definition{
 }
 
 definition{
-  name: planPublish,
+  name: decisionsPath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "model/owner-decisions.json"),
+  executable: true
+}
+
+definition{
+  name: quoted,
+  parameters: [lines : (List Bytes)],
+  result: (List Bytes),
+  body: (match lines
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (if ((prim length head : Nat) =? 0) then (Studio.Doc::lit ">\n") else (Studio.Doc::cat (cons (Studio.Doc::lit "> ") (cons head (cons 0x0a (nil Bytes)))))) (quoted rest))),
+  recursive_argument: lines,
+  executable: true
+}
+
+definition{
+  name: decisionView,
+  parameters: [items : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "\n## ") (cons (LexLeanStd.Text::joinWith (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field head (Studio.Doc::lit "requirements")))) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit " (") (cons (Studio.Doc::str head (Studio.Doc::lit "agent")) (cons (Studio.Doc::lit ", ") (cons (Studio.Doc::str head (Studio.Doc::lit "at")) (cons (Studio.Doc::lit ")\n\n") (cons (Studio.Doc::cat (quoted (LexLeanStd.Text::lines (Studio.Doc::str head (Studio.Doc::lit "quote"))))) (nil Bytes)))))))))) (decisionView rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: decisionsDoc,
   parameters: [seen : Seen],
-  result: Plan,
-  body: (match (missing seen (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (nil Bytes))))
-    | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (ctor Plan.done (cons ((workflowPath), (workflow)) (cons ((Studio.Doc::lit ".github/workflows/operate.yml"), (operateWorkflow)) (cons ((Studio.Doc::lit ".github/workflows/refresh.yml"), (refreshWorkflow)) (cons ((Studio.Doc::lit ".github/CODEOWNERS"), (codeOwners)) (cons ((Studio.Doc::lit "docs/model.md"), (modelView seen)) (cons ((Studio.Doc::lit ".github/secret_scanning.yml"), (secretScanning)) (nil (Bytes * Bytes)))))))) (Studio.Doc::lit "published .github/workflows/pages.yml, .github/workflows/operate.yml, .github/workflows/refresh.yml, .github/CODEOWNERS, .github/secret_scanning.yml and docs/model.md\n"))),
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "# Owner decisions after plan v4\n\nGenerated by `verdant_studio publish` from model/owner-decisions.json. Do not edit.\nDecisions the repository owner made after `docs/verdant-studio-plan.md`, quoted\nas written. Each is the evidence of a requirement in `model/requirements.json`.\n") (decisionView (arrayOf seen (decisionsPath))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
 
 definition{
+  name: appendPairs,
+  parameters: [left : (List (Bytes * Bytes)), right : (List (Bytes * Bytes))],
+  result: (List (Bytes * Bytes)),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendPairs rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: decisionFiles,
+  parameters: [seen : Seen],
+  result: (List (Bytes * Bytes)),
+  body: (match (arrayOf seen (decisionsPath))
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons entry others => (cons ((Studio.Doc::lit "docs/owner-decisions.md"), (decisionsDoc seen)) (nil (Bytes * Bytes)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planPublish,
+  parameters: [seen : Seen],
+  result: Plan,
+  body: (match (missing seen (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (decisionsPath) (nil Bytes)))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (ctor Plan.done (appendPairs (decisionFiles seen) (cons ((workflowPath), (workflow)) (cons ((Studio.Doc::lit ".github/workflows/operate.yml"), (operateWorkflow)) (cons ((Studio.Doc::lit ".github/workflows/refresh.yml"), (refreshWorkflow)) (cons ((Studio.Doc::lit ".github/CODEOWNERS"), (codeOwners)) (cons ((Studio.Doc::lit "docs/model.md"), (modelView seen)) (cons ((Studio.Doc::lit ".github/secret_scanning.yml"), (secretScanning)) (nil (Bytes * Bytes))))))))) (Studio.Doc::lit "published the workflows, CODEOWNERS, secret scanning, docs/model.md and docs/owner-decisions.md\n"))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+
+definition{
+  name: stagedEncoding,
+  parameters: [entry : LexLeanStd.Json::Json],
+  result: Bool,
+  body: ((filled entry (Studio.Doc::lit "name")) && ((hasField entry (Studio.Doc::lit "schema")) && (match (citationJson (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field entry (Studio.Doc::lit "citation")))))
+    | Option.none => false
+    | Option.some cited => true))),
+  executable: true
+}
+
+definition{
+  name: stageEncodingLines,
+  parameters: [lines : (List Bytes)],
+  result: (Option (List (Bytes * Bytes))),
+  body: (match lines
+    | List.nil => (ctor Option.some [(List (Bytes * Bytes))] (nil (Bytes * Bytes)))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stageEncodingLines rest) else (match (Studio.Doc::readAny line)
+      | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
+      | Option.some entry => (if (stagedEncoding entry) then (match (stageEncodingLines rest)
+        | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
+        | Option.some staged => (ctor Option.some [(List (Bytes * Bytes))] (cons ((Studio.Doc::cat (cons (encodingsDir) (cons (Studio.Doc::lit "/") (cons (Studio.Schema::pascal (Studio.Doc::str entry (Studio.Doc::lit "name"))) (cons (Studio.Doc::lit ".json") (nil Bytes)))))), (prim append line 0x0a : Bytes)) staged))) else (ctor Option.none [(List (Bytes * Bytes))])))))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planStageEncodings,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (nil Bytes)))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (stageEncodingLines (LexLeanStd.Text::lines (contents seen path)))
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "every line must be an encoding: name, schema, and a citation list (req ID | std AUTHORITY [ROW] | der RULE CHECK INPUT...)\n"))
+      | Option.some staged => (ctor Plan.done staged (Studio.Doc::cat (cons (Studio.Doc::lit "staged ") (cons (LexLeanStd.Text::joinWith (firstsOf staged) (Studio.Doc::lit " ")) (cons 0x0a (nil Bytes)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planAdmitEncoding,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (nil Bytes)))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (jsonOf seen path)
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the staged encoding is not JSON\n"))
+      | Option.some entry => (match (Studio.Doc::field entry (Studio.Doc::lit "schema"))
+        | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the staged encoding has no schema\n"))
+        | Option.some schema => (encodingPlan seen (LexLeanStd.Json::writeJsonFile schema) schema (Studio.Doc::str entry (Studio.Doc::lit "name")) (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field entry (Studio.Doc::lit "citation")))) (cons path (nil Bytes)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+
+
+definition{
+  name: decisionLines,
+  parameters: [lines : (List Bytes)],
+  result: (Option (List LexLeanStd.Json::Json)),
+  body: (match lines
+    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (decisionLines rest) else (match (Studio.Doc::readAny line)
+      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+      | Option.some entry => (if ((filled entry (Studio.Doc::lit "agent")) && ((filled entry (Studio.Doc::lit "at")) && ((filled entry (Studio.Doc::lit "quote")) && (hasField entry (Studio.Doc::lit "requirements"))))) then (match (decisionLines rest)
+        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+        | Option.some recorded => (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry recorded))) else (ctor Option.none [(List LexLeanStd.Json::Json)])))))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planRecordDecision,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (cons (decisionsPath) (nil Bytes))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (decisionLines (LexLeanStd.Text::lines (contents seen path)))
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "every line must be an owner decision: agent, at, the verbatim quote, and requirements\n"))
+      | Option.some recorded => (let held : (List LexLeanStd.Json::Json) := (arrayOf seen (decisionsPath)); (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::idsOf held (Studio.Doc::lit "at"))); (if (((prim length times : Nat) =? 0) || (negate ((prim length (LexLeanStd.Order::sortedSet (Studio.Check::concat times known)) : Nat) =? (prim length (Studio.Check::concat times known) : Nat)))) then (ctor Plan.refuse (Studio.Doc::lit "a decision is repeated, or is already recorded\n")) else (ctor Plan.done (cons (registerFile (decisionsPath) (appendJson held recorded)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the owner's decisions of ") (cons (LexLeanStd.Text::joinWith times (Studio.Doc::lit " ")) (cons 0x0a (nil Bytes)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+
+
+
+definition{
   name: usage,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::lit "usage: verdant_studio check | next [SKIP...] | agenda | stage-bindings JSONL | admit JSONL | merge-gate RULES | ingest-index CSV | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
+  body: (Studio.Doc::lit "usage: verdant_studio check | next [SKIP...] | agenda | stage-bindings JSONL | admit JSONL | record-decision JSONL | stage-encodings JSONL | admit-encoding STAGED | merge-gate RULES | ingest-index CSV | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
   executable: true
 }
 
@@ -1114,9 +1322,9 @@ definition{
     | List.nil => (ctor Plan.refuse (usage))
     | List.cons op rest => (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheck seen) else (if (Studio.Doc::same op (Studio.Doc::lit "next")) then (planNext seen rest) else (if (Studio.Doc::same op (Studio.Doc::lit "build")) then (planBuild seen) else (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else (if (Studio.Doc::same op (Studio.Doc::lit "agenda")) then (planAgenda seen) else (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (planStage seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
+      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (planStage seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (planStageEncodings seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
         | List.nil => (ctor Plan.refuse (usage))
-        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage))))))))))))))),
+        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage)))))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
