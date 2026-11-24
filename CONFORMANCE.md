@@ -181,6 +181,9 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `USK-AGE-RATINGS` | The five USK age ratings under section 14 JuSchG, the descriptors of the reasons for a rating and the labels for additional functions. Index row Q04. |  |
 | `W3C-SOSA-2017` | The SOSA core of the W3C/OGC Semantic Sensor Network ontology in its official Turtle form: observations, actuations, samplings, sensors, actuators, samplers, features of interest and properties. |  |
 | `W3C-WEBAUTHN-3-20260825` | The WebAuthn Level 3 API: its WebIDL dictionaries and enumerations for creating and asserting public key credentials (passkeys). Index row T12. |  |
+| `DORA-SOFTWARE-DELIVERY-METRICS` | The five software delivery performance metrics, grouped into throughput and instability. Index row H14. |  |
+| `FAGERHOLT-LORENTZON-BEYOND-THE-HUD-2009` | The UI design space of FPS games: the fiction and spatiality dimensions and the six categories of UI elements (section 7.3). Index row L10. |  |
+| `GGPO-GGPONET-H` | GGPO rollback networking SDK types: player types, event codes, error codes and network statistics. Index row K03. |  |
 
 ## Claims that are not conformance IDs
 
