@@ -7053,3 +7053,54 @@ statement = "The full text of the pinned edition SMPTE-ST-2084-2014 as SMPTE pub
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "HAMMOND-PROPP-THESIS-2011"
+name = "Children's Story Authoring with Propp's Morphology"
+issuer = "Sean Hammond (University of Edinburgh)"
+edition = "PhD thesis, University of Edinburgh, 2011, ERA handle 1842/5294"
+canonical_id = "http://hdl.handle.net/1842/5294"
+source_role = "informative"
+retrieval_date = "2026-11-24"
+url = "https://era.ed.ac.uk/bitstreams/e1433bd9-96cc-4a75-b6a2-3cb20254de81/download"
+media_type = "application/pdf"
+license = "Author copyright (open repository)"
+redistribution = "citation-only"
+statement = "Doctoral thesis quoting Propp 1968 (2nd edition, chapter 3) verbatim: the 31 functions of dramatis personae (figure 2.3) and the seven dramatis personae with their spheres of action (section 2.2.2). Public source for all-source inference of index row C12."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "KIJKUIT-EUR-THESIS-2007"
+name = "Social Networks in the Front End: The Organizational Life of an Idea"
+issuer = "R. C. Kijkuit (Erasmus Research Institute of Management)"
+edition = "ERIM PhD Series EPS-2007-104-ORG, Erasmus University Rotterdam, 2007"
+canonical_id = "https://repub.eur.nl/pub/10074"
+source_role = "informative"
+retrieval_date = "2026-11-24"
+url = "https://repub.eur.nl/pub/10074/EPS2007104ORG9058921376KIJKUIT.pdf"
+media_type = "application/pdf"
+license = "Author copyright (open repository)"
+redistribution = "citation-only"
+statement = "Doctoral thesis reproducing Cooper's stage-gate process (figure 2.1, attributed to Cooper 1986, Winning at New Products, which Cooper 1990 cites as its predecessor). Public source for all-source inference of index row A05."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "WEBSTER-LEAVER-SANDRY-FM-2022"
+name = "Transmedia storytelling during the COVID-19 pandemic: Marvel's WandaVision and Zack Snyder's Justice League"
+issuer = "Luke Webster, Tama Leaver and Eleanor Sandry"
+edition = "First Monday 27(7), 4 July 2022, DOI 10.5210/fm.v27i7.11784"
+canonical_id = "https://doi.org/10.5210/fm.v27i7.11784"
+source_role = "informative"
+retrieval_date = "2026-11-24"
+url = "https://firstmonday.org/ojs/index.php/fm/article/download/11784/10684?inline=1"
+media_type = "text/html"
+license = "CC BY-NC-SA 4.0"
+redistribution = "citation-only"
+statement = "Peer-reviewed article quoting Jenkins, Convergence Culture (2006), pp. 95-96, on the core tenets of transmedia storytelling (notes 1 and 2). Public source for all-source inference of index row C13."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []

@@ -455,6 +455,9 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `ISO-IEC-42001-2023-PREVIEW` | Public preview of the pinned edition ISO-IEC-42001-2023: its contents list and the clause-3 terms the preview shows. Inference source for index row J15. |  |
 | `SMPTE-ST-12-1-2014-LIBRARY` | The full text of the pinned edition SMPTE-ST-12-1-2014 as SMPTE publishes it free in its Document Library. Source for index row F04. |  |
 | `SMPTE-ST-2084-2014-LIBRARY` | The full text of the pinned edition SMPTE-ST-2084-2014 as SMPTE publishes it free in its Document Library. Source for index row G09. |  |
+| `HAMMOND-PROPP-THESIS-2011` | Doctoral thesis quoting Propp 1968 (2nd edition, chapter 3) verbatim: the 31 functions of dramatis personae (figure 2.3) and the seven dramatis personae with their spheres of action (section 2.2.2). Public source for all-source inference of index row C12. |  |
+| `KIJKUIT-EUR-THESIS-2007` | Doctoral thesis reproducing Cooper's stage-gate process (figure 2.1, attributed to Cooper 1986, Winning at New Products, which Cooper 1990 cites as its predecessor). Public source for all-source inference of index row A05. |  |
+| `WEBSTER-LEAVER-SANDRY-FM-2022` | Peer-reviewed article quoting Jenkins, Convergence Culture (2006), pp. 95-96, on the core tenets of transmedia storytelling (notes 1 and 2). Public source for all-source inference of index row C13. |  |
 
 ## Claims that are not conformance IDs
 
