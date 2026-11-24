@@ -9,3 +9,13 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- Networking, multiplayer, and online services, row K05: **Endpoint** is producer of QUIC packet under IETF-RFC-9000 (constraint)
+  > Endpoint: An entity that can participate in a QUIC connection by generating, receiving, and processing QUIC packets.
+- Networking, multiplayer, and online services, row K05: **Endpoint** is consumer of QUIC packet under IETF-RFC-9000 (constraint)
+  > Endpoint: An entity that can participate in a QUIC connection by generating, receiving, and processing QUIC packets.
+- Networking, multiplayer, and online services, row K05: **Application** is consumer of QUIC under IETF-RFC-9000 (constraint)
+  > Application: An entity that uses QUIC to send and receive data.
+- Networking, multiplayer, and online services, row K13: **client** is onBehalfOf of protected resource request under IETF-RFC-6749 (constraint)
+  > client An application making protected resource requests on behalf of the resource owner and with its authorization.
+- Networking, multiplayer, and online services, row K13: **authorization server** is producer of access token under IETF-RFC-6749 (constraint)
+  > authorization server The server issuing access tokens to the client after successfully authenticating the resource owner
