@@ -1,0 +1,1 @@
+{"name":"steam-ai-content-category","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"Steam Content Survey AI usage category","enum":["Pre-Generated","Live-Generated"]},"citation":["std","STEAM-AI-CONTENT-DISCLOSURE-2024","J18"]}
