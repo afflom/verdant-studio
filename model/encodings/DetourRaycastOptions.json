@@ -1,0 +1,1 @@
+{"name":"detour-raycast-options","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"dtRaycastOptions","enum":["DT_RAYCAST_USE_COSTS"],"$comment":"DetourNavMesh.h, enum dtRaycastOptions, as declared in the pinned header"},"citation":["std","RECAST-DETOUR-NAVMESH-H","J07"]}

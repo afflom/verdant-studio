@@ -1,0 +1,1 @@
+{"name":"detour-poly-types","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"dtPolyTypes","enum":["DT_POLYTYPE_GROUND","DT_POLYTYPE_OFFMESH_CONNECTION"],"$comment":"DetourNavMesh.h, enum dtPolyTypes, as declared in the pinned header"},"citation":["std","RECAST-DETOUR-NAVMESH-H","J07"]}

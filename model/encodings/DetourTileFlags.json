@@ -1,0 +1,1 @@
+{"name":"detour-tile-flags","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"dtTileFlags","enum":["DT_TILE_FREE_DATA"],"$comment":"DetourNavMesh.h, enum dtTileFlags, as declared in the pinned header"},"citation":["std","RECAST-DETOUR-NAVMESH-H","J07"]}

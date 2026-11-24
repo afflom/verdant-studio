@@ -1,0 +1,1 @@
+{"name":"detour-straight-path-flags","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"dtStraightPathFlags","enum":["DT_STRAIGHTPATH_START","DT_STRAIGHTPATH_END","DT_STRAIGHTPATH_OFFMESH_CONNECTION"],"$comment":"DetourNavMesh.h, enum dtStraightPathFlags, as declared in the pinned header"},"citation":["std","RECAST-DETOUR-NAVMESH-H","J07"]}
