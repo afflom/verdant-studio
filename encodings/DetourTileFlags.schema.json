@@ -1,0 +1,1 @@
+{"$comment":"DetourNavMesh.h, enum dtTileFlags, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["DT_TILE_FREE_DATA"],"title":"dtTileFlags"}

@@ -1,0 +1,1 @@
+{"$comment":"DetourNavMesh.h, enum dtFindPathOptions, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["DT_FINDPATH_ANY_ANGLE"],"title":"dtFindPathOptions"}

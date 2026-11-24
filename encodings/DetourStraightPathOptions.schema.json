@@ -1,0 +1,1 @@
+{"$comment":"DetourNavMesh.h, enum dtStraightPathOptions, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["DT_STRAIGHTPATH_AREA_CROSSINGS","DT_STRAIGHTPATH_ALL_CROSSINGS"],"title":"dtStraightPathOptions"}

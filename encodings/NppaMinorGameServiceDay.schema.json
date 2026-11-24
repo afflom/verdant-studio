@@ -1,0 +1,1 @@
+{"$comment":"NPPA notice (2021-09-01) clause 1: service to minors only on these days, 20:00-21:00, one hour; clause 5: minors are citizens under 18","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["周五","周六","周日","法定节假日"],"title":"国家新闻出版署 2021 通知 第一条 未成年人网络游戏服务日"}

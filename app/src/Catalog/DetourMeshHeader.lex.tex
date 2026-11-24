@@ -1,0 +1,34 @@
+\begin{lexlean}{Catalog.DetourMeshHeader}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: DetourMeshHeader,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: magic, type: Int},
+    {name: version, type: Int},
+    {name: x, type: Int},
+    {name: y, type: Int},
+    {name: layer, type: Int},
+    {name: userId, type: Nat},
+    {name: polyCount, type: Int},
+    {name: vertCount, type: Int},
+    {name: maxLinkCount, type: Int},
+    {name: detailMeshCount, type: Int},
+    {name: detailVertCount, type: Int},
+    {name: detailTriCount, type: Int},
+    {name: bvNodeCount, type: Int},
+    {name: offMeshConCount, type: Int},
+    {name: offMeshBase, type: Int},
+    {name: walkableHeight, type: (Int * Int)},
+    {name: walkableRadius, type: (Int * Int)},
+    {name: walkableClimb, type: (Int * Int)},
+    {name: bmin, type: (List (Int * Int))},
+    {name: bmax, type: (List (Int * Int))},
+    {name: bvQuantFactor, type: (Int * Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
