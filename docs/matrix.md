@@ -13,3 +13,71 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > including through any person acting in his or her name or on his or her behalf
 - Online safety, community, user-generated content, and esports, row S03: **recipient of the service** is consumer of intermediary service under EU-REG-2022-2065 (constraint)
   > recipient of the service means any natural or legal person who uses an intermediary service
+- Quality assurance, testing, and software quality, row O04: **Business Owner** is producer of marketing policy under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Defines marketing policy
+- Quality assurance, testing, and software quality, row O04: **Analyst** is producer of product requirements under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Identifies product requirements
+- Quality assurance, testing, and software quality, row O04: **Analyst** is consumer of original specification under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Works with the original specification
+- Quality assurance, testing, and software quality, row O04: **Analyst** is producer of specifications under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Updates specifications, keeps them up-to-date.
+- Quality assurance, testing, and software quality, row O04: **Developer** is producer of code under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Develops and debugs code
+- Quality assurance, testing, and software quality, row O04: **Developer** is producer of component tests under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Develops component tests.
+- Quality assurance, testing, and software quality, row O04: **Game Designer** is producer of game mechanics, balance, plot, levels, game economics under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Designs game mechanics, balance, plot, levels, game economics
+- Quality assurance, testing, and software quality, row O04: **Game Designer** is producer of game documentation under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Creates game documentation
+- Quality assurance, testing, and software quality, row O04: **Game Designer** is producer of game content under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Thinks over and develops the game content.
+- Quality assurance, testing, and software quality, row O04: **Tester** is producer of test model and testing strategy under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Develops a test model and testing strategy
+- Quality assurance, testing, and software quality, row O04: **Tester** is producer of test data under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Designs and prepares test data
+- Quality assurance, testing, and software quality, row O04: **Tester** is consumer of specifications under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Reviews specifications
+- Quality assurance, testing, and software quality, row O04: **Artist** is producer of graphic content under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Creates various graphic content for the game.
+- Quality assurance, testing, and software quality, row O04: **3D modeler** is producer of 3D models under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Creates 3D models of the game objects
+- Quality assurance, testing, and software quality, row O04: **Texture artist** is producer of textures under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Creates textures for game objects
+- Quality assurance, testing, and software quality, row O04: **Tester** is observation of graphics objects test under ISTQB-CT-GAME-1.0.1 (constraint)
+  > tests graphics objects in the video game engine.
+- Quality assurance, testing, and software quality, row O04: **Players** is observation of artistic test under ISTQB-CT-GAME-1.0.1 (refinement)
+  > Players When participating in playtests
+- Quality assurance, testing, and software quality, row O04: **Composer** is producer of sounds and music under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Involved in the creation of sounds and music for the game.
+- Quality assurance, testing, and software quality, row O04: **Audio designer** is producer of audio content under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Creates content from the original audio files with recorded sound (samples) and adjusts it in the sound editor.
+- Quality assurance, testing, and software quality, row O04: **Audio designer** is consumer of original audio files under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Creates content from the original audio files with recorded sound (samples)
+- Quality assurance, testing, and software quality, row O04: **Foley artist** is producer of sound effects under ISTQB-CT-GAME-1.0.1 (constraint)
+  > is responsible for creating sound effects that do not exist in reality
+- Quality assurance, testing, and software quality, row O04: **Developer** is consumer of audio content under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Integrates the created and customized audio content into the game client code.
+- Quality assurance, testing, and software quality, row O04: **Level designer** is consumer of sound files under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Distributes the sound sources by level and then binds the sound files to the sound sources.
+- Quality assurance, testing, and software quality, row O04: **narrative designer** is attributed of story and narrative under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Specialist who is responsible for story and narrative in computer game development.
+- Quality assurance, testing, and software quality, row O04: **Game designer** is producer of video game design document under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Involved in the development of game documentation (e.g., a video game design document).
+- Quality assurance, testing, and software quality, row O04: **Tester** is observation of sound test under ISTQB-CT-GAME-1.0.1 (constraint)
+  > tests the finished sound picture and the correctness of making new sound changes in the client.
+- Quality assurance, testing, and software quality, row O04: **Game level designer** is attributed of level under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Responsible for the geometry and shape of the level, the location of objects and trigger points
+- Quality assurance, testing, and software quality, row O04: **Tester** is observation of map test under ISTQB-CT-GAME-1.0.1 (constraint)
+  > The main task of a tester is to test if a player can play on a given map without encountering technical and artistic defects.
+- Quality assurance, testing, and software quality, row O04: **UI / UX specialist** is producer of interface under ISTQB-CT-GAME-1.0.1 (constraint)
+  > UI / UX specialist and game designer roles are obligatory when developing games. Their task is to develop an interface
+- Quality assurance, testing, and software quality, row O04: **game designer** is producer of interface under ISTQB-CT-GAME-1.0.1 (constraint)
+  > UI / UX specialist and game designer roles are obligatory when developing games. Their task is to develop an interface
+- Quality assurance, testing, and software quality, row O04: **Writer / Narrative Designer** is producer of localization strategy and plan under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Development of a localization strategy and plan.
+- Quality assurance, testing, and software quality, row O04: **Translator** is producer of translation under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Translator ● Text translation
+- Quality assurance, testing, and software quality, row O04: **Editor** is consumer of translated material under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Proofreading of the material translated.
+- Quality assurance, testing, and software quality, row O04: **Localization tester** is observation of translation test under ISTQB-CT-GAME-1.0.1 (constraint)
+  > Testing the correctness of the translation (context and meaning of remarks, coherence of the text, compliance with the style of play).
