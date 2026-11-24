@@ -9,6 +9,18 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- Characters, rigging, animation, and performance capture, row E01: **digital games tester** is esco:hasOptionalSkill of Twelve principles of animation under EC-ESCO-1.2.1 (constraint)
+  > http://data.europa.eu/esco/occupation/33e4f026-a823-4ffc-99e4-60d3fe597a1e,digital games tester,optional,knowledge,http://data.europa.eu/esco/skill/1c00bc98-2713-4c62-82c5-6d86f2e6a4cb,principles of animation
+- Engine, runtime, languages, and software engineering, row H02: **digital games developer** is esco:hasOptionalSkill of C# (ECMA-334 / ISO/IEC 23270) and CLI (ECMA-335) under EC-ESCO-1.2.1 (constraint)
+  > http://data.europa.eu/esco/occupation/9ebaf3f0-0be0-47b7-b2b1-b3b04130fa81,digital games developer,optional,knowledge,http://data.europa.eu/esco/skill/4c016b68-4116-468c-9dc6-42710c239e4a,C#
+- Engine, runtime, languages, and software engineering, row H01: **digital games developer** is esco:hasOptionalSkill of C++ (ISO/IEC 14882) under EC-ESCO-1.2.1 (constraint)
+  > http://data.europa.eu/esco/occupation/9ebaf3f0-0be0-47b7-b2b1-b3b04130fa81,digital games developer,optional,knowledge,http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f,C++
+- Characters, rigging, animation, and performance capture, row E01: **digital games designer** is esco:hasOptionalSkill of Twelve principles of animation under EC-ESCO-1.2.1 (constraint)
+  > http://data.europa.eu/esco/occupation/d68ff35f-e34d-4e32-88ab-d6c06a6c25b9,digital games designer,optional,knowledge,http://data.europa.eu/esco/skill/1c00bc98-2713-4c62-82c5-6d86f2e6a4cb,principles of animation
+- Engine, runtime, languages, and software engineering, row H02: **digital games designer** is esco:hasOptionalSkill of C# (ECMA-334 / ISO/IEC 23270) and CLI (ECMA-335) under EC-ESCO-1.2.1 (constraint)
+  > http://data.europa.eu/esco/occupation/d68ff35f-e34d-4e32-88ab-d6c06a6c25b9,digital games designer,optional,knowledge,http://data.europa.eu/esco/skill/4c016b68-4116-468c-9dc6-42710c239e4a,C#
+- Engine, runtime, languages, and software engineering, row H01: **digital games designer** is esco:hasOptionalSkill of C++ (ISO/IEC 14882) under EC-ESCO-1.2.1 (constraint)
+  > http://data.europa.eu/esco/occupation/d68ff35f-e34d-4e32-88ab-d6c06a6c25b9,digital games designer,optional,knowledge,http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f,C++
 - Online safety, community, user-generated content, and esports, row S03: **person acting on behalf of a trader** is onBehalfOf of intermediary service under EU-REG-2022-2065 (constraint)
   > including through any person acting in his or her name or on his or her behalf
 - Online safety, community, user-generated content, and esports, row S03: **recipient of the service** is consumer of intermediary service under EU-REG-2022-2065 (constraint)
