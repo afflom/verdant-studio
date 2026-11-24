@@ -413,6 +413,26 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-XML-NAMES-1.0-3E` | Qualified names, namespace declarations and their scoping, which the XML reader applies to every element and attribute name. |  |
 | `W3C-XSD-1.1-PART1` | The XSD component model (element and attribute declarations, complex types, model groups, import and include) that the schema translator maps to LexLean types. |  |
 | `W3C-XSD-1.1-PART2` | The built-in datatypes and facets (enumeration, restriction) that the schema translator maps to LexLean value types. |  |
+| `ISO-10002-2018-PREVIEW` | Public preview of ISO 10002:2018 (ISO-10002-2018), same edition; source of the inferred encoding. Index row W09. |  |
+| `ISO-10668-2010-PREVIEW` | Public preview of ISO 10668:2010 (ISO-10668-2010), same edition; source of the inferred encoding. Index row V03. |  |
+| `ISO-18295-1-2017-PREVIEW` | Public preview of ISO 18295-1:2017 (ISO-18295-1-2017), same edition; source of the inferred encoding. Index row W09. |  |
+| `ISO-18295-2-2017-PREVIEW` | Public preview of ISO 18295-2:2017 (ISO-18295-2-2017), same edition; source of the inferred encoding. Index row W09. |  |
+| `ISO-20671-1-2021-PREVIEW` | Public preview of ISO 20671-1:2021 (ISO-20671-1-2021), same edition; source of the inferred encoding. Index row V03. |  |
+| `ISO-45003-2021-PREVIEW` | Public preview of ISO 45003:2021 (ISO-45003-2021), same edition; source of the inferred encoding. Index row X05. |  |
+| `ISO-IEC-20000-1-2018-PREVIEW` | Public preview of ISO/IEC 20000-1:2018 (ISO-IEC-20000-1-2018), same edition; source of the inferred encoding. Index row W03. |  |
+| `ISO-IEC-25010-2023-PREVIEW` | Public preview of ISO/IEC 25010:2023 (ISO-IEC-25010-2023), same edition; source of the inferred encoding. Index row O01. |  |
+| `ISO-IEC-25022-2016-PREVIEW` | Public preview of ISO/IEC 25022:2016 (ISO-IEC-25022-2016), same edition; source of the inferred encoding. Index row O02. |  |
+| `ISO-IEC-25023-2016-PREVIEW` | Public preview of ISO/IEC 25023:2016 (ISO-IEC-25023-2016), same edition; source of the inferred encoding. Index row O02. |  |
+| `ISO-IEC-27001-2022-PREVIEW` | Public preview of ISO/IEC 27001:2022 (ISO-IEC-27001-2022), same edition; source of the inferred encoding. Index row T06. |  |
+| `ISO-IEC-27566-1-2025-PREVIEW` | Public preview of ISO/IEC 27566-1:2025 (ISO-IEC-27566-1-2025), same edition; source of the inferred encoding. Index row R09. |  |
+| `ISO-IEC-27701-2025-PREVIEW` | Public preview of ISO/IEC 27701:2025 (ISO-IEC-27701-2025), same edition; source of the inferred encoding. Index row R07. |  |
+| `ISO-IEC-29100-2024-PREVIEW` | Public preview of ISO/IEC 29100:2024 (ISO-IEC-29100-2024), same edition; source of the inferred encoding. Index row R07. |  |
+| `ISO-IEC-IEEE-29119-1-2022-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-1:2022 (ISO-IEC-IEEE-29119-1-2022), same edition; source of the inferred encoding. Index row O03. |  |
+| `ISO-IEC-IEEE-29119-2-2021-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-2:2021 (ISO-IEC-IEEE-29119-2-2021), same edition; source of the inferred encoding. Index row O03. |  |
+| `ISO-IEC-IEEE-29119-3-2021-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-3:2021 (ISO-IEC-IEEE-29119-3-2021), same edition; source of the inferred encoding. Index row O03. |  |
+| `ISO-IEC-IEEE-29119-4-2021-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-4:2021 (ISO-IEC-IEEE-29119-4-2021), same edition; source of the inferred encoding. Index row O03. |  |
+| `ISO-IEC-IEEE-29119-5-2024-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-5:2024 (ISO-IEC-IEEE-29119-5-2024), same edition; source of the inferred encoding. Index row O03. |  |
+| `PCI-DSS-4.0.1-PDF` | Public PDF of PCI DSS v4.0.1 (PCI-DSS-4.0.1), same edition; source of the inferred encoding. Index row T08. |  |
 
 ## Claims that are not conformance IDs
 
