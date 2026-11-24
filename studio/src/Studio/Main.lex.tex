@@ -11,6 +11,7 @@ structure{
   type_parameters: [],
   parameters: [],
   fields: [
+    {name: pending, type: (List Bytes)},
     {name: args, type: (List Bytes)},
     {name: environment, type: (List (Bytes * Bytes))},
     {name: seen, type: Studio.Ops::Seen},
@@ -36,7 +37,7 @@ definition{
   name: fresh,
   parameters: [],
   result: Session,
-  body: (record Session {args := (nil Bytes), environment := (nil (Bytes * Bytes)), seen := (emptySeen), phase := 0, current := 0x, program := 0x, arguments := (nil Bytes), handle := 0, writes := (nil (Bytes * Bytes)), message := 0x}),
+  body: (record Session {pending := (nil Bytes), args := (nil Bytes), environment := (nil (Bytes * Bytes)), seen := (emptySeen), phase := 0, current := 0x, program := 0x, arguments := (nil Bytes), handle := 0, writes := (nil (Bytes * Bytes)), message := 0x}),
   executable: true
 }
 
@@ -76,7 +77,7 @@ definition{
   name: withPhase,
   parameters: [session : Session, phase : Nat, current : Bytes],
   result: Session,
-  body: (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := phase, current := current, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
+  body: (record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := (project session seen), phase := phase, current := current, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
   executable: true
 }
 
@@ -84,9 +85,18 @@ definition{
   name: withSeen,
   parameters: [session : Session, seen : Studio.Ops::Seen],
   result: Session,
-  body: (record Session {args := (project session args), environment := (project session environment), seen := seen, phase := 0, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
+  body: (record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := seen, phase := 0, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
   executable: true
 }
+
+definition{
+  name: withPending,
+  parameters: [session : Session, pending : (List Bytes)],
+  result: Session,
+  body: (record Session {pending := pending, args := (project session args), environment := (project session environment), seen := (project session seen), phase := (project session phase), current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (project session message)}),
+  executable: true
+}
+
 
 definition{
   name: quit,
@@ -130,12 +140,12 @@ definition{
   body: (match (Studio.Ops::plan (project session args) (project session seen))
     | Studio.Ops::Plan.reads paths => (match paths
       | List.nil => (quit session (1 : UInt8) 0x (Studio.Doc::lit "internal: an empty read plan\n"))
-      | List.cons head rest => ((withPhase session 1 head), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text head))))
+      | List.cons head rest => ((withPending (withPhase session 1 head) rest), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text head))))
     | Studio.Ops::Plan.lists paths => (match paths
       | List.nil => (quit session (1 : UInt8) 0x (Studio.Doc::lit "internal: an empty list plan\n"))
       | List.cons head rest => ((withPhase session 2 head), (ctor LexLeanStd.Host::Request.list (Studio.Doc::text head))))
-    | Studio.Ops::Plan.run program arguments tag => ((record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 3, current := tag, program := program, arguments := arguments, handle := 0, writes := (project session writes), message := (project session message)}), (ctor LexLeanStd.Host::Request.createDir "target"))
-    | Studio.Ops::Plan.done writes message => (writeNext (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := writes, message := message}))
+    | Studio.Ops::Plan.run program arguments tag => ((record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := (project session seen), phase := 3, current := tag, program := program, arguments := arguments, handle := 0, writes := (project session writes), message := (project session message)}), (ctor LexLeanStd.Host::Request.createDir "target"))
+    | Studio.Ops::Plan.done writes message => (writeNext (record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := writes, message := message}))
     | Studio.Ops::Plan.refuse reason => (quit session (1 : UInt8) 0x reason)),
   axioms: [Quot.sound, propext],
   executable: true
@@ -145,7 +155,9 @@ definition{
   name: recordRead,
   parameters: [session : Session, found : (Option Bytes)],
   result: (Session * LexLeanStd.Host::Request),
-  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (cons ((project session current), found) (project seen files)), listed := (project seen listed), ran := (project seen ran)})))),
+  body: (let seen : Studio.Ops::Seen := (project session seen); (let updated : Session := (withSeen session (record Studio.Ops::Seen {files := (cons ((project session current), found) (project seen files)), listed := (project seen listed), ran := (project seen ran)})); (match (project session pending)
+    | List.nil => (advance updated)
+    | List.cons head rest => ((withPending (withPhase updated 1 head) rest), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text head)))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -221,8 +233,8 @@ definition{
   body: (let session : Session := (match previous
       | Option.none => (fresh)
       | Option.some known => known); (match event
-    | LexLeanStd.Host::Event.start start => (advance (record Session {args := (project start arguments), environment := (project start environment), seen := (emptySeen), phase := 0, current := 0x, program := 0x, arguments := (nil Bytes), handle := 0, writes := (nil (Bytes * Bytes)), message := 0x}))
-    | LexLeanStd.Host::Event.read result => (if ((project session phase) =? 7) then ((record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 8, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (match result
+    | LexLeanStd.Host::Event.start start => (advance (record Session {pending := (nil Bytes), args := (project start arguments), environment := (project start environment), seen := (emptySeen), phase := 0, current := 0x, program := 0x, arguments := (nil Bytes), handle := 0, writes := (nil (Bytes * Bytes)), message := 0x}))
+    | LexLeanStd.Host::Event.read result => (if ((project session phase) =? 7) then ((record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := (project session seen), phase := 8, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := (project session writes), message := (match result
         | Result.ok text => text
         | Result.error reason => 0x)}), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text (childErr)))) else (if ((project session phase) =? 8) then (quit session (1 : UInt8) (project session message) (Studio.Doc::cat (cons (match result
         | Result.ok text => text
@@ -238,10 +250,10 @@ definition{
           | List.nil => (writeNext session)
           | List.cons head rest => ((withPhase session 6 (first head)), (ctor LexLeanStd.Host::Request.write (Studio.Doc::text (first head)) (second head)))) else (match (project session writes)
           | List.nil => (writeNext session)
-          | List.cons head rest => (writeNext (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := rest, message := (project session message)}))))))
+          | List.cons head rest => (writeNext (record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := rest, message := (project session message)}))))))
     | LexLeanStd.Host::Event.spawned result => (match result
       | Result.error reason => (failed session (Studio.Doc::lit "could not start"))
-      | Result.ok started => (waitAgain (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 4, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (first started), writes := (project session writes), message := (project session message)})))
+      | Result.ok started => (waitAgain (record Session {pending := (project session pending), args := (project session args), environment := (project session environment), seen := (project session seen), phase := 4, current := (project session current), program := (project session program), arguments := (project session arguments), handle := (first started), writes := (project session writes), message := (project session message)})))
     | LexLeanStd.Host::Event.waited result => (match result
       | Result.error reason => (failed session (Studio.Doc::lit "could not wait for"))
       | Result.ok waited => (match (exitOf (project waited finished) (project session handle))
