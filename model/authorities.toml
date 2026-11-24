@@ -5829,3 +5829,71 @@ statement = "The Game Ontology Project's hierarchy of game elements (interface, 
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS"
+name = "WebAssembly 3.0 SpecTec source: syntax of instructions (1.3-syntax.instructions.spectec)"
+issuer = "W3C WebAssembly Working Group (WebAssembly/spec)"
+edition = "tag wg-3.0"
+canonical_id = "https://github.com/WebAssembly/spec/blob/wg-3.0/specification/wasm-3.0/1.3-syntax.instructions.spectec"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://raw.githubusercontent.com/WebAssembly/spec/9d36019973201a19f9c9ebb0f10828b2fe2374aa/specification/wasm-3.0/1.3-syntax.instructions.spectec"
+media_type = "text/plain"
+license = "unstated (the repository LICENSE does not cover specification/)"
+redistribution = "citation-only"
+statement = "The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of instructions, at tag wg-3.0. Index row H04."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "WASM-3.0-SPECTEC-SYNTAX-MODULES"
+name = "WebAssembly 3.0 SpecTec source: syntax of modules (1.4-syntax.modules.spectec)"
+issuer = "W3C WebAssembly Working Group (WebAssembly/spec)"
+edition = "tag wg-3.0"
+canonical_id = "https://github.com/WebAssembly/spec/blob/wg-3.0/specification/wasm-3.0/1.4-syntax.modules.spectec"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://raw.githubusercontent.com/WebAssembly/spec/9d36019973201a19f9c9ebb0f10828b2fe2374aa/specification/wasm-3.0/1.4-syntax.modules.spectec"
+media_type = "text/plain"
+license = "unstated (the repository LICENSE does not cover specification/)"
+redistribution = "citation-only"
+statement = "The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of modules, at tag wg-3.0. Index row H04."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "WASM-3.0-SPECTEC-SYNTAX-TYPES"
+name = "WebAssembly 3.0 SpecTec source: syntax of types (1.2-syntax.types.spectec)"
+issuer = "W3C WebAssembly Working Group (WebAssembly/spec)"
+edition = "tag wg-3.0"
+canonical_id = "https://github.com/WebAssembly/spec/blob/wg-3.0/specification/wasm-3.0/1.2-syntax.types.spectec"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://raw.githubusercontent.com/WebAssembly/spec/9d36019973201a19f9c9ebb0f10828b2fe2374aa/specification/wasm-3.0/1.2-syntax.types.spectec"
+media_type = "text/plain"
+license = "unstated (the repository LICENSE does not cover specification/)"
+redistribution = "citation-only"
+statement = "The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of types, at tag wg-3.0. Index row H04."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "WASM-3.0-SPECTEC-SYNTAX-VALUES"
+name = "WebAssembly 3.0 SpecTec source: syntax of values (1.1-syntax.values.spectec)"
+issuer = "W3C WebAssembly Working Group (WebAssembly/spec)"
+edition = "tag wg-3.0"
+canonical_id = "https://github.com/WebAssembly/spec/blob/wg-3.0/specification/wasm-3.0/1.1-syntax.values.spectec"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://raw.githubusercontent.com/WebAssembly/spec/9d36019973201a19f9c9ebb0f10828b2fe2374aa/specification/wasm-3.0/1.1-syntax.values.spectec"
+media_type = "text/plain"
+license = "unstated (the repository LICENSE does not cover specification/)"
+redistribution = "citation-only"
+statement = "The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of values, at tag wg-3.0. Index row H04."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []

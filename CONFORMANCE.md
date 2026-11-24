@@ -383,6 +383,10 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WALK-GORLICH-BARRETT-DDE-2017` | The DDE framework: design, dynamics and experience as a revision of MDA. Index row B02. |  |
 | `YANNAKAKIS-TOGELIUS-AI-AND-GAMES-2018` | The academic reference model of AI in games: playing games, generating content and modeling players. Index row J10. |  |
 | `ZAGAL-MATEAS-GOP-2005` | The Game Ontology Project's hierarchy of game elements (interface, rules, entity manipulation, goals). Index row B07. |  |
+| `WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of instructions, at tag wg-3.0. Index row H04. |  |
+| `WASM-3.0-SPECTEC-SYNTAX-MODULES` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of modules, at tag wg-3.0. Index row H04. |  |
+| `WASM-3.0-SPECTEC-SYNTAX-TYPES` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of types, at tag wg-3.0. Index row H04. |  |
+| `WASM-3.0-SPECTEC-SYNTAX-VALUES` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of values, at tag wg-3.0. Index row H04. |  |
 
 ## Claims that are not conformance IDs
 
