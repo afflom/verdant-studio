@@ -1,0 +1,80 @@
+\begin{lexlean}{Catalog.Gdpr}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GdprDataSubjectRight,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: rightOfAccessByTheDataSubject, fields: []},
+    {name: rightToRectification, fields: []},
+    {name: u0052u0069u0067u0068u0074u0020u0074u006Fu0020u0065u0072u0061u0073u0075u0072u0065u0020u0028u2018u0072u0069u0067u0068u0074u0020u0074u006Fu0020u0062u0065u0020u0066u006Fu0072u0067u006Fu0074u0074u0065u006Eu2019u0029, fields: []},
+    {name: rightToRestrictionOfProcessing, fields: []},
+    {name: notificationObligationRegardingRectificationOrErasureOfPersonalDataOrRestrictionOfProcessing, fields: []},
+    {name: rightToDataPortability, fields: []},
+    {name: rightToObject, fields: []},
+    {name: automatedIndividualDecisionMakingIncludingProfiling, fields: []}
+  ]
+}
+
+inductive{
+  name: GdprDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: personalData, fields: []},
+    {name: processing, fields: []},
+    {name: restrictionOfProcessing, fields: []},
+    {name: profiling, fields: []},
+    {name: pseudonymisation, fields: []},
+    {name: filingSystem, fields: []},
+    {name: controller, fields: []},
+    {name: processor, fields: []},
+    {name: recipient, fields: []},
+    {name: thirdParty, fields: []},
+    {name: consent, fields: []},
+    {name: personalDataBreach, fields: []},
+    {name: geneticData, fields: []},
+    {name: biometricData, fields: []},
+    {name: dataConcerningHealth, fields: []},
+    {name: mainEstablishment, fields: []},
+    {name: representative, fields: []},
+    {name: enterprise, fields: []},
+    {name: groupOfUndertakings, fields: []},
+    {name: bindingCorporateRules, fields: []},
+    {name: supervisoryAuthority, fields: []},
+    {name: supervisoryAuthorityConcerned, fields: []},
+    {name: crossBorderProcessing, fields: []},
+    {name: relevantAndReasonedObjection, fields: []},
+    {name: informationSocietyService, fields: []},
+    {name: internationalOrganisation, fields: []}
+  ]
+}
+
+inductive{
+  name: GdprLawfulBasis,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: a, fields: []},
+    {name: b, fields: []},
+    {name: c, fields: []},
+    {name: d, fields: []},
+    {name: e, fields: []},
+    {name: f, fields: []}
+  ]
+}
+
+structure{
+  name: Gdpr,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSubjectRight, type: (Option GdprDataSubjectRight)},
+    {name: definedTerm, type: (Option GdprDefinedTerm)},
+    {name: lawfulBasis, type: (Option GdprLawfulBasis)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,32 @@
+\begin{lexlean}{Catalog.FtcEpicConsentOrder}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: FtcEpicConsentOrderOrderPart,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: i, fields: []},
+    {name: iI, fields: []},
+    {name: iII, fields: []},
+    {name: iV, fields: []},
+    {name: v, fields: []},
+    {name: vI, fields: []},
+    {name: vII, fields: []},
+    {name: vIII, fields: []},
+    {name: iX, fields: []},
+    {name: x, fields: []}
+  ]
+}
+
+structure{
+  name: FtcEpicConsentOrder,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: orderPart, type: (Option FtcEpicConsentOrderOrderPart)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

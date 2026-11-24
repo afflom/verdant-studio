@@ -1,0 +1,88 @@
+\begin{lexlean}{Catalog.TcfDeclarations}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: TcfDeclarationsDataCategories,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iPAddresses, fields: []},
+    {name: deviceCharacteristics, fields: []},
+    {name: deviceIdentifiers, fields: []},
+    {name: probabilisticIdentifiers, fields: []},
+    {name: authenticationDerivedIdentifiers, fields: []},
+    {name: browsingAndInteractionData, fields: []},
+    {name: userProvidedData, fields: []},
+    {name: nonPreciseLocationData, fields: []},
+    {name: preciseLocationData, fields: []},
+    {name: u0055u0073u0065u0072u0073u2019u0020u0070u0072u006Fu0066u0069u006Cu0065u0073, fields: []},
+    {name: privacyChoices, fields: []}
+  ]
+}
+
+inductive{
+  name: TcfDeclarationsFeatures,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: matchAndCombineDataFromOtherDataSources, fields: []},
+    {name: linkDifferentDevices, fields: []},
+    {name: identifyDevicesBasedOnInformationTransmittedAutomatically, fields: []}
+  ]
+}
+
+inductive{
+  name: TcfDeclarationsPurposes,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: storeAndOrAccessInformationOnADevice, fields: []},
+    {name: useLimitedDataToSelectAdvertising, fields: []},
+    {name: createProfilesForPersonalisedAdvertising, fields: []},
+    {name: useProfilesToSelectPersonalisedAdvertising, fields: []},
+    {name: createProfilesToPersonaliseContent, fields: []},
+    {name: useProfilesToSelectPersonalisedContent, fields: []},
+    {name: measureAdvertisingPerformance, fields: []},
+    {name: measureContentPerformance, fields: []},
+    {name: understandAudiencesThroughStatisticsOrCombinationsOfDataFromDifferentSources, fields: []},
+    {name: developAndImproveServices, fields: []},
+    {name: useLimitedDataToSelectContent, fields: []}
+  ]
+}
+
+inductive{
+  name: TcfDeclarationsSpecialFeatures,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: usePreciseGeolocationData, fields: []},
+    {name: identifyDevicesBasedOnInformationActivelyRequested, fields: []}
+  ]
+}
+
+inductive{
+  name: TcfDeclarationsSpecialPurposes,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: ensureSecurityPreventAndDetectFraudAndFixErrors, fields: []},
+    {name: deliverAndPresentAdvertisingAndContent, fields: []},
+    {name: saveAndCommunicatePrivacyChoices, fields: []}
+  ]
+}
+
+structure{
+  name: TcfDeclarations,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataCategories, type: (Option TcfDeclarationsDataCategories)},
+    {name: features, type: (Option TcfDeclarationsFeatures)},
+    {name: purposes, type: (Option TcfDeclarationsPurposes)},
+    {name: specialFeatures, type: (Option TcfDeclarationsSpecialFeatures)},
+    {name: specialPurposes, type: (Option TcfDeclarationsSpecialPurposes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

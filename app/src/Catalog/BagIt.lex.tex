@@ -1,0 +1,38 @@
+\begin{lexlean}{Catalog.BagIt}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: BagItBagInfoElement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sourceOrganization, fields: []},
+    {name: organizationAddress, fields: []},
+    {name: contactName, fields: []},
+    {name: contactPhone, fields: []},
+    {name: contactEmail, fields: []},
+    {name: externalDescription, fields: []},
+    {name: baggingDate, fields: []},
+    {name: externalIdentifier, fields: []},
+    {name: bagSize, fields: []},
+    {name: payloadOxum, fields: []},
+    {name: bagGroupIdentifier, fields: []},
+    {name: bagCount, fields: []},
+    {name: internalSenderIdentifier, fields: []},
+    {name: internalSenderDescription, fields: []}
+  ]
+}
+
+structure{
+  name: BagIt,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bagInfoElement, type: (Option BagItBagInfoElement)},
+    {name: bagItVersion, type: (Option Bytes)},
+    {name: tagFileCharacterEncoding, type: (Option Bytes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

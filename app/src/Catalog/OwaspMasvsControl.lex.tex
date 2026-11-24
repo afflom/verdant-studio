@@ -1,0 +1,63 @@
+\begin{lexlean}{Catalog.OwaspMasvsControl}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: OwaspMasvsControlControl,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mASVSSTORAGE1, fields: []},
+    {name: mASVSSTORAGE2, fields: []},
+    {name: mASVSCRYPTO1, fields: []},
+    {name: mASVSCRYPTO2, fields: []},
+    {name: mASVSAUTH1, fields: []},
+    {name: mASVSAUTH2, fields: []},
+    {name: mASVSAUTH3, fields: []},
+    {name: mASVSNETWORK1, fields: []},
+    {name: mASVSNETWORK2, fields: []},
+    {name: mASVSPLATFORM1, fields: []},
+    {name: mASVSPLATFORM2, fields: []},
+    {name: mASVSPLATFORM3, fields: []},
+    {name: mASVSCODE1, fields: []},
+    {name: mASVSCODE2, fields: []},
+    {name: mASVSCODE3, fields: []},
+    {name: mASVSCODE4, fields: []},
+    {name: mASVSRESILIENCE1, fields: []},
+    {name: mASVSRESILIENCE2, fields: []},
+    {name: mASVSRESILIENCE3, fields: []},
+    {name: mASVSRESILIENCE4, fields: []},
+    {name: mASVSPRIVACY1, fields: []},
+    {name: mASVSPRIVACY2, fields: []},
+    {name: mASVSPRIVACY3, fields: []},
+    {name: mASVSPRIVACY4, fields: []}
+  ]
+}
+
+inductive{
+  name: OwaspMasvsControlGroup,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mASVSSTORAGE, fields: []},
+    {name: mASVSCRYPTO, fields: []},
+    {name: mASVSAUTH, fields: []},
+    {name: mASVSNETWORK, fields: []},
+    {name: mASVSPLATFORM, fields: []},
+    {name: mASVSCODE, fields: []},
+    {name: mASVSRESILIENCE, fields: []},
+    {name: mASVSPRIVACY, fields: []}
+  ]
+}
+
+structure{
+  name: OwaspMasvsControl,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: control, type: (Option OwaspMasvsControlControl)},
+    {name: group, type: (Option OwaspMasvsControlGroup)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

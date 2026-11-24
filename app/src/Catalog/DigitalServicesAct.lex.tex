@@ -1,0 +1,59 @@
+\begin{lexlean}{Catalog.DigitalServicesAct}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: DigitalServicesActDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: informationSocietyService, fields: []},
+    {name: recipientOfTheService, fields: []},
+    {name: consumer, fields: []},
+    {name: toOfferServicesInTheUnion, fields: []},
+    {name: substantialConnectionToTheUnion, fields: []},
+    {name: trader, fields: []},
+    {name: intermediaryService, fields: []},
+    {name: illegalContent, fields: []},
+    {name: onlinePlatform, fields: []},
+    {name: onlineSearchEngine, fields: []},
+    {name: disseminationToThePublic, fields: []},
+    {name: distanceContract, fields: []},
+    {name: onlineInterface, fields: []},
+    {name: digitalServicesCoordinatorOfEstablishment, fields: []},
+    {name: digitalServicesCoordinatorOfDestination, fields: []},
+    {name: activeRecipientOfAnOnlinePlatform, fields: []},
+    {name: activeRecipientOfAnOnlineSearchEngine, fields: []},
+    {name: advertisement, fields: []},
+    {name: recommenderSystem, fields: []},
+    {name: contentModeration, fields: []},
+    {name: termsAndConditions, fields: []},
+    {name: personsWithDisabilities, fields: []},
+    {name: commercialCommunication, fields: []},
+    {name: turnover, fields: []}
+  ]
+}
+
+inductive{
+  name: DigitalServicesActRestriction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: a, fields: []},
+    {name: b, fields: []},
+    {name: c, fields: []},
+    {name: d, fields: []}
+  ]
+}
+
+structure{
+  name: DigitalServicesAct,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definedTerm, type: (Option DigitalServicesActDefinedTerm)},
+    {name: restriction, type: (Option DigitalServicesActRestriction)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

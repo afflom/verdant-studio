@@ -1,0 +1,52 @@
+\begin{lexlean}{Catalog.BasicOnlineSafetyExpectations}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: BasicOnlineSafetyExpectationsExpectationSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n6, fields: []},
+    {name: n7, fields: []},
+    {name: n8, fields: []},
+    {name: n8A, fields: []},
+    {name: n8B, fields: []},
+    {name: n9, fields: []},
+    {name: n10, fields: []},
+    {name: n11, fields: []},
+    {name: n12, fields: []},
+    {name: n13, fields: []},
+    {name: n14, fields: []},
+    {name: n15, fields: []},
+    {name: n16, fields: []},
+    {name: n17, fields: []},
+    {name: n18, fields: []},
+    {name: n19, fields: []},
+    {name: n20, fields: []},
+    {name: n21, fields: []}
+  ]
+}
+
+inductive{
+  name: BasicOnlineSafetyExpectationsKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: additionalExpectation, fields: []},
+    {name: coreExpectation, fields: []},
+    {name: expectation, fields: []}
+  ]
+}
+
+structure{
+  name: BasicOnlineSafetyExpectations,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: expectationSection, type: (Option BasicOnlineSafetyExpectationsExpectationSection)},
+    {name: kind, type: (Option BasicOnlineSafetyExpectationsKind)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
