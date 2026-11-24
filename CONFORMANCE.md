@@ -171,6 +171,16 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `SCRUM-GUIDE-2020` | The 2020 Scrum Guide: the Scrum Team and its three accountabilities, the five events, the three artifacts and their commitments, the values and the empirical pillars. Index row A07. |  |
 | `WIKIPEDIA-THREE-ACT-STRUCTURE` | The three-act structure: setup, confrontation and resolution, with the inciting incident, plot points and climax. Index row C02. |  |
 | `WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION` | The twelve basic principles of animation introduced by Ollie Johnston and Frank Thomas in The Illusion of Life (1981). Index row E01. |  |
+| `ESRB-RATINGS-GUIDE` | The ESRB rating categories, content descriptors and interactive elements. Index row Q01. |  |
+| `IGDA-GAME-CREDITING-GUIDE-10.1` | The IGDA crediting rules: the inclusion, attribution, usage and methodology rule sets and each rule by identifier. Index row V06. |  |
+| `MICROSOFT-TMT-STRIDE` | The STRIDE threat categories the Microsoft Threat Modeling Tool uses: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service and Elevation of Privilege. Index row T03. |  |
+| `NIST-CSWP-29-CSF-2.0` | The CSF 2.0 Core: its six Functions and their Categories. Index row T05. |  |
+| `NIST-SP-800-218-1.1` | The SSDF practice groups (PO, PS, PW, RV) and their practices. Index row T04. |  |
+| `PEGI-LABELS` | The PEGI age labels, content descriptors and interactive risk descriptors. Index row Q02. |  |
+| `SLSA-1.1-LEVELS` | The SLSA v1.1 levels and tracks: the Build track and its levels L0 to L3. Index row T09. |  |
+| `USK-AGE-RATINGS` | The five USK age ratings under section 14 JuSchG, the descriptors of the reasons for a rating and the labels for additional functions. Index row Q04. |  |
+| `W3C-SOSA-2017` | The SOSA core of the W3C/OGC Semantic Sensor Network ontology in its official Turtle form: observations, actuations, samplings, sensors, actuators, samplers, features of interest and properties. |  |
+| `W3C-WEBAUTHN-3-20260825` | The WebAuthn Level 3 API: its WebIDL dictionaries and enumerations for creating and asserting public key credentials (passkeys). Index row T12. |  |
 
 ## Claims that are not conformance IDs
 
