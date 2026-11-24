@@ -1,0 +1,29 @@
+\begin{lexlean}{Catalog.BwfBroadcastAudioExtension}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: BwfBroadcastAudioExtension,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: Bytes},
+    {name: originator, type: Bytes},
+    {name: originatorReference, type: Bytes},
+    {name: originationDate, type: Bytes},
+    {name: originationTime, type: Bytes},
+    {name: timeReferenceLow, type: Nat},
+    {name: timeReferenceHigh, type: Nat},
+    {name: version, type: Nat},
+    {name: uMID, type: (List Nat)},
+    {name: loudnessValue, type: Int},
+    {name: loudnessRange, type: Int},
+    {name: maxTruePeakLevel, type: Int},
+    {name: maxMomentaryLoudness, type: Int},
+    {name: maxShortTermLoudness, type: Int},
+    {name: reserved, type: (List Nat)},
+    {name: codingHistory, type: Bytes}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

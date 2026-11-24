@@ -1,0 +1,89 @@
+\begin{lexlean}{Catalog.IgdaGameCreditingGuide}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CreditOrder,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: creativeAndTechnicalInternalStudioCredits, fields: []},
+    {name: nonCreativeAndNonTechnicalInternalStudioCredits, fields: []},
+    {name: externalCredits, fields: []}
+  ]
+}
+
+structure{
+  name: Credit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: firstName, type: Bytes},
+    {name: lastName, type: Bytes},
+    {name: role, type: Bytes},
+    {name: lead, type: (Option Bool)},
+    {name: creditOrder, type: (Option CreditOrder)}
+  ]
+}
+
+inductive{
+  name: IgdaGameCreditingGuideRuleSet,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: inclusion, fields: []},
+    {name: attribution, fields: []},
+    {name: usage, fields: []},
+    {name: methodology, fields: []}
+  ]
+}
+
+inductive{
+  name: IgdaGameCreditingGuideRule,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iNCL1, fields: []},
+    {name: iNCL2, fields: []},
+    {name: iNCL3, fields: []},
+    {name: iNCL4, fields: []},
+    {name: iNCL5, fields: []},
+    {name: aTTR1, fields: []},
+    {name: aTTR2, fields: []},
+    {name: aTTR3, fields: []},
+    {name: aTTR4, fields: []},
+    {name: aTTR5, fields: []},
+    {name: aTTR6, fields: []},
+    {name: aTTR7, fields: []},
+    {name: aTTR8, fields: []},
+    {name: aTTR9, fields: []},
+    {name: aTTR10, fields: []},
+    {name: aTTR11, fields: []},
+    {name: aTTR12, fields: []},
+    {name: aTTR13, fields: []},
+    {name: uSAG1, fields: []},
+    {name: uSAG2, fields: []},
+    {name: uSAG3, fields: []},
+    {name: uSAG4, fields: []},
+    {name: mETH1, fields: []},
+    {name: mETH2, fields: []},
+    {name: mETH3, fields: []},
+    {name: mETH4, fields: []},
+    {name: mETH5, fields: []},
+    {name: mETH6, fields: []},
+    {name: mETH7, fields: []}
+  ]
+}
+
+structure{
+  name: IgdaGameCreditingGuide,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ruleSet, type: (Option IgdaGameCreditingGuideRuleSet)},
+    {name: rule, type: (Option IgdaGameCreditingGuideRule)},
+    {name: credit, type: (Option Credit)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,40 @@
+\begin{lexlean}{Catalog.BehaviorTreeNodeType}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: BehaviorTreeNodeCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: controlFlowNode, fields: []},
+    {name: executionNode, fields: []}
+  ]
+}
+
+inductive{
+  name: BehaviorTreeReturnStatus,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: running, fields: []},
+    {name: success, fields: []},
+    {name: failure, fields: []}
+  ]
+}
+
+inductive{
+  name: BehaviorTreeNodeType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: []},
+    {name: fallback, fields: []},
+    {name: parallel, fields: []},
+    {name: decorator, fields: []},
+    {name: action, fields: []},
+    {name: condition, fields: []}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

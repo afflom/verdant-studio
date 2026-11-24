@@ -1,0 +1,59 @@
+\begin{lexlean}{Catalog.PegiRating}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: PegiRatingAgeLabel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: pEGI3, fields: []},
+    {name: pEGI7, fields: []},
+    {name: pEGI12, fields: []},
+    {name: pEGI16, fields: []},
+    {name: pEGI18, fields: []}
+  ]
+}
+
+inductive{
+  name: PegiRatingContentDescriptorsItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: violence, fields: []},
+    {name: badLanguage, fields: []},
+    {name: fear, fields: []},
+    {name: horror, fields: []},
+    {name: gambling, fields: []},
+    {name: sex, fields: []},
+    {name: drugs, fields: []},
+    {name: discrimination, fields: []}
+  ]
+}
+
+inductive{
+  name: PegiRatingInteractiveRiskDescriptorsItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: inGamePurchases, fields: []},
+    {name: paidRandomItems, fields: []},
+    {name: timeLimitedOffers, fields: []},
+    {name: cryptocurrency, fields: []},
+    {name: pressureToPlay, fields: []},
+    {name: unrestrictedCommunication, fields: []}
+  ]
+}
+
+structure{
+  name: PegiRating,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ageLabel, type: PegiRatingAgeLabel},
+    {name: contentDescriptors, type: (Option (List PegiRatingContentDescriptorsItem))},
+    {name: interactiveRiskDescriptors, type: (Option (List PegiRatingInteractiveRiskDescriptorsItem))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

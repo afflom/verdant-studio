@@ -1,0 +1,59 @@
+\begin{lexlean}{Catalog.NistCsf2Core}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: NistCsf2CoreFunction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gV, fields: []},
+    {name: iD, fields: []},
+    {name: pR, fields: []},
+    {name: dE, fields: []},
+    {name: rS, fields: []},
+    {name: rC, fields: []}
+  ]
+}
+
+inductive{
+  name: NistCsf2CoreCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gVOC, fields: []},
+    {name: gVRM, fields: []},
+    {name: gVRR, fields: []},
+    {name: gVPO, fields: []},
+    {name: gVOV, fields: []},
+    {name: gVSC, fields: []},
+    {name: iDAM, fields: []},
+    {name: iDRA, fields: []},
+    {name: iDIM, fields: []},
+    {name: pRAA, fields: []},
+    {name: pRAT, fields: []},
+    {name: pRDS, fields: []},
+    {name: pRPS, fields: []},
+    {name: pRIR, fields: []},
+    {name: dECM, fields: []},
+    {name: dEAE, fields: []},
+    {name: rSMA, fields: []},
+    {name: rSAN, fields: []},
+    {name: rSCO, fields: []},
+    {name: rSMI, fields: []},
+    {name: rCRP, fields: []},
+    {name: rCCO, fields: []}
+  ]
+}
+
+structure{
+  name: NistCsf2Core,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: function, type: NistCsf2CoreFunction},
+    {name: category, type: NistCsf2CoreCategory}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,36 @@
+\begin{lexlean}{Catalog.SlsaLevels}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SlsaLevelsTrack,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: build, fields: []}
+  ]
+}
+
+inductive{
+  name: SlsaLevelsBuildLevel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: buildL0, fields: []},
+    {name: buildL1, fields: []},
+    {name: buildL2, fields: []},
+    {name: buildL3, fields: []}
+  ]
+}
+
+structure{
+  name: SlsaLevels,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: track, type: SlsaLevelsTrack},
+    {name: buildLevel, type: SlsaLevelsBuildLevel}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

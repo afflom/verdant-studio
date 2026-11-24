@@ -1,0 +1,58 @@
+\begin{lexlean}{Catalog.ItuRBt2100Signal}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Bt2100TransferFunction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: perceptualQuantization, fields: []},
+    {name: hybridLogGamma, fields: []}
+  ]
+}
+
+inductive{
+  name: Bt2100SignalFormat,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: rGB, fields: []},
+    {name: nonConstantLuminanceYCBCR, fields: []},
+    {name: constantIntensityICTCP, fields: []}
+  ]
+}
+
+inductive{
+  name: Bt2100SignalRange,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: narrowRange, fields: []},
+    {name: fullRange, fields: []}
+  ]
+}
+
+structure{
+  name: ItuRBt2100SignalContainerPixelCount,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: horizontal, type: Int},
+    {name: vertical, type: Int}
+  ]
+}
+
+structure{
+  name: ItuRBt2100Signal,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: containerPixelCount, type: ItuRBt2100SignalContainerPixelCount},
+    {name: transferFunction, type: Bt2100TransferFunction},
+    {name: signalFormat, type: Bt2100SignalFormat},
+    {name: range, type: Bt2100SignalRange}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
