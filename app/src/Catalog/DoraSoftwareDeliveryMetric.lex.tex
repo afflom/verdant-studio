@@ -1,0 +1,28 @@
+\begin{lexlean}{Catalog.DoraSoftwareDeliveryMetric}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: DoraDeliveryFactor,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: throughput, fields: []},
+    {name: instability, fields: []}
+  ]
+}
+
+inductive{
+  name: DoraSoftwareDeliveryMetric,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: changeLeadTime, fields: []},
+    {name: deploymentFrequency, fields: []},
+    {name: failedDeploymentRecoveryTime, fields: []},
+    {name: changeFailRate, fields: []},
+    {name: deploymentReworkRate, fields: []}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,1 @@
+{"$defs":{"dora-delivery-factor":{"enum":["Throughput","Instability"],"title":"Software delivery performance factor"}},"$schema":"https://json-schema.org/draft/2020-12/schema","enum":["Change lead time","Deployment frequency","Failed deployment recovery time","Change fail rate","Deployment rework rate"],"title":"Software delivery performance metric"}
