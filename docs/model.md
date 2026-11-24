@@ -179,3 +179,4 @@ Each construct and the citation that admits it.
 - `Catalog.ClassIndClassificacaoIndicativa`: std BR-PORTARIA-MJSP-502-2021 row Q08
 - `Catalog.IarcGenericRating`: std IARC-RATINGS-DEFINITIONS row Q03
 - `Catalog.GracRating`: std IARC-RATINGS-DEFINITIONS row Q06
+- `Catalog.JpPremiumsRepresentationsAct`: std JP-ACT-134-1962 row U05
