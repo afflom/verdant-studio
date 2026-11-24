@@ -1,0 +1,79 @@
+\begin{lexlean}{Catalog.Iso15288SystemLifeCycleProcess}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso15288SystemLifeCycleProcessAgreementProcessesProcess,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: acquisitionProcess, fields: []},
+    {name: supplyProcess, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso15288SystemLifeCycleProcessOrganizationalProjectEnablingProcessesProcess,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: lifeCycleModelManagementProcess, fields: []},
+    {name: infrastructureManagementProcess, fields: []},
+    {name: portfolioManagementProcess, fields: []},
+    {name: humanResourceManagementProcess, fields: []},
+    {name: qualityManagementProcess, fields: []},
+    {name: knowledgeManagementProcess, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso15288SystemLifeCycleProcessTechnicalManagementProcessesProcess,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: projectPlanningProcess, fields: []},
+    {name: projectAssessmentAndControlProcess, fields: []},
+    {name: decisionManagementProcess, fields: []},
+    {name: riskManagementProcess, fields: []},
+    {name: configurationManagementProcess, fields: []},
+    {name: informationManagementProcess, fields: []},
+    {name: measurementProcess, fields: []},
+    {name: qualityAssuranceProcess, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso15288SystemLifeCycleProcessTechnicalProcessesProcess,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: businessOrMissionAnalysisProcess, fields: []},
+    {name: stakeholderNeedsAndRequirementsDefinitionProcess, fields: []},
+    {name: systemRequirementsDefinitionProcess, fields: []},
+    {name: systemArchitectureDefinitionProcess, fields: []},
+    {name: designDefinitionProcess, fields: []},
+    {name: systemAnalysisProcess, fields: []},
+    {name: implementationProcess, fields: []},
+    {name: integrationProcess, fields: []},
+    {name: verificationProcess, fields: []},
+    {name: transitionProcess, fields: []},
+    {name: validationProcess, fields: []},
+    {name: operationProcess, fields: []},
+    {name: maintenanceProcess, fields: []},
+    {name: disposalProcess, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso15288SystemLifeCycleProcess,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: agreementProcesses, fields: [Iso15288SystemLifeCycleProcessAgreementProcessesProcess]},
+    {name: organizationalProjectEnablingProcesses, fields: [Iso15288SystemLifeCycleProcessOrganizationalProjectEnablingProcessesProcess]},
+    {name: technicalManagementProcesses, fields: [Iso15288SystemLifeCycleProcessTechnicalManagementProcessesProcess]},
+    {name: technicalProcesses, fields: [Iso15288SystemLifeCycleProcessTechnicalProcessesProcess]}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

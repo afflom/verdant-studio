@@ -1,0 +1,1 @@
+{"$comment":"inferred (all-source, Alex 2026-11-24): HCIGAMES-HEXAD-SCALE-EN, scale table","$schema":"https://json-schema.org/draft/2020-12/schema","description":"One of the six Hexad user types.","enum":["Philanthropist","Socialiser","Free Spirit","Achiever","Disruptor","Player"],"title":"Gamification user type (Hexad)"}
