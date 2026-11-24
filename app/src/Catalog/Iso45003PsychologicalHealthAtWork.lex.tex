@@ -1,0 +1,78 @@
+\begin{lexlean}{Catalog.Iso45003PsychologicalHealthAtWork}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso45003PsychologicalHealthAtWorkClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4ContextOfTheOrganization, fields: []},
+    {name: n41UnderstandingTheOrganizationAndItsContext, fields: []},
+    {name: n411General, fields: []},
+    {name: n412ExternalIssues, fields: []},
+    {name: n413InternalIssues, fields: []},
+    {name: n42UnderstandingTheNeedsAndExpectationsOfWorkersAndOtherInterestedParties, fields: []},
+    {name: n43DeterminingTheScopeOfTheOHSManagementSystem, fields: []},
+    {name: n44OHSManagementSystem, fields: []},
+    {name: n5LeadershipAndWorkerParticipation, fields: []},
+    {name: n51LeadershipAndCommitment, fields: []},
+    {name: n52OHSPolicy, fields: []},
+    {name: n53OrganizationalRolesResponsibilitiesAndAuthorities, fields: []},
+    {name: n54ConsultationAndParticipationOfWorkers, fields: []},
+    {name: n6Planning, fields: []},
+    {name: n61ActionsToAddressRisksAndOpportunities, fields: []},
+    {name: n611General, fields: []},
+    {name: n612HazardIdentificationAndAssessmentOfRisksAndOpportunities, fields: []},
+    {name: n62ObjectivesToAddressPsychosocialRisk, fields: []},
+    {name: n7Support, fields: []},
+    {name: n71Resources, fields: []},
+    {name: n72Competence, fields: []},
+    {name: n73Awareness, fields: []},
+    {name: n74Communication, fields: []},
+    {name: n75DocumentedInformation, fields: []},
+    {name: n751General, fields: []},
+    {name: n752Confidentiality, fields: []},
+    {name: n8Operation, fields: []},
+    {name: n81OperationalPlanningAndControl, fields: []},
+    {name: n811General, fields: []},
+    {name: n812EliminatingHazardsReducingOHSRisksAndPromotingWellBeingAtWork, fields: []},
+    {name: n813ManagementOfChange, fields: []},
+    {name: n814ProcurementContractingAndOutsourcing, fields: []},
+    {name: n82EmergencyPreparednessAndResponse, fields: []},
+    {name: n83RehabilitationAndReturnToWork, fields: []},
+    {name: n9PerformanceEvaluation, fields: []},
+    {name: n91MonitoringMeasurementAnalysisAndPerformanceEvaluation, fields: []},
+    {name: n92InternalAudit, fields: []},
+    {name: n93ManagementReview, fields: []},
+    {name: n10Improvement, fields: []},
+    {name: n101General, fields: []},
+    {name: n102IncidentNonconformityAndCorrectiveAction, fields: []},
+    {name: n103ContinualImprovement, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso45003PsychologicalHealthAtWorkTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: psychosocialRisk, fields: []},
+    {name: wellBeingAtWork, fields: []}
+  ]
+}
+
+structure{
+  name: Iso45003PsychologicalHealthAtWork,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso45003PsychologicalHealthAtWorkClause)},
+    {name: term, type: (Option Iso45003PsychologicalHealthAtWorkTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -45,10 +45,10 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **B17** Game Balance (Game design theory and conceptual models), not reached from any origin: exactMatch SCHREIBER-ROMERO-GAME-BALANCE-2021 (staged)
 - **B18** Kishotenketsu four-act level/mechanic introduction (Game design theory and conceptual models), not reached from any origin: no mapping yet
 - **Z01** The Image of the City (paths, edges, districts, nodes, landmarks) (Level, world, and spatial design), not reached from any origin: exactMatch LYNCH-IMAGE-OF-THE-CITY-1960 (staged)
-- **Z02** An Architectural Approach to Level Design (Level, world, and spatial design), not reached from any origin: exactMatch TOTTEN-ARCHITECTURAL-LEVEL-DESIGN-2E (staged)
-- **Z03** Space syntax (Level, world, and spatial design), not reached from any origin: exactMatch HILLIER-HANSON-SOCIAL-LOGIC-OF-SPACE-1984 (staged)
+- **Z02** An Architectural Approach to Level Design (Level, world, and spatial design): exactMatch TOTTEN-ARCHITECTURAL-LEVEL-DESIGN-2E (staged)
+- **Z03** Space syntax (Level, world, and spatial design): exactMatch HILLIER-HANSON-SOCIAL-LOGIC-OF-SPACE-1984 (staged)
 - **Z04** Design patterns in FPS levels (Level, world, and spatial design), not reached from any origin: exactMatch HULLETT-WHITEHEAD-FPS-LEVEL-PATTERNS-2010 (staged)
-- **Z05** Level Design: Processes and Experiences / Level Design: Concept, Theory, and Practice (Level, world, and spatial design), not reached from any origin: narrowMatch TOTTEN-LEVEL-DESIGN-PROCESSES-2017 (staged)
+- **Z05** Level Design: Processes and Experiences / Level Design: Concept, Theory, and Practice (Level, world, and spatial design): narrowMatch TOTTEN-LEVEL-DESIGN-PROCESSES-2017 (staged)
 - **Z06** Prospect-refuge theory (Level, world, and spatial design), not reached from any origin: exactMatch APPLETON-EXPERIENCE-OF-LANDSCAPE-REV (staged)
 - **Z07** Gameplay metrics and blockout conventions (player capsule, jump/cover heights, grid units) (Level, world, and spatial design), not reached from any origin: exactMatch LEVEL-DESIGN-BOOK-METRICS (staged)
 - **Z08** The Level Design Book (Level, world, and spatial design), not reached from any origin: exactMatch LEVEL-DESIGN-BOOK (staged)
@@ -264,7 +264,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **T05** NIST Cybersecurity Framework 2.0 (Security, anti-cheat, and supply chain): exactMatch NIST-CSWP-29-CSF-2.0 (derived from its citation)
 - **T06** ISO/IEC 27001 Information security management (Security, anti-cheat, and supply chain): narrowMatch ISO-IEC-27001-2022-PREVIEW (derived from its citation); exactMatch ISO-IEC-27001-2022 (staged)
 - **T07** SOC 2 (Security, anti-cheat, and supply chain), not reached from any origin: exactMatch AICPA-TSC-2017-POF-2022 (staged)
-- **T08** PCI DSS v4.0 (Security, anti-cheat, and supply chain), not reached from any origin: exactMatch PCI-DSS-4.0.1 (staged)
+- **T08** PCI DSS v4.0 (Security, anti-cheat, and supply chain): narrowMatch PCI-DSS-4.0.1-PDF (derived from its citation); exactMatch PCI-DSS-4.0.1 (staged)
 - **T09** SBOM: SPDX (ISO/IEC 5962) and CycloneDX (ECMA-424); SLSA (Security, anti-cheat, and supply chain): narrowMatch SLSA-1.1-LEVELS (derived from its citation); narrowMatch ECMA-424-CYCLONEDX-1.6 (staged); narrowMatch SPDX-3.0.1 (staged)
 - **T10** CVSS v4.0 and CVE (Security, anti-cheat, and supply chain), not reached from any origin: narrowMatch CVE-RECORD-FORMAT-5.2.0 (staged); narrowMatch FIRST-CVSS-4.0 (staged)
 - **T11** Anti-cheat and DRM systems (Easy Anti-Cheat, BattlEye, Riot Vanguard, Denuvo, VAC) (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
@@ -294,10 +294,10 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **W03** ISO/IEC 20000-1 Service management (Live operations, reliability, support, and analytics): narrowMatch ISO-IEC-20000-1-2018-PREVIEW (derived from its citation); exactMatch ISO-IEC-20000-1-2018 (staged)
 - **W04** OpenTelemetry (Live operations, reliability, support, and analytics): exactMatch OTEL-SPEC-1.40.0-TRACE-API (derived from its citation)
 - **W05** OpenFeature (Live operations, reliability, support, and analytics): exactMatch OPENFEATURE-SPEC-0.9.0 (staged)
-- **W06** Game Analytics: Maximizing the Value of Player Data (Live operations, reliability, support, and analytics), not reached from any origin: exactMatch SPRINGER-GAME-ANALYTICS-2013 (staged)
+- **W06** Game Analytics: Maximizing the Value of Player Data (Live operations, reliability, support, and analytics): exactMatch SPRINGER-GAME-ANALYTICS-2013 (staged)
 - **W07** Live-service KPIs (DAU/MAU, retention D1/D7/D30, ARPDAU, LTV, conversion, churn) (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **W08** Mobile attribution: Apple SKAdNetwork / AdAttributionKit; Android Privacy Sandbox (Live operations, reliability, support, and analytics), not reached from any origin: narrowMatch APPLE-ADATTRIBUTIONKIT (staged); narrowMatch APPLE-SKADNETWORK (staged); narrowMatch GOOGLE-PRIVACY-SANDBOX-ANDROID-ATTRIBUTION (staged)
-- **W09** ISO 10002 complaints handling; ISO 18295 customer contact centres (Live operations, reliability, support, and analytics): narrowMatch ISO-10002-2018-PREVIEW (derived from its citation); narrowMatch ISO-18295-1-2017-PREVIEW (derived from its citation); narrowMatch ISO-10002-2018 (staged); narrowMatch ISO-18295-1-2017 (staged); narrowMatch ISO-18295-2-2017 (staged)
+- **W09** ISO 10002 complaints handling; ISO 18295 customer contact centres (Live operations, reliability, support, and analytics): narrowMatch ISO-10002-2018-PREVIEW (derived from its citation); narrowMatch ISO-18295-1-2017-PREVIEW (derived from its citation); narrowMatch ISO-18295-2-2017-PREVIEW (derived from its citation); narrowMatch ISO-10002-2018 (staged); narrowMatch ISO-18295-1-2017 (staged); narrowMatch ISO-18295-2-2017 (staged)
 - **W10** Games-as-a-service / live-ops models (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **W11** Recommended game events schema (Google Analytics 4 / Firebase) (Live operations, reliability, support, and analytics): exactMatch GOOGLE-GA4-RECOMMENDED-EVENTS (derived from its citation)
 - **W12** Platform patching and content delivery rules (patch size, delta patching, day-one patch policies) (Live operations, reliability, support, and analytics), not reached from any origin: narrowMatch STEAMWORKS-UPLOADING (staged)
@@ -305,7 +305,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **X02** SPDX License List and OSI-approved licenses (Business, IP, labor, and sustainability): narrowMatch SPDX-LICENSE-LIST-3.29.0 (staged)
 - **X03** Engine and middleware license terms (Unreal EULA, Unity terms) (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch UNITY-TERMS-OF-SERVICE (staged)
 - **X04** IGDA Developer Satisfaction Survey and quality-of-life guidance (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch IGDA-DSS-2023 (staged)
-- **X05** ISO 45003 Psychological health and safety at work (Business, IP, labor, and sustainability), not reached from any origin: exactMatch ISO-45003-2021 (staged)
+- **X05** ISO 45003 Psychological health and safety at work (Business, IP, labor, and sustainability): narrowMatch ISO-45003-2021-PREVIEW (derived from its citation); exactMatch ISO-45003-2021 (staged)
 - **X06** Playing for the Planet Alliance (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **X07** Software Carbon Intensity (ISO/IEC 21031:2024) (Business, IP, labor, and sustainability): exactMatch GSF-SCI-1.1 (derived from its citation)
 - **X08** GHG Protocol / ISO 14064 (Business, IP, labor, and sustainability): narrowMatch GHG-PROTOCOL-CORPORATE-REVISED (staged)

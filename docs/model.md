@@ -355,3 +355,10 @@ Each construct and the citation that admits it.
 - `Catalog.SoftwareTestingTestDocumentation`: std ISO-IEC-IEEE-29119-3-2021-PREVIEW row O03
 - `Catalog.SoftwareTestingTestProcesses`: std ISO-IEC-IEEE-29119-2-2021-PREVIEW row O03
 - `Catalog.SoftwareTestingTestTechniques`: std ISO-IEC-IEEE-29119-4-2021-PREVIEW row O03
+- `Catalog.ArchitecturalLevelDesignBook`: std TOTTEN-ARCHITECTURAL-LEVEL-DESIGN-2E row Z02
+- `Catalog.GameAnalyticsBook`: std SPRINGER-GAME-ANALYTICS-2013 row W06
+- `Catalog.Iso18295ContactCentreClient`: std ISO-18295-2-2017-PREVIEW row W09
+- `Catalog.Iso45003PsychologicalHealthAtWork`: std ISO-45003-2021-PREVIEW row X05
+- `Catalog.LevelDesignProcessesBook`: std TOTTEN-LEVEL-DESIGN-PROCESSES-2017 row Z05
+- `Catalog.PciDss`: std PCI-DSS-4.0.1-PDF row T08
+- `Catalog.SocialLogicOfSpaceBook`: std HILLIER-HANSON-SOCIAL-LOGIC-OF-SPACE-1984 row Z03

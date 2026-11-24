@@ -1,0 +1,49 @@
+\begin{lexlean}{Catalog.PciDss}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: PciDssGoal,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: buildAndMaintainASecureNetworkAndSystems, fields: []},
+    {name: protectAccountData, fields: []},
+    {name: maintainAVulnerabilityManagementProgram, fields: []},
+    {name: implementStrongAccessControlMeasures, fields: []},
+    {name: regularlyMonitorAndTestNetworks, fields: []},
+    {name: maintainAnInformationSecurityPolicy, fields: []}
+  ]
+}
+
+inductive{
+  name: PciDssPrincipalRequirement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: installAndMaintainNetworkSecurityControls, fields: []},
+    {name: applySecureConfigurationsToAllSystemComponents, fields: []},
+    {name: protectStoredAccountData, fields: []},
+    {name: protectCardholderDataWithStrongCryptographyDuringTransmissionOverOpenPublicNetworks, fields: []},
+    {name: protectAllSystemsAndNetworksFromMaliciousSoftware, fields: []},
+    {name: developAndMaintainSecureSystemsAndSoftware, fields: []},
+    {name: restrictAccessToSystemComponentsAndCardholderDataByBusinessNeedToKnow, fields: []},
+    {name: identifyUsersAndAuthenticateAccessToSystemComponents, fields: []},
+    {name: restrictPhysicalAccessToCardholderData, fields: []},
+    {name: logAndMonitorAllAccessToSystemComponentsAndCardholderData, fields: []},
+    {name: testSecurityOfSystemsAndNetworksRegularly, fields: []},
+    {name: supportInformationSecurityWithOrganizationalPoliciesAndPrograms, fields: []}
+  ]
+}
+
+structure{
+  name: PciDss,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: goal, type: (Option PciDssGoal)},
+    {name: principalRequirement, type: (Option PciDssPrincipalRequirement)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
