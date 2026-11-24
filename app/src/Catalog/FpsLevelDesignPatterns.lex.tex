@@ -1,0 +1,59 @@
+\begin{lexlean}{Catalog.FpsLevelDesignPatterns}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: FpsLevelDesignPatternsPattern,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sniperLocation, fields: []},
+    {name: gallery, fields: []},
+    {name: chokePoint, fields: []},
+    {name: arena, fields: []},
+    {name: stronghold, fields: []},
+    {name: turret, fields: []},
+    {name: vehicleSection, fields: []},
+    {name: splitLevel, fields: []},
+    {name: hiddenArea, fields: []},
+    {name: flankingRoute, fields: []}
+  ]
+}
+
+inductive{
+  name: FpsLevelDesignPatternsPatternCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: patternsForPositionalAdvantage, fields: []},
+    {name: patternsForLargeScaleCombat, fields: []},
+    {name: patternsForAlternateGameplay, fields: []},
+    {name: patternsForAlternateRoutes, fields: []}
+  ]
+}
+
+inductive{
+  name: FpsLevelDesignPatternsPatternField,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: description, fields: []},
+    {name: affordances, fields: []},
+    {name: consequences, fields: []},
+    {name: relationships, fields: []},
+    {name: examples, fields: []}
+  ]
+}
+
+structure{
+  name: FpsLevelDesignPatterns,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: pattern, type: (Option FpsLevelDesignPatternsPattern)},
+    {name: patternCategory, type: (Option FpsLevelDesignPatternsPatternCategory)},
+    {name: patternField, type: (Option FpsLevelDesignPatternsPatternField)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
