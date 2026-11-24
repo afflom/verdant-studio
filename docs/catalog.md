@@ -53,26 +53,26 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **Z07** Gameplay metrics and blockout conventions (player capsule, jump/cover heights, grid units) (Level, world, and spatial design), not reached from any origin: no mapping yet
 - **Z08** The Level Design Book (Level, world, and spatial design), not reached from any origin: no mapping yet
 - **C01** Monomyth / Hero's Journey (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
-- **C02** Three-act structure and Freytag's pyramid (Narrative, writing, and interactive story): exactMatch WIKIPEDIA-THREE-ACT-STRUCTURE (derived from its citation)
+- **C02** Three-act structure and Freytag's pyramid (Narrative, writing, and interactive story): narrowMatch WIKIPEDIA-THREE-ACT-STRUCTURE (staged)
 - **C03** Interactive Digital Narrative: System-Process-Product (SPP) model (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C04** Branching narrative structures (branch-and-bottleneck, quality-based, storylets, hub) (Narrative, writing, and interactive story): exactMatch ASHWELL-STANDARD-PATTERNS-2015 (derived from its citation)
-- **C05** ink narrative scripting language (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
-- **C06** Yarn Spinner (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
-- **C07** Twee 3 specification (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
+- **C05** ink narrative scripting language (Narrative, writing, and interactive story), not reached from any origin: exactMatch INKLE-INK-JSON-1.2.1 (staged)
+- **C06** Yarn Spinner (Narrative, writing, and interactive story), not reached from any origin: exactMatch YARNSPINNER-PARSER-3.3.1 (staged)
+- **C07** Twee 3 specification (Narrative, writing, and interactive story), not reached from any origin: exactMatch IFTF-TWEE-3.0.2 (staged)
 - **C08** articy:draft data model (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C09** Screenplay format (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C10** IGDA Game Writing SIG resources (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C11** Game design as narrative architecture (environmental storytelling) (Narrative, writing, and interactive story): exactMatch JENKINS-NARRATIVE-ARCHITECTURE-2004 (derived from its citation)
 - **C12** Morphology of the Folktale (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C13** Transmedia storytelling (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
-- **D01** OpenUSD and AOUSD Core Specification 1.0 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D02** glTF 2.0 (ISO/IEC 12113:2022) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
+- **D01** OpenUSD and AOUSD Core Specification 1.0 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch OPENUSD-USD-SCHEMA-26.11.1 (staged)
+- **D02** glTF 2.0 (ISO/IEC 12113:2022) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-GLTF-2.0 (staged)
 - **D03** FBX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D04** Alembic (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D05** OpenVDB (Visual art, 3D content, materials, and asset interchange): exactMatch ASWF-OPENVDB-TYPES-14.0.0 (derived from its citation)
-- **D06** MaterialX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D07** OpenPBR Surface (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D08** Physically based shading: Disney principled BRDF (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
+- **D06** MaterialX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-MATERIALX-STDLIB-1.39.5 (staged)
+- **D07** OpenPBR Surface (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-OPENPBR-1.1.2 (staged)
+- **D08** Physically based shading: Disney principled BRDF (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch WDAS-DISNEY-BRDF-2012 (staged)
 - **D09** NVIDIA MDL (Material Definition Language) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D10** Open Shading Language (OSL) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D11** KTX 2.0 + Basis Universal (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
