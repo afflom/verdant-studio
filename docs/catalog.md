@@ -110,27 +110,27 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G05** WebGPU and WGSL (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch W3C-WEBGPU-20261116 (staged); narrowMatch W3C-WGSL-20261106 (staged)
 - **G06** Console graphics APIs (GNM/AGC, NVN) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G07** sRGB (IEC 61966-2-1) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G08** ITU-R BT.709, BT.2020, BT.2100 (PQ/HLG) (Rendering, graphics APIs, color, and display): exactMatch ITU-R-BT-2100-3 (derived from its citation)
+- **G08** ITU-R BT.709, BT.2020, BT.2100 (PQ/HLG) (Rendering, graphics APIs, color, and display): narrowMatch ITU-R-BT-2100-3 (staged)
 - **G09** SMPTE ST 2084 (PQ) and HDR10 / HDR10+ / Dolby Vision (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G10** HGIG HDR gaming guidelines (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G11** ACES (Academy Color Encoding System) 2.0 (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G12** OpenColorIO (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G13** OpenXR (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G14** WebXR Device API (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
+- **G11** ACES (Academy Color Encoding System) 2.0 (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch AMPAS-ACES-2.0-OUTPUT-TRANSFORM (staged)
+- **G12** OpenColorIO (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 (staged)
+- **G13** OpenXR (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch KHRONOS-OPENXR-REGISTRY-1.1.65 (staged)
+- **G14** WebXR Device API (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch W3C-WEBXR-20261109 (staged)
 - **G15** ISO 9241-392 Ergonomics of stereoscopic images (visual fatigue) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G16** HDMI 2.1 (VRR, ALLM) and VESA Adaptive-Sync / ClearMR (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **H01** C++ (ISO/IEC 14882) (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H02** C# (ECMA-334 / ISO/IEC 23270) and CLI (ECMA-335) (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H03** IEEE 754 floating-point arithmetic (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H04** WebAssembly (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
-- **H05** Lua (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H05** Lua (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch LUA-5.5.1 (staged)
 - **H06** Game Engine Architecture (reference model) (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
-- **H07** Entity Component System (ECS) / Data-Oriented Design (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H07** Entity Component System (ECS) / Data-Oriented Design (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch FLECS-ECS-FAQ (staged)
 - **H08** Game Programming Patterns (Engine, runtime, languages, and software engineering): exactMatch NYSTROM-GAME-PROGRAMMING-PATTERNS (derived from its citation)
 - **H09** Engine coding standards (Epic C++ Coding Standard, Unity C# style) (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
-- **H10** USB HID usage tables / SDL GameController DB / Microsoft GameInput (Engine, runtime, languages, and software engineering): exactMatch USB-HID-HUT-1.6 (derived from its citation)
-- **H11** Physics middleware (Havok, PhysX, Jolt, Chaos) and USD Physics schema (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
-- **H12** Version control: Perforce Helix Core, Git + Git LFS, Unity Version Control (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H10** USB HID usage tables / SDL GameController DB / Microsoft GameInput (Engine, runtime, languages, and software engineering): narrowMatch SDL-GAMECONTROLLERDB (staged); narrowMatch USB-HID-HUT-1.6 (staged)
+- **H11** Physics middleware (Havok, PhysX, Jolt, Chaos) and USD Physics schema (Engine, runtime, languages, and software engineering), not reached from any origin: narrowMatch OPENUSD-USDPHYSICS-26.11.1 (staged)
+- **H12** Version control: Perforce Helix Core, Git + Git LFS, Unity Version Control (Engine, runtime, languages, and software engineering), not reached from any origin: narrowMatch GIT-LFS-SPEC-3.8.1 (staged)
 - **H13** Semantic Versioning 2.0.0 (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H14** DORA metrics / Accelerate (Engine, runtime, languages, and software engineering): exactMatch DORA-SOFTWARE-DELIVERY-METRICS (derived from its citation)
 - **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
