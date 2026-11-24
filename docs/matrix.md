@@ -9,3 +9,11 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- Monetization, consumer protection, and virtual economies, row U03: **person acting on behalf of a trader** is onBehalfOf of contract under EU-DIR-2011-83 (constraint)
+  > including through any other person acting in his name or on his behalf
+- Monetization, consumer protection, and virtual economies, row U11: **person acting on behalf of a trader** is onBehalfOf of contract under EU-DIR-2019-770 (constraint)
+  > including through any other person acting in that natural or legal person's name or on that person's behalf
+- Monetization, consumer protection, and virtual economies, row U03: **person acting on behalf of a trader** is onBehalfOf of commercial practice under EU-DIR-2005-29 (constraint)
+  > anyone acting in the name of or on behalf of a trader
+- Monetization, consumer protection, and virtual economies, row U11: **consumer** is consumer of digital service under EU-DIR-2019-770 (constraint)
+  > a service that allows the consumer to create, process, store or access data in digital form
