@@ -9,3 +9,13 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- NPC, agent, and game AI models, row J14: **authorised representative** is onBehalfOf of AI system under EU-REG-2024-1689 (constraint)
+  > has received and accepted a written mandate from a provider of an AI system or a general-purpose AI model to, respectively, perform and carry out on its behalf
+- NPC, agent, and game AI models, row J14: **provider** is producer of AI system under EU-REG-2024-1689 (constraint)
+  > ‘provider’ means a natural or legal person, public authority, agency or other body that develops an AI system or a general-purpose AI model
+- NPC, agent, and game AI models, row J14: **deployer** is consumer of AI system under EU-REG-2024-1689 (constraint)
+  > ‘deployer’ means a natural or legal person, public authority, agency or other body using an AI system under its authority
+- NPC, agent, and game AI models, row J17: **Claim generator** is producer of claim under C2PA-SPEC-2.3 (constraint)
+  > Claim generator The non-human (hardware or software) actor that generates the claim about an asset as well as the claim signature
+- NPC, agent, and game AI models, row J17: **C2PA Manifest Consumer** is consumer of C2PA Manifest under C2PA-SPEC-2.3 (constraint)
+  > A C2PA Manifest Consumer shall never process an assertion, assertion store, claim, claim signature or C2PA Manifest that is not contained inside of a C2PA Manifest Store.
