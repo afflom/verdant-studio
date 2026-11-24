@@ -1,0 +1,95 @@
+\begin{lexlean}{Catalog.IsoIec25022QualityInUseMeasurement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec25022QualityInUseMeasurementClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2Conformance, fields: []},
+    {name: n3NormativeReferences, fields: []},
+    {name: n4TermsAndDefinitions, fields: []},
+    {name: n5AbbreviatedTerms, fields: []},
+    {name: n6UseOfQualityInUseMeasures, fields: []},
+    {name: n61ApplicationsOfQualityInUse, fields: []},
+    {name: n62MeasurementOfQualityInUse, fields: []},
+    {name: n63InterpretationOfQualityInUseMeasures, fields: []},
+    {name: n64SelectingAppropriateQualityInUseMeasures, fields: []},
+    {name: n65AspectsOfQualityInUseDescribedInOtherInternationalStandards, fields: []},
+    {name: n7FormatUsedForDocumentingTheQualityMeasures, fields: []},
+    {name: n8QualityInUseMeasures, fields: []},
+    {name: n81General, fields: []},
+    {name: n82EffectivenessMeasures, fields: []},
+    {name: n83EfficiencyMeasures, fields: []},
+    {name: n84SatisfactionMeasures, fields: []},
+    {name: n841General, fields: []},
+    {name: n842UsefulnessMeasures, fields: []},
+    {name: n843TrustMeasures, fields: []},
+    {name: n844UserExperiencePleasureMeasures, fields: []},
+    {name: n845ErgonomicComfortMeasures, fields: []},
+    {name: n85FreedomFromRiskMeasures, fields: []},
+    {name: n851General, fields: []},
+    {name: n852EconomicRiskMitigationMeasures, fields: []},
+    {name: n853HealthAndSafetyRiskMitigationMeasures, fields: []},
+    {name: n854EnvironmentalRiskMitigationMeasures, fields: []},
+    {name: n86ContextCoverageMeasures, fields: []},
+    {name: n861General, fields: []},
+    {name: n862ContextCompletenessMeasures, fields: []},
+    {name: n863FlexibilityMeasures, fields: []},
+    {name: annexAExamplesOfHowToMeasureContextCoverage, fields: []},
+    {name: annexBNormalizationOfQualityInUseMeasures, fields: []},
+    {name: u0041u006Eu006Eu0065u0078u0020u0043u0020u0055u0073u0065u0020u006Fu0066u0020u0049u0053u004Fu002Fu0049u0045u0043u0020u0032u0035u0030u0032u0032u0020u0066u006Fu0072u0020u006Du0065u0061u0073u0075u0072u0069u006Eu0067u0020u0075u0073u0061u0062u0069u006Cu0069u0074u0079u0020u0069u006Eu0020u0049u0053u004Fu0020u0039u0032u0034u0031u2011u0031u0031, fields: []},
+    {name: annexDQualityInUseEvaluationProcess, fields: []},
+    {name: annexERelationshipBetweenDifferentQualityModels, fields: []},
+    {name: annexFQualityMeasurementConcepts, fields: []},
+    {name: annexGQMEsUsedToDefineQualityMeasures, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec25022QualityInUseMeasurementTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: contextCompleteness, fields: []},
+    {name: contextCoverage, fields: []},
+    {name: customer, fields: []},
+    {name: effectiveness, fields: []},
+    {name: efficiency, fields: []},
+    {name: contextOfUse, fields: []},
+    {name: flexibility, fields: []},
+    {name: formativeEvaluation, fields: []},
+    {name: freedomFromRisk, fields: []},
+    {name: goal, fields: []},
+    {name: measureNoun, fields: []},
+    {name: measurement, fields: []},
+    {name: measurementFunction, fields: []},
+    {name: psychometrics, fields: []},
+    {name: qualityInUse, fields: []},
+    {name: qualityMeasure, fields: []},
+    {name: qualityMeasureElement, fields: []},
+    {name: qualityModel, fields: []},
+    {name: satisfaction, fields: []},
+    {name: stakeholderSatisfaction, fields: []},
+    {name: summativeEvaluation, fields: []},
+    {name: system, fields: []},
+    {name: task, fields: []},
+    {name: usability, fields: []},
+    {name: useError, fields: []},
+    {name: user, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec25022QualityInUseMeasurement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec25022QualityInUseMeasurementClause)},
+    {name: term, type: (Option IsoIec25022QualityInUseMeasurementTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

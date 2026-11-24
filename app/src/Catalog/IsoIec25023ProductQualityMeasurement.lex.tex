@@ -1,0 +1,97 @@
+\begin{lexlean}{Catalog.IsoIec25023ProductQualityMeasurement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec25023ProductQualityMeasurementClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2Conformance, fields: []},
+    {name: n3NormativeReferences, fields: []},
+    {name: n4TermsAndDefinitions, fields: []},
+    {name: n5AbbreviatedTerms, fields: []},
+    {name: n6UseOfSystemAndSoftwareProductQualityMeasures, fields: []},
+    {name: n61SystemSoftwareProductQualityMeasurementConcepts, fields: []},
+    {name: n62ApproachToQualityMeasurement, fields: []},
+    {name: n7FormatUsedForDocumentingTheQualityMeasures, fields: []},
+    {name: n8SystemAndSoftwareProductQualityMeasures, fields: []},
+    {name: n81General, fields: []},
+    {name: n82FunctionalSuitabilityMeasures, fields: []},
+    {name: n821FunctionalCompletenessMeasures, fields: []},
+    {name: n822FunctionalCorrectnessMeasures, fields: []},
+    {name: n823FunctionalAppropriatenessMeasures, fields: []},
+    {name: n83PerformanceEfficiencyMeasures, fields: []},
+    {name: n831TimeBehaviourMeasures, fields: []},
+    {name: n832ResourceUtilizationMeasures, fields: []},
+    {name: n833CapacityMeasures, fields: []},
+    {name: n84CompatibilityMeasures, fields: []},
+    {name: n841CoExistenceMeasures, fields: []},
+    {name: n842InteroperabilityMeasures, fields: []},
+    {name: n85UsabilityMeasures, fields: []},
+    {name: n851AppropriatenessRecognizabilityMeasures, fields: []},
+    {name: n852LearnabilityMeasures, fields: []},
+    {name: n853OperabilityMeasures, fields: []},
+    {name: n854UserErrorProtectionMeasures, fields: []},
+    {name: n855UserInterfaceAestheticsMeasures, fields: []},
+    {name: n856AccessibilityMeasures, fields: []},
+    {name: n86ReliabilityMeasures, fields: []},
+    {name: n861MaturityMeasures, fields: []},
+    {name: n862AvailabilityMeasures, fields: []},
+    {name: n863FaultToleranceMeasures, fields: []},
+    {name: n864RecoverabilityMeasures, fields: []},
+    {name: n87SecurityMeasures, fields: []},
+    {name: n871ConfidentialityMeasures, fields: []},
+    {name: n872IntegrityMeasures, fields: []},
+    {name: n873NonRepudiationMeasures, fields: []},
+    {name: n874AccountabilityMeasures, fields: []},
+    {name: n875AuthenticityMeasures, fields: []},
+    {name: n88MaintainabilityMeasures, fields: []},
+    {name: n881ModularityMeasures, fields: []},
+    {name: n882ReusabilityMeasures, fields: []},
+    {name: n883AnalysabilityMeasures, fields: []},
+    {name: n884ModifiabilityMeasures, fields: []},
+    {name: n885TestabilityMeasures, fields: []},
+    {name: n89PortabilityMeasures, fields: []},
+    {name: n891AdaptabilityMeasures, fields: []},
+    {name: n892InstallabilityMeasures, fields: []},
+    {name: n893ReplaceabilityMeasures, fields: []},
+    {name: annexAConsiderationsForTheUseOfQualityMeasures, fields: []},
+    {name: annexBQMEsUsedToDefineProductOrSystemQualityMeasures, fields: []},
+    {name: annexCDetailedExplanationOfMeasurementTypes, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec25023ProductQualityMeasurementTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: externalMeasureOfSystemOrSoftwareQuality, fields: []},
+    {name: internalMeasureOfSoftwareQuality, fields: []},
+    {name: job, fields: []},
+    {name: measure, fields: []},
+    {name: measurement, fields: []},
+    {name: measurementFunction, fields: []},
+    {name: propertyToQuantify, fields: []},
+    {name: qualityMeasure, fields: []},
+    {name: qualityMeasureElement, fields: []},
+    {name: qME, fields: []},
+    {name: qualityModel, fields: []},
+    {name: qualityCharacteristicOfSoftwareProductOrSystem, fields: []},
+    {name: task, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec25023ProductQualityMeasurement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec25023ProductQualityMeasurementClause)},
+    {name: term, type: (Option IsoIec25023ProductQualityMeasurementTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

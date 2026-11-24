@@ -1,0 +1,101 @@
+\begin{lexlean}{Catalog.IsoIec29100PrivacyFramework}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec29100PrivacyFrameworkClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4AbbreviatedTerms, fields: []},
+    {name: n5BasicElementsOfThePrivacyFramework, fields: []},
+    {name: n51OverviewOfThePrivacyFramework, fields: []},
+    {name: n52ActorsAndRoles, fields: []},
+    {name: n521General, fields: []},
+    {name: n522PIIPrincipals, fields: []},
+    {name: n523PIIControllers, fields: []},
+    {name: n524PIIProcessors, fields: []},
+    {name: n525ThirdParties, fields: []},
+    {name: n53Interactions, fields: []},
+    {name: n54RecognizingPII, fields: []},
+    {name: n541General, fields: []},
+    {name: n542Identifiers, fields: []},
+    {name: n543OtherDistinguishingCharacteristics, fields: []},
+    {name: n544InformationWhichIsOrCanBeLinkedToAPIIPrincipal, fields: []},
+    {name: n545PseudonymousData, fields: []},
+    {name: n546Metadata, fields: []},
+    {name: n547UnsolicitedPII, fields: []},
+    {name: n548SensitivePII, fields: []},
+    {name: n55PrivacySafeguardingRequirements, fields: []},
+    {name: n551General, fields: []},
+    {name: n552LegalAndRegulatoryFactors, fields: []},
+    {name: n553ContractualFactors, fields: []},
+    {name: n554BusinessFactors, fields: []},
+    {name: n555OtherFactors, fields: []},
+    {name: n56PrivacyPolicies, fields: []},
+    {name: n57PrivacyControls, fields: []},
+    {name: n6ThePrivacyPrinciplesOfThisDocument, fields: []},
+    {name: n61OverviewOfPrivacyPrinciples, fields: []},
+    {name: n62ConsentAndChoice, fields: []},
+    {name: n63PurposeLegitimacyAndSpecification, fields: []},
+    {name: n64CollectionLimitation, fields: []},
+    {name: n65DataMinimization, fields: []},
+    {name: n66UseRetentionAndDisclosureLimitation, fields: []},
+    {name: n67AccuracyAndQuality, fields: []},
+    {name: n68OpennessTransparencyAndNotice, fields: []},
+    {name: n69IndividualParticipationAndAccess, fields: []},
+    {name: n610Accountability, fields: []},
+    {name: n611InformationSecurity, fields: []},
+    {name: n612PrivacyCompliance, fields: []},
+    {name: annexACorrespondenceBetweenISOIEC29100ConceptsAndISOIEC27000Concepts, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec29100PrivacyFrameworkTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: anonymity, fields: []},
+    {name: anonymization, fields: []},
+    {name: anonymizedData, fields: []},
+    {name: consent, fields: []},
+    {name: identifiability, fields: []},
+    {name: optIn, fields: []},
+    {name: personallyIdentifiableInformation, fields: []},
+    {name: pII, fields: []},
+    {name: pIIController, fields: []},
+    {name: pIIPrincipal, fields: []},
+    {name: pIIProcessor, fields: []},
+    {name: privacyBreach, fields: []},
+    {name: privacyControl, fields: []},
+    {name: privacyEnhancingTechnology, fields: []},
+    {name: pET, fields: []},
+    {name: privacyPolicy, fields: []},
+    {name: privacyPreference, fields: []},
+    {name: privacyPrinciple, fields: []},
+    {name: privacyRisk, fields: []},
+    {name: privacyImpactAssessment, fields: []},
+    {name: privacySafeguardingRequirement, fields: []},
+    {name: privacyStakeholder, fields: []},
+    {name: processingOfPII, fields: []},
+    {name: pseudonymization, fields: []},
+    {name: sensitivePII, fields: []},
+    {name: thirdParty, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec29100PrivacyFramework,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec29100PrivacyFrameworkClause)},
+    {name: term, type: (Option IsoIec29100PrivacyFrameworkTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

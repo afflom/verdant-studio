@@ -1,0 +1,84 @@
+\begin{lexlean}{Catalog.IsoIec27701PrivacyInformationManagement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec27701PrivacyInformationManagementClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsDefinitionsAndAbbreviations, fields: []},
+    {name: n4ContextOfTheOrganization, fields: []},
+    {name: n41UnderstandingTheOrganizationAndItsContext, fields: []},
+    {name: n42UnderstandingTheNeedsAndExpectationsOfInterestedParties, fields: []},
+    {name: n43DeterminingTheScopeOfThePrivacyInformationManagementSystem, fields: []},
+    {name: n44PrivacyInformationManagementSystem, fields: []},
+    {name: n5Leadership, fields: []},
+    {name: n51LeadershipAndCommitment, fields: []},
+    {name: n52PrivacyPolicy, fields: []},
+    {name: n53RolesResponsibilitiesAndAuthorities, fields: []},
+    {name: n6Planning, fields: []},
+    {name: n61ActionsToAddressRisksAndOpportunities, fields: []},
+    {name: n611General, fields: []},
+    {name: n612PrivacyRiskAssessment, fields: []},
+    {name: n613PrivacyRiskTreatment, fields: []},
+    {name: n62PrivacyObjectivesAndPlanningToAchieveThem, fields: []},
+    {name: n63PlanningOfChanges, fields: []},
+    {name: n7Support, fields: []},
+    {name: n71Resources, fields: []},
+    {name: n72Competence, fields: []},
+    {name: n73Awareness, fields: []},
+    {name: n74Communication, fields: []},
+    {name: n75DocumentedInformation, fields: []},
+    {name: n751General, fields: []},
+    {name: n752CreatingAndUpdatingDocumentedInformation, fields: []},
+    {name: n753ControlOfDocumentedInformation, fields: []},
+    {name: n8Operation, fields: []},
+    {name: n81OperationalPlanningAndControl, fields: []},
+    {name: n82PrivacyRiskAssessment, fields: []},
+    {name: n83PrivacyRiskTreatment, fields: []},
+    {name: n9PerformanceEvaluation, fields: []},
+    {name: n91MonitoringMeasurementAnalysisAndEvaluation, fields: []},
+    {name: n92InternalAudit, fields: []},
+    {name: n921General, fields: []},
+    {name: n922InternalAuditProgramme, fields: []},
+    {name: n93ManagementReview, fields: []},
+    {name: n931General, fields: []},
+    {name: n932ManagementReviewInputs, fields: []},
+    {name: n933ManagementReviewResults, fields: []},
+    {name: n10Improvement, fields: []},
+    {name: n101ContinualImprovement, fields: []},
+    {name: n102NonconformityAndCorrectiveAction, fields: []},
+    {name: n11FurtherInformationOnAnnexes, fields: []},
+    {name: annexAPIMSReferenceControlObjectivesAndControlsForPIIControllersAndPIIProcessors, fields: []},
+    {name: annexBImplementationGuidanceForPIIControllersAndPIIProcessors, fields: []},
+    {name: annexCMappingToISOIEC29100, fields: []},
+    {name: annexDMappingToTheGeneralDataProtectionRegulation, fields: []},
+    {name: annexEMappingToISOIEC27018AndISOIEC29151, fields: []},
+    {name: annexFCorrespondenceWithISOIEC277012019, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec27701PrivacyInformationManagementTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: organization, fields: []},
+    {name: interestedParty, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec27701PrivacyInformationManagement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec27701PrivacyInformationManagementClause)},
+    {name: term, type: (Option IsoIec27701PrivacyInformationManagementTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

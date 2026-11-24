@@ -1,0 +1,97 @@
+\begin{lexlean}{Catalog.Iso10002ComplaintsHandling}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso10002ComplaintsHandlingClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4GuidingPrinciples, fields: []},
+    {name: n41General, fields: []},
+    {name: n42Commitment, fields: []},
+    {name: n43Capacity, fields: []},
+    {name: n44Transparency, fields: []},
+    {name: n45Accessibility, fields: []},
+    {name: n46Responsiveness, fields: []},
+    {name: n47Objectivity, fields: []},
+    {name: n48Charges, fields: []},
+    {name: n49InformationIntegrity, fields: []},
+    {name: n410Confidentiality, fields: []},
+    {name: n411CustomerFocusedApproach, fields: []},
+    {name: n412Accountability, fields: []},
+    {name: n413Improvement, fields: []},
+    {name: n414Competence, fields: []},
+    {name: n415Timeliness, fields: []},
+    {name: n5ComplaintsHandlingFramework, fields: []},
+    {name: n51ContextOfTheOrganization, fields: []},
+    {name: n52LeadershipAndCommitment, fields: []},
+    {name: n53Policy, fields: []},
+    {name: n54ResponsibilityAndAuthority, fields: []},
+    {name: n6PlanningDesignAndDevelopment, fields: []},
+    {name: n61General, fields: []},
+    {name: n62Objectives, fields: []},
+    {name: n63Activities, fields: []},
+    {name: n64Resources, fields: []},
+    {name: n7OperationOfComplaintsHandlingProcess, fields: []},
+    {name: n71Communication, fields: []},
+    {name: n72ReceiptOfComplaints, fields: []},
+    {name: n73TrackingOfComplaints, fields: []},
+    {name: n74AcknowledgementOfComplaints, fields: []},
+    {name: n75InitialAssessmentOfComplaints, fields: []},
+    {name: n76InvestigationOfComplaints, fields: []},
+    {name: n77ResponseToComplaints, fields: []},
+    {name: n78CommunicatingTheDecision, fields: []},
+    {name: n79ClosingComplaints, fields: []},
+    {name: n8MaintenanceAndImprovement, fields: []},
+    {name: n81CollectionOfInformation, fields: []},
+    {name: n82AnalysisAndEvaluationOfComplaints, fields: []},
+    {name: n83EvaluationOfTheSatisfactionWithTheComplaintsHandlingProcess, fields: []},
+    {name: n84MonitoringOfTheComplaintsHandlingProcess, fields: []},
+    {name: n85AuditingOfTheComplaintsHandlingProcess, fields: []},
+    {name: n86ManagementReviewOfTheComplaintsHandlingProcess, fields: []},
+    {name: n87ContinualImprovement, fields: []},
+    {name: annexAInterrelationshipOfISO10001ThisDocumentISO10003AndISO10004, fields: []},
+    {name: annexBGuidanceForSmallBusiness, fields: []},
+    {name: annexCFormForComplainant, fields: []},
+    {name: annexDObjectivity, fields: []},
+    {name: annexEComplaintsHandlingFlowchart, fields: []},
+    {name: annexFComplaintFollowUpForm, fields: []},
+    {name: annexGResponses, fields: []},
+    {name: annexHEscalationFlowchart, fields: []},
+    {name: annexIContinualMonitoring, fields: []},
+    {name: annexJAudit, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso10002ComplaintsHandlingTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: complainant, fields: []},
+    {name: complaint, fields: []},
+    {name: customer, fields: []},
+    {name: customerSatisfaction, fields: []},
+    {name: customerService, fields: []},
+    {name: feedback, fields: []},
+    {name: interestedParty, fields: []},
+    {name: stakeholder, fields: []},
+    {name: organization, fields: []}
+  ]
+}
+
+structure{
+  name: Iso10002ComplaintsHandling,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso10002ComplaintsHandlingClause)},
+    {name: term, type: (Option Iso10002ComplaintsHandlingTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
