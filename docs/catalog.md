@@ -89,25 +89,25 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **E02** Facial Action Coding System (FACS) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E03** ARKit 52 blendshapes (Characters, rigging, animation, and performance capture): exactMatch APPLE-ARKIT-BLENDSHAPELOCATION (derived from its citation)
 - **E04** H-Anim (ISO/IEC 19774) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
-- **E05** VRM avatar format (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
-- **E06** UsdSkel / glTF skins (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
-- **E07** BVH and C3D motion-capture formats (Characters, rigging, animation, and performance capture): exactMatch C3D-USER-GUIDE (derived from its citation)
+- **E05** VRM avatar format (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch VRMC-VRM-1.0 (staged)
+- **E06** UsdSkel / glTF skins (Characters, rigging, animation, and performance capture), not reached from any origin: narrowMatch KHRONOS-GLTF-2.0 (staged); narrowMatch OPENUSD-USDSKEL-SCHEMA-26.11.1 (staged)
+- **E07** BVH and C3D motion-capture formats (Characters, rigging, animation, and performance capture): narrowMatch C3D-USER-GUIDE (staged)
 - **E08** Engine rigging conventions: Unreal Mannequin / IK Rig retargeting, Unity Humanoid Avatar, MetaHuman (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E09** Motion matching (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E10** SAG-AFTRA Interactive Media Agreement (2025) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **F01** Film grammar: shot sizes, 180-degree rule, continuity editing (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
-- **F02** VES Handbook of Visual Effects / VES Virtual Production glossary (Cinematics, cinematography, and virtual production): exactMatch VES-EPIC-VP-GLOSSARY (derived from its citation)
-- **F03** OpenTrackIO (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
+- **F02** VES Handbook of Visual Effects / VES Virtual Production glossary (Cinematics, cinematography, and virtual production): narrowMatch VES-EPIC-VP-GLOSSARY (staged)
+- **F03** OpenTrackIO (Cinematics, cinematography, and virtual production), not reached from any origin: exactMatch SMPTE-OPENTRACKIO-SCHEMA (staged)
 - **F04** SMPTE ST 12-1 timecode (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
-- **F05** OpenTimelineIO (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
+- **F05** OpenTimelineIO (Cinematics, cinematography, and virtual production), not reached from any origin: exactMatch ASWF-OPENTIMELINEIO-0.18.1 (staged)
 - **F06** Virtual cinematographer and real-time camera control (Cinematics, cinematography, and virtual production): exactMatch HE-COHEN-SALESIN-VC-1996 (derived from its citation)
 - **F07** Engine sequencers as de facto cinematic data models (Unreal Sequencer, Unity Timeline) (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
 - **F08** ASC / Previs Society virtual production and previs practice (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
-- **G01** Vulkan and SPIR-V (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G02** Direct3D 12 / DirectX (incl. DXR, HLSL, Agility SDK) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
+- **G01** Vulkan and SPIR-V (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch KHRONOS-SPIRV-GRAMMAR-1.4.363.0 (staged); narrowMatch KHRONOS-VULKAN-REGISTRY-1.4.369 (staged)
+- **G02** Direct3D 12 / DirectX (incl. DXR, HLSL, Agility SDK) (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch MICROSOFT-D3D12-IDL-1.721.2 (staged)
 - **G03** Metal (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G04** OpenGL / OpenGL ES / WebGL (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **G05** WebGPU and WGSL (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
+- **G04** OpenGL / OpenGL ES / WebGL (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch KHRONOS-OPENGL-REGISTRY-GLXML (staged); narrowMatch KHRONOS-WEBGL-1.0-IDL (staged); narrowMatch KHRONOS-WEBGL-2.0-IDL (staged)
+- **G05** WebGPU and WGSL (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch W3C-WEBGPU-20261116 (staged); narrowMatch W3C-WGSL-20261106 (staged)
 - **G06** Console graphics APIs (GNM/AGC, NVN) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G07** sRGB (IEC 61966-2-1) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G08** ITU-R BT.709, BT.2020, BT.2100 (PQ/HLG) (Rendering, graphics APIs, color, and display): exactMatch ITU-R-BT-2100-3 (derived from its citation)
