@@ -162,6 +162,15 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `VERDANT-ENGINE-IDS-2.20.1` | The engine's 130 conformance IDs (VE, FR, FI, VTK), each with level, suite, refusal and statement. Every engine capability Verdant Studio uses is cited by one of these IDs. |  |
 | `VERDANT-ENGINE-RELEASE-LEDGER-2.20.1` | The engine's verdant/release-ledger/1: current SemVer version 2.20.1, release epoch and change history. |  |
 | `VERDANT-ENGINE-STANDARDS-LOCK-2.20.1` | The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them. |  |
+| `APPLE-ARKIT-BLENDSHAPELOCATION` | The 52 ARKit face blend shape locations: identifiers for specific facial features, each with a coefficient describing the relative movement of that feature from neutral. Index row E03. |  |
+| `ASHWELL-STANDARD-PATTERNS-2015` | Ashwell's standard structural patterns of choice-based games. Index row C04. |  |
+| `BARTLE-HCDS-1996` | Bartle's four player types (achievers, explorers, socialisers, killers) and the two axes that place them. Index row B12. |  |
+| `HUNICKE-MDA-2004` | The MDA framework: mechanics, dynamics and aesthetics, and its taxonomy of eight aesthetics. Index row B01. |  |
+| `JENKINS-NARRATIVE-ARCHITECTURE-2004` | Jenkins' four ways spatial design supports narrative: evocative spaces, enacting stories, embedded narratives and emergent narratives. Index row C11. |  |
+| `KANBAN-GUIDE-2.1` | The Kanban Method: its change management and service delivery principles, its six general practices, and the parts of a kanban system. Index row A08. |  |
+| `SCRUM-GUIDE-2020` | The 2020 Scrum Guide: the Scrum Team and its three accountabilities, the five events, the three artifacts and their commitments, the values and the empirical pillars. Index row A07. |  |
+| `WIKIPEDIA-THREE-ACT-STRUCTURE` | The three-act structure: setup, confrontation and resolution, with the inciting incident, plot points and climax. Index row C02. |  |
+| `WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION` | The twelve basic principles of animation introduced by Ollie Johnston and Frank Thomas in The Illusion of Life (1981). Index row E01. |  |
 
 ## Claims that are not conformance IDs
 
