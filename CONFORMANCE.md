@@ -466,6 +466,12 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `ISO-IEC-27002-2022-PREVIEW` | Public preview of ISO/IEC 27002:2022, the control set that ISO/IEC 27001:2022 (ISO-IEC-27001-2022) states it is aligned with (27001 foreword); source of the inferred encoding. Index row T06. |  |
 | `LYNCH-IMAGE-OF-THE-CITY-1960-CSISS` | CSISS Classics: Kevin Lynch, City Elements Create Images in Our Mind, 1960: public source for the inferred encoding of ISBN 9780262620017 (LYNCH-IMAGE-OF-THE-CITY-1960). Index row Z01. A citing work (academic summary, not peer reviewed). |  |
 | `LYNCH-IMAGE-OF-THE-CITY-1960-OPENLIBRARY` | The Image of the City, Open Library record OL5795447M (MIT Press): public source for the inferred encoding of ISBN 9780262620017 (LYNCH-IMAGE-OF-THE-CITY-1960). Index row Z01. |  |
+| `GIFFORD-CSU-THESIS-2013-APPENDIX-B` | Open thesis whose Appendix B, "Usability principles for video game design", reproduces the ten heuristics from Pinelle, Wong and Stach (2008, p. 1458). Inference source for index row L04 (pinned PINELLE-WONG-STACH-HEURISTICS-2008). |  |
+| `NILSSON-ASTAR-1968-AUTHOR-SCAN` | Scan of the pinned paper HART-NILSSON-RAPHAEL-ASTAR-1968 with no text layer, read by OCR (tesseract 5.3.4, 300 dpi). Only strings the OCR reproduces cleanly are used. Inference source for index row J06. |  |
+| `PMC-7264164-FACS-ACTION-UNITS-2020` | Open-access review whose Table 1 lists the single action units of the facial action code (Ekman et al. 2002). Cross-check for the E02 action units; its differences are recorded as conflicts. |  |
+| `PMC-8019968-FACS-ACTION-UNITS-2021` | Open-access study whose Table 3 lists the 44 action units defined in FACS (Ekman et al. 2002) by number and description. Inference source for index row E02 (pinned EKMAN-FACS-2002). |  |
+| `PMC-8600328-VITAAL-SUS-2021` | Open-access study that administers the System Usability Scale citing Brooke (1996) and reproduces its ten items and response anchors in the Table 3 footnote. Inference source for index row L08 (pinned BROOKE-SUS-1996). |  |
+| `PMC-9998603-IMMERSIVE-SUS-2021` | Open-access study whose Table 7 lists the questions of the System Usability Scale (SUS; Brooke 1996). Corroborates the L08 items. |  |
 
 ## Claims that are not conformance IDs
 
