@@ -7,7 +7,7 @@ name: operate
 on:
   push:
     branches: [main]
-    paths: ['model/bindings/**', 'model/encodings/**', 'model/authorities.toml']
+    paths: ['model/bindings/**', 'model/encodings/**', 'model/queue/**', 'model/authorities.toml']
   workflow_dispatch:
     inputs:
       args:
@@ -139,7 +139,9 @@ jobs:
             : > target/operation.txt
             last=''
             skipped=''
-            while op=$(target/release/verdant_studio next $skipped) && [ -n "$op" ]; do
+            # next prints one operation it can dispatch, or else the lines that say why the
+            # queue waits: each begins with "waiting", and none is dispatched.
+            while op=$(target/release/verdant_studio next $skipped) && [ -n "$op" ] && [ "${op#waiting}" = "$op" ]; do
               if [ "$op" = "$last" ]; then echo "::error::$op did not settle"; exit 1; fi
               if target/release/verdant_studio $op | tee -a target/operation.txt; then
                 last=$op
@@ -151,6 +153,14 @@ jobs:
                 skipped="$skipped $binding"
               fi
             done
+            t0=$EPOCHREALTIME
+            target/release/verdant_studio next $skipped > target/next.txt || true
+            echo "next: $(echo "$EPOCHREALTIME - $t0" | bc) s for one call over $(find model -name '*.json*' | wc -l) model files" | tee -a "$GITHUB_STEP_SUMMARY"
+            if [ "${op#waiting}" != "$op" ]; then echo "$op" > target/waiting.txt; else : > target/waiting.txt; fi
+            for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.title == "verdant_studio propose-command") | .number'); do
+              echo "waiting owner review: #${pr} changes the API, and only the owner merges it" >> target/waiting.txt
+            done
+            if [ -s target/waiting.txt ]; then tee -a target/operation.txt < target/waiting.txt >> "$GITHUB_STEP_SUMMARY"; fi
           else
             target/release/verdant_studio $ARGS | tee target/operation.txt
           fi

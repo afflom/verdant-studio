@@ -145,6 +145,14 @@ definition{
 }
 
 definition{
+  name: numberType,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "(Int * Int)"),
+  executable: true
+}
+
+definition{
   name: integerType,
   parameters: [schema : LexLeanStd.Json::Json],
   result: Bytes,
@@ -170,7 +178,7 @@ definition{
           | Option.some constant => (match (Studio.Doc::strOf (ctor Option.some [LexLeanStd.Json::Json] constant))
             | Option.some text => (typed (Studio.Doc::lit "Bytes") (nil Job))
             | Option.none => (refused (Studio.Doc::lit "unsupported const") context))
-          | Option.none => (let kind : Bytes := (Studio.Doc::str schema (Studio.Doc::lit "type")); (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType schema) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (typed context (cons (ctor Job.translate context schema) (nil Job))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context)))))))))),
+          | Option.none => (let kind : Bytes := (Studio.Doc::str schema (Studio.Doc::lit "type")); (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType schema) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "number")) then (typed (numberType) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (typed context (cons (ctor Job.translate context schema) (nil Job))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
