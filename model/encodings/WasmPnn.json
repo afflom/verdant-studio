@@ -1,0 +1,1 @@
+{"name":"WasmPnn","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"syntax Pnn","$comment":"WebAssembly 3.0 SpecTec, 1.2-syntax.types.spectec at wg-3.0 9d36019973201a19f9c9ebb0f10828b2fe2374aa","description":"packed type","type":"string","enum":["I8","I16"]},"citation":["std","WASM-3.0-SPECTEC-SYNTAX-TYPES","H04"]}

@@ -1,0 +1,1 @@
+{"name":"WasmBit","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"syntax bit","$comment":"WebAssembly 3.0 SpecTec, 1.1-syntax.values.spectec at wg-3.0 9d36019973201a19f9c9ebb0f10828b2fe2374aa","description":"bit","type":"integer","enum":[0,1]},"citation":["std","WASM-3.0-SPECTEC-SYNTAX-VALUES","H04"]}
