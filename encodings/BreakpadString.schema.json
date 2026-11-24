@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, struct MDString, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"buffer":{"items":{"minimum":0,"type":"integer"},"type":"array"},"length":{"minimum":0,"type":"integer"}},"required":["length","buffer"],"title":"MDString","type":"object"}

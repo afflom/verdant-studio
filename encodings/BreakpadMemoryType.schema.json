@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, enum MDMemoryType, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["MD_MEMORY_TYPE_PRIVATE","MD_MEMORY_TYPE_MAPPED","MD_MEMORY_TYPE_IMAGE"],"title":"MDMemoryType"}

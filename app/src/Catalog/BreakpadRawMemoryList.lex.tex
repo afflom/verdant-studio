@@ -1,0 +1,35 @@
+\begin{lexlean}{Catalog.BreakpadRawMemoryList}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: MDMemoryDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: startOfMemoryRange, type: Nat},
+    {name: memory, type: MDLocationDescriptor}
+  ]
+}
+
+structure{
+  name: BreakpadRawMemoryList,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: numberOfMemoryRanges, type: Nat},
+    {name: memoryRanges, type: (List MDMemoryDescriptor)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.BreakpadCvInfoPdb20}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDCVHeader,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: signature, type: Nat},
+    {name: offset, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadCvInfoPdb20,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: cvHeader, type: MDCVHeader},
+    {name: signature, type: Nat},
+    {name: age, type: Nat},
+    {name: pdbFileName, type: (List Nat)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

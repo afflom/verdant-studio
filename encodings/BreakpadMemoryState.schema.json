@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, enum MDMemoryState, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["MD_MEMORY_STATE_COMMIT","MD_MEMORY_STATE_RESERVE","MD_MEMORY_STATE_FREE"],"title":"MDMemoryState"}

@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.BreakpadRawCrashpadAnnotationList}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDRawCrashpadAnnotation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Nat},
+    {name: type, type: Nat},
+    {name: reserved, type: Nat},
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadRawCrashpadAnnotationList,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: count, type: Nat},
+    {name: objects, type: (List MDRawCrashpadAnnotation)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

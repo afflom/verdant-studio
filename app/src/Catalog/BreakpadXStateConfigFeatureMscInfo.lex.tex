@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.BreakpadXStateConfigFeatureMscInfo}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDXStateFeature,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: offset, type: Nat},
+    {name: size, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadXStateConfigFeatureMscInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: sizeOfInfo, type: Nat},
+    {name: contextSize, type: Nat},
+    {name: enabledFeatures, type: Nat},
+    {name: features, type: (List MDXStateFeature)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

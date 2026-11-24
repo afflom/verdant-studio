@@ -1,0 +1,1 @@
+{"$comment":"minidump_format.h, enum MDOSPlatform, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["MD_OS_WIN32S","MD_OS_WIN32_WINDOWS","MD_OS_WIN32_NT","MD_OS_WIN32_CE","MD_OS_UNIX","MD_OS_MAC_OS_X","MD_OS_IOS","MD_OS_LINUX","MD_OS_SOLARIS","MD_OS_ANDROID","MD_OS_PS3","MD_OS_NACL","MD_OS_FUCHSIA"],"title":"MDOSPlatform"}

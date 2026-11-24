@@ -1,0 +1,25 @@
+\begin{lexlean}{Catalog.BreakpadRawThreadNameList}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDRawThreadName,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: threadId, type: Nat},
+    {name: threadNameRva, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadRawThreadNameList,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: numberOfThreadNames, type: Nat},
+    {name: threadNames, type: (List MDRawThreadName)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

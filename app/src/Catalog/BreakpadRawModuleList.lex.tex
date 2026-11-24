@@ -1,0 +1,64 @@
+\begin{lexlean}{Catalog.BreakpadRawModuleList}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDVSFixedFileInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: signature, type: Nat},
+    {name: structVersion, type: Nat},
+    {name: fileVersionHi, type: Nat},
+    {name: fileVersionLo, type: Nat},
+    {name: productVersionHi, type: Nat},
+    {name: productVersionLo, type: Nat},
+    {name: fileFlagsMask, type: Nat},
+    {name: fileFlags, type: Nat},
+    {name: fileOs, type: Nat},
+    {name: fileType, type: Nat},
+    {name: fileSubtype, type: Nat},
+    {name: fileDateHi, type: Nat},
+    {name: fileDateLo, type: Nat}
+  ]
+}
+
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: MDRawModule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: baseOfImage, type: Nat},
+    {name: sizeOfImage, type: Nat},
+    {name: checksum, type: Nat},
+    {name: timeDateStamp, type: Nat},
+    {name: moduleNameRva, type: Nat},
+    {name: versionInfo, type: MDVSFixedFileInfo},
+    {name: cvRecord, type: MDLocationDescriptor},
+    {name: miscRecord, type: MDLocationDescriptor},
+    {name: reserved0, type: (List Nat)},
+    {name: reserved1, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: BreakpadRawModuleList,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: numberOfModules, type: Nat},
+    {name: modules, type: (List MDRawModule)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

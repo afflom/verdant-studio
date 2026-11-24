@@ -1,0 +1,42 @@
+\begin{lexlean}{Catalog.BreakpadRawCrashpadInfo}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDGUID,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: data1, type: Nat},
+    {name: data2, type: Nat},
+    {name: data3, type: Nat},
+    {name: data4, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: MDLocationDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataSize, type: Nat},
+    {name: rva, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadRawCrashpadInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: version, type: Nat},
+    {name: reportId, type: MDGUID},
+    {name: clientId, type: MDGUID},
+    {name: simpleAnnotations, type: MDLocationDescriptor},
+    {name: moduleList, type: MDLocationDescriptor},
+    {name: reserved, type: Nat},
+    {name: addressMask, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

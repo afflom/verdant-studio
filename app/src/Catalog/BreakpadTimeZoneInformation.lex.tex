@@ -1,0 +1,36 @@
+\begin{lexlean}{Catalog.BreakpadTimeZoneInformation}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: MDSystemTime,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: year, type: Nat},
+    {name: month, type: Nat},
+    {name: dayOfWeek, type: Nat},
+    {name: day, type: Nat},
+    {name: hour, type: Nat},
+    {name: minute, type: Nat},
+    {name: second, type: Nat},
+    {name: milliseconds, type: Nat}
+  ]
+}
+
+structure{
+  name: BreakpadTimeZoneInformation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bias, type: Int},
+    {name: standardName, type: (List Nat)},
+    {name: standardDate, type: MDSystemTime},
+    {name: standardBias, type: Int},
+    {name: daylightName, type: (List Nat)},
+    {name: daylightDate, type: MDSystemTime},
+    {name: daylightBias, type: Int}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
