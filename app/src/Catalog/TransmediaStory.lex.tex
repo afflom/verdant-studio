@@ -1,0 +1,24 @@
+\begin{lexlean}{Catalog.TransmediaStory}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: TransmediaStoryTextsItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: contribution, type: Bytes},
+    {name: platform, type: Bytes}
+  ]
+}
+
+structure{
+  name: TransmediaStory,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: texts, type: (List TransmediaStoryTextsItem)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

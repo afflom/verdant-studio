@@ -381,3 +381,8 @@ Each construct and the citation that admits it.
 - `Catalog.SmpteSt12Timecode`: std SMPTE-ST-12-1-2014 row F04
 - `Catalog.SmpteSt2084Pq`: std SMPTE-ST-2084-2014 row G09
 - `Catalog.Srgb`: std IEC-61966-2-1-1999 row G07
+- `Catalog.ProppDramatisPersona`: std PROPP-MORPHOLOGY-1968 row C12
+- `Catalog.ProppFunction`: std PROPP-MORPHOLOGY-1968 row C12
+- `Catalog.StageGateGate`: std COOPER-STAGE-GATE-1990 row A05
+- `Catalog.StageGateStage`: std COOPER-STAGE-GATE-1990 row A05
+- `Catalog.TransmediaStory`: std JENKINS-CONVERGENCE-CULTURE row C13

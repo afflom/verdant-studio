@@ -7,7 +7,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **A02** Game development software engineering process life cycle (systematic review) (Lifecycle and process reference models), not reached from any origin: exactMatch ARXIV-1711.08527-V1 (staged)
 - **A03** Digital Game Maturity Model (DGMM) (Lifecycle and process reference models): exactMatch ALEEM-DGMM-2016 (derived from its citation)
 - **A04** Milestone vocabulary: concept, greenlight, first playable, vertical slice, alpha, beta, content complete, ZBR, gold master / RTM, day-one patch (Lifecycle and process reference models), not reached from any origin: no mapping yet
-- **A05** Stage-Gate idea-to-launch process (Lifecycle and process reference models), not reached from any origin: exactMatch COOPER-STAGE-GATE-1990 (staged)
+- **A05** Stage-Gate idea-to-launch process (Lifecycle and process reference models): exactMatch COOPER-STAGE-GATE-1990 (staged)
 - **A06** Agile Game Development (Scrum/Kanban adapted to games) (Lifecycle and process reference models), not reached from any origin: no mapping yet
 - **A07** The Scrum Guide (Lifecycle and process reference models): exactMatch SCRUM-GUIDE-2020 (derived from its citation)
 - **A08** Kanban Method / Kanban Guide (Lifecycle and process reference models): exactMatch KANBAN-GUIDE-2.1 (derived from its citation)
@@ -63,8 +63,8 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **C09** Screenplay format (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C10** IGDA Game Writing SIG resources (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C11** Game design as narrative architecture (environmental storytelling) (Narrative, writing, and interactive story): exactMatch JENKINS-NARRATIVE-ARCHITECTURE-2004 (derived from its citation)
-- **C12** Morphology of the Folktale (Narrative, writing, and interactive story), not reached from any origin: exactMatch PROPP-MORPHOLOGY-1968 (staged)
-- **C13** Transmedia storytelling (Narrative, writing, and interactive story), not reached from any origin: exactMatch JENKINS-CONVERGENCE-CULTURE (staged)
+- **C12** Morphology of the Folktale (Narrative, writing, and interactive story): exactMatch PROPP-MORPHOLOGY-1968 (staged)
+- **C13** Transmedia storytelling (Narrative, writing, and interactive story): exactMatch JENKINS-CONVERGENCE-CULTURE (staged)
 - **D01** OpenUSD and AOUSD Core Specification 1.0 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: narrowMatch OPENUSD-USD-SCHEMA-26.11.1 (staged)
 - **D02** glTF 2.0 (ISO/IEC 12113:2022) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-GLTF-2.0 (staged)
 - **D03** FBX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch AUTODESK-FBX-SDK-2020.3.11 (staged)
