@@ -1,0 +1,49 @@
+\begin{lexlean}{Catalog.OtelTraceApi}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: StatusStatusCode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: unset, fields: []},
+    {name: ok, fields: []},
+    {name: error, fields: []}
+  ]
+}
+
+structure{
+  name: Status,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: statusCode, type: StatusStatusCode},
+    {name: description, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: OtelTraceApiSpanKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sERVER, fields: []},
+    {name: cLIENT, fields: []},
+    {name: pRODUCER, fields: []},
+    {name: cONSUMER, fields: []},
+    {name: iNTERNAL, fields: []}
+  ]
+}
+
+structure{
+  name: OtelTraceApi,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: spanKind, type: (Option OtelTraceApiSpanKind)},
+    {name: status, type: (Option Status)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

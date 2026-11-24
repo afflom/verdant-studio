@@ -1,0 +1,65 @@
+\begin{lexlean}{Catalog.AppleAppReviewGuideline}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AppleAppReviewGuidelineSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: safety, fields: []},
+    {name: performance, fields: []},
+    {name: business, fields: []},
+    {name: design, fields: []},
+    {name: legal, fields: []}
+  ]
+}
+
+inductive{
+  name: AppleAppReviewGuidelineGuideline,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: objectionableContent, fields: []},
+    {name: userGeneratedContent, fields: []},
+    {name: kidsCategory, fields: []},
+    {name: physicalHarm, fields: []},
+    {name: developerInformation, fields: []},
+    {name: dataSecurity, fields: []},
+    {name: reportingCriminalActivity, fields: []},
+    {name: appCompleteness, fields: []},
+    {name: betaTesting, fields: []},
+    {name: accurateMetadata, fields: []},
+    {name: hardwareCompatibility, fields: []},
+    {name: softwareRequirements, fields: []},
+    {name: payments, fields: []},
+    {name: otherBusinessModelIssues, fields: []},
+    {name: copycats, fields: []},
+    {name: minimumFunctionality, fields: []},
+    {name: spam, fields: []},
+    {name: extensions, fields: []},
+    {name: appleSitesAndServices, fields: []},
+    {name: miniAppsMiniGamesStreamingGamesChatbotsPlugInsAndGameEmulators, fields: []},
+    {name: loginServices, fields: []},
+    {name: applePay, fields: []},
+    {name: monetizingBuiltInCapabilities, fields: []},
+    {name: privacy, fields: []},
+    {name: intellectualProperty, fields: []},
+    {name: gamingGamblingAndLotteries, fields: []},
+    {name: vPNApps, fields: []},
+    {name: mobileDeviceManagement, fields: []},
+    {name: developerCodeOfConduct, fields: []}
+  ]
+}
+
+structure{
+  name: AppleAppReviewGuideline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: section, type: (Option AppleAppReviewGuidelineSection)},
+    {name: guideline, type: (Option AppleAppReviewGuidelineGuideline)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

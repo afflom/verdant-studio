@@ -1,0 +1,90 @@
+\begin{lexlean}{Catalog.SteamStoreAssets}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: HeaderCapsule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: SmallCapsule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: MainCapsule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: VerticalCapsule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: Screenshot,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: PageBackground,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: BundleHeader,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: Nat},
+    {name: height, type: Nat}
+  ]
+}
+
+structure{
+  name: SteamStoreAssets,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: headerCapsule, type: HeaderCapsule},
+    {name: smallCapsule, type: (Option SmallCapsule)},
+    {name: mainCapsule, type: (Option MainCapsule)},
+    {name: verticalCapsule, type: (Option VerticalCapsule)},
+    {name: screenshots, type: (Option (List Screenshot))},
+    {name: pageBackground, type: (Option PageBackground)},
+    {name: bundleHeader, type: (Option BundleHeader)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

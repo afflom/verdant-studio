@@ -224,6 +224,16 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `STEAMWORKS-DECK-COMPAT` | The Steam Deck compatibility categories. Index row O08. |  |
 | `STEAMWORKS-STORE-ASSETS` | The standard Steam store graphical assets and their sizes. Index row V05. |  |
 | `SWHID-1.2-SYNTAX` | The SWHID grammar: core identifier (scheme version, object type, object id) and its qualifiers. Index row Y06. |  |
+| `APPLE-PRIVACY-MANIFEST` | The privacy manifest keys NSPrivacyTracking, NSPrivacyTrackingDomains, NSPrivacyCollectedDataTypes and NSPrivacyAccessedAPITypes, with their value enumerations. Index row R10. |  |
+| `GLICKMAN-GLICKO-2-2022` | The Glicko-2 rating system: each player's rating, rating deviation and volatility, the system constant tau and the rating-period update. Index row K08. |  |
+| `GOOGLE-GA4-RECOMMENDED-EVENTS` | The GA4 recommended events and their parameters, including the game events. Index row W11. |  |
+| `GOOGLE-SRE-BOOK-CH4-SLO` | The SRE definitions of SLI, SLO and SLA, and the SLO structure SLI ≤ target or lower bound ≤ SLI ≤ upper bound. Index row W01. |  |
+| `GSF-SCI-1.1` | The SCI methodology: SCI = (O + M) per R, O = E * I, M = TE * TS * RS, and the suggested functional units. Index row X07. |  |
+| `ITU-R-BS-1770-5` | K-weighted, gated loudness measurement: channel weightings, 400 ms gating blocks overlapping by 75%, the absolute threshold of -70 LKFS and the relative threshold. Index row I01. |  |
+| `MQM-FULL-TYPOLOGY-2024-03-07` | The full MQM 2.0 error typology: the seven high-level error type dimensions and their hierarchical subtypes. ASTM F2575 remains paywalled. Index row N09. |  |
+| `MSR-TRUESKILL-NIPS-2006` | The TrueSkill model: a Gaussian skill belief per player (mean and standard deviation), performance variance, dynamics variance and draw margin. Index row K09. |  |
+| `RECAST-DETOUR-NAVMESH-H` | The Detour navigation mesh data structures: tiles, polygons, links, off-mesh connections and navigation mesh parameters. Index row J07. |  |
+| `UNITY-MLAGENTS-AGENT-INFO-PROTO` | The protobuf definition of the per-agent information ML-Agents sends to the trainer: reward, done, max_step_reached, id, action_mask, observations, group_id and group_reward. Index row J13. |  |
 
 ## Claims that are not conformance IDs
 

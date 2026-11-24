@@ -1,0 +1,52 @@
+\begin{lexlean}{Catalog.GhgProtocolCorporate}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GhgProtocolCorporateGreenhouseGas,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cO2, fields: []},
+    {name: cH4, fields: []},
+    {name: n2O, fields: []},
+    {name: hFCs, fields: []},
+    {name: pFCs, fields: []},
+    {name: sF6, fields: []}
+  ]
+}
+
+inductive{
+  name: GhgProtocolCorporateConsolidationApproach,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: equityShare, fields: []},
+    {name: financialControl, fields: []},
+    {name: operationalControl, fields: []}
+  ]
+}
+
+inductive{
+  name: GhgProtocolCorporateScope,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: scope1, fields: []},
+    {name: scope2, fields: []},
+    {name: scope3, fields: []}
+  ]
+}
+
+structure{
+  name: GhgProtocolCorporate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: greenhouseGas, type: (Option GhgProtocolCorporateGreenhouseGas)},
+    {name: consolidationApproach, type: (Option GhgProtocolCorporateConsolidationApproach)},
+    {name: scope, type: (Option GhgProtocolCorporateScope)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
