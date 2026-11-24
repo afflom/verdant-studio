@@ -1,0 +1,36 @@
+\begin{lexlean}{Catalog.C3dHeaderV2}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: HeaderEvent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: on, type: Bool},
+    {name: time, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: C3dHeaderV2,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: parameterBlock, type: Nat},
+    {name: formatIdentifier, type: Nat},
+    {name: pointCount, type: Nat},
+    {name: analogSamplesPerFrame, type: Nat},
+    {name: firstFrame, type: Nat},
+    {name: lastFrame, type: Nat},
+    {name: maximumInterpolationGap, type: Nat},
+    {name: dataStart, type: Nat},
+    {name: analogSamplesPer3dFrame, type: Nat},
+    {name: events, type: (List HeaderEvent)},
+    {name: scaleFactor, type: (Int * Int)},
+    {name: frameRate, type: (Int * Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

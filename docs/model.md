@@ -152,3 +152,4 @@ Each construct and the citation that admits it.
 - `Studio.Engine.Gap`: der pattern from Studio.Engine.Coverage, Studio.Engine.Fidelity, Studio.Catalog.Requirement, D10
 - `Studio.Engine.Repin`: req REQ-ENGINE-TRACKING
 - `Studio.Engine.Link`: std PRISM-TEMPLATE-CONTRACT-2
+- `Catalog.C3dHeaderV2`: std C3D-USER-GUIDE row E07
