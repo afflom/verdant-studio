@@ -1,0 +1,15 @@
+{"evidence":{"identity":{"agent":"afflom","artifact":"docs/owner-decisions.md"}},"id":"REQ-ENGINE-FIDELITY","stakeholder":"afflom","statement":"Verdant Studio is designed and implemented to the highest specification of graphical detail and of visual and auditory immersion. Verdant Engine provides it with ultra-high-definition rendering of the highest quality and resolution and multimodal fidelity equal to the most high-end gaming systems."}
+{"evidence":{"identity":{"agent":"afflom","artifact":"docs/owner-decisions.md"}},"id":"REQ-ENGINE-RUNTIME-ONLY","stakeholder":"afflom","statement":"The Verdant Studio model inside verdant-engine is a contrived proof of concept. Verdant Studio binds only Verdant Engine's runtime capabilities and takes no construct, design or view from that proof of concept."}
+{"evidence":{"identity":{"agent":"afflom","artifact":"docs/owner-decisions.md"}},"id":"REQ-ENGINE-TRACKING","stakeholder":"afflom","statement":"Verdant Studio tracks Verdant Engine releases, so that it always gets the latest Verdant Engine enhancements and updates."}
+{"construct":"Studio.Engine.Release","std":{"authority":"VERDANT-ENGINE-RELEASE-LEDGER-2.20.1"}}
+{"construct":"Studio.Engine.Capability","std":{"authority":"VERDANT-ENGINE-IDS-2.20.1"}}
+{"construct":"Studio.Engine.EngineAuthority","std":{"authority":"VERDANT-ENGINE-AUTHORITIES-2.20.1"}}
+{"construct":"Studio.Engine.StandardBinding","std":{"authority":"VERDANT-ENGINE-STANDARDS-LOCK-2.20.1"}}
+{"construct":"Studio.Engine.SoleSubstrate","req":"REQ-D1"}
+{"construct":"Studio.Engine.Scope","req":"REQ-ENGINE-RUNTIME-ONLY"}
+{"construct":"Studio.Engine.Fidelity","req":"REQ-ENGINE-FIDELITY"}
+{"construct":"Studio.Engine.Coverage","der":{"check":"VS-04","inputs":["Studio.Engine.Capability","Studio.Engine.EngineAuthority","Studio.Engine.StandardBinding","Studio.Engine.Scope","Studio.Catalog.Mapping","D1"],"rule":"pattern"}}
+{"construct":"Studio.Engine.Gap","der":{"check":"VS-04","inputs":["Studio.Engine.Coverage","Studio.Engine.Fidelity","Studio.Catalog.Requirement","D10"],"rule":"pattern"}}
+{"construct":"Studio.Engine.Repin","req":"REQ-ENGINE-TRACKING"}
+{"construct":"Studio.Engine.Link","std":{"authority":"PRISM-TEMPLATE-CONTRACT-2"}}
+
