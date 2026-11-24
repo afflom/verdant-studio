@@ -282,14 +282,33 @@ definition{
 }
 
 definition{
+  name: enumName,
+  parameters: [value : LexLeanStd.Json::Json],
+  result: (Option Bytes),
+  body: (match value
+    | LexLeanStd.Json::Json.JStr text => (let name : Bytes := (camel text); (if (nameable name) then (ctor Option.some [Bytes] name) else (ctor Option.none [Bytes])))
+    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (negative && (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
+    | LexLeanStd.Json::Json.JBool flag => (ctor Option.none [Bytes])
+    | LexLeanStd.Json::Json.JArr items => (ctor Option.none [Bytes])
+    | LexLeanStd.Json::Json.JObj members => (ctor Option.none [Bytes])
+    | LexLeanStd.Json::Json.JNil => (ctor Option.none [Bytes])
+    | LexLeanStd.Json::Json.JItem head rest => (ctor Option.none [Bytes])
+    | LexLeanStd.Json::Json.JMember key item rest => (ctor Option.none [Bytes])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: constructorsOf,
-  parameters: [values : (List Bytes)],
+  parameters: [values : (List LexLeanStd.Json::Json), named : (List Bytes)],
   result: (Result (List Bytes) Bytes),
   body: (match values
     | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
-    | List.cons head rest => (let name : Bytes := (camel head); (if (nameable name) then (match (constructorsOf rest)
-      | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
-      | Result.ok others => (ctor Result.ok [(List Bytes), Bytes] (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: []}") (nil Bytes))))) others))) else (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable enum value ") (cons head (nil Bytes)))))))),
+    | List.cons head rest => (match (enumName head)
+      | Option.none => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable enum value ") (cons (LexLeanStd.Json::writeJson head) (nil Bytes)))))
+      | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two enum values derive the constructor name ") (cons name (cons (Studio.Doc::lit " (a string is named in camel case, an integer n is named nN, and a negative one nMinusN)") (nil Bytes)))))) else (match (constructorsOf rest (cons name named))
+        | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+        | Result.ok others => (ctor Result.ok [(List Bytes), Bytes] (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: []}") (nil Bytes))))) others)))))),
   recursive_argument: values,
   axioms: [Quot.sound, propext],
   executable: true
@@ -300,7 +319,7 @@ definition{
   parameters: [name : Bytes, schema : LexLeanStd.Json::Json],
   result: (Result (Bytes * (List Job)) Bytes),
   body: (match (Studio.Doc::field schema (Studio.Doc::lit "enum"))
-    | Option.some values => (match (constructorsOf (Studio.Doc::strings (Studio.Doc::spineItems values)))
+    | Option.some values => (match (constructorsOf (Studio.Doc::spineItems values) (nil Bytes))
       | Result.error reason => (refused reason name)
       | Result.ok constructors => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "inductive{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  constructors: [\n") (cons (joinWith constructors (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ]\n}\n") (nil Bytes))))))) (nil Job)))
     | Option.none => (match (fieldsOf name (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "properties"))) (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field schema (Studio.Doc::lit "required")))))
