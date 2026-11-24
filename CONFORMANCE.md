@@ -387,6 +387,13 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WASM-3.0-SPECTEC-SYNTAX-MODULES` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of modules, at tag wg-3.0. Index row H04. |  |
 | `WASM-3.0-SPECTEC-SYNTAX-TYPES` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of types, at tag wg-3.0. Index row H04. |  |
 | `WASM-3.0-SPECTEC-SYNTAX-VALUES` | The machine-readable SpecTec source of the WebAssembly 3.0 abstract syntax of values, at tag wg-3.0. Index row H04. |  |
+| `CVE-RECORD-FORMAT-5.2.0-ADP-TAGS` | The schema/tags/adp-tags.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:tags/adp-tags.json". Index row T10. |  |
+| `CVE-RECORD-FORMAT-5.2.0-CNA-TAGS` | The schema/tags/cna-tags.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:tags/cna-tags.json". Index row T10. |  |
+| `CVE-RECORD-FORMAT-5.2.0-CVSS-V2.0` | The schema/imports/cvss/cvss-v2.0.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:imports/cvss/cvss-v2.0.json". Index row T10. |  |
+| `CVE-RECORD-FORMAT-5.2.0-CVSS-V3.0` | The schema/imports/cvss/cvss-v3.0.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:imports/cvss/cvss-v3.0.json". Index row T10. |  |
+| `CVE-RECORD-FORMAT-5.2.0-CVSS-V3.1` | The schema/imports/cvss/cvss-v3.1.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:imports/cvss/cvss-v3.1.json". Index row T10. |  |
+| `CVE-RECORD-FORMAT-5.2.0-CVSS-V4.0` | The schema/imports/cvss/cvss-v4.0.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:imports/cvss/cvss-v4.0.json". Index row T10. |  |
+| `CVE-RECORD-FORMAT-5.2.0-REFERENCE-TAGS` | The schema/tags/reference-tags.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:tags/reference-tags.json". Index row T10. |  |
 
 ## Claims that are not conformance IDs
 
