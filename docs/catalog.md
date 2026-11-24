@@ -276,7 +276,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **U02** Digital Fairness Act (proposal, November 2026) (Monetization, consumer protection, and virtual economies), not reached from any origin: exactMatch EU-COM-2026-1100-DFA (staged)
 - **U03** Unfair Commercial Practices Directive (2005/29/EC) and Consumer Rights Directive (2011/83/EU) (Monetization, consumer protection, and virtual economies), not reached from any origin: narrowMatch EU-DIR-2005-29 (staged); narrowMatch EU-DIR-2011-83 (staged)
 - **U04** UK loot box industry principles (Ukie, 2023) (Monetization, consumer protection, and virtual economies), not reached from any origin: exactMatch UK-DCMS-LOOT-BOXES-INDUSTRY-PROTECTIONS (staged)
-- **U05** Japan Act against Unjustifiable Premiums (kompu gacha ban, 2012) and JOGA guidelines (Monetization, consumer protection, and virtual economies), not reached from any origin: narrowMatch JP-ACT-134-1962 (staged)
+- **U05** Japan Act against Unjustifiable Premiums (kompu gacha ban, 2012) and JOGA guidelines (Monetization, consumer protection, and virtual economies): narrowMatch JP-ACT-134-1962 (staged)
 - **U06** Probability disclosure rules (China 2017; Korea 2024; Apple; Google) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U07** FTC enforcement on dark patterns (Epic Games 2022 order) (Monetization, consumer protection, and virtual economies), not reached from any origin: exactMatch US-FTC-EPIC-CONSENT-88FR354 (staged)
 - **U08** Revenue recognition: ASC 606 / IFRS 15 (Monetization, consumer protection, and virtual economies), not reached from any origin: narrowMatch IFRS-15 (staged)
