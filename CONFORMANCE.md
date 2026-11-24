@@ -409,6 +409,10 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `OPENALEX-10.1201-B22101-23` | Publisher-supplied abstract of DOI 10.1201/b22101-23, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B03. |  |
 | `OPENALEX-10.1201-B22101-5` | Publisher-supplied abstract of DOI 10.1201/b22101-5, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B03. |  |
 | `OPENALEX-10.4324-9781315769189-8` | Publisher-supplied abstract of DOI 10.4324/9781315769189-8, as indexed by OpenAlex (CC0). Public source for all-source inference of index row C03. |  |
+| `W3C-XML-1.0-5E` | The XML 1.0 syntax, well-formedness constraints and character model that a Verdant Studio XML reader implements clause by clause. |  |
+| `W3C-XML-NAMES-1.0-3E` | Qualified names, namespace declarations and their scoping, which the XML reader applies to every element and attribute name. |  |
+| `W3C-XSD-1.1-PART1` | The XSD component model (element and attribute declarations, complex types, model groups, import and include) that the schema translator maps to LexLean types. |  |
+| `W3C-XSD-1.1-PART2` | The built-in datatypes and facets (enumeration, restriction) that the schema translator maps to LexLean value types. |  |
 
 ## Claims that are not conformance IDs
 

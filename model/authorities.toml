@@ -6271,3 +6271,71 @@ statement = "Publisher-supplied abstract of DOI 10.4324/9781315769189-8, as inde
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "W3C-XML-1.0-5E"
+name = "Extensible Markup Language (XML) 1.0 (Fifth Edition)"
+issuer = "W3C"
+edition = "W3C Recommendation 2008-11-26"
+canonical_id = "https://www.w3.org/TR/xml/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://www.w3.org/TR/2008/REC-xml-20081126/Overview.html"
+media_type = "text/html"
+license = "W3C Software and Document License"
+redistribution = "redistributable"
+statement = "The XML 1.0 syntax, well-formedness constraints and character model that a Verdant Studio XML reader implements clause by clause."
+artifact = "authorities/W3C-XML-1.0-5E/Overview.html"
+checksum = "f58a4b9e1e5b8bac13fb55c4e5c7c8c5e2c176aa45ee68e2f1ab2498511927ec"
+realized_by = []
+
+[[authority]]
+id = "W3C-XML-NAMES-1.0-3E"
+name = "Namespaces in XML 1.0 (Third Edition)"
+issuer = "W3C"
+edition = "W3C Recommendation 2009-12-08"
+canonical_id = "https://www.w3.org/TR/xml-names/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://www.w3.org/TR/2009/REC-xml-names-20091208/Overview.html"
+media_type = "text/html"
+license = "W3C Software and Document License"
+redistribution = "redistributable"
+statement = "Qualified names, namespace declarations and their scoping, which the XML reader applies to every element and attribute name."
+artifact = "authorities/W3C-XML-NAMES-1.0-3E/Overview.html"
+checksum = "b4a649e5fdab9852d68eca21442481599164949bcdee5549f2ec7e38fb3cd3a8"
+realized_by = []
+
+[[authority]]
+id = "W3C-XSD-1.1-PART1"
+name = "W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures"
+issuer = "W3C"
+edition = "W3C Recommendation 2012-04-05"
+canonical_id = "https://www.w3.org/TR/xmlschema11-1/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://www.w3.org/TR/2012/REC-xmlschema11-1-20120405/structures.html"
+media_type = "text/html"
+license = "W3C Software and Document License"
+redistribution = "redistributable"
+statement = "The XSD component model (element and attribute declarations, complex types, model groups, import and include) that the schema translator maps to LexLean types."
+artifact = "authorities/W3C-XSD-1.1-PART1/structures.html"
+checksum = "5ffb773f81fb81cfc9ac54dfb871c333cefb12fbdffe4caeb28170054b21fc6a"
+realized_by = []
+
+[[authority]]
+id = "W3C-XSD-1.1-PART2"
+name = "W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes"
+issuer = "W3C"
+edition = "W3C Recommendation 2012-04-05"
+canonical_id = "https://www.w3.org/TR/xmlschema11-2/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html"
+media_type = "text/html"
+license = "W3C Software and Document License"
+redistribution = "redistributable"
+statement = "The built-in datatypes and facets (enumeration, restriction) that the schema translator maps to LexLean value types."
+artifact = "authorities/W3C-XSD-1.1-PART2/datatypes.html"
+checksum = "cc2ae20cdeab02600c73fd13f1cc31dbbdd61f62aa455026fa84388b540443b8"
+realized_by = []
