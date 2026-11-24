@@ -9,3 +9,7 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- Online safety, community, user-generated content, and esports, row S03: **person acting on behalf of a trader** is onBehalfOf of intermediary service under EU-REG-2022-2065 (constraint)
+  > including through any person acting in his or her name or on his or her behalf
+- Online safety, community, user-generated content, and esports, row S03: **recipient of the service** is consumer of intermediary service under EU-REG-2022-2065 (constraint)
+  > recipient of the service means any natural or legal person who uses an intermediary service
