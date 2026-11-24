@@ -2395,3 +2395,54 @@ statement = "The WebAuthn Level 3 API: its WebIDL dictionaries and enumerations 
 artifact = "authorities/W3C-WEBAUTHN-3-20260825/Overview.html"
 checksum = "157030c980d44a3ce4b1ec5bcfaa16790c7dfefac20709af6ed2b11c7120970b"
 realized_by = []
+
+[[authority]]
+id = "DORA-SOFTWARE-DELIVERY-METRICS"
+name = "DORA's software delivery performance metrics"
+issuer = "DORA (Google Cloud)"
+edition = "five-metric model, retrieved 2026-11-24"
+canonical_id = "https://dora.dev/guides/dora-metrics-four-keys/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://dora.dev/guides/dora-metrics-four-keys/"
+media_type = "text/html"
+license = "Copyright Google LLC"
+redistribution = "citation-only"
+statement = "The five software delivery performance metrics, grouped into throughput and instability. Index row H14."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "FAGERHOLT-LORENTZON-BEYOND-THE-HUD-2009"
+name = "Beyond the HUD: User Interfaces for Increased Player Immersion in FPS Games"
+issuer = "Erik Fagerholt and Magnus Lorentzon, Chalmers University of Technology"
+edition = "Master of Science Thesis, 2009"
+canonical_id = "https://odr.chalmers.se/handle/20.500.12380/111921"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://odr.chalmers.se/server/api/core/bitstreams/fd267f70-c295-4eae-ae01-af5db676e61d/content"
+media_type = "application/pdf"
+license = "Non-exclusive publication right granted to Chalmers"
+redistribution = "citation-only"
+statement = "The UI design space of FPS games: the fiction and spatiality dimensions and the six categories of UI elements (section 7.3). Index row L10."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "GGPO-GGPONET-H"
+name = "GGPO SDK public header ggponet.h"
+issuer = "GGPO (Tony Cannon)"
+edition = "commit 7ddadef8546a7d99ff0b3530c6056bc8ee4b9c0a"
+canonical_id = "https://github.com/pond3r/ggpo"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://raw.githubusercontent.com/pond3r/ggpo/7ddadef8546a7d99ff0b3530c6056bc8ee4b9c0a/src/include/ggponet.h"
+media_type = "text/x-c"
+license = "MIT"
+redistribution = "citation-only"
+statement = "GGPO rollback networking SDK types: player types, event codes, error codes and network statistics. Index row K03."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
