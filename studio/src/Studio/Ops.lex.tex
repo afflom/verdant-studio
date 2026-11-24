@@ -487,6 +487,27 @@ definition{
 }
 
 definition{
+  name: classicalChoice,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "Classical") (cons (Studio.Doc::lit ".choice") (nil Bytes)))),
+  executable: true
+}
+
+definition{
+  name: firstClassical,
+  parameters: [seen : Seen, paths : (List Bytes)],
+  result: (Option Bytes),
+  body: (match paths
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (match (LexLeanStd.Text::find (contents seen head) (classicalChoice))
+      | Option.some position => (ctor Option.some [Bytes] head)
+      | Option.none => (firstClassical seen rest))),
+  recursive_argument: paths,
+  executable: true
+}
+
+definition{
   name: planCheck,
   parameters: [seen : Seen],
   result: Plan,
@@ -496,7 +517,11 @@ definition{
       | List.cons broken others => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "register is not JSON: ") (cons broken (cons 0x0a (nil Bytes))))))
       | List.nil => (match (unlisted (project seen listed) (Studio.Check::concat (moduleRoots) (walked (project seen listed) false)))
       | List.cons head rest => (ctor Plan.lists (cons head rest))
-      | List.nil => (let verdict : (Bool * Bytes) := (Studio.Check::verdict (record Studio.Check::Inputs {names := (record Studio.Check::Names {authorities := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))), rows := (catalogRows seen), requirements := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")), ids := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/ids.toml"))), constructs := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct"))}), admissions := (arrayOf seen (Studio.Doc::lit "model/admissions.json")), strata := (arrayOf seen (Studio.Doc::lit "model/strata.json")), locked := (Studio.Doc::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))), modules := (walked (project seen listed) true)})); (if (first verdict) then (ctor Plan.done (nil (Bytes * Bytes)) (second verdict)) else (ctor Plan.refuse (second verdict))))))),
+      | List.nil => (match (missing seen (walked (project seen listed) true))
+      | List.cons head rest => (ctor Plan.reads (cons head rest))
+      | List.nil => (match (firstClassical seen (walked (project seen listed) true))
+      | Option.some path => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: classical choice is an assumption, and ") (cons path (cons (Studio.Doc::lit " depends on it\n") (nil Bytes))))))
+      | Option.none => (let verdict : (Bool * Bytes) := (Studio.Check::verdict (record Studio.Check::Inputs {names := (record Studio.Check::Names {authorities := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))), rows := (catalogRows seen), requirements := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")), ids := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/ids.toml"))), constructs := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct"))}), admissions := (arrayOf seen (Studio.Doc::lit "model/admissions.json")), strata := (arrayOf seen (Studio.Doc::lit "model/strata.json")), locked := (Studio.Doc::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))), modules := (walked (project seen listed) true)})); (if (first verdict) then (ctor Plan.done (nil (Bytes * Bytes)) (second verdict)) else (ctor Plan.refuse (second verdict))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }

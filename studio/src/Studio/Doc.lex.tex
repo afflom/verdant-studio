@@ -6,13 +6,44 @@
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
+  name: asciiTable,
+  parameters: [],
+  result: (List String),
+  body: (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "\t" (cons "\n" (cons "" (cons "" (cons "\r" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons " " (cons "!" (cons "\"" (cons "#" (cons "$" (cons "\u0025" (cons "&" (cons "'" (cons "(" (cons ")" (cons "*" (cons "+" (cons "," (cons "-" (cons "." (cons "/" (cons "0" (cons "1" (cons "2" (cons "3" (cons "4" (cons "5" (cons "6" (cons "7" (cons "8" (cons "9" (cons ":" (cons ";" (cons "<" (cons "=" (cons ">" (cons "?" (cons "@" (cons "A" (cons "B" (cons "C" (cons "D" (cons "E" (cons "F" (cons "G" (cons "H" (cons "I" (cons "J" (cons "K" (cons "L" (cons "M" (cons "N" (cons "O" (cons "P" (cons "Q" (cons "R" (cons "S" (cons "T" (cons "U" (cons "V" (cons "W" (cons "X" (cons "Y" (cons "Z" (cons "[" (cons "\\" (cons "]" (cons "^" (cons "_" (cons "`" (cons "a" (cons "b" (cons "c" (cons "d" (cons "e" (cons "f" (cons "g" (cons "h" (cons "i" (cons "j" (cons "k" (cons "l" (cons "m" (cons "n" (cons "o" (cons "p" (cons "q" (cons "r" (cons "s" (cons "t" (cons "u" (cons "v" (cons "w" (cons "x" (cons "y" (cons "z" (cons "{" (cons "|" (cons "}" (cons "~" (cons "" (nil String))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiPiece,
+  parameters: [raw : UInt8],
+  result: String,
+  body: (match (prim index (asciiTable) (prim to_nat raw : Nat) : (Option String))
+    | Option.none => "?"
+    | Option.some piece => piece),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: asciiPieces,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat],
+  result: (List String),
+  body: (match remaining
+    | Nat.zero => (nil String)
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => (nil String)
+      | Option.some raw => (cons (asciiPiece raw) (asciiPieces value (offset + 1) rest)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: text,
   parameters: [value : Bytes],
   result: String,
-  body: (match (prim utf8_decode value : (Option String))
-    | Option.none => ""
-    | Option.some decoded => decoded),
-  axioms: [Classical.choice, Quot.sound, propext],
+  body: (prim join (asciiPieces value 0 (prim length value : Nat)) "" : String),
+  axioms: [Quot.sound, propext],
   executable: true
 }
 

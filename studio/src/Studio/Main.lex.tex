@@ -48,7 +48,7 @@ definition{
     | List.nil => (nil String)
     | List.cons head rest => (cons (Studio.Doc::text head) (texts rest))),
   recursive_argument: items,
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -60,7 +60,7 @@ definition{
     | List.nil => (nil (String * String))
     | List.cons head rest => (cons ((Studio.Doc::text (first head)), (Studio.Doc::text (second head))) (pairTexts rest))),
   recursive_argument: items,
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -119,7 +119,7 @@ definition{
   body: (match (project session writes)
     | List.nil => (quit session (0 : UInt8) (project session message) 0x)
     | List.cons head rest => ((withPhase session 5 (first head)), (ctor LexLeanStd.Host::Request.createDir (Studio.Doc::text (parentOf (first head)))))),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -137,7 +137,7 @@ definition{
     | Studio.Ops::Plan.run program arguments tag => ((record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 3, current := tag, program := program, arguments := arguments, handle := 0, writes := (project session writes), message := (project session message)}), (ctor LexLeanStd.Host::Request.createDir "target"))
     | Studio.Ops::Plan.done writes message => (writeNext (record Session {args := (project session args), environment := (project session environment), seen := (project session seen), phase := 5, current := 0x, program := (project session program), arguments := (project session arguments), handle := (project session handle), writes := writes, message := message}))
     | Studio.Ops::Plan.refuse reason => (quit session (1 : UInt8) 0x reason)),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -146,7 +146,7 @@ definition{
   parameters: [session : Session, found : (Option Bytes)],
   result: (Session * LexLeanStd.Host::Request),
   body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (cons ((project session current), found) (project seen files)), listed := (project seen listed), ran := (project seen ran)})))),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -155,7 +155,7 @@ definition{
   parameters: [session : Session, names : (List Bytes)],
   result: (Session * LexLeanStd.Host::Request),
   body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (project seen files), listed := (cons ((project session current), names) (project seen listed)), ran := (project seen ran)})))),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -164,7 +164,7 @@ definition{
   parameters: [session : Session],
   result: (Session * LexLeanStd.Host::Request),
   body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (project seen files), listed := (project seen listed), ran := (cons (project session current) (project seen ran))})))),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -173,7 +173,7 @@ definition{
   parameters: [session : Session],
   result: (Session * LexLeanStd.Host::Request),
   body: ((withPhase session 4 (project session current)), (ctor LexLeanStd.Host::Request.spawn (record LexLeanStd.Host::Child {program := (Studio.Doc::text (project session program)), arguments := (texts (project session arguments)), directory := ".", environment := (pairTexts (project session environment)), output := (Studio.Doc::text (childOut)), errors := (Studio.Doc::text (childErr))}))),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -249,7 +249,7 @@ definition{
         | Option.some code => (if (succeeded code) then (recordRan session) else ((withPhase session 7 (project session current)), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text (childOut)))))))
     | LexLeanStd.Host::Event.stat result => (failed session (Studio.Doc::lit "internal: unexpected stat"))
     | LexLeanStd.Host::Event.canonical result => (failed session (Studio.Doc::lit "internal: unexpected canonical")))),
-  axioms: [Classical.choice, Quot.sound, propext],
+  axioms: [Quot.sound, propext],
   executable: true,
   production: {effects: [allocation, files, overflow, process, recursion], targets: [rust-std]}
 }
