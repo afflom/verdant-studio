@@ -68,6 +68,8 @@ jobs:
           set -euo pipefail
           mkdir -p target/input
           cat > target/input/change.patch <<< "$INPUT"
+          # A patch larger than a dispatch input can carry arrives gzipped and base64-encoded.
+          if head -c 4 target/input/change.patch | grep -q '^H4sI'; then base64 -d < target/input/change.patch | gunzip > target/input/change.diff; mv target/input/change.diff target/input/change.patch; fi
           outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^README.md$' || true)
           if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src and README.md, not: $outside"; exit 1; fi
           git apply target/input/change.patch
@@ -88,7 +90,32 @@ jobs:
           rm -rf certified
           cp -r studio/.lexlean/production/*/ certified
           rm -f certified/packages/rust-std/verdant_studio/Cargo.lock
-          { echo "proposed a change to the API's sources, exported again as $(basename studio/.lexlean/production/*/)"; git diff --stat -- studio/src README.md; } > target/operation.txt
+          # The owner reviews this pull request, so its body leads with the proposer's own
+          # account (the prose before the first diff), then the definitions it changes.
+          awk 'index($0, "diff --git") == 1 { exit } { print }' target/input/change.patch > target/summary.md
+          if ! grep -q '[[:alnum:]]' target/summary.md; then
+            echo "::error::propose-command needs a plain-language account before the patch: what changes and why, the requirement or decision it serves, what it unblocks, and the risk and how it was verified"
+            exit 1
+          fi
+          git diff -U0 -- studio/src | awk 'index($0, "+++ b") == 1 { file = substr($0, 7) } index($0, "@@") == 1 { parts = split($3, at, ","); start = substr(at[1], 2); count = (parts > 1) ? at[2] : 1; print file " " ((count > 0) ? start + count - 1 : start) }' > target/hunks.txt
+          {
+            cat target/summary.md
+            echo
+            echo "### Definitions this adds or changes"
+            echo
+            while read -r file line; do head -n "$line" "$file" | grep '^  name: ' | tail -n 1 | awk '{ sub("^  name: ", "- `"); sub(",$", "`"); print }'; done < target/hunks.txt | sort -u
+            echo
+            slash=/
+            echo "<details><summary>Export and files<${slash}summary>"
+            echo
+            echo "Exported again with Lean as $(basename studio/.lexlean/production/*/). The studio check replays it, then runs check, build and publish."
+            echo
+            echo '```'
+            git diff --stat -- studio/src README.md
+            echo '```'
+            echo
+            echo "<${slash}details>"
+          } > target/operation.txt
       - id: command
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
@@ -157,7 +184,7 @@ jobs:
             target/release/verdant_studio next $skipped > target/next.txt || true
             echo "next: $(echo "$EPOCHREALTIME - $t0" | bc) s for one call over $(find model -name '*.json*' | wc -l) model files" | tee -a "$GITHUB_STEP_SUMMARY"
             if [ "${op#waiting}" != "$op" ]; then echo "$op" > target/waiting.txt; else : > target/waiting.txt; fi
-            for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.title == "verdant_studio propose-command") | .number'); do
+            for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.title | startswith("verdant_studio propose-command")) | .number'); do
               echo "waiting owner review: #${pr} changes the API, and only the owner merges it" >> target/waiting.txt
             done
             if [ -s target/waiting.txt ]; then tee -a target/operation.txt < target/waiting.txt >> "$GITHUB_STEP_SUMMARY"; fi
@@ -187,7 +214,9 @@ jobs:
             grep -E 'GH013|error|rejected|path:' target/push.err | head -20 | sed 's/^/::error::/'
             exit 1
           fi
-          gh pr create --head "$branch" --base main --title "verdant_studio $ARGS" --body-file target/operation.txt
+          title="verdant_studio $ARGS"
+          if [ "$ARGS" = propose-command ]; then title="verdant_studio propose-command: $(grep -m 1 '[[:alnum:]]' target/summary.md | awk '{ sub("^[# ]*", ""); print }')"; fi
+          gh pr create --head "$branch" --base main --title "$title" --body-file target/operation.txt
           gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
           if [ "$ARGS" = propose-command ]; then
             echo "::notice::a change to the API itself waits for the owner's review"
