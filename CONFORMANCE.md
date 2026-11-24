@@ -238,6 +238,8 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `ISTQB-CT-GAME-1.0.1` | The CT-GaMe syllabus: its chapters, learning objectives, typical roles of the game development team and lifecycle stages. Index row O04. |  |
 | `OWASP-GAME-SECURITY-FRAMEWORK` | The GSF risk components: attack surfaces, vulnerabilities, exploits, attacker goals, negative outcomes and defenses. Index row T01. |  |
 | `IAB-OPENRTB-2.6` | The OpenRTB 2.6 bid request (section 3.2) and bid response (section 4.2) objects and their attributes. Index row U10. |  |
+| `BR-PORTARIA-MJSP-502-2021` | The Brazilian indicative classification (ClassInd) process: the categories (Art. 11), the thematic axes (Art. 12), and the definitive (Art. 17) and self-classification (Art. 18) symbols. Index row Q08. |  |
+| `IARC-RATINGS-DEFINITIONS` | The IARC ratings definitions: the generic IARC age ratings 3+, 7+, 12+, 16+ and 18+, and the ratings of each participating rating authority. Index row Q03. |  |
 
 ## Claims that are not conformance IDs
 
