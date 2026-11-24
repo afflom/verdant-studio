@@ -9,3 +9,19 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- Security, anti-cheat, and supply chain, row T14: **manufacturer** is producer of product with digital elements under EU-REG-2024-2847 (constraint)
+  > manufacturer means a natural or legal person who develops or manufactures products with digital elements
+- Security, anti-cheat, and supply chain, row T14: **authorised representative** is onBehalfOf of product with digital elements under EU-REG-2024-2847 (constraint)
+  > authorised representative means a natural or legal person established within the Union who has received a written mandate from a manufacturer to act on its behalf
+- Security, anti-cheat, and supply chain, row T09: **BOM author** is producer of BOM under ECMA-424-CYCLONEDX-1.6 (constraint)
+  > The person(s) who created the BOM.
+- Security, anti-cheat, and supply chain, row T09: **BOM manufacturer** is producer of BOM under ECMA-424-CYCLONEDX-1.6 (constraint)
+  > The organization that created the BOM.
+- Security, anti-cheat, and supply chain, row T10: **container provider (CNA or ADP)** is attributed of CVE record container under CVE-RECORD-FORMAT-5.2.0 (constraint)
+  > Details related to the information container provider (CNA or ADP).
+- Security, anti-cheat, and supply chain, row T12: **WebAuthn Relying Party** is consumer of Web Authentication API under W3C-WEBAUTHN-3-20260825 (constraint)
+  > The entity whose web application utilizes the Web Authentication API to register and authenticate users.
+- Security, anti-cheat, and supply chain, row T15: **payment service user** is consumer of payment service under EU-DIR-2015-2366 (constraint)
+  > ‘payment service user’ means a natural or legal person making use of a payment service in the capacity of payer, payee, or both
+- Security, anti-cheat, and supply chain, row T15: **agent** is onBehalfOf of payment service under EU-DIR-2015-2366 (constraint)
+  > ‘agent’ means a natural or legal person who acts on behalf of a payment institution in providing payment services
