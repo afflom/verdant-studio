@@ -11,6 +11,8 @@ template below.
 | `next` | Prints the next operation the model derives (today: each staged binding whose authority is not pinned yet) |
 | `stage-bindings JSONL` | Stages one PrismPM binding per line in `model/bindings/`; on merge, `operate` runs `advance`, which runs every operation `next` derives, in one pull request |
 | `admit JSONL` | Admits requirements (`id`, `statement`, `stakeholder`, `evidence`) and constructs (`construct` with one `req`, `std` or `der` citation), one per line; refuses names already in the model |
+| `record-decision JSONL` | Records the owner's decisions verbatim (`agent`, `at`, `quote`, `requirements`) in `model/owner-decisions.json`; `publish` generates `docs/owner-decisions.md` from it |
+| `stage-encodings JSONL` | Stages one encoding per line (`name`, `schema`, `citation`) in `model/encodings/`; on merge, `advance` admits each through `admit-encoding` |
 | `agenda` | Lists the work the model shows open (today: standards-index rows no construct cites) |
 | `merge-gate RULES` | Prints `merge` when the branch rules require the `studio` check, else `wait`; `operate` uses it to decide auto-merge |
 | `propose-command` (operate only) | Applies a patch to `studio/src` or `README.md`, exports the command again with Lean, and opens the App's pull request for the owner's review; it never auto-merges |
