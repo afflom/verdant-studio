@@ -1,0 +1,26 @@
+\begin{lexlean}{Catalog.FtcEndorsementGuides}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: FtcEndorsementGuidesDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: endorsement, fields: []},
+    {name: product, fields: []},
+    {name: expert, fields: []},
+    {name: clearAndConspicuous, fields: []}
+  ]
+}
+
+structure{
+  name: FtcEndorsementGuides,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definedTerm, type: (Option FtcEndorsementGuidesDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

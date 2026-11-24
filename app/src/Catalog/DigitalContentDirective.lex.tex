@@ -1,0 +1,35 @@
+\begin{lexlean}{Catalog.DigitalContentDirective}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: DigitalContentDirectiveDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: digitalContent, fields: []},
+    {name: digitalService, fields: []},
+    {name: goodsWithDigitalElements, fields: []},
+    {name: integration, fields: []},
+    {name: trader, fields: []},
+    {name: consumer, fields: []},
+    {name: price, fields: []},
+    {name: personalData, fields: []},
+    {name: digitalEnvironment, fields: []},
+    {name: compatibility, fields: []},
+    {name: functionality, fields: []},
+    {name: interoperability, fields: []},
+    {name: durableMedium, fields: []}
+  ]
+}
+
+structure{
+  name: DigitalContentDirective,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definedTerm, type: (Option DigitalContentDirectiveDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

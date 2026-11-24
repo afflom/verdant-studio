@@ -1,0 +1,38 @@
+\begin{lexlean}{Catalog.VideoGamePreservationExemption}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: VideoGamePreservationExemptionDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: completeGames, fields: []},
+    {name: ceasedToProvideAccess, fields: []},
+    {name: localGameplay, fields: []}
+  ]
+}
+
+inductive{
+  name: VideoGamePreservationExemptionExemptedClass,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: b19iA, fields: []},
+    {name: b19iB, fields: []},
+    {name: b19ii, fields: []},
+    {name: b19iii, fields: []}
+  ]
+}
+
+structure{
+  name: VideoGamePreservationExemption,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definedTerm, type: (Option VideoGamePreservationExemptionDefinedTerm)},
+    {name: exemptedClass, type: (Option VideoGamePreservationExemptionExemptedClass)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

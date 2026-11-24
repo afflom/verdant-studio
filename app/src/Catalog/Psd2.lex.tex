@@ -1,0 +1,82 @@
+\begin{lexlean}{Catalog.Psd2}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Psd2DefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: homeMemberState, fields: []},
+    {name: hostMemberState, fields: []},
+    {name: paymentService, fields: []},
+    {name: paymentInstitution, fields: []},
+    {name: paymentTransaction, fields: []},
+    {name: remotePaymentTransaction, fields: []},
+    {name: paymentSystem, fields: []},
+    {name: payer, fields: []},
+    {name: payee, fields: []},
+    {name: paymentServiceUser, fields: []},
+    {name: paymentServiceProvider, fields: []},
+    {name: paymentAccount, fields: []},
+    {name: paymentOrder, fields: []},
+    {name: paymentInstrument, fields: []},
+    {name: paymentInitiationService, fields: []},
+    {name: accountInformationService, fields: []},
+    {name: accountServicingPaymentServiceProvider, fields: []},
+    {name: paymentInitiationServiceProvider, fields: []},
+    {name: accountInformationServiceProvider, fields: []},
+    {name: consumer, fields: []},
+    {name: frameworkContract, fields: []},
+    {name: moneyRemittance, fields: []},
+    {name: directDebit, fields: []},
+    {name: creditTransfer, fields: []},
+    {name: funds, fields: []},
+    {name: valueDate, fields: []},
+    {name: referenceExchangeRate, fields: []},
+    {name: referenceInterestRate, fields: []},
+    {name: authentication, fields: []},
+    {name: strongCustomerAuthentication, fields: []},
+    {name: personalisedSecurityCredentials, fields: []},
+    {name: sensitivePaymentData, fields: []},
+    {name: uniqueIdentifier, fields: []},
+    {name: meansOfDistanceCommunication, fields: []},
+    {name: durableMedium, fields: []},
+    {name: microenterprise, fields: []},
+    {name: businessDay, fields: []},
+    {name: agent, fields: []},
+    {name: branch, fields: []},
+    {name: group, fields: []},
+    {name: electronicCommunicationsNetwork, fields: []},
+    {name: electronicCommunicationsService, fields: []},
+    {name: digitalContent, fields: []},
+    {name: acquiringOfPaymentTransactions, fields: []},
+    {name: issuingOfPaymentInstruments, fields: []},
+    {name: ownFunds, fields: []},
+    {name: paymentBrand, fields: []},
+    {name: coBadging, fields: []}
+  ]
+}
+
+inductive{
+  name: Psd2ScaElement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: knowledge, fields: []},
+    {name: possession, fields: []},
+    {name: inherence, fields: []}
+  ]
+}
+
+structure{
+  name: Psd2,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definedTerm, type: (Option Psd2DefinedTerm)},
+    {name: scaElement, type: (Option Psd2ScaElement)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,75 @@
+\begin{lexlean}{Catalog.Ccpa}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CcpaConsumerRight,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1798105, fields: []},
+    {name: n1798106, fields: []},
+    {name: n1798110, fields: []},
+    {name: n1798115, fields: []},
+    {name: n1798120, fields: []},
+    {name: n1798121, fields: []},
+    {name: n1798125, fields: []}
+  ]
+}
+
+inductive{
+  name: CcpaDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: advertisingAndMarketing, fields: []},
+    {name: aggregateConsumerInformation, fields: []},
+    {name: biometricInformation, fields: []},
+    {name: business, fields: []},
+    {name: businessPurpose, fields: []},
+    {name: collects, fields: []},
+    {name: commercialPurposes, fields: []},
+    {name: consent, fields: []},
+    {name: consumer, fields: []},
+    {name: contractor, fields: []},
+    {name: crossContextBehavioralAdvertising, fields: []},
+    {name: darkPattern, fields: []},
+    {name: deidentified, fields: []},
+    {name: designatedMethodsForSubmittingRequests, fields: []},
+    {name: device, fields: []},
+    {name: homepage, fields: []},
+    {name: household, fields: []},
+    {name: infer, fields: []},
+    {name: intentionallyInteracts, fields: []},
+    {name: nonpersonalizedAdvertising, fields: []},
+    {name: person, fields: []},
+    {name: personalInformation, fields: []},
+    {name: preciseGeolocation, fields: []},
+    {name: probabilisticIdentifier, fields: []},
+    {name: processing, fields: []},
+    {name: profiling, fields: []},
+    {name: pseudonymize, fields: []},
+    {name: research, fields: []},
+    {name: securityAndIntegrity, fields: []},
+    {name: sell, fields: []},
+    {name: sensitivePersonalInformation, fields: []},
+    {name: service, fields: []},
+    {name: serviceProvider, fields: []},
+    {name: share, fields: []},
+    {name: thirdParty, fields: []},
+    {name: uniqueIdentifier, fields: []},
+    {name: verifiableConsumerRequest, fields: []}
+  ]
+}
+
+structure{
+  name: Ccpa,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: consumerRight, type: (Option CcpaConsumerRight)},
+    {name: definedTerm, type: (Option CcpaDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
