@@ -176,3 +176,5 @@ Each construct and the citation that admits it.
 - `Catalog.SreServiceLevelObjective`: std GOOGLE-SRE-BOOK-CH4-SLO row W01
 - `Catalog.OpenRtbBidRequest`: std IAB-OPENRTB-2.6 row U10
 - `Catalog.OpenRtbBidResponse`: std IAB-OPENRTB-2.6 row U10
+- `Catalog.ClassIndClassificacaoIndicativa`: std BR-PORTARIA-MJSP-502-2021 row Q08
+- `Catalog.IarcGenericRating`: std IARC-RATINGS-DEFINITIONS row Q03
