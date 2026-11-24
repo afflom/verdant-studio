@@ -190,3 +190,5 @@ Each construct and the citation that admits it.
 - `Catalog.WasmPnn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
 - `Catalog.WasmVectype`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
 - `Catalog.WasmVnn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmVvternop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmVvtestop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
