@@ -192,3 +192,14 @@ Each construct and the citation that admits it.
 - `Catalog.WasmVnn`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
 - `Catalog.WasmVvternop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
 - `Catalog.WasmVvtestop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmDatatype`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmDim`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmExp`: std WASM-3.0-SPECTEC-SYNTAX-VALUES row H04
+- `Catalog.WasmFinal`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmHalf`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmMut`: std WASM-3.0-SPECTEC-SYNTAX-TYPES row H04
+- `Catalog.WasmSx`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmSz`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmVvbinop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmVvunop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.WasmZero`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
