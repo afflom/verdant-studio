@@ -1,0 +1,45 @@
+\begin{lexlean}{Catalog.Itil4PracticeGuideStructure}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Itil4PracticeGuideStructureDimension,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: valueStreamsAndProcesses, fields: []},
+    {name: organisationsAndPeople, fields: []},
+    {name: informationAndTechnology, fields: []},
+    {name: partnersAndSuppliers, fields: []}
+  ]
+}
+
+inductive{
+  name: Itil4PracticeGuideStructurePracticeGuideSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: aboutThisDocument, fields: []},
+    {name: generalInformation, fields: []},
+    {name: valueStreamsAndProcesses, fields: []},
+    {name: organisationsAndPeople, fields: []},
+    {name: informationAndTechnology, fields: []},
+    {name: partnersAndSuppliers, fields: []},
+    {name: importantReminder, fields: []},
+    {name: acknowledgments, fields: []},
+    {name: capabilityAssessmentAndDevelopment, fields: []},
+    {name: tipsForPracticeSuccess, fields: []}
+  ]
+}
+
+structure{
+  name: Itil4PracticeGuideStructure,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dimension, type: (Option Itil4PracticeGuideStructureDimension)},
+    {name: practiceGuideSection, type: (Option Itil4PracticeGuideStructurePracticeGuideSection)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

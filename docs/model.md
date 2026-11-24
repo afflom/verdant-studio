@@ -386,3 +386,11 @@ Each construct and the citation that admits it.
 - `Catalog.StageGateGate`: std COOPER-STAGE-GATE-1990 row A05
 - `Catalog.StageGateStage`: std COOPER-STAGE-GATE-1990 row A05
 - `Catalog.TransmediaStory`: std JENKINS-CONVERGENCE-CULTURE row C13
+- `Catalog.AicpaTrustServicesCriteria`: std AICPA-TSC-2017-POF-2022-NIST-XW row T07
+- `Catalog.CityImageElements`: std LYNCH-IMAGE-OF-THE-CITY-1960-CSISS row Z01
+- `Catalog.FpsLevelDesignPatterns`: std HULLETT-WHITEHEAD-FPS-LEVEL-PATTERNS-2010-PDF row Z04
+- `Catalog.Ieee2089AgeAppropriatePrinciples`: std IEEE-2089-2021-IEEE-SA-NEWS row R08
+- `Catalog.ImageOfTheCityBook`: std LYNCH-IMAGE-OF-THE-CITY-1960-OPENLIBRARY row Z01
+- `Catalog.IsoIec27002InformationSecurityControls`: std ISO-IEC-27002-2022-PREVIEW row T06
+- `Catalog.Itil4PracticeGuideStructure`: std AXELOS-ITIL-4-PEOPLECERT-PRACTICE-GUIDES row W02
+- `Catalog.ProspectRefugeTheory`: std APPLETON-EXPERIENCE-OF-LANDSCAPE-REV-EV1998 row Z06

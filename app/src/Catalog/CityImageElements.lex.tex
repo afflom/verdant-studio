@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.CityImageElements}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CityImageElementsElement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: paths, fields: []},
+    {name: edges, fields: []},
+    {name: districts, fields: []},
+    {name: nodes, fields: []},
+    {name: landmarks, fields: []}
+  ]
+}
+
+structure{
+  name: CityImageElements,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: element, type: (Option CityImageElementsElement)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

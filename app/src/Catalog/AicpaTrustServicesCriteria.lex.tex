@@ -1,0 +1,122 @@
+\begin{lexlean}{Catalog.AicpaTrustServicesCriteria}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AicpaTrustServicesCriteriaCriterion,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cC11, fields: []},
+    {name: cC12, fields: []},
+    {name: cC13, fields: []},
+    {name: cC14, fields: []},
+    {name: cC15, fields: []},
+    {name: cC21, fields: []},
+    {name: cC22, fields: []},
+    {name: cC23, fields: []},
+    {name: cC31, fields: []},
+    {name: cC32, fields: []},
+    {name: cC33, fields: []},
+    {name: cC34, fields: []},
+    {name: cC41, fields: []},
+    {name: cC42, fields: []},
+    {name: cC51, fields: []},
+    {name: cC52, fields: []},
+    {name: cC53, fields: []},
+    {name: cC61, fields: []},
+    {name: cC62, fields: []},
+    {name: cC63, fields: []},
+    {name: cC64, fields: []},
+    {name: cC65, fields: []},
+    {name: cC66, fields: []},
+    {name: cC67, fields: []},
+    {name: cC68, fields: []},
+    {name: cC71, fields: []},
+    {name: cC72, fields: []},
+    {name: cC73, fields: []},
+    {name: cC74, fields: []},
+    {name: cC75, fields: []},
+    {name: cC81, fields: []},
+    {name: cC91, fields: []},
+    {name: cC92, fields: []},
+    {name: a11, fields: []},
+    {name: a12, fields: []},
+    {name: a13, fields: []},
+    {name: c11, fields: []},
+    {name: c12, fields: []},
+    {name: pI11, fields: []},
+    {name: pI12, fields: []},
+    {name: pI13, fields: []},
+    {name: pI14, fields: []},
+    {name: pI15, fields: []},
+    {name: p11, fields: []},
+    {name: p21, fields: []},
+    {name: p31, fields: []},
+    {name: p32, fields: []},
+    {name: p41, fields: []},
+    {name: p42, fields: []},
+    {name: p43, fields: []},
+    {name: p51, fields: []},
+    {name: p52, fields: []},
+    {name: p61, fields: []},
+    {name: p62, fields: []},
+    {name: p63, fields: []},
+    {name: p64, fields: []},
+    {name: p65, fields: []},
+    {name: p66, fields: []},
+    {name: p67, fields: []},
+    {name: p71, fields: []},
+    {name: p81, fields: []}
+  ]
+}
+
+inductive{
+  name: AicpaTrustServicesCriteriaPrivacyCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: privacyCriteriaRelatedToNoticeAndCommunicationOfObjectivesRelatedToPrivacy, fields: []},
+    {name: privacyCriteriaRelatedToChoiceAndConsent, fields: []},
+    {name: privacyCriteriaRelatedToCollection, fields: []},
+    {name: privacyCriteriaRelatedToUseRetentionAndDisposal, fields: []},
+    {name: privacyCriteriaRelatedToAccess, fields: []},
+    {name: privacyCriteriaRelatedToDisclosureAndNotification, fields: []},
+    {name: privacyCriteriaRelatedToQuality, fields: []},
+    {name: privacyCriteriaRelatedToMonitoringAndEnforcement, fields: []}
+  ]
+}
+
+inductive{
+  name: AicpaTrustServicesCriteriaSeries,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cONTROLENVIRONMENT, fields: []},
+    {name: iNFORMATIONANDCOMMUNICATION, fields: []},
+    {name: rISKASSESSMENT, fields: []},
+    {name: mONITORINGACTIVITIES, fields: []},
+    {name: cONTROLACTIVITIES, fields: []},
+    {name: lOGICALANDPHYSICALACCESSCONTROLS, fields: []},
+    {name: sYSTEMOPERATIONS, fields: []},
+    {name: cHANGEMANAGEMENT, fields: []},
+    {name: rISKMITIGATION, fields: []},
+    {name: aDDITIONALCRITERIAFORAVAILABILITY, fields: []},
+    {name: aDDITIONALCRITERIAFORCONFIDENTIALITY, fields: []},
+    {name: aDDITIONALCRITERIAFORPROCESSINGINTEGRITYOVERTHEPROVISIONOFSERVICESORTHEPRODUCTIONMANUFACTURINGORDISTRIBUTIONOFGOODS, fields: []},
+    {name: aDDITIONALCRITERIAFORPRIVACY, fields: []}
+  ]
+}
+
+structure{
+  name: AicpaTrustServicesCriteria,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: criterion, type: (Option AicpaTrustServicesCriteriaCriterion)},
+    {name: privacyCategory, type: (Option AicpaTrustServicesCriteriaPrivacyCategory)},
+    {name: series, type: (Option AicpaTrustServicesCriteriaSeries)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
