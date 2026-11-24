@@ -1,0 +1,337 @@
+\begin{lexlean}{Catalog.JiraIssue}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: IncludedFields,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: actuallyIncluded, type: (Option (List Bytes))},
+    {name: excluded, type: (Option (List Bytes))},
+    {name: included, type: (Option (List Bytes))}
+  ]
+}
+
+inductive{
+  name: JsonValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: null, fields: []},
+    {name: boolean, fields: [Bool]},
+    {name: number, fields: [(Int * Int)]},
+    {name: string, fields: [Bytes]},
+    {name: array, fields: [(List JsonValue)]},
+    {name: object, fields: [(List (Bytes * JsonValue))]}
+  ]
+}
+
+structure{
+  name: JsonTypeBean,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: configuration, type: (Option (List (Bytes * JsonValue)))},
+    {name: custom, type: (Option Bytes)},
+    {name: customId, type: (Option Int)},
+    {name: items, type: (Option Bytes)},
+    {name: system, type: (Option Bytes)},
+    {name: type, type: Bytes}
+  ]
+}
+
+structure{
+  name: FieldMetadata,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: allowedValues, type: (Option (List JsonValue))},
+    {name: autoCompleteUrl, type: (Option Bytes)},
+    {name: configuration, type: (Option (List (Bytes * JsonValue)))},
+    {name: defaultValue, type: (Option JsonValue)},
+    {name: hasDefaultValue, type: (Option Bool)},
+    {name: key, type: Bytes},
+    {name: name, type: Bytes},
+    {name: operations, type: (List Bytes)},
+    {name: required, type: Bool},
+    {name: schema, type: JsonTypeBean}
+  ]
+}
+
+structure{
+  name: AvatarUrlsBean,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: n16x16, type: (Option Bytes)},
+    {name: n24x24, type: (Option Bytes)},
+    {name: n32x32, type: (Option Bytes)},
+    {name: n48x48, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: UpdatedProjectCategory,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: (Option Bytes)},
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: self, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: ProjectDetailsProjectTypeKey,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: software, fields: []},
+    {name: serviceDesk, fields: []},
+    {name: business, fields: []},
+    {name: productDiscovery, fields: []}
+  ]
+}
+
+structure{
+  name: ProjectDetails,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: avatarUrls, type: (Option AvatarUrlsBean)},
+    {name: id, type: (Option Bytes)},
+    {name: key, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: projectCategory, type: (Option UpdatedProjectCategory)},
+    {name: projectTypeKey, type: (Option ProjectDetailsProjectTypeKey)},
+    {name: self, type: (Option Bytes)},
+    {name: simplified, type: (Option Bool)}
+  ]
+}
+
+inductive{
+  name: ScopeType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: pROJECT, fields: []},
+    {name: tEMPLATE, fields: []}
+  ]
+}
+
+structure{
+  name: Scope,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: project, type: (Option ProjectDetails)},
+    {name: type, type: (Option ScopeType)}
+  ]
+}
+
+structure{
+  name: StatusCategory,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: colorName, type: (Option Bytes)},
+    {name: id, type: (Option Int)},
+    {name: key, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: self, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: StatusDetails,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: (Option Bytes)},
+    {name: iconUrl, type: (Option Bytes)},
+    {name: id, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: scope, type: (Option Scope)},
+    {name: self, type: (Option Bytes)},
+    {name: statusCategory, type: (Option StatusCategory)}
+  ]
+}
+
+structure{
+  name: IssueTransition,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: expand, type: (Option Bytes)},
+    {name: fields, type: (Option (List (Bytes * FieldMetadata)))},
+    {name: hasScreen, type: (Option Bool)},
+    {name: id, type: (Option Bytes)},
+    {name: isAvailable, type: (Option Bool)},
+    {name: isConditional, type: (Option Bool)},
+    {name: isGlobal, type: (Option Bool)},
+    {name: isInitial, type: (Option Bool)},
+    {name: looped, type: (Option Bool)},
+    {name: name, type: (Option Bytes)},
+    {name: to, type: (Option StatusDetails)}
+  ]
+}
+
+structure{
+  name: IssueUpdateMetadata,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: fields, type: (Option (List (Bytes * FieldMetadata)))}
+  ]
+}
+
+structure{
+  name: SimpleLink,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: href, type: (Option Bytes)},
+    {name: iconClass, type: (Option Bytes)},
+    {name: id, type: (Option Bytes)},
+    {name: label, type: (Option Bytes)},
+    {name: styleClass, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: weight, type: (Option Int)}
+  ]
+}
+
+inductive{
+  name: LinkGroup,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(Option (List LinkGroup)), (Option SimpleLink), (Option Bytes), (Option (List SimpleLink)), (Option Bytes), (Option Int)]}
+  ]
+}
+
+structure{
+  name: Operations,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: linkGroups, type: (Option (List LinkGroup))}
+  ]
+}
+
+structure{
+  name: ChangeDetails,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: field, type: (Option Bytes)},
+    {name: fieldId, type: (Option Bytes)},
+    {name: fieldtype, type: (Option Bytes)},
+    {name: from, type: (Option Bytes)},
+    {name: fromString, type: (Option Bytes)},
+    {name: to, type: (Option Bytes)},
+    {name: toString, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: HistoryMetadataParticipant,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: avatarUrl, type: (Option Bytes)},
+    {name: displayName, type: (Option Bytes)},
+    {name: displayNameKey, type: (Option Bytes)},
+    {name: id, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: url, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: HistoryMetadata,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: activityDescription, type: (Option Bytes)},
+    {name: activityDescriptionKey, type: (Option Bytes)},
+    {name: actor, type: (Option HistoryMetadataParticipant)},
+    {name: cause, type: (Option HistoryMetadataParticipant)},
+    {name: description, type: (Option Bytes)},
+    {name: descriptionKey, type: (Option Bytes)},
+    {name: emailDescription, type: (Option Bytes)},
+    {name: emailDescriptionKey, type: (Option Bytes)},
+    {name: extraData, type: (Option (List (Bytes * Bytes)))},
+    {name: generator, type: (Option HistoryMetadataParticipant)},
+    {name: type, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: UserDetails,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: accountId, type: (Option Bytes)},
+    {name: accountType, type: (Option Bytes)},
+    {name: active, type: (Option Bool)},
+    {name: avatarUrls, type: (Option AvatarUrlsBean)},
+    {name: displayName, type: (Option Bytes)},
+    {name: emailAddress, type: (Option Bytes)},
+    {name: key, type: (Option Bytes)},
+    {name: name, type: (Option Bytes)},
+    {name: self, type: (Option Bytes)},
+    {name: timeZone, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: Changelog,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: author, type: (Option UserDetails)},
+    {name: created, type: (Option Bytes)},
+    {name: historyMetadata, type: (Option HistoryMetadata)},
+    {name: id, type: (Option Bytes)},
+    {name: items, type: (Option (List ChangeDetails))}
+  ]
+}
+
+structure{
+  name: PageOfChangelogs,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: histories, type: (Option (List Changelog))},
+    {name: maxResults, type: (Option Int)},
+    {name: startAt, type: (Option Int)},
+    {name: total, type: (Option Int)}
+  ]
+}
+
+structure{
+  name: JiraIssue,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: changelog, type: (Option PageOfChangelogs)},
+    {name: editmeta, type: (Option IssueUpdateMetadata)},
+    {name: expand, type: (Option Bytes)},
+    {name: fields, type: (Option (List (Bytes * JsonValue)))},
+    {name: fieldsToInclude, type: (Option IncludedFields)},
+    {name: id, type: (Option Bytes)},
+    {name: key, type: (Option Bytes)},
+    {name: names, type: (Option (List (Bytes * Bytes)))},
+    {name: operations, type: (Option Operations)},
+    {name: properties, type: (Option (List (Bytes * JsonValue)))},
+    {name: renderedFields, type: (Option (List (Bytes * JsonValue)))},
+    {name: schema, type: (Option (List (Bytes * JsonTypeBean)))},
+    {name: self, type: (Option Bytes)},
+    {name: transitions, type: (Option (List IssueTransition))},
+    {name: versionedRepresentations, type: (Option (List (Bytes * (List (Bytes * JsonValue)))))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

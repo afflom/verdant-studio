@@ -203,3 +203,4 @@ Each construct and the citation that admits it.
 - `Catalog.WasmVvbinop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
 - `Catalog.WasmVvunop`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
 - `Catalog.WasmZero`: std WASM-3.0-SPECTEC-SYNTAX-INSTRUCTIONS row H04
+- `Catalog.JiraIssue`: std ATLASSIAN-JIRA-CLOUD-REST-V3-OPENAPI row A16
