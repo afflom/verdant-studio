@@ -30,20 +30,20 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **B02** DDE: Design, Dynamics, Experience (Game design theory and conceptual models), not reached from any origin: exactMatch WALK-GORLICH-BARRETT-DDE-2017 (staged)
 - **B03** Elemental Tetrad and Lenses (Game design theory and conceptual models): exactMatch SCHELL-ART-OF-GAME-DESIGN-3E-2019 (staged)
 - **B04** Formal and dramatic elements of games (Game design theory and conceptual models): exactMatch FULLERTON-GDW-5E-2024 (staged)
-- **B05** Rules of Play: rules, play, culture schemas (Game design theory and conceptual models), not reached from any origin: no mapping yet
+- **B05** Rules of Play: rules, play, culture schemas (Game design theory and conceptual models): exactMatch PELLETIER-ROP-REVIEW-2005 (derived from its citation)
 - **B06** Game Design Patterns (Game design theory and conceptual models): exactMatch BJORK-LUNDGREN-HOLOPAINEN-GDP-2003 (staged)
 - **B07** Game Ontology Project (GOP) (Game design theory and conceptual models): exactMatch ZAGAL-MATEAS-GOP-2005 (staged)
 - **B08** Machinations (internal economy modeling) (Game design theory and conceptual models): exactMatch MACHINATIONS-DOCS (derived from its citation)
-- **B09** Skill atoms / game grammar (Game design theory and conceptual models), not reached from any origin: no mapping yet
+- **B09** Skill atoms / game grammar (Game design theory and conceptual models): exactMatch HORN-COOPER-DETERDING-SKILL-CHAIN-2017 (derived from its citation)
 - **B10** Flow theory and GameFlow model (Game design theory and conceptual models): narrowMatch SWEETSER-WYETH-GAMEFLOW-2005 (staged)
 - **B11** Self-Determination Theory in games / PENS (Game design theory and conceptual models): exactMatch RYAN-RIGBY-PRZYBYLSKI-2006 (derived from its citation)
 - **B12** Bartle player types (Game design theory and conceptual models): exactMatch BARTLE-HCDS-1996 (derived from its citation)
-- **B13** Quantic Foundry Gamer Motivation Model (Game design theory and conceptual models), not reached from any origin: no mapping yet
+- **B13** Quantic Foundry Gamer Motivation Model (Game design theory and conceptual models): exactMatch PMC-9872527-GAMING-MOTIVATION-INVENTORY-2022 (derived from its citation)
 - **B14** Four Keys to Fun (Game design theory and conceptual models): exactMatch LAZZARO-WHY-WE-PLAY-2004 (derived from its citation)
 - **B15** Formal Abstract Design Tools (Game design theory and conceptual models): exactMatch CHURCH-FADT-1999 (derived from its citation)
 - **B16** Hexad player types / Octalysis (Game design theory and conceptual models): narrowMatch TONDELLO-HEXAD-SCALE-2016 (staged)
 - **B17** Game Balance (Game design theory and conceptual models), not reached from any origin: exactMatch SCHREIBER-ROMERO-GAME-BALANCE-2021 (staged)
-- **B18** Kishotenketsu four-act level/mechanic introduction (Game design theory and conceptual models), not reached from any origin: no mapping yet
+- **B18** Kishotenketsu four-act level/mechanic introduction (Game design theory and conceptual models): exactMatch OH-KISHOTENKETSU-TEXT-2025 (derived from its citation)
 - **Z01** The Image of the City (paths, edges, districts, nodes, landmarks) (Level, world, and spatial design): narrowMatch LYNCH-IMAGE-OF-THE-CITY-1960-CSISS (derived from its citation); narrowMatch LYNCH-IMAGE-OF-THE-CITY-1960-OPENLIBRARY (derived from its citation); exactMatch LYNCH-IMAGE-OF-THE-CITY-1960 (staged)
 - **Z02** An Architectural Approach to Level Design (Level, world, and spatial design): exactMatch TOTTEN-ARCHITECTURAL-LEVEL-DESIGN-2E (staged)
 - **Z03** Space syntax (Level, world, and spatial design): exactMatch HILLIER-HANSON-SOCIAL-LOGIC-OF-SPACE-1984 (staged)
@@ -112,13 +112,13 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G07** sRGB (IEC 61966-2-1) (Rendering, graphics APIs, color, and display): exactMatch IEC-61966-2-1-1999 (staged)
 - **G08** ITU-R BT.709, BT.2020, BT.2100 (PQ/HLG) (Rendering, graphics APIs, color, and display): narrowMatch ITU-R-BT-2100-3 (staged)
 - **G09** SMPTE ST 2084 (PQ) and HDR10 / HDR10+ / Dolby Vision (Rendering, graphics APIs, color, and display): narrowMatch SMPTE-ST-2084-2014 (staged)
-- **G10** HGIG HDR gaming guidelines (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
+- **G10** HGIG HDR gaming guidelines (Rendering, graphics APIs, color, and display): exactMatch HGIG-HDR-GAMING-BEST-PRACTICE-1.1 (derived from its citation)
 - **G11** ACES (Academy Color Encoding System) 2.0 (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch AMPAS-ACES-2.0-OUTPUT-TRANSFORM (staged)
 - **G12** OpenColorIO (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 (staged)
 - **G13** OpenXR (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch KHRONOS-OPENXR-REGISTRY-1.1.65 (staged)
 - **G14** WebXR Device API (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch W3C-WEBXR-20261109 (staged)
 - **G15** ISO 9241-392 Ergonomics of stereoscopic images (visual fatigue) (Rendering, graphics APIs, color, and display): exactMatch ISO-9241-392-2015 (staged)
-- **G16** HDMI 2.1 (VRR, ALLM) and VESA Adaptive-Sync / ClearMR (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
+- **G16** HDMI 2.1 (VRR, ALLM) and VESA Adaptive-Sync / ClearMR (Rendering, graphics APIs, color, and display): exactMatch HDMI-FOR-GAMING-VRR-PAGE (derived from its citation)
 - **H01** C++ (ISO/IEC 14882) (Engine, runtime, languages, and software engineering), not reached from any origin: inverse of closeMatch from http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f (staged)
 - **H02** C# (ECMA-334 / ISO/IEC 23270) and CLI (ECMA-335) (Engine, runtime, languages, and software engineering), not reached from any origin: inverse of closeMatch from http://data.europa.eu/esco/skill/4c016b68-4116-468c-9dc6-42710c239e4a (staged)
 - **H03** IEEE 754 floating-point arithmetic (Engine, runtime, languages, and software engineering): exactMatch IEEE-754-2019 (staged)
@@ -140,7 +140,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **I03** ASWG-R001 loudness recommendation for console games (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I04** Audio middleware: Audiokinetic Wwise, FMOD Studio (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I05** Interactive music techniques: horizontal resequencing, vertical layering, stingers (Audio, music, and voice): exactMatch COLLINS-GAME-SOUND-2008 (staged)
-- **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice), not reached from any origin: no mapping yet
+- **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice): exactMatch MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE (derived from its citation)
 - **I07** AES69 (SOFA) HRTF format (Audio, music, and voice), not reached from any origin: exactMatch SOFA-SIMPLEFREEFIELDHRIR-1.0 (staged)
 - **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): narrowMatch AMBIX-AMBISONICS-FORMAT-2011 (staged)
 - **I09** Broadcast Wave Format (EBU Tech 3285) (Audio, music, and voice): exactMatch EBU-TECH-3285-2 (derived from its citation)
@@ -149,13 +149,13 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **I12** Music licensing and performing rights (sync, master, PRO registration) (Audio, music, and voice), not reached from any origin: no mapping yet
 - **J01** Finite state machines / hierarchical FSMs (NPC, agent, and game AI models): exactMatch MILLINGTON-AI-FOR-GAMES-3E-2019 (staged)
 - **J02** Behavior Trees (NPC, agent, and game AI models): exactMatch ARXIV-1709.00084-V6 (derived from its citation)
-- **J03** Goal-Oriented Action Planning (GOAP) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J03** Goal-Oriented Action Planning (GOAP) (NPC, agent, and game AI models): exactMatch ORKIN-FEAR-GDC-2006 (derived from its citation)
 - **J04** Hierarchical Task Network (HTN) planning (NPC, agent, and game AI models): exactMatch HUMPHREYS-HTN-GAME-AI-PRO-12 (derived from its citation)
 - **J05** Utility AI / Infinite Axis Utility System (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J06** A* search (NPC, agent, and game AI models): exactMatch HART-NILSSON-RAPHAEL-ASTAR-1968 (staged)
 - **J07** Navigation meshes: Recast & Detour (NPC, agent, and game AI models): narrowMatch RECAST-DETOUR-NAVMESH-H (staged)
 - **J08** Steering behaviors and flocking (boids) (NPC, agent, and game AI models): exactMatch REYNOLDS-STEERING-BEHAVIORS-1999 (derived from its citation)
-- **J09** Smart objects and AI directors (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J09** Smart objects and AI directors (NPC, agent, and game AI models): exactMatch VALVE-BOOTH-L4D-AI-SYSTEMS-2009 (derived from its citation)
 - **J10** Artificial Intelligence and Games (academic reference model) (NPC, agent, and game AI models): exactMatch YANNAKAKIS-TOGELIUS-AI-AND-GAMES-2018 (staged)
 - **J11** Procedural Content Generation in Games (NPC, agent, and game AI models): exactMatch PCG-BOOK-CHAPTER-1 (derived from its citation)
 - **J12** Video Game Description Language (VGDL) / GVGAI (NPC, agent, and game AI models): exactMatch ARXIV-1802.10363-V4 (derived from its citation)
@@ -207,7 +207,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **N07** ISO 17100 Translation services (Localization, internationalization, and culturalization): exactMatch ISO-17100-2015 (staged)
 - **N08** ISO 18587 MT post-editing (Localization, internationalization, and culturalization): exactMatch ISO-18587-2017 (staged)
 - **N09** MQM (Multidimensional Quality Metrics) / ASTM F2575 (Localization, internationalization, and culturalization): narrowMatch MQM-FULL-TYPOLOGY-2024-03-07 (staged)
-- **N10** Culturalization practice (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
+- **N10** Culturalization practice (Localization, internationalization, and culturalization): exactMatch IGDA-LOCSIG-BEST-PRACTICES-V22 (derived from its citation)
 - **N11** OpenType (ISO/IEC 14496-22) (Localization, internationalization, and culturalization): exactMatch OPENTYPE-1.9.1 (derived from its citation)
 - **N12** GB 18030 Chinese character set (Localization, internationalization, and culturalization), not reached from any origin: exactMatch SAC-GB-18030-2022 (staged)
 - **O01** ISO/IEC 25010:2023 Product quality model (SQuaRE) (Quality assurance, testing, and software quality): narrowMatch ISO-IEC-25010-2023-PREVIEW (derived from its citation); exactMatch ISO-IEC-25010-2023 (staged)
@@ -219,7 +219,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **O07** Automated game testing frameworks (Unreal Gauntlet/Automation, Unity Test Framework, GameDriver) (Quality assurance, testing, and software quality), not reached from any origin: narrowMatch EPIC-UE-GAUNTLET (staged); narrowMatch UNITY-TEST-FRAMEWORK-1.4.6 (staged)
 - **O08** Compatibility programs: Steam Deck Verified, Xbox Play Anywhere, Windows on Arm (Quality assurance, testing, and software quality): narrowMatch STEAMWORKS-DECK-COMPAT (staged)
 - **P01** PlayStation Technical Requirements Checklist (TRC) (Platform certification and storefront requirements), not reached from any origin: no mapping yet
-- **P02** Xbox Requirements (XR) / Xbox Certification (Platform certification and storefront requirements), not reached from any origin: no mapping yet
+- **P02** Xbox Requirements (XR) / Xbox Certification (Platform certification and storefront requirements): exactMatch MS-XBOX-REQUIREMENTS-CERT-TESTED-16.10 (derived from its citation)
 - **P03** Nintendo guidelines and Lotcheck (Platform certification and storefront requirements), not reached from any origin: no mapping yet
 - **P04** Steamworks documentation and store/page rules (Platform certification and storefront requirements), not reached from any origin: exactMatch STEAMWORKS-DOCUMENTATION (staged)
 - **P05** Apple App Review Guidelines (Platform certification and storefront requirements): exactMatch APPLE-APP-REVIEW-GUIDELINES (derived from its citation)
@@ -251,7 +251,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **S02** UK Online Safety Act 2023 and Ofcom codes of practice (Online safety, community, user-generated content, and esports): narrowMatch UK-UKPGA-2023-50 (staged)
 - **S03** EU Digital Services Act (Regulation (EU) 2022/2065) (Online safety, community, user-generated content, and esports): exactMatch EU-REG-2022-2065 (staged)
 - **S04** Safety by Design principles; Basic Online Safety Expectations (Online safety, community, user-generated content, and esports): narrowMatch AU-F2022L00062-C01 (staged)
-- **S05** Tech Coalition (child safety industry alliance) (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
+- **S05** Tech Coalition (child safety industry alliance) (Online safety, community, user-generated content, and esports): exactMatch TECH-COALITION-TRUST-FRAMEWORK-2025 (derived from its citation)
 - **S06** Esports Integrity Commission (ESIC) codes (Online safety, community, user-generated content, and esports), not reached from any origin: exactMatch ESIC-INTEGRITY-PROGRAM (staged)
 - **S07** Steam Workshop and mod.io UGC frameworks (Online safety, community, user-generated content, and esports), not reached from any origin: narrowMatch MODIO-DOCUMENTATION (staged); narrowMatch STEAMWORKS-WORKSHOP (staged)
 - **S08** Creator platform rules (Roblox Community Standards, Fortnite Island Creator Rules, Minecraft Usage Guidelines) (Online safety, community, user-generated content, and esports), not reached from any origin: narrowMatch EPIC-FORTNITE-ISLAND-CREATOR-RULES (staged); narrowMatch MINECRAFT-USAGE-GUIDELINES (staged); narrowMatch ROBLOX-COMMUNITY-STANDARDS (staged)
@@ -295,7 +295,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **W04** OpenTelemetry (Live operations, reliability, support, and analytics): exactMatch OTEL-SPEC-1.40.0-TRACE-API (derived from its citation)
 - **W05** OpenFeature (Live operations, reliability, support, and analytics): exactMatch OPENFEATURE-SPEC-0.9.0 (staged)
 - **W06** Game Analytics: Maximizing the Value of Player Data (Live operations, reliability, support, and analytics): exactMatch SPRINGER-GAME-ANALYTICS-2013 (staged)
-- **W07** Live-service KPIs (DAU/MAU, retention D1/D7/D30, ARPDAU, LTV, conversion, churn) (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
+- **W07** Live-service KPIs (DAU/MAU, retention D1/D7/D30, ARPDAU, LTV, conversion, churn) (Live operations, reliability, support, and analytics): exactMatch GAMEANALYTICS-METRICS-DOC (derived from its citation)
 - **W08** Mobile attribution: Apple SKAdNetwork / AdAttributionKit; Android Privacy Sandbox (Live operations, reliability, support, and analytics), not reached from any origin: narrowMatch APPLE-ADATTRIBUTIONKIT (staged); narrowMatch APPLE-SKADNETWORK (staged); narrowMatch GOOGLE-PRIVACY-SANDBOX-ANDROID-ATTRIBUTION (staged)
 - **W09** ISO 10002 complaints handling; ISO 18295 customer contact centres (Live operations, reliability, support, and analytics): narrowMatch ISO-10002-2018-PREVIEW (derived from its citation); narrowMatch ISO-18295-1-2017-PREVIEW (derived from its citation); narrowMatch ISO-18295-2-2017-PREVIEW (derived from its citation); narrowMatch ISO-10002-2018 (staged); narrowMatch ISO-18295-1-2017 (staged); narrowMatch ISO-18295-2-2017 (staged)
 - **W10** Games-as-a-service / live-ops models (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
@@ -306,7 +306,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **X03** Engine and middleware license terms (Unreal EULA, Unity terms) (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch UNITY-TERMS-OF-SERVICE (staged)
 - **X04** IGDA Developer Satisfaction Survey and quality-of-life guidance (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch IGDA-DSS-2023 (staged)
 - **X05** ISO 45003 Psychological health and safety at work (Business, IP, labor, and sustainability): narrowMatch ISO-45003-2021-PREVIEW (derived from its citation); exactMatch ISO-45003-2021 (staged)
-- **X06** Playing for the Planet Alliance (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
+- **X06** Playing for the Planet Alliance (Business, IP, labor, and sustainability): exactMatch PLAYING-FOR-THE-PLANET-HOME (derived from its citation)
 - **X07** Software Carbon Intensity (ISO/IEC 21031:2024) (Business, IP, labor, and sustainability): exactMatch GSF-SCI-1.1 (derived from its citation)
 - **X08** GHG Protocol / ISO 14064 (Business, IP, labor, and sustainability): narrowMatch GHG-PROTOCOL-CORPORATE-REVISED (staged)
 - **X09** Industry associations and their codes (ESA, Video Games Europe, Ukie, JOGA, CESA) (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
@@ -315,7 +315,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **Y01** OAIS reference model (ISO 14721) (End of life, preservation, and archiving): exactMatch CCSDS-650.0-M-3 (derived from its citation)
 - **Y02** PREMIS and METS (End of life, preservation, and archiving), not reached from any origin: narrowMatch LOC-METS-1.12.1 (staged); narrowMatch LOC-PREMIS-3.0 (staged)
 - **Y03** Library of Congress Recommended Formats Statement: software and video games (End of life, preservation, and archiving), not reached from any origin: exactMatch LOC-RFS-2025-2026 (staged)
-- **Y04** Video Game Metadata Schema (End of life, preservation, and archiving), not reached from any origin: no mapping yet
+- **Y04** Video Game Metadata Schema (End of life, preservation, and archiving): exactMatch LEE-TENNIS-CLARKE-CARPENTER-VGMS-2013 (derived from its citation)
 - **Y05** BagIt (RFC 8493) (End of life, preservation, and archiving): exactMatch IETF-RFC-8493 (staged)
 - **Y06** Software Heritage and Emulation-as-a-Service (EaaSI) (End of life, preservation, and archiving): narrowMatch SWHID-1.2-SYNTAX (staged)
 - **Y07** US DMCA Section 1201 exemptions for video game preservation (End of life, preservation, and archiving): exactMatch US-CFR-37-201.40-2025 (staged)

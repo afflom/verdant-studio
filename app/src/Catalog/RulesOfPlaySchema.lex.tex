@@ -1,0 +1,25 @@
+\begin{lexlean}{Catalog.RulesOfPlaySchema}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: RulesOfPlaySchemaSchema,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: rules, fields: []},
+    {name: play, fields: []},
+    {name: culture, fields: []}
+  ]
+}
+
+structure{
+  name: RulesOfPlaySchema,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: schema, type: RulesOfPlaySchemaSchema}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

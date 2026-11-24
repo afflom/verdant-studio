@@ -1,0 +1,79 @@
+\begin{lexlean}{Catalog.GamerMotivationModel}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GamerMotivationModelAchievement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: completion, fields: []},
+    {name: power, fields: []}
+  ]
+}
+
+inductive{
+  name: GamerMotivationModelAction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: destruction, fields: []},
+    {name: excitement, fields: []}
+  ]
+}
+
+inductive{
+  name: GamerMotivationModelCreativity,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: design, fields: []},
+    {name: discovery, fields: []}
+  ]
+}
+
+inductive{
+  name: GamerMotivationModelImmersion,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: fantasy, fields: []},
+    {name: story, fields: []}
+  ]
+}
+
+inductive{
+  name: GamerMotivationModelMastery,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: challenge, fields: []},
+    {name: strategy, fields: []}
+  ]
+}
+
+inductive{
+  name: GamerMotivationModelSocial,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: competition, fields: []},
+    {name: community, fields: []}
+  ]
+}
+
+structure{
+  name: GamerMotivationModel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: achievement, type: (Option GamerMotivationModelAchievement)},
+    {name: action, type: (Option GamerMotivationModelAction)},
+    {name: creativity, type: (Option GamerMotivationModelCreativity)},
+    {name: immersion, type: (Option GamerMotivationModelImmersion)},
+    {name: mastery, type: (Option GamerMotivationModelMastery)},
+    {name: social, type: (Option GamerMotivationModelSocial)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

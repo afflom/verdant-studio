@@ -1,0 +1,39 @@
+\begin{lexlean}{Catalog.CseaTransparencyReport}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CseaTransparencyReportPrinciple,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: reportingShouldSupportTrustAndAccountability, fields: []},
+    {name: reportingShouldReflectTheUniqueNatureOfEachCompanysServices, fields: []},
+    {name: reportingWillDependOnServiceMaturity, fields: []},
+    {name: reportingShouldBeRegularAndEvolveOverTime, fields: []},
+    {name: reportingShouldNotCompromisePrivacyOrSafety, fields: []}
+  ]
+}
+
+inductive{
+  name: CseaTransparencyReportReportCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: policiesAndPractices, fields: []},
+    {name: processesAndSystems, fields: []},
+    {name: outcomes, fields: []}
+  ]
+}
+
+structure{
+  name: CseaTransparencyReport,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: principle, type: (Option CseaTransparencyReportPrinciple)},
+    {name: reportCategory, type: (Option CseaTransparencyReportReportCategory)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

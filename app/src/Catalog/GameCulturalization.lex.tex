@@ -1,0 +1,38 @@
+\begin{lexlean}{Catalog.GameCulturalization}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GameCulturalizationCulturalVariable,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: historyPastAndPresent, fields: []},
+    {name: religionAndBeliefSystems, fields: []},
+    {name: ethnicityAndCulturalFriction, fields: []},
+    {name: geopoliticalImaginations, fields: []}
+  ]
+}
+
+inductive{
+  name: GameCulturalizationPhase,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: reactiveCulturalization, fields: []},
+    {name: localizationInternationalization, fields: []},
+    {name: proactiveCulturalization, fields: []}
+  ]
+}
+
+structure{
+  name: GameCulturalization,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: culturalVariable, type: (Option GameCulturalizationCulturalVariable)},
+    {name: phase, type: (Option GameCulturalizationPhase)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,28 @@
+\begin{lexlean}{Catalog.SkillAtom}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SkillAtomElement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: action, fields: []},
+    {name: simulation, fields: []},
+    {name: feedback, fields: []},
+    {name: challenge, fields: []},
+    {name: synthesis, fields: []}
+  ]
+}
+
+structure{
+  name: SkillAtom,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: element, type: (Option SkillAtomElement)},
+    {name: prerequisiteAtoms, type: (Option (List Bytes))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

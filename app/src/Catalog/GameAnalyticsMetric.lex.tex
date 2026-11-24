@@ -1,0 +1,115 @@
+\begin{lexlean}{Catalog.GameAnalyticsMetric}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GameAnalyticsMetricCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: engagement, fields: []},
+    {name: businessIAP, fields: []},
+    {name: error, fields: []},
+    {name: ads, fields: []},
+    {name: designCustom, fields: []},
+    {name: impression, fields: []},
+    {name: progressionLevels, fields: []},
+    {name: resource, fields: []},
+    {name: sessionsPlaytime, fields: []}
+  ]
+}
+
+inductive{
+  name: GameAnalyticsMetricMetric,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: dAU, fields: []},
+    {name: dAUNewVsReturning, fields: []},
+    {name: dAUSplitByAcquisitionCampaign, fields: []},
+    {name: dAUSplitByAcquisitionPublisher, fields: []},
+    {name: dAUVsMAU, fields: []},
+    {name: mAUCalendar, fields: []},
+    {name: mAURolling30Days, fields: []},
+    {name: newUsers, fields: []},
+    {name: newUsersSplitByAcquisitionCampaign, fields: []},
+    {name: newUsersSplitByAcquisitionPublisher, fields: []},
+    {name: newUsersGroupedByCountry, fields: []},
+    {name: retention, fields: []},
+    {name: returningUsers, fields: []},
+    {name: returningUsersGroupedByCountry, fields: []},
+    {name: returningUsersSplitByDaysSinceInstall, fields: []},
+    {name: usersGroupedByNewAndReturning, fields: []},
+    {name: wAUCalendar, fields: []},
+    {name: wAURolling7Days, fields: []},
+    {name: iOSUsersGroupByConsentStatus, fields: []},
+    {name: iOSUsersConsentAuthorized, fields: []},
+    {name: aRPDAUIAPLegacy, fields: []},
+    {name: aRPPU, fields: []},
+    {name: aRPU, fields: []},
+    {name: conversionRate, fields: []},
+    {name: convertedUsers, fields: []},
+    {name: convertingUsers, fields: []},
+    {name: cumulativeRevenuePerUser, fields: []},
+    {name: firstTransactionCount, fields: []},
+    {name: firstTransactionRevenue, fields: []},
+    {name: payingUsers, fields: []},
+    {name: revenueIAP, fields: []},
+    {name: transactionCount, fields: []},
+    {name: criticalErrorPerSession, fields: []},
+    {name: criticalErrorPerSessionByBuild, fields: []},
+    {name: criticalErrorPerUser, fields: []},
+    {name: criticalErrorPerUserByBuilds, fields: []},
+    {name: errorByType, fields: []},
+    {name: errorSplitByType, fields: []},
+    {name: errorUsers, fields: []},
+    {name: errorUsersByType, fields: []},
+    {name: errorsByDevice, fields: []},
+    {name: errorsPerUser, fields: []},
+    {name: adsClicked, fields: []},
+    {name: adsClickedPerSession, fields: []},
+    {name: adsClickedPerUser, fields: []},
+    {name: adsShownPerSession, fields: []},
+    {name: adsShownPerUser, fields: []},
+    {name: totalAdsDisplayFailed, fields: []},
+    {name: totalAdsShown, fields: []},
+    {name: customEventCountPerSession, fields: []},
+    {name: customEventCountPerUser, fields: []},
+    {name: iLRDCountPerDAU, fields: []},
+    {name: iLRDCountBySDKVendor, fields: []},
+    {name: iLRDCountByNetworkName, fields: []},
+    {name: iLRDRevenue, fields: []},
+    {name: iLRDRevenueByAdFormat, fields: []},
+    {name: iLRDRevenueByNetworkName, fields: []},
+    {name: iLRDRevenueByPlacement, fields: []},
+    {name: iLRDRevenuePerActiveUser, fields: []},
+    {name: iLRDRevenuePerImpression, fields: []},
+    {name: iLRDRevenuePerUser, fields: []},
+    {name: iLRDRevenueSplitByPlacement, fields: []},
+    {name: levelAttemptsStarted, fields: []},
+    {name: levelAttemptsFailed, fields: []},
+    {name: levelAttemptsCompleted, fields: []},
+    {name: winPercentage, fields: []},
+    {name: flowSumOfVirtualCurrencyGroupByCurrency, fields: []},
+    {name: flowSumOfVirtualCurrencySplitByCurrency, fields: []},
+    {name: virtualCurrencyEarnSourceSplitByCurrency, fields: []},
+    {name: virtualCurrencySpendSinkSplitByCurrency, fields: []},
+    {name: sessionCountStarted, fields: []},
+    {name: cumulativePlaytimePerUser, fields: []},
+    {name: playtimePerSession, fields: []},
+    {name: playtimePerUser, fields: []},
+    {name: sessionCountEnded, fields: []}
+  ]
+}
+
+structure{
+  name: GameAnalyticsMetric,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: category, type: (Option GameAnalyticsMetricCategory)},
+    {name: metric, type: (Option GameAnalyticsMetricMetric)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

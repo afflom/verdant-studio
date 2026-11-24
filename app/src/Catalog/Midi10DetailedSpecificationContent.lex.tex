@@ -1,0 +1,37 @@
+\begin{lexlean}{Catalog.Midi10DetailedSpecificationContent}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Midi10DetailedSpecificationContentMessageClass,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: channelVoiceMessages, fields: []},
+    {name: systemMessages, fields: []},
+    {name: universalSystemExclusive, fields: []}
+  ]
+}
+
+inductive{
+  name: Midi10DetailedSpecificationContentPart,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mIDI10DataFormat, fields: []},
+    {name: coreLayoutOfAllMIDI10Messages, fields: []},
+    {name: original5PinDINSerialTransport, fields: []}
+  ]
+}
+
+structure{
+  name: Midi10DetailedSpecificationContent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: messageClass, type: (Option Midi10DetailedSpecificationContentMessageClass)},
+    {name: part, type: (Option Midi10DetailedSpecificationContentPart)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

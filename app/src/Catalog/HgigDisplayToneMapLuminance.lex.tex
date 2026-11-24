@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.HgigDisplayToneMapLuminance}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: HgigDisplayToneMapLuminanceHdrRange,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: primaryHDRRange, fields: []},
+    {name: extendedHDRRange, fields: []}
+  ]
+}
+
+structure{
+  name: HgigDisplayToneMapLuminance,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: maxFullFrameToneMapLuminance, type: (Option Int)},
+    {name: maxToneMapLuminance, type: (Option Int)},
+    {name: minToneMapLuminance, type: (Option Int)},
+    {name: hdrRange, type: (Option HgigDisplayToneMapLuminanceHdrRange)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
