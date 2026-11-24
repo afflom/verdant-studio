@@ -1,0 +1,52 @@
+\begin{lexlean}{Catalog.Ktx2Header}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SupercompressionScheme,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n0, fields: []},
+    {name: n1, fields: []},
+    {name: n2, fields: []},
+    {name: n3, fields: []}
+  ]
+}
+
+structure{
+  name: Level,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: byteOffset, type: Nat},
+    {name: byteLength, type: Nat},
+    {name: uncompressedByteLength, type: Nat}
+  ]
+}
+
+structure{
+  name: Ktx2Header,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: vkFormat, type: Nat},
+    {name: typeSize, type: Nat},
+    {name: pixelWidth, type: Nat},
+    {name: pixelHeight, type: Nat},
+    {name: pixelDepth, type: Nat},
+    {name: layerCount, type: Nat},
+    {name: faceCount, type: Nat},
+    {name: levelCount, type: Nat},
+    {name: supercompressionScheme, type: SupercompressionScheme},
+    {name: dfdByteOffset, type: Nat},
+    {name: dfdByteLength, type: Nat},
+    {name: kvdByteOffset, type: Nat},
+    {name: kvdByteLength, type: Nat},
+    {name: sgdByteOffset, type: Nat},
+    {name: sgdByteLength, type: Nat},
+    {name: levels, type: (List Level)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

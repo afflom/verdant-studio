@@ -1,0 +1,51 @@
+\begin{lexlean}{Catalog.GameDesignPatternTemplate}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: StructuralLevel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gameInstance, fields: []},
+    {name: gameSession, fields: []},
+    {name: playSession, fields: []}
+  ]
+}
+
+inductive{
+  name: ComponentCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bounding, fields: []},
+    {name: temporal, fields: []},
+    {name: objective, fields: []}
+  ]
+}
+
+structure{
+  name: Relations,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: superior, type: (Option (List Bytes))},
+    {name: subpatterns, type: (Option (List Bytes))},
+    {name: conflicting, type: (Option (List Bytes))}
+  ]
+}
+
+structure{
+  name: GameDesignPatternTemplate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: description, type: Bytes},
+    {name: consequences, type: (Option Bytes)},
+    {name: usingThePattern, type: (Option Bytes)},
+    {name: relations, type: (Option Relations)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

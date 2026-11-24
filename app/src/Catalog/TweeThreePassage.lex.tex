@@ -1,0 +1,62 @@
+\begin{lexlean}{Catalog.TweeThreePassage}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Metadata,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: position, type: (Option Bytes)},
+    {name: size, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: StoryData,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ifid, type: Bytes},
+    {name: format, type: (Option Bytes)},
+    {name: formatVersion, type: (Option Bytes)},
+    {name: start, type: (Option Bytes)},
+    {name: tagColors, type: (Option (List (Bytes * Bytes)))},
+    {name: zoom, type: (Option (Int * Int))}
+  ]
+}
+
+inductive{
+  name: SpecialPassage,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: storyTitle, fields: []},
+    {name: storyData, fields: []},
+    {name: start, fields: []}
+  ]
+}
+
+inductive{
+  name: SpecialTag,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: script, fields: []},
+    {name: stylesheet, fields: []}
+  ]
+}
+
+structure{
+  name: TweeThreePassage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: tags, type: (Option (List Bytes))},
+    {name: metadata, type: (Option Metadata)},
+    {name: content, type: (Option Bytes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

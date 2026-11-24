@@ -1,0 +1,33 @@
+\begin{lexlean}{Catalog.GameOntologyEntry}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: TopLevel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: interface, fields: []},
+    {name: rules, fields: []},
+    {name: goals, fields: []},
+    {name: entities, fields: []},
+    {name: entityManipulation, fields: []}
+  ]
+}
+
+structure{
+  name: GameOntologyEntry,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: parent, type: (Option Bytes)},
+    {name: children, type: (Option (List Bytes))},
+    {name: parts, type: (Option (List Bytes))},
+    {name: description, type: Bytes},
+    {name: strongExamples, type: (Option (List Bytes))},
+    {name: weakExamples, type: (Option (List Bytes))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

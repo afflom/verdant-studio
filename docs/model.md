@@ -305,3 +305,12 @@ Each construct and the citation that admits it.
 - `Catalog.BreakpadXStateConfigFeatureMscInfo`: std BREAKPAD-MINIDUMP-FORMAT row O06
 - `Catalog.BreakpadXStateFeature`: std BREAKPAD-MINIDUMP-FORMAT row O06
 - `Catalog.BreakpadXStateFeatureFlag`: std BREAKPAD-MINIDUMP-FORMAT row O06
+- `Catalog.GameDesignPatternTemplate`: std BJORK-LUNDGREN-HOLOPAINEN-GDP-2003 row B06
+- `Catalog.GameOntologyEntry`: std ZAGAL-MATEAS-GOP-2005 row B07
+- `Catalog.GitLfsPointer`: std GIT-LFS-SPEC-3.8.1 row H12
+- `Catalog.Ktx2Header`: std KHRONOS-KTX-2.0.4 row D11
+- `Catalog.OpenExrHeader`: std ASWF-OPENEXR-FILE-LAYOUT-3.5.5 row D13
+- `Catalog.OtioSerializedSchema`: std ASWF-OPENTIMELINEIO-0.18.1 row F05
+- `Catalog.SemanticVersion`: std SEMVER-2.0.0 row H13
+- `Catalog.TweeThreePassage`: std IFTF-TWEE-3.0.2 row C07
+- `Catalog.UeAssetNameModifier`: std ALLAR-UE-STYLE-GUIDE row D20
