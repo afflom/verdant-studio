@@ -297,18 +297,10 @@ definition{
 }
 
 definition{
-  name: shapeKeywords,
+  name: untranslatedKeywords,
   parameters: [],
   result: (List Bytes),
-  body: (cons (Studio.Doc::lit "type") (cons (Studio.Doc::lit "properties") (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "items") (cons (Studio.Doc::lit "enum") (cons (Studio.Doc::lit "const") (cons (Studio.Doc::lit "$ref") (cons (Studio.Doc::lit "oneOf") (cons (Studio.Doc::lit "allOf") (cons (Studio.Doc::lit "$defs") (cons (Studio.Doc::lit "$schema") (cons (Studio.Doc::lit "$id") (cons (Studio.Doc::lit "$comment") (cons (Studio.Doc::lit "title") (cons (Studio.Doc::lit "description") (nil Bytes)))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: validationKeywords,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "additionalProperties") (cons (Studio.Doc::lit "pattern") (cons (Studio.Doc::lit "minLength") (cons (Studio.Doc::lit "maxLength") (cons (Studio.Doc::lit "minItems") (cons (Studio.Doc::lit "maxItems") (cons (Studio.Doc::lit "uniqueItems") (cons (Studio.Doc::lit "format") (cons (Studio.Doc::lit "minimum") (cons (Studio.Doc::lit "maximum") (cons (Studio.Doc::lit "exclusiveMinimum") (cons (Studio.Doc::lit "exclusiveMaximum") (cons (Studio.Doc::lit "multipleOf") (cons (Studio.Doc::lit "default") (cons (Studio.Doc::lit "examples") (cons (Studio.Doc::lit "deprecated") (cons (Studio.Doc::lit "readOnly") (cons (Studio.Doc::lit "writeOnly") (cons (Studio.Doc::lit "example") (cons (Studio.Doc::lit "xml") (nil Bytes))))))))))))))))))))),
+  body: (cons (Studio.Doc::lit "anyOf") (cons (Studio.Doc::lit "not") (cons (Studio.Doc::lit "if") (cons (Studio.Doc::lit "then") (cons (Studio.Doc::lit "else") (cons (Studio.Doc::lit "dependentSchemas") (cons (Studio.Doc::lit "dependencies") (cons (Studio.Doc::lit "prefixItems") (cons (Studio.Doc::lit "unevaluatedItems") (cons (Studio.Doc::lit "unevaluatedProperties") (cons (Studio.Doc::lit "$dynamicRef") (cons (Studio.Doc::lit "$dynamicAnchor") (cons (Studio.Doc::lit "$recursiveRef") (cons (Studio.Doc::lit "$recursiveAnchor") (nil Bytes))))))))))))))),
   executable: true
 }
 
@@ -318,7 +310,7 @@ definition{
   result: (Option Bytes),
   body: (match members
     | List.nil => (ctor Option.none [Bytes])
-    | List.cons head rest => (if ((Studio.Doc::memberBytes (first head) (shapeKeywords)) || (Studio.Doc::memberBytes (first head) (validationKeywords))) then (unknownKeyword rest) else (ctor Option.some [Bytes] (first head)))),
+    | List.cons head rest => (if (Studio.Doc::memberBytes (first head) (untranslatedKeywords)) then (ctor Option.some [Bytes] (first head)) else (unknownKeyword rest))),
   recursive_argument: members,
   executable: true
 }
@@ -343,7 +335,7 @@ definition{
   name: refName,
   parameters: [reference : Bytes],
   result: (Option Bytes),
-  body: (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/$defs/")) then (ctor Option.some [Bytes] (pascal (LexLeanStd.Text::sliceOr reference 8 (prim subtract (prim length reference : Nat) 8 : Nat)))) else (ctor Option.none [Bytes])),
+  body: (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/$defs/")) then (ctor Option.some [Bytes] (pascal (LexLeanStd.Text::sliceOr reference 8 (prim subtract (prim length reference : Nat) 8 : Nat)))) else (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/definitions/")) then (ctor Option.some [Bytes] (pascal (LexLeanStd.Text::sliceOr reference 14 (prim subtract (prim length reference : Nat) 14 : Nat)))) else (ctor Option.none [Bytes]))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -386,7 +378,7 @@ definition{
   name: structural,
   parameters: [schema : LexLeanStd.Json::Json],
   result: Bool,
-  body: ((has schema (Studio.Doc::lit "properties")) || ((has schema (Studio.Doc::lit "items")) || ((has schema (Studio.Doc::lit "required")) || ((has schema (Studio.Doc::lit "oneOf")) || (has schema (Studio.Doc::lit "additionalProperties")))))),
+  body: ((has schema (Studio.Doc::lit "properties")) || ((has schema (Studio.Doc::lit "items")) || ((has schema (Studio.Doc::lit "required")) || ((has schema (Studio.Doc::lit "oneOf")) || ((has schema (Studio.Doc::lit "additionalProperties")) || (has schema (Studio.Doc::lit "patternProperties"))))))),
   executable: true
 }
 
@@ -460,6 +452,20 @@ definition{
 }
 
 definition{
+  name: entrySchema,
+  parameters: [schema : LexLeanStd.Json::Json],
+  result: (Option LexLeanStd.Json::Json),
+  body: (match (Studio.Doc::field schema (Studio.Doc::lit "additionalProperties"))
+    | Option.some extra => (ctor Option.some [LexLeanStd.Json::Json] extra)
+    | Option.none => (match (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "patternProperties")))
+      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+      | List.cons only rest => (match rest
+        | List.nil => (ctor Option.some [LexLeanStd.Json::Json] (second only))
+        | List.cons another more => (ctor Option.none [LexLeanStd.Json::Json])))),
+  executable: true
+}
+
+definition{
   name: mapValueAt,
   parameters: [fuel : Nat, extra : LexLeanStd.Json::Json, context : Bytes],
   result: (Result (Bytes * (List Job)) Bytes),
@@ -479,7 +485,7 @@ definition{
         | Option.some named => (typed named (nil Job)))
       | Option.none => (if ((has extra (Studio.Doc::lit "enum")) || ((has extra (Studio.Doc::lit "oneOf")) || (has extra (Studio.Doc::lit "properties")))) then (typed context (cons (ctor Job.translate context extra) (nil Job))) else (let kind : Bytes := (Studio.Doc::str extra (Studio.Doc::lit "type")); (if ((Studio.Doc::same kind 0x) && (if (structural extra) then false else true)) then (anyValue) else (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType extra) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "number")) then (typed (numberType) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "array")) then (match (Studio.Doc::field extra (Studio.Doc::lit "items"))
         | Option.none => (wrapped (Studio.Doc::lit "List") (anyValue))
-        | Option.some items => (wrapped (Studio.Doc::lit "List") (mapValueAt deeper items (prim append context (Studio.Doc::lit "Item") : Bytes)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (match (Studio.Doc::field extra (Studio.Doc::lit "additionalProperties"))
+        | Option.some items => (wrapped (Studio.Doc::lit "List") (mapValueAt deeper items (prim append context (Studio.Doc::lit "Item") : Bytes)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (match (entrySchema extra)
         | Option.none => (wrapped (Studio.Doc::lit "List") (pairedWith (anyValue)))
         | Option.some inner => (wrapped (Studio.Doc::lit "List") (pairedWith (mapValueAt deeper inner (prim append context (Studio.Doc::lit "Value") : Bytes))))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))))),
   recursive_argument: fuel,
@@ -497,7 +503,161 @@ definition{
 }
 
 definition{
-  name: baseType,
+  name: dropMember,
+  parameters: [spine : LexLeanStd.Json::Json, key : Bytes],
+  result: LexLeanStd.Json::Json,
+  body: (match spine
+    | LexLeanStd.Json::Json.JMember name value rest => (if (Studio.Doc::same name key) then (dropMember rest key) else (ctor LexLeanStd.Json::Json.JMember name value (dropMember rest key)))
+    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj (dropMember inner key))
+    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
+    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
+    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
+    | LexLeanStd.Json::Json.JStr value => (ctor LexLeanStd.Json::Json.JStr value)
+    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
+    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)),
+  recursive_argument: spine,
+  executable: true
+}
+
+definition{
+  name: onlyKeys,
+  parameters: [members : (List (Bytes * LexLeanStd.Json::Json)), allowed : (List Bytes)],
+  result: Bool,
+  body: (match members
+    | List.nil => true
+    | List.cons head rest => ((Studio.Doc::memberBytes (first head) allowed) && (onlyKeys rest allowed))),
+  recursive_argument: members,
+  executable: true
+}
+
+definition{
+  name: requiredOnly,
+  parameters: [branches : (List LexLeanStd.Json::Json)],
+  result: Bool,
+  body: (match branches
+    | List.nil => true
+    | List.cons head rest => ((onlyKeys (Studio.Doc::memberSpine head) (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "minProperties") (cons (Studio.Doc::lit "maxProperties") (nil Bytes))))) && (requiredOnly rest))),
+  recursive_argument: branches,
+  executable: true
+}
+
+definition{
+  name: presenceOnly,
+  parameters: [branches : (List LexLeanStd.Json::Json)],
+  result: Bool,
+  body: (match branches
+    | List.nil => true
+    | List.cons head rest => ((onlyKeys (Studio.Doc::memberSpine head) (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "anyOf") (nil Bytes)))) && ((requiredOnly (Studio.Doc::spineItems (match (Studio.Doc::field head (Studio.Doc::lit "anyOf"))
+      | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+      | Option.some found => found))) && (presenceOnly rest)))),
+  recursive_argument: branches,
+  executable: true
+}
+
+definition{
+  name: tagIn,
+  parameters: [branch : LexLeanStd.Json::Json, key : Bytes],
+  result: (Option Bytes),
+  body: (if (Studio.Doc::memberBytes key (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field branch (Studio.Doc::lit "required"))))) then (match (Studio.Doc::field branch (Studio.Doc::lit "properties"))
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some properties => (match (Studio.Doc::field properties key)
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some property => (Studio.Doc::strOf (Studio.Doc::field property (Studio.Doc::lit "const"))))) else (ctor Option.none [Bytes])),
+  executable: true
+}
+
+definition{
+  name: taggedBy,
+  parameters: [branches : (List LexLeanStd.Json::Json), key : Bytes],
+  result: Bool,
+  body: (match branches
+    | List.nil => true
+    | List.cons head rest => ((match (tagIn head key)
+      | Option.none => false
+      | Option.some tag => true) && (taggedBy rest key))),
+  recursive_argument: branches,
+  executable: true
+}
+
+definition{
+  name: discriminators,
+  parameters: [keys : (List (Bytes * LexLeanStd.Json::Json)), branches : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match keys
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (taggedBy branches (first head)) then (cons (first head) (discriminators rest branches)) else (discriminators rest branches))),
+  recursive_argument: keys,
+  executable: true
+}
+
+definition{
+  name: distinctTags,
+  parameters: [branches : (List LexLeanStd.Json::Json), key : Bytes, seen : (List Bytes)],
+  result: Bool,
+  body: (match branches
+    | List.nil => true
+    | List.cons head rest => (match (tagIn head key)
+      | Option.none => false
+      | Option.some tag => ((if (Studio.Doc::memberBytes tag seen) then false else true) && (distinctTags rest key (cons tag seen))))),
+  recursive_argument: branches,
+  executable: true
+}
+
+definition{
+  name: distinctTypes,
+  parameters: [branches : (List LexLeanStd.Json::Json), seen : (List Bytes)],
+  result: Bool,
+  body: (match branches
+    | List.nil => true
+    | List.cons head rest => (let kind : Bytes := (Studio.Doc::str head (Studio.Doc::lit "type")); ((if (Studio.Doc::same kind 0x) then false else true) && ((if (Studio.Doc::memberBytes kind seen) then false else true) && ((if (((Studio.Doc::same kind (Studio.Doc::lit "integer")) && (Studio.Doc::memberBytes (Studio.Doc::lit "number") seen)) || ((Studio.Doc::same kind (Studio.Doc::lit "number")) && (Studio.Doc::memberBytes (Studio.Doc::lit "integer") seen))) then false else true) && (distinctTypes rest (cons kind seen))))))),
+  recursive_argument: branches,
+  executable: true
+}
+
+definition{
+  name: disjointBranches,
+  parameters: [branches : (List LexLeanStd.Json::Json)],
+  result: Bool,
+  body: (match branches
+    | List.nil => false
+    | List.cons first1 others1 => (match (discriminators (Studio.Doc::membersOf (Studio.Doc::field first1 (Studio.Doc::lit "properties"))) branches)
+      | List.cons key more => (distinctTags branches key (nil Bytes))
+      | List.nil => (distinctTypes branches (nil Bytes)))),
+  executable: true
+}
+
+definition{
+  name: withMember,
+  parameters: [schema : LexLeanStd.Json::Json, key : Bytes, value : LexLeanStd.Json::Json],
+  result: LexLeanStd.Json::Json,
+  body: (match schema
+    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember key value inner))
+    | LexLeanStd.Json::Json.JMember name item rest => (ctor LexLeanStd.Json::Json.JMember name item rest)
+    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
+    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
+    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
+    | LexLeanStd.Json::Json.JStr text => (ctor LexLeanStd.Json::Json.JStr text)
+    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
+    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)),
+  executable: true
+}
+
+definition{
+  name: withoutPresence,
+  parameters: [schema : LexLeanStd.Json::Json],
+  result: LexLeanStd.Json::Json,
+  body: (let anyless : LexLeanStd.Json::Json := (match (Studio.Doc::field schema (Studio.Doc::lit "anyOf"))
+    | Option.none => schema
+    | Option.some branches => (if (requiredOnly (Studio.Doc::spineItems branches)) then (dropMember schema (Studio.Doc::lit "anyOf")) else (if ((has schema (Studio.Doc::lit "oneOf")) || (if (disjointBranches (Studio.Doc::spineItems branches)) then false else true)) then schema else (withMember (dropMember schema (Studio.Doc::lit "anyOf")) (Studio.Doc::lit "oneOf") branches)))); (let oneless : LexLeanStd.Json::Json := (match (Studio.Doc::field anyless (Studio.Doc::lit "oneOf"))
+    | Option.none => anyless
+    | Option.some branches => (if (requiredOnly (Studio.Doc::spineItems branches)) then (dropMember anyless (Studio.Doc::lit "oneOf")) else anyless)); (match (Studio.Doc::field oneless (Studio.Doc::lit "allOf"))
+    | Option.none => oneless
+    | Option.some branches => (if (presenceOnly (Studio.Doc::spineItems branches)) then (dropMember oneless (Studio.Doc::lit "allOf")) else oneless)))),
+  executable: true
+}
+
+definition{
+  name: baseTypeOf,
   parameters: [schema : LexLeanStd.Json::Json, context : Bytes],
   result: (Result (Bytes * (List Job)) Bytes),
   body: (match schema
@@ -509,7 +669,7 @@ definition{
     | LexLeanStd.Json::Json.JItem head rest => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | LexLeanStd.Json::Json.JMember key item rest => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | LexLeanStd.Json::Json.JObj members => (match (unknownKeyword (Studio.Doc::memberSpine schema))
-    | Option.some keyword => (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported keyword ") (cons keyword (nil Bytes)))) context)
+    | Option.some keyword => (refused (if (Studio.Doc::same keyword (Studio.Doc::lit "anyOf")) then (Studio.Doc::lit "an anyOf is translated only when its branches are provably disjoint (distinct JSON types, or one const tag with distinct values), because otherwise an instance can match more than one branch") else (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported keyword ") (cons keyword (nil Bytes))))) context)
     | Option.none => (match (Studio.Doc::strOf (Studio.Doc::field schema (Studio.Doc::lit "$ref")))
       | Option.some reference => (match (refName reference)
         | Option.none => (refused (Studio.Doc::lit "unsupported reference") context)
@@ -534,9 +694,18 @@ definition{
             | Option.some branches => (typed context (cons (ctor Job.translate context schema) (nil Job)))
             | Option.none => (let kind : Bytes := (Studio.Doc::str schema (Studio.Doc::lit "type")); (if ((Studio.Doc::same kind 0x) && (if (structural schema) then false else true)) then (anyValue) else (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType schema) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "number")) then (typed (numberType) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (match (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "properties")))
               | List.cons property others => (typed context (cons (ctor Job.translate context schema) (nil Job)))
-              | List.nil => (match (Studio.Doc::field schema (Studio.Doc::lit "additionalProperties"))
+              | List.nil => (match (entrySchema schema)
                 | Option.none => (wrapped (Studio.Doc::lit "List") (pairedWith (anyValue)))
                 | Option.some extra => (wrapped (Studio.Doc::lit "List") (pairedWith (mapValue extra context))))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: baseType,
+  parameters: [schema : LexLeanStd.Json::Json, context : Bytes],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (baseTypeOf (withoutPresence schema) context),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -683,42 +852,6 @@ definition{
 }
 
 definition{
-  name: tagIn,
-  parameters: [branch : LexLeanStd.Json::Json, key : Bytes],
-  result: (Option Bytes),
-  body: (if (Studio.Doc::memberBytes key (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field branch (Studio.Doc::lit "required"))))) then (match (Studio.Doc::field branch (Studio.Doc::lit "properties"))
-    | Option.none => (ctor Option.none [Bytes])
-    | Option.some properties => (match (Studio.Doc::field properties key)
-      | Option.none => (ctor Option.none [Bytes])
-      | Option.some property => (Studio.Doc::strOf (Studio.Doc::field property (Studio.Doc::lit "const"))))) else (ctor Option.none [Bytes])),
-  executable: true
-}
-
-definition{
-  name: taggedBy,
-  parameters: [branches : (List LexLeanStd.Json::Json), key : Bytes],
-  result: Bool,
-  body: (match branches
-    | List.nil => true
-    | List.cons head rest => ((match (tagIn head key)
-      | Option.none => false
-      | Option.some tag => true) && (taggedBy rest key))),
-  recursive_argument: branches,
-  executable: true
-}
-
-definition{
-  name: discriminators,
-  parameters: [keys : (List (Bytes * LexLeanStd.Json::Json)), branches : (List LexLeanStd.Json::Json)],
-  result: (List Bytes),
-  body: (match keys
-    | List.nil => (nil Bytes)
-    | List.cons head rest => (if (taggedBy branches (first head)) then (cons (first head) (discriminators rest branches)) else (discriminators rest branches))),
-  recursive_argument: keys,
-  executable: true
-}
-
-definition{
   name: withoutKey,
   parameters: [members : (List (Bytes * LexLeanStd.Json::Json)), key : Bytes],
   result: (List (Bytes * LexLeanStd.Json::Json)),
@@ -780,24 +913,69 @@ definition{
 }
 
 definition{
+  name: branchLabel,
+  parameters: [branch : LexLeanStd.Json::Json],
+  result: (Option Bytes),
+  body: (match (Studio.Doc::strOf (Studio.Doc::field branch (Studio.Doc::lit "$ref")))
+    | Option.some reference => (refName reference)
+    | Option.none => (Studio.Doc::strOf (Studio.Doc::field branch (Studio.Doc::lit "title")))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: labelsOf,
+  parameters: [branches : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match branches
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (branchLabel head)
+      | Option.none => (labelsOf rest)
+      | Option.some label => (cons label (labelsOf rest)))),
+  recursive_argument: branches,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: unionWith,
+  parameters: [escaped : Bool, owner : Bytes, branches : (List LexLeanStd.Json::Json), named : (List Bytes)],
+  result: (Result ((List Bytes) * (List Job)) Bytes),
+  body: (match branches
+    | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
+    | List.cons head rest => (match (branchLabel head)
+      | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::lit "untagged oneOf: a branch has neither a $ref nor a title, so its constructor has no name"))
+      | Option.some label => (match (nameAs escaped label)
+        | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable oneOf branch ") (cons label (nil Bytes)))))
+        | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two oneOf branches derive the constructor name ") (cons name (cons (Studio.Doc::lit ", so the oneOf is ambiguous") (nil Bytes)))))) else (match (baseType head (prim append owner (pascal label) : Bytes))
+          | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
+          | Result.ok found => (match (unionWith escaped owner rest (cons name named))
+            | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
+            | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: [") (cons (first found) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (first others)), (appendJobs (second found) (second others)))))))))),
+  recursive_argument: branches,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: taggedDeclaration,
   parameters: [name : Bytes, branches : (List LexLeanStd.Json::Json)],
   result: (Result (Bytes * (List Job)) Bytes),
   body: (match branches
     | List.nil => (refused (Studio.Doc::lit "an empty oneOf admits no instance") name)
     | List.cons first1 others1 => (match (discriminators (Studio.Doc::membersOf (Studio.Doc::field first1 (Studio.Doc::lit "properties"))) branches)
-      | List.nil => (refused (Studio.Doc::lit "untagged oneOf: no property is required by every branch with a const string") name)
-      | List.cons key more => (match more
-        | List.cons extra rest => (refused (Studio.Doc::cat (cons (Studio.Doc::lit "ambiguous oneOf: more than one property tags every branch (") (cons key (cons (Studio.Doc::lit ", ") (cons extra (cons (Studio.Doc::lit ")") (nil Bytes))))))) name)
-        | List.nil => (match (branchConstructors name branches key (nil Bytes))
-          | Result.error reason => (refused reason name)
-          | Result.ok found => (typed (inductiveText name (first found)) (second found)))))),
+      | List.nil => (match (unionWith (collides (labelsOf branches)) name branches (nil Bytes))
+        | Result.error reason => (refused reason name)
+        | Result.ok found => (typed (inductiveText name (first found)) (second found)))
+      | List.cons key more => (match (branchConstructors name branches key (nil Bytes))
+        | Result.error reason => (refused reason name)
+        | Result.ok found => (typed (inductiveText name (first found)) (second found))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
 
 definition{
-  name: declaration,
+  name: declarationOf,
   parameters: [name : Bytes, schema : LexLeanStd.Json::Json],
   result: (Result (Bytes * (List Job)) Bytes),
   body: (match (Studio.Doc::field schema (Studio.Doc::lit "enum"))
@@ -817,6 +995,15 @@ definition{
       | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [") (cons (match (first found)
         | List.nil => 0x
         | List.cons head rest => (Studio.Doc::cat (cons (Studio.Doc::lit "\n") (cons (joinWith (first found) (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ") (nil Bytes)))))) (cons (Studio.Doc::lit "]\n}\n") (nil Bytes))))))) (second found))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: declaration,
+  parameters: [name : Bytes, schema : LexLeanStd.Json::Json],
+  result: (Result (Bytes * (List Job)) Bytes),
+  body: (declarationOf name (withoutPresence schema)),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -864,12 +1051,102 @@ definition{
 }
 
 definition{
+  name: refsInto,
+  parameters: [value : LexLeanStd.Json::Json, found : (List Bytes)],
+  result: (List Bytes),
+  body: (match value
+    | LexLeanStd.Json::Json.JArr items => (refsInto items found)
+    | LexLeanStd.Json::Json.JObj members => (refsInto members found)
+    | LexLeanStd.Json::Json.JItem head rest => (refsInto head (refsInto rest found))
+    | LexLeanStd.Json::Json.JMember key item rest => (let later : (List Bytes) := (refsInto item (refsInto rest found)); (if (Studio.Doc::same key (Studio.Doc::lit "$ref")) then (match (Studio.Doc::strOf (ctor Option.some [LexLeanStd.Json::Json] item))
+      | Option.none => later
+      | Option.some reference => (match (refName reference)
+        | Option.none => later
+        | Option.some named => (cons named later))) else later))
+    | LexLeanStd.Json::Json.JBool flag => found
+    | LexLeanStd.Json::Json.JInt negative magnitude => found
+    | LexLeanStd.Json::Json.JStr text => found
+    | LexLeanStd.Json::Json.JNil => found),
+  recursive_argument: value,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: defNames,
+  parameters: [definitions : (List (Bytes * LexLeanStd.Json::Json))],
+  result: (List Bytes),
+  body: (match definitions
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (pascal (first head)) (defNames rest))),
+  recursive_argument: definitions,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: refsReady,
+  parameters: [refs : (List Bytes), self : Bytes, placed : (List Bytes), names : (List Bytes)],
+  result: Bool,
+  body: (match refs
+    | List.nil => true
+    | List.cons head rest => (((Studio.Doc::same head self) || ((Studio.Doc::memberBytes head placed) || (if (Studio.Doc::memberBytes head names) then false else true))) && (refsReady rest self placed names))),
+  recursive_argument: refs,
+  executable: true
+}
+
+definition{
+  name: firstReady,
+  parameters: [pending : (List (Bytes * LexLeanStd.Json::Json)), placed : (List Bytes), names : (List Bytes)],
+  result: (Option (Bytes * LexLeanStd.Json::Json)),
+  body: (match pending
+    | List.nil => (ctor Option.none [(Bytes * LexLeanStd.Json::Json)])
+    | List.cons head rest => (if (refsReady (refsInto (second head) (nil Bytes)) (pascal (first head)) placed names) then (ctor Option.some [(Bytes * LexLeanStd.Json::Json)] head) else (firstReady rest placed names))),
+  recursive_argument: pending,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: orderedDefs,
+  parameters: [fuel : Nat, pending : (List (Bytes * LexLeanStd.Json::Json)), placed : (List Bytes), names : (List Bytes)],
+  result: (Result (List (Bytes * LexLeanStd.Json::Json)) Bytes),
+  body: (match fuel
+    | Nat.zero => (match pending
+      | List.nil => (ctor Result.ok [(List (Bytes * LexLeanStd.Json::Json)), Bytes] (nil (Bytes * LexLeanStd.Json::Json)))
+      | List.cons any others => (ctor Result.error [(List (Bytes * LexLeanStd.Json::Json)), Bytes] (Studio.Doc::lit "the definitions are more than the translator's bound")))
+    | Nat.succ rest => (match pending
+      | List.nil => (ctor Result.ok [(List (Bytes * LexLeanStd.Json::Json)), Bytes] (nil (Bytes * LexLeanStd.Json::Json)))
+      | List.cons any others => (match (firstReady pending placed names)
+        | Option.none => (ctor Result.error [(List (Bytes * LexLeanStd.Json::Json)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "these definitions refer to each other in a cycle, which no declaration order can satisfy: ") (cons (joinWith (defNames pending) (Studio.Doc::lit ", ")) (nil Bytes)))))
+        | Option.some next => (match (orderedDefs rest (withoutKey pending (first next)) (cons (pascal (first next)) placed) names)
+          | Result.error reason => (ctor Result.error [(List (Bytes * LexLeanStd.Json::Json)), Bytes] reason)
+          | Result.ok later => (ctor Result.ok [(List (Bytes * LexLeanStd.Json::Json)), Bytes] (cons next later)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: appendMembers,
+  parameters: [left : (List (Bytes * LexLeanStd.Json::Json)), right : (List (Bytes * LexLeanStd.Json::Json))],
+  result: (List (Bytes * LexLeanStd.Json::Json)),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendMembers rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
   name: translateSchema,
   parameters: [schema : LexLeanStd.Json::Json, module : Bytes, root : Bytes],
   result: (Result Bytes Bytes),
-  body: (match (expand 4096 (appendJobs (defJobs (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "$defs")))) (cons (ctor Job.translate root schema) (nil Job))) (nil Bytes) (nil Bytes))
+  body: (let definitions : (List (Bytes * LexLeanStd.Json::Json)) := (appendMembers (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "$defs"))) (Studio.Doc::membersOf (Studio.Doc::field schema (Studio.Doc::lit "definitions")))); (match (orderedDefs 4096 definitions (nil Bytes) (defNames definitions))
     | Result.error reason => (ctor Result.error [Bytes, Bytes] reason)
-    | Result.ok declarations => (ctor Result.ok [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "\\begin{lexlean}{") (cons module (cons (Studio.Doc::lit "}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\title{Natural number addition}\n\\begin{semanticmodule}\n") (cons (joinWith (reverseBytes declarations (nil Bytes)) (Studio.Doc::lit "\n")) (cons (Studio.Doc::lit "\\end{semanticmodule}\n\\end{lexlean}\n") (nil Bytes))))))))),
+    | Result.ok ordered => (match (expand 4096 (appendJobs (defJobs ordered) (cons (ctor Job.translate root schema) (nil Job))) (nil Bytes) (nil Bytes))
+    | Result.error reason => (ctor Result.error [Bytes, Bytes] reason)
+    | Result.ok declarations => (ctor Result.ok [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "\\begin{lexlean}{") (cons module (cons (Studio.Doc::lit "}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\title{Natural number addition}\n\\begin{semanticmodule}\n") (cons (joinWith (reverseBytes declarations (nil Bytes)) (Studio.Doc::lit "\n")) (cons (Studio.Doc::lit "\\end{semanticmodule}\n\\end{lexlean}\n") (nil Bytes))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
