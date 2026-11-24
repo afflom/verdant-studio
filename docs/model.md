@@ -100,3 +100,13 @@ Each construct and the citation that admits it.
 - `Catalog.DoraSoftwareDeliveryMetric`: std DORA-SOFTWARE-DELIVERY-METRICS row H14
 - `Catalog.FpsUiDesignSpaceElement`: std FAGERHOLT-LORENTZON-BEYOND-THE-HUD-2009 row L10
 - `Catalog.GgpoNetworkStats`: std GGPO-GGPONET-H row K03
+- `Catalog.BehaviorTreeNodeType`: std ARXIV-1709.00084-V6 row J02
+- `Catalog.BwfBroadcastAudioExtension`: std EBU-TECH-3285-2 row I09
+- `Catalog.EbuR128Measure`: std EBU-R128-2023 row I02
+- `Catalog.GameAccessibilityGuideline`: std GAME-ACCESSIBILITY-GUIDELINES row M01
+- `Catalog.GameProgrammingPattern`: std NYSTROM-GAME-PROGRAMMING-PATTERNS row H08
+- `Catalog.HidUsagePage`: std USB-HID-HUT-1.6 row H10
+- `Catalog.ItuRBt2100Signal`: std ITU-R-BT-2100-3 row G08
+- `Catalog.SteeringBehavior`: std REYNOLDS-STEERING-BEHAVIORS-1999 row J08
+- `Catalog.TribesDeliveryRequirement`: std TRIBES-ENGINE-NETWORKING-MODEL row K04
+- `Catalog.XboxAccessibilityGuideline`: std MS-XAG-3.2 row M02
