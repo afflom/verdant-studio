@@ -231,7 +231,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **Q03** IARC (International Age Rating Coalition) (Age ratings and content classification): exactMatch IARC-RATINGS-DEFINITIONS (derived from its citation)
 - **Q04** USK (Germany) (Age ratings and content classification): exactMatch USK-AGE-RATINGS (derived from its citation)
 - **Q05** CERO (Japan) (Age ratings and content classification): exactMatch CERO-RATING-SYSTEM (derived from its citation)
-- **Q06** GRAC / GCRB (South Korea) (Age ratings and content classification), not reached from any origin: no mapping yet
+- **Q06** GRAC / GCRB (South Korea) (Age ratings and content classification): exactMatch IARC-RATINGS-DEFINITIONS (derived from its citation)
 - **Q07** Australian Classification (gambling-like content rules, Sept 2024) (Age ratings and content classification): exactMatch AU-F2023L01424 (derived from its citation)
 - **Q08** ClassInd (Brazil) (Age ratings and content classification): exactMatch BR-PORTARIA-MJSP-502-2021 (derived from its citation)
 - **Q09** China game licensing (NPPA ISBN approval) and minors' playtime rules (Age ratings and content classification), not reached from any origin: no mapping yet
