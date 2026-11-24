@@ -1,0 +1,57 @@
+\begin{lexlean}{Catalog.Iso18295ContactCentreClient}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso18295ContactCentreClientClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4ClientRequirementsForCCCServiceProvisioning, fields: []},
+    {name: n5CustomerExperience, fields: []},
+    {name: n51General, fields: []},
+    {name: u0035u002Eu0032u0020u0049u0064u0065u006Eu0074u0069u0066u0079u0069u006Eu0067u0020u0063u0075u0073u0074u006Fu006Du0065u0072u0073u2019u0020u006Eu0065u0065u0064u0073, fields: []},
+    {name: n53CustomerExperienceStrategy, fields: []},
+    {name: n54CustomerAccessAndContactStrategy, fields: []},
+    {name: n55CustomerCosts, fields: []},
+    {name: n56ConsistencyOfInformation, fields: []},
+    {name: n57CustomerProtection, fields: []},
+    {name: n58EthicalBehaviour, fields: []},
+    {name: n59CustomerData, fields: []},
+    {name: n6ClientRelationshipWithTheCCC, fields: []},
+    {name: n61General, fields: []},
+    {name: n62CustomerExperienceStrategy, fields: []},
+    {name: n63CustomerAccessAndContactStrategy, fields: []},
+    {name: n64RolesAndResponsibilities, fields: []},
+    {name: n65CommunicationOfInformationToTheCCC, fields: []},
+    {name: n66OperationalProcesses, fields: []},
+    {name: n67ForecastingAndPlanning, fields: []},
+    {name: n68MonitoringCCCPerformance, fields: []},
+    {name: n69CustomerFeedback, fields: []},
+    {name: n610TermsOfService, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso18295ContactCentreClientTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: customer, fields: []}
+  ]
+}
+
+structure{
+  name: Iso18295ContactCentreClient,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso18295ContactCentreClientClause)},
+    {name: term, type: (Option Iso18295ContactCentreClientTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
