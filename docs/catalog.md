@@ -73,22 +73,22 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **D06** MaterialX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D07** OpenPBR Surface (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D08** Physically based shading: Disney principled BRDF (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D09** NVIDIA MDL (Material Definition Language) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D10** Open Shading Language (OSL) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D11** KTX 2.0 + Basis Universal (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D12** GPU texture compression: BCn (DDS), ASTC, ETC2 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D13** OpenEXR (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D14** UDIM and Ptex texture layout (Visual art, 3D content, materials, and asset interchange): exactMatch WDAS-PTEX-IO-2.5.4 (derived from its citation)
-- **D15** COLLADA (ISO/PAS 17506) and Wavefront OBJ (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D16** OpenAssetIO (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
+- **D09** NVIDIA MDL (Material Definition Language) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch NVIDIA-MDL-GRAMMAR-2026.0.2 (staged)
+- **D10** Open Shading Language (OSL) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-OSL-GRAMMAR-1.15.8.0 (staged)
+- **D11** KTX 2.0 + Basis Universal (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-KTX-2.0.4 (staged)
+- **D12** GPU texture compression: BCn (DDS), ASTC, ETC2 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-DATAFORMAT-1.4.0 (staged)
+- **D13** OpenEXR (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-OPENEXR-FILE-LAYOUT-3.5.5 (staged)
+- **D14** UDIM and Ptex texture layout (Visual art, 3D content, materials, and asset interchange): narrowMatch WDAS-PTEX-IO-2.5.4 (staged)
+- **D15** COLLADA (ISO/PAS 17506) and Wavefront OBJ (Visual art, 3D content, materials, and asset interchange), not reached from any origin: narrowMatch KHRONOS-COLLADA-1.5.0 (staged)
+- **D16** OpenAssetIO (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch OPENASSETIO-MEDIACREATION-TRAITS (staged)
 - **D17** Metaverse Standards Forum and OMI Group (glTF extensions for interoperable worlds) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D18** Visual design principles: Gestalt, value structure, shape language, color theory (Munsell, Itten) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D19** Uncanny valley (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D20** Asset naming and project structure conventions (e.g. community Unreal style guide) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
+- **D20** Asset naming and project structure conventions (e.g. community Unreal style guide) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ALLAR-UE-STYLE-GUIDE (staged)
 - **E01** Twelve principles of animation (Characters, rigging, animation, and performance capture): exactMatch WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION (derived from its citation)
 - **E02** Facial Action Coding System (FACS) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E03** ARKit 52 blendshapes (Characters, rigging, animation, and performance capture): exactMatch APPLE-ARKIT-BLENDSHAPELOCATION (derived from its citation)
-- **E04** H-Anim (ISO/IEC 19774) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
+- **E04** H-Anim (ISO/IEC 19774) (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch WEB3D-X3D-4.0-XSD (staged)
 - **E05** VRM avatar format (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E06** UsdSkel / glTF skins (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E07** BVH and C3D motion-capture formats (Characters, rigging, animation, and performance capture): exactMatch C3D-USER-GUIDE (derived from its citation)
