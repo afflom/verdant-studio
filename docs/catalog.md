@@ -73,22 +73,22 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **D06** MaterialX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-MATERIALX-STDLIB-1.39.5 (staged)
 - **D07** OpenPBR Surface (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-OPENPBR-1.1.2 (staged)
 - **D08** Physically based shading: Disney principled BRDF (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch WDAS-DISNEY-BRDF-2012 (staged)
-- **D09** NVIDIA MDL (Material Definition Language) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D10** Open Shading Language (OSL) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D11** KTX 2.0 + Basis Universal (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D12** GPU texture compression: BCn (DDS), ASTC, ETC2 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D13** OpenEXR (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D14** UDIM and Ptex texture layout (Visual art, 3D content, materials, and asset interchange): exactMatch WDAS-PTEX-IO-2.5.4 (derived from its citation)
-- **D15** COLLADA (ISO/PAS 17506) and Wavefront OBJ (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D16** OpenAssetIO (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
+- **D09** NVIDIA MDL (Material Definition Language) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch NVIDIA-MDL-GRAMMAR-2026.0.2 (staged)
+- **D10** Open Shading Language (OSL) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-OSL-GRAMMAR-1.15.8.0 (staged)
+- **D11** KTX 2.0 + Basis Universal (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-KTX-2.0.4 (staged)
+- **D12** GPU texture compression: BCn (DDS), ASTC, ETC2 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-DATAFORMAT-1.4.0 (staged)
+- **D13** OpenEXR (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ASWF-OPENEXR-FILE-LAYOUT-3.5.5 (staged)
+- **D14** UDIM and Ptex texture layout (Visual art, 3D content, materials, and asset interchange): narrowMatch WDAS-PTEX-IO-2.5.4 (staged)
+- **D15** COLLADA (ISO/PAS 17506) and Wavefront OBJ (Visual art, 3D content, materials, and asset interchange), not reached from any origin: narrowMatch KHRONOS-COLLADA-1.5.0 (staged)
+- **D16** OpenAssetIO (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch OPENASSETIO-MEDIACREATION-TRAITS (staged)
 - **D17** Metaverse Standards Forum and OMI Group (glTF extensions for interoperable worlds) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D18** Visual design principles: Gestalt, value structure, shape language, color theory (Munsell, Itten) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D19** Uncanny valley (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **D20** Asset naming and project structure conventions (e.g. community Unreal style guide) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
-- **E01** Twelve principles of animation (Characters, rigging, animation, and performance capture): exactMatch WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION (derived from its citation)
+- **D20** Asset naming and project structure conventions (e.g. community Unreal style guide) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch ALLAR-UE-STYLE-GUIDE (staged)
+- **E01** Twelve principles of animation (Characters, rigging, animation, and performance capture): exactMatch WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION (derived from its citation); inverse of closeMatch from http://data.europa.eu/esco/skill/1c00bc98-2713-4c62-82c5-6d86f2e6a4cb (staged)
 - **E02** Facial Action Coding System (FACS) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **E03** ARKit 52 blendshapes (Characters, rigging, animation, and performance capture): exactMatch APPLE-ARKIT-BLENDSHAPELOCATION (derived from its citation)
-- **E04** H-Anim (ISO/IEC 19774) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
+- **E04** H-Anim (ISO/IEC 19774) (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch WEB3D-X3D-4.0-XSD (staged)
 - **E05** VRM avatar format (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch VRMC-VRM-1.0 (staged)
 - **E06** UsdSkel / glTF skins (Characters, rigging, animation, and performance capture), not reached from any origin: narrowMatch KHRONOS-GLTF-2.0 (staged); narrowMatch OPENUSD-USDSKEL-SCHEMA-26.11.1 (staged)
 - **E07** BVH and C3D motion-capture formats (Characters, rigging, animation, and performance capture): narrowMatch C3D-USER-GUIDE (staged)
@@ -119,8 +119,8 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G14** WebXR Device API (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch W3C-WEBXR-20261109 (staged)
 - **G15** ISO 9241-392 Ergonomics of stereoscopic images (visual fatigue) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G16** HDMI 2.1 (VRR, ALLM) and VESA Adaptive-Sync / ClearMR (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
-- **H01** C++ (ISO/IEC 14882) (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
-- **H02** C# (ECMA-334 / ISO/IEC 23270) and CLI (ECMA-335) (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H01** C++ (ISO/IEC 14882) (Engine, runtime, languages, and software engineering), not reached from any origin: inverse of closeMatch from http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f (staged)
+- **H02** C# (ECMA-334 / ISO/IEC 23270) and CLI (ECMA-335) (Engine, runtime, languages, and software engineering), not reached from any origin: inverse of closeMatch from http://data.europa.eu/esco/skill/4c016b68-4116-468c-9dc6-42710c239e4a (staged)
 - **H03** IEEE 754 floating-point arithmetic (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H04** WebAssembly (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H05** Lua (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch LUA-5.5.1 (staged)
@@ -131,9 +131,9 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **H10** USB HID usage tables / SDL GameController DB / Microsoft GameInput (Engine, runtime, languages, and software engineering): narrowMatch SDL-GAMECONTROLLERDB (staged); narrowMatch USB-HID-HUT-1.6 (staged)
 - **H11** Physics middleware (Havok, PhysX, Jolt, Chaos) and USD Physics schema (Engine, runtime, languages, and software engineering), not reached from any origin: narrowMatch OPENUSD-USDPHYSICS-26.11.1 (staged)
 - **H12** Version control: Perforce Helix Core, Git + Git LFS, Unity Version Control (Engine, runtime, languages, and software engineering), not reached from any origin: narrowMatch GIT-LFS-SPEC-3.8.1 (staged)
-- **H13** Semantic Versioning 2.0.0 (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H13** Semantic Versioning 2.0.0 (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch SEMVER-2.0.0 (staged)
 - **H14** DORA metrics / Accelerate (Engine, runtime, languages, and software engineering): exactMatch DORA-SOFTWARE-DELIVERY-METRICS (derived from its citation)
-- **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch W3C-GAMEPAD-20261119 (staged)
 - **H16** Platform SDK minimums: Google Play target API level; Apple minimum SDK/Xcode requirements (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **I01** ITU-R BS.1770 loudness measurement (LUFS/LKFS) (Audio, music, and voice): exactMatch ITU-R-BS-1770-5 (derived from its citation)
 - **I02** EBU R 128 (Audio, music, and voice): exactMatch EBU-R128-2023 (derived from its citation)
@@ -141,10 +141,10 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **I04** Audio middleware: Audiokinetic Wwise, FMOD Studio (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I05** Interactive music techniques: horizontal resequencing, vertical layering, stingers (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice), not reached from any origin: no mapping yet
-- **I07** AES69 (SOFA) HRTF format (Audio, music, and voice), not reached from any origin: no mapping yet
-- **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): exactMatch AMBIX-AMBISONICS-FORMAT-2011 (derived from its citation)
+- **I07** AES69 (SOFA) HRTF format (Audio, music, and voice), not reached from any origin: exactMatch SOFA-SIMPLEFREEFIELDHRIR-1.0 (staged)
+- **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): narrowMatch AMBIX-AMBISONICS-FORMAT-2011 (staged)
 - **I09** Broadcast Wave Format (EBU Tech 3285) (Audio, music, and voice): exactMatch EBU-TECH-3285-2 (derived from its citation)
-- **I10** Ogg Vorbis / Opus (RFC 6716) (Audio, music, and voice), not reached from any origin: no mapping yet
+- **I10** Ogg Vorbis / Opus (RFC 6716) (Audio, music, and voice), not reached from any origin: narrowMatch IETF-RFC-3533 (staged); narrowMatch IETF-RFC-6716 (staged); narrowMatch IETF-RFC-7845 (staged); narrowMatch XIPH-VORBIS-I (staged)
 - **I11** IASIG 3D audio guidelines (I3DL1/I3DL2) (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I12** Music licensing and performing rights (sync, master, PRO registration) (Audio, music, and voice), not reached from any origin: no mapping yet
 - **J01** Finite state machines / hierarchical FSMs (NPC, agent, and game AI models), not reached from any origin: no mapping yet
@@ -153,14 +153,14 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **J04** Hierarchical Task Network (HTN) planning (NPC, agent, and game AI models): exactMatch HUMPHREYS-HTN-GAME-AI-PRO-12 (derived from its citation)
 - **J05** Utility AI / Infinite Axis Utility System (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J06** A* search (NPC, agent, and game AI models), not reached from any origin: no mapping yet
-- **J07** Navigation meshes: Recast & Detour (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J07** Navigation meshes: Recast & Detour (NPC, agent, and game AI models), not reached from any origin: narrowMatch RECAST-DETOUR-NAVMESH-H (staged)
 - **J08** Steering behaviors and flocking (boids) (NPC, agent, and game AI models): exactMatch REYNOLDS-STEERING-BEHAVIORS-1999 (derived from its citation)
 - **J09** Smart objects and AI directors (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J10** Artificial Intelligence and Games (academic reference model) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J11** Procedural Content Generation in Games (NPC, agent, and game AI models): exactMatch PCG-BOOK-CHAPTER-1 (derived from its citation)
 - **J12** Video Game Description Language (VGDL) / GVGAI (NPC, agent, and game AI models): exactMatch ARXIV-1802.10363-V4 (derived from its citation)
 - **J13** Unity ML-Agents / reinforcement learning for game agents (NPC, agent, and game AI models): exactMatch UNITY-MLAGENTS-AGENT-INFO-PROTO (derived from its citation)
-- **J14** EU Artificial Intelligence Act (Regulation (EU) 2024/1689) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J14** EU Artificial Intelligence Act (Regulation (EU) 2024/1689) (NPC, agent, and game AI models), not reached from any origin: exactMatch EU-REG-2024-1689 (staged)
 - **J15** ISO/IEC 42001 AI management system (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J16** NIST AI Risk Management Framework (AI RMF 1.0) (NPC, agent, and game AI models), not reached from any origin: exactMatch NIST-AI-RMF-PLAYBOOK (staged)
 - **J17** C2PA Content Credentials (NPC, agent, and game AI models), not reached from any origin: exactMatch C2PA-SPEC-2.3 (staged)
@@ -172,8 +172,8 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **K05** UDP (RFC 768), TCP (RFC 9293), QUIC (RFC 9000) (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-768 (staged); narrowMatch IETF-RFC-9000 (staged); narrowMatch IETF-RFC-9293 (staged)
 - **K06** ICE / STUN / TURN (RFC 8445, 8489, 8656) (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-8445 (staged); narrowMatch IETF-RFC-8489 (staged); narrowMatch IETF-RFC-8656 (staged)
 - **K07** WebRTC and WebSocket (RFC 6455) (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-6455 (staged); narrowMatch W3C-WEBRTC-2025 (staged)
-- **K08** Elo / Glicko-2 (Networking, multiplayer, and online services): exactMatch GLICKMAN-GLICKO-2-2022 (derived from its citation)
-- **K09** TrueSkill / TrueSkill 2 (Networking, multiplayer, and online services): exactMatch MSR-TRUESKILL-NIPS-2006 (derived from its citation)
+- **K08** Elo / Glicko-2 (Networking, multiplayer, and online services): narrowMatch GLICKMAN-GLICKO-2-2022 (staged)
+- **K09** TrueSkill / TrueSkill 2 (Networking, multiplayer, and online services): narrowMatch MSR-TRUESKILL-NIPS-2006 (staged)
 - **K10** Open Match (Networking, multiplayer, and online services), not reached from any origin: exactMatch OPEN-MATCH-1.8.1-MESSAGES (staged)
 - **K11** Agones (Networking, multiplayer, and online services), not reached from any origin: exactMatch AGONES-1.62.0-INSTALL (staged)
 - **K12** Platform online service requirements (PSN, Xbox network, Nintendo Switch Online, Steamworks, Epic Online Services) (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
@@ -195,18 +195,18 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **M05** IGDA Game Accessibility SIG resources (Accessibility), not reached from any origin: no mapping yet
 - **M06** WCAG 2.2 (ISO/IEC 40500 = WCAG 2.0) (Accessibility), not reached from any origin: exactMatch W3C-WCAG22-2024 (staged); exactMatch W3C-WCAG22-JSON (staged)
 - **M07** CVAA (21st Century Communications and Video Accessibility Act) (Accessibility), not reached from any origin: exactMatch US-PL-111-260 (staged)
-- **M08** European Accessibility Act (Directive (EU) 2019/882) and EN 301 549 (Accessibility): exactMatch ETSI-EN-301-549-3.2.1 (derived from its citation)
+- **M08** European Accessibility Act (Directive (EU) 2019/882) and EN 301 549 (Accessibility): narrowMatch ETSI-EN-301-549-3.2.1 (derived from its citation); narrowMatch EU-DIR-2019-882 (staged)
 - **M09** Photosensitive epilepsy guidelines: ITU-R BT.1702, Ofcom guidance, Harding test (Accessibility), not reached from any origin: no mapping yet
-- **M10** Subtitle and caption standards: BBC Subtitle Guidelines, W3C TTML/IMSC, WebVTT (Accessibility), not reached from any origin: no mapping yet
-- **N01** Unicode Standard and CLDR (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
-- **N02** ICU MessageFormat / MessageFormat 2 (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
-- **N03** BCP 47 language tags; ISO 639, ISO 3166, ISO 4217 (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
-- **N04** XLIFF 2.1 (OASIS; ISO 21720) (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
+- **M10** Subtitle and caption standards: BBC Subtitle Guidelines, W3C TTML/IMSC, WebVTT (Accessibility), not reached from any origin: narrowMatch W3C-IMSC-1.2-2020 (staged); narrowMatch W3C-TTML2-2018 (staged)
+- **N01** Unicode Standard and CLDR (Localization, internationalization, and culturalization), not reached from any origin: narrowMatch UNICODE-CLDR-49-SUPPLEMENTAL (staged); narrowMatch UNICODE-UCD-17.0.0 (staged)
+- **N02** ICU MessageFormat / MessageFormat 2 (Localization, internationalization, and culturalization), not reached from any origin: narrowMatch UNICODE-MF2-ABNF-LDML48.2 (staged)
+- **N03** BCP 47 language tags; ISO 639, ISO 3166, ISO 4217 (Localization, internationalization, and culturalization), not reached from any origin: narrowMatch IANA-LANGUAGE-SUBTAG-REGISTRY (staged); narrowMatch IETF-RFC-4647 (staged); narrowMatch IETF-RFC-5646 (staged); narrowMatch LOC-ISO-639-2 (staged); narrowMatch SIX-ISO-4217-LIST-ONE (staged)
+- **N04** XLIFF 2.1 (OASIS; ISO 21720) (Localization, internationalization, and culturalization), not reached from any origin: exactMatch OASIS-XLIFF-2.1 (staged)
 - **N05** TMX and TBX (ISO 30042) (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
-- **N06** GNU gettext PO (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
+- **N06** GNU gettext PO (Localization, internationalization, and culturalization), not reached from any origin: exactMatch GNU-GETTEXT-0.26-MANUAL (staged)
 - **N07** ISO 17100 Translation services (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
 - **N08** ISO 18587 MT post-editing (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
-- **N09** MQM (Multidimensional Quality Metrics) / ASTM F2575 (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
+- **N09** MQM (Multidimensional Quality Metrics) / ASTM F2575 (Localization, internationalization, and culturalization), not reached from any origin: narrowMatch MQM-FULL-TYPOLOGY-2024-03-07 (staged)
 - **N10** Culturalization practice (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
 - **N11** OpenType (ISO/IEC 14496-22) (Localization, internationalization, and culturalization): exactMatch OPENTYPE-1.9.1 (derived from its citation)
 - **N12** GB 18030 Chinese character set (Localization, internationalization, and culturalization), not reached from any origin: no mapping yet
@@ -215,9 +215,9 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **O03** ISO/IEC/IEEE 29119 Software testing (parts 1-5) (Quality assurance, testing, and software quality), not reached from any origin: no mapping yet
 - **O04** ISTQB Certified Tester Game Testing (CT-GaMe) (Quality assurance, testing, and software quality): exactMatch ISTQB-CT-GAME-1.0.1 (derived from its citation)
 - **O05** Bug severity / priority taxonomies and A/B/C class bug conventions (Quality assurance, testing, and software quality), not reached from any origin: no mapping yet
-- **O06** Crash reporting: Breakpad/Crashpad, Windows minidump format (Quality assurance, testing, and software quality), not reached from any origin: no mapping yet
+- **O06** Crash reporting: Breakpad/Crashpad, Windows minidump format (Quality assurance, testing, and software quality), not reached from any origin: exactMatch BREAKPAD-MINIDUMP-FORMAT (staged)
 - **O07** Automated game testing frameworks (Unreal Gauntlet/Automation, Unity Test Framework, GameDriver) (Quality assurance, testing, and software quality), not reached from any origin: no mapping yet
-- **O08** Compatibility programs: Steam Deck Verified, Xbox Play Anywhere, Windows on Arm (Quality assurance, testing, and software quality): exactMatch STEAMWORKS-DECK-COMPAT (derived from its citation)
+- **O08** Compatibility programs: Steam Deck Verified, Xbox Play Anywhere, Windows on Arm (Quality assurance, testing, and software quality): narrowMatch STEAMWORKS-DECK-COMPAT (staged)
 - **P01** PlayStation Technical Requirements Checklist (TRC) (Platform certification and storefront requirements), not reached from any origin: no mapping yet
 - **P02** Xbox Requirements (XR) / Xbox Certification (Platform certification and storefront requirements), not reached from any origin: no mapping yet
 - **P03** Nintendo guidelines and Lotcheck (Platform certification and storefront requirements), not reached from any origin: no mapping yet
@@ -235,21 +235,21 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **Q07** Australian Classification (gambling-like content rules, Sept 2024) (Age ratings and content classification): exactMatch AU-F2023L01424 (derived from its citation)
 - **Q08** ClassInd (Brazil) (Age ratings and content classification): exactMatch BR-PORTARIA-MJSP-502-2021 (derived from its citation)
 - **Q09** China game licensing (NPPA ISBN approval) and minors' playtime rules (Age ratings and content classification), not reached from any origin: no mapping yet
-- **R01** GDPR (Regulation (EU) 2016/679) and UK GDPR (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
-- **R02** COPPA Rule (2025 amendments; compliance by April 2026) (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
+- **R01** GDPR (Regulation (EU) 2016/679) and UK GDPR (Privacy, child protection, and age assurance), not reached from any origin: narrowMatch EU-REG-2016-679 (staged); narrowMatch UK-EUR-2016-679 (staged)
+- **R02** COPPA Rule (2025 amendments; compliance by April 2026) (Privacy, child protection, and age assurance), not reached from any origin: exactMatch US-CFR-16-312-2026 (staged)
 - **R03** UK Age Appropriate Design Code (Children's Code) (Privacy, child protection, and age assurance): exactMatch ICO-AADC-STANDARDS (derived from its citation)
 - **R04** CCPA / CPRA (California) (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
-- **R05** China PIPL; Brazil LGPD; other national privacy laws (Privacy, child protection, and age assurance): exactMatch BR-LEI-13709-2018 (derived from its citation)
+- **R05** China PIPL; Brazil LGPD; other national privacy laws (Privacy, child protection, and age assurance): narrowMatch BR-LEI-13709-2018 (staged)
 - **R06** COPPA Safe Harbor programs: ESRB Privacy Certified, kidSAFE, PRIVO (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
 - **R07** ISO/IEC 27701 and ISO/IEC 29100 (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
 - **R08** IEEE 2089-2021 Age-appropriate digital services framework / IEEE 2089.1-2024 Online age verification (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
 - **R09** ISO/IEC 27566-1 Age assurance systems framework (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
-- **R10** Platform privacy disclosures: Apple privacy nutrition labels and privacy manifests, ATT; Google Play Data safety (Privacy, child protection, and age assurance): exactMatch APPLE-PRIVACY-MANIFEST (derived from its citation)
-- **R11** IAB Europe Transparency & Consent Framework v2.2 (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
+- **R10** Platform privacy disclosures: Apple privacy nutrition labels and privacy manifests, ATT; Google Play Data safety (Privacy, child protection, and age assurance): narrowMatch APPLE-PRIVACY-MANIFEST (staged)
+- **R11** IAB Europe Transparency & Consent Framework v2.2 (Privacy, child protection, and age assurance), not reached from any origin: exactMatch IAB-TCF-GVL-3-186 (staged)
 - **R12** US state App Store Accountability Acts (Utah, Texas, Louisiana and others, 2025-2026) (Privacy, child protection, and age assurance), not reached from any origin: no mapping yet
 - **S01** Disruption and Harms in Gaming Framework (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
-- **S02** UK Online Safety Act 2023 and Ofcom codes of practice (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
-- **S03** EU Digital Services Act (Regulation (EU) 2022/2065) (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
+- **S02** UK Online Safety Act 2023 and Ofcom codes of practice (Online safety, community, user-generated content, and esports), not reached from any origin: narrowMatch UK-UKPGA-2023-50 (staged)
+- **S03** EU Digital Services Act (Regulation (EU) 2022/2065) (Online safety, community, user-generated content, and esports), not reached from any origin: exactMatch EU-REG-2022-2065 (staged)
 - **S04** Safety by Design principles; Basic Online Safety Expectations (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
 - **S05** Tech Coalition (child safety industry alliance) (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
 - **S06** Esports Integrity Commission (ESIC) codes (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
@@ -258,42 +258,42 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **S09** Game content usage / video and streaming policies (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
 - **S10** Esports tournament licensing (publisher tournament licenses and guidelines) (Online safety, community, user-generated content, and esports), not reached from any origin: no mapping yet
 - **T01** OWASP Game Security Framework (GameSec) (Security, anti-cheat, and supply chain): exactMatch OWASP-GAME-SECURITY-FRAMEWORK (derived from its citation)
-- **T02** OWASP ASVS and MASVS (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
-- **T03** STRIDE threat modeling / Microsoft SDL (Security, anti-cheat, and supply chain): exactMatch MICROSOFT-TMT-STRIDE (derived from its citation)
+- **T02** OWASP ASVS and MASVS (Security, anti-cheat, and supply chain), not reached from any origin: narrowMatch OWASP-ASVS-5.0.0 (staged); narrowMatch OWASP-MASVS-2.1.0 (staged)
+- **T03** STRIDE threat modeling / Microsoft SDL (Security, anti-cheat, and supply chain): narrowMatch MICROSOFT-TMT-STRIDE (staged)
 - **T04** NIST Secure Software Development Framework (SP 800-218) (Security, anti-cheat, and supply chain): exactMatch NIST-SP-800-218-1.1 (derived from its citation)
 - **T05** NIST Cybersecurity Framework 2.0 (Security, anti-cheat, and supply chain): exactMatch NIST-CSWP-29-CSF-2.0 (derived from its citation)
 - **T06** ISO/IEC 27001 Information security management (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
 - **T07** SOC 2 (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
 - **T08** PCI DSS v4.0 (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
-- **T09** SBOM: SPDX (ISO/IEC 5962) and CycloneDX (ECMA-424); SLSA (Security, anti-cheat, and supply chain): exactMatch SLSA-1.1-LEVELS (derived from its citation)
-- **T10** CVSS v4.0 and CVE (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
+- **T09** SBOM: SPDX (ISO/IEC 5962) and CycloneDX (ECMA-424); SLSA (Security, anti-cheat, and supply chain): narrowMatch SLSA-1.1-LEVELS (derived from its citation); narrowMatch ECMA-424-CYCLONEDX-1.6 (staged); narrowMatch SPDX-3.0.1 (staged)
+- **T10** CVSS v4.0 and CVE (Security, anti-cheat, and supply chain), not reached from any origin: narrowMatch CVE-RECORD-FORMAT-5.2.0 (staged); narrowMatch FIRST-CVSS-4.0 (staged)
 - **T11** Anti-cheat and DRM systems (Easy Anti-Cheat, BattlEye, Riot Vanguard, Denuvo, VAC) (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
-- **T12** FIDO2 / WebAuthn passkeys (Security, anti-cheat, and supply chain): exactMatch W3C-WEBAUTHN-3-20260825 (derived from its citation)
+- **T12** FIDO2 / WebAuthn passkeys (Security, anti-cheat, and supply chain): narrowMatch W3C-WEBAUTHN-3-20260825 (staged)
 - **T13** Pre-release asset security programs (TPN, MPA content security best practices) (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
-- **T14** EU Cyber Resilience Act (Regulation (EU) 2024/2847) (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
-- **T15** PSD2 Strong Customer Authentication (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
+- **T14** EU Cyber Resilience Act (Regulation (EU) 2024/2847) (Security, anti-cheat, and supply chain), not reached from any origin: exactMatch EU-REG-2024-2847 (staged)
+- **T15** PSD2 Strong Customer Authentication (Security, anti-cheat, and supply chain), not reached from any origin: exactMatch EU-DIR-2015-2366 (staged)
 - **U01** CPC Network Key Principles on in-game virtual currencies (March 2025) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U02** Digital Fairness Act (proposal, November 2026) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
-- **U03** Unfair Commercial Practices Directive (2005/29/EC) and Consumer Rights Directive (2011/83/EU) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
+- **U03** Unfair Commercial Practices Directive (2005/29/EC) and Consumer Rights Directive (2011/83/EU) (Monetization, consumer protection, and virtual economies), not reached from any origin: narrowMatch EU-DIR-2005-29 (staged); narrowMatch EU-DIR-2011-83 (staged)
 - **U04** UK loot box industry principles (Ukie, 2023) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U05** Japan Act against Unjustifiable Premiums (kompu gacha ban, 2012) and JOGA guidelines (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U06** Probability disclosure rules (China 2017; Korea 2024; Apple; Google) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U07** FTC enforcement on dark patterns (Epic Games 2022 order) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U08** Revenue recognition: ASC 606 / IFRS 15 (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U09** Free-to-play and virtual economy design canon (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
-- **U10** Advertising in games: IAB Tech Lab Intrinsic In-Game measurement guidelines (with MRC); OpenRTB; VAST; MRAID (Monetization, consumer protection, and virtual economies): exactMatch IAB-OPENRTB-2.6 (derived from its citation)
-- **U11** Digital Content Directive (Directive (EU) 2019/770) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
+- **U10** Advertising in games: IAB Tech Lab Intrinsic In-Game measurement guidelines (with MRC); OpenRTB; VAST; MRAID (Monetization, consumer protection, and virtual economies): narrowMatch IAB-OPENRTB-2.6 (staged); narrowMatch IAB-VAST-4.2 (staged)
+- **U11** Digital Content Directive (Directive (EU) 2019/770) (Monetization, consumer protection, and virtual economies), not reached from any origin: exactMatch EU-DIR-2019-770 (staged)
 - **V01** ESRB Advertising Review Council principles / PEGI Code of Conduct (advertising) (Launch, marketing, and branding), not reached from any origin: no mapping yet
-- **V02** Endorsement and influencer disclosure: FTC Endorsement Guides; UK CAP Code (Launch, marketing, and branding), not reached from any origin: no mapping yet
+- **V02** Endorsement and influencer disclosure: FTC Endorsement Guides; UK CAP Code (Launch, marketing, and branding), not reached from any origin: narrowMatch US-CFR-16-255-2026 (staged)
 - **V03** Brand valuation and evaluation: ISO 10668, ISO 20671 (Launch, marketing, and branding), not reached from any origin: no mapping yet
-- **V04** Trademark classification (Nice Classification classes 9, 28, 41) (Launch, marketing, and branding), not reached from any origin: no mapping yet
-- **V05** Store page and capsule asset specifications (Steam, PlayStation Store, Xbox, App Store) (Launch, marketing, and branding): exactMatch STEAMWORKS-STORE-ASSETS (derived from its citation)
+- **V04** Trademark classification (Nice Classification classes 9, 28, 41) (Launch, marketing, and branding), not reached from any origin: exactMatch WIPO-NICE-NCL-13-2026 (staged)
+- **V05** Store page and capsule asset specifications (Steam, PlayStation Store, Xbox, App Store) (Launch, marketing, and branding): narrowMatch STEAMWORKS-STORE-ASSETS (staged)
 - **V06** IGDA Game Crediting Guidelines (Launch, marketing, and branding): exactMatch IGDA-GAME-CREDITING-GUIDE-10.1 (derived from its citation)
 - **W01** Site Reliability Engineering (SLIs, SLOs, error budgets) (Live operations, reliability, support, and analytics): exactMatch GOOGLE-SRE-BOOK-CH4-SLO (derived from its citation)
 - **W02** ITIL 4 (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **W03** ISO/IEC 20000-1 Service management (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **W04** OpenTelemetry (Live operations, reliability, support, and analytics): exactMatch OTEL-SPEC-1.40.0-TRACE-API (derived from its citation)
-- **W05** OpenFeature (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
+- **W05** OpenFeature (Live operations, reliability, support, and analytics), not reached from any origin: exactMatch OPENFEATURE-SPEC-0.9.0 (staged)
 - **W06** Game Analytics: Maximizing the Value of Player Data (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **W07** Live-service KPIs (DAU/MAU, retention D1/D7/D30, ARPDAU, LTV, conversion, churn) (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **W08** Mobile attribution: Apple SKAdNetwork / AdAttributionKit; Android Privacy Sandbox (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
@@ -302,23 +302,23 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **W11** Recommended game events schema (Google Analytics 4 / Firebase) (Live operations, reliability, support, and analytics): exactMatch GOOGLE-GA4-RECOMMENDED-EVENTS (derived from its citation)
 - **W12** Platform patching and content delivery rules (patch size, delta patching, day-one patch policies) (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
 - **X01** Berne Convention / copyright law; WIPO guide on video games (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
-- **X02** SPDX License List and OSI-approved licenses (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
+- **X02** SPDX License List and OSI-approved licenses (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch SPDX-LICENSE-LIST-3.29.0 (staged)
 - **X03** Engine and middleware license terms (Unreal EULA, Unity terms) (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **X04** IGDA Developer Satisfaction Survey and quality-of-life guidance (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **X05** ISO 45003 Psychological health and safety at work (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **X06** Playing for the Planet Alliance (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **X07** Software Carbon Intensity (ISO/IEC 21031:2024) (Business, IP, labor, and sustainability): exactMatch GSF-SCI-1.1 (derived from its citation)
-- **X08** GHG Protocol / ISO 14064 (Business, IP, labor, and sustainability): exactMatch GHG-PROTOCOL-CORPORATE-REVISED (derived from its citation)
+- **X08** GHG Protocol / ISO 14064 (Business, IP, labor, and sustainability): narrowMatch GHG-PROTOCOL-CORPORATE-REVISED (staged)
 - **X09** Industry associations and their codes (ESA, Video Games Europe, Ukie, JOGA, CESA) (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
-- **X10** EU Product Liability Directive (Directive (EU) 2024/2853) (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
+- **X10** EU Product Liability Directive (Directive (EU) 2024/2853) (Business, IP, labor, and sustainability), not reached from any origin: exactMatch EU-DIR-2024-2853 (staged)
 - **X11** Chain of title and IP clearance practice (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **Y01** OAIS reference model (ISO 14721) (End of life, preservation, and archiving): exactMatch CCSDS-650.0-M-3 (derived from its citation)
-- **Y02** PREMIS and METS (End of life, preservation, and archiving), not reached from any origin: no mapping yet
+- **Y02** PREMIS and METS (End of life, preservation, and archiving), not reached from any origin: narrowMatch LOC-METS-1.12.1 (staged); narrowMatch LOC-PREMIS-3.0 (staged)
 - **Y03** Library of Congress Recommended Formats Statement: software and video games (End of life, preservation, and archiving), not reached from any origin: no mapping yet
 - **Y04** Video Game Metadata Schema (End of life, preservation, and archiving), not reached from any origin: no mapping yet
-- **Y05** BagIt (RFC 8493) (End of life, preservation, and archiving), not reached from any origin: no mapping yet
-- **Y06** Software Heritage and Emulation-as-a-Service (EaaSI) (End of life, preservation, and archiving): exactMatch SWHID-1.2-SYNTAX (derived from its citation)
-- **Y07** US DMCA Section 1201 exemptions for video game preservation (End of life, preservation, and archiving), not reached from any origin: no mapping yet
+- **Y05** BagIt (RFC 8493) (End of life, preservation, and archiving), not reached from any origin: exactMatch IETF-RFC-8493 (staged)
+- **Y06** Software Heritage and Emulation-as-a-Service (EaaSI) (End of life, preservation, and archiving): narrowMatch SWHID-1.2-SYNTAX (staged)
+- **Y07** US DMCA Section 1201 exemptions for video game preservation (End of life, preservation, and archiving), not reached from any origin: exactMatch US-CFR-37-201.40-2025 (staged)
 - **Y08** 'Stop Destroying Videogames' European Citizens' Initiative and Commission reply (June 2026) (End of life, preservation, and archiving), not reached from any origin: no mapping yet
 - **Y09** Video Game History Foundation / Embracer Games Archive practices (End of life, preservation, and archiving), not reached from any origin: no mapping yet
 - **Y10** Software Preservation Network / Code of Best Practices in Fair Use for Software Preservation (End of life, preservation, and archiving), not reached from any origin: no mapping yet
