@@ -991,14 +991,46 @@ definition{
 }
 
 definition{
+  name: stagedEntry,
+  parameters: [seen : Seen, path : Bytes],
+  result: LexLeanStd.Json::Json,
+  body: (match (jsonOf seen path)
+    | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+    | Option.some entry => entry),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: admittedSchemaPath,
+  parameters: [entry : LexLeanStd.Json::Json],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal (Studio.Doc::str entry (Studio.Doc::lit "name"))) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: admittedSchemaPaths,
+  parameters: [seen : Seen, paths : (List Bytes), constructs : (List Bytes)],
+  result: (List Bytes),
+  body: (match paths
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (let entry : LexLeanStd.Json::Json := (stagedEntry seen head); (if (Studio.Doc::memberBytes (encodingModule (Studio.Doc::str entry (Studio.Doc::lit "name"))) constructs) then (cons (admittedSchemaPath entry) (admittedSchemaPaths seen rest constructs)) else (admittedSchemaPaths seen rest constructs)))),
+  recursive_argument: paths,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: firstUnadmitted,
   parameters: [seen : Seen, paths : (List Bytes), constructs : (List Bytes)],
   result: (Option Bytes),
   body: (match paths
     | List.nil => (ctor Option.none [Bytes])
-    | List.cons head rest => (if (Studio.Doc::memberBytes (encodingModule (Studio.Doc::str (match (jsonOf seen head)
+    | List.cons head rest => (let entry : LexLeanStd.Json::Json := (stagedEntry seen head); (if ((Studio.Doc::memberBytes (encodingModule (Studio.Doc::str entry (Studio.Doc::lit "name"))) constructs) && (Studio.Doc::same (LexLeanStd.Json::writeJsonFile (match (Studio.Doc::field entry (Studio.Doc::lit "schema"))
         | Option.none => (ctor LexLeanStd.Json::Json.JNil)
-        | Option.some entry => entry) (Studio.Doc::lit "name"))) constructs) then (firstUnadmitted seen rest constructs) else (ctor Option.some [Bytes] head))),
+        | Option.some schema => schema)) (contents seen (admittedSchemaPath entry)))) then (firstUnadmitted seen rest constructs) else (ctor Option.some [Bytes] head)))),
   recursive_argument: paths,
   axioms: [Quot.sound, propext],
   executable: true
@@ -2024,9 +2056,11 @@ definition{
   result: Plan,
   body: (if (negate (isListed (project seen listed) (encodingsDir))) then (ctor Plan.lists (cons (encodingsDir) (nil Bytes))) else (let paths : (List Bytes) := (unskipped (LexLeanStd.Order::sortedSet (jsonFiles (encodingsDir) (listingOf (project seen listed) (encodingsDir)))) skipped); (match (missing seen (cons (Studio.Doc::lit "model/admissions.json") paths))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (match (firstUnadmitted seen paths (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct")))
+    | List.nil => (let constructs : (List Bytes) := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct")); (match (missing seen (admittedSchemaPaths seen paths constructs))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (firstUnadmitted seen paths constructs)
       | Option.none => (planNextQueue seen skipped)
-      | Option.some path => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "admit-encoding ") (cons path (cons 0x0a (nil Bytes)))))))))),
+      | Option.some path => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "admit-encoding ") (cons path (cons 0x0a (nil Bytes)))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
