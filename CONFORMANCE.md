@@ -394,6 +394,21 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `CVE-RECORD-FORMAT-5.2.0-CVSS-V3.1` | The schema/imports/cvss/cvss-v3.1.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:imports/cvss/cvss-v3.1.json". Index row T10. |  |
 | `CVE-RECORD-FORMAT-5.2.0-CVSS-V4.0` | The schema/imports/cvss/cvss-v4.0.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:imports/cvss/cvss-v4.0.json". Index row T10. |  |
 | `CVE-RECORD-FORMAT-5.2.0-REFERENCE-TAGS` | The schema/tags/reference-tags.json file that CVE_Record_Format.json 5.2.0 references by "$ref": "file:tags/reference-tags.json". Index row T10. |  |
+| `FIRMANSYAH-REPOSITOR-2020` | Citing work that quotes the GDLC phases of Ramadan and Widyani 2013 (its reference [10]), section 2.1. Public source for all-source inference of index row A01. |  |
+| `HCIGAMES-HEXAD-SCALE-EN` | The authors' distribution of the 24-item Hexad scale, citing Tondello et al. CHI PLAY 2016 (DOI 10.1145/2967934.2968082) and the 2018 IJHCS validation. Public source for all-source inference of index row B16. |  |
+| `ISO-31000-2018-PREVIEW` | Official ISO preview of ISO 31000:2018 (cover, contents, foreword, introduction and opening clauses) as distributed by iTeh Standards. Public source for all-source inference of index row A18. |  |
+| `ISO-IEC-IEEE-12207-2026-PREVIEW` | Official ISO preview of ISO/IEC/IEEE 12207:2026 (cover, contents, foreword, introduction and opening clauses) as distributed by iTeh Standards. Public source for all-source inference of index row A12. |  |
+| `ISO-IEC-IEEE-15288-2023-PREVIEW` | Official ISO preview of ISO/IEC/IEEE 15288:2023 (cover, contents, foreword, introduction and opening clauses) as distributed by iTeh Standards. Public source for all-source inference of index row A13. |  |
+| `ISO-IEC-IEEE-24748-1-2024-PREVIEW` | Official ISO preview of ISO/IEC/IEEE 24748-1:2024 (cover, contents, foreword, introduction and opening clauses) as distributed by iTeh Standards. Public source for all-source inference of index row A14. |  |
+| `OPENALEX-10.1145-1077246.1077253` | Publisher-supplied abstract of DOI 10.1145/1077246.1077253, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B10. |  |
+| `OPENALEX-10.1201-9780429440021` | Publisher-supplied abstract of DOI 10.1201/9780429440021, as indexed by OpenAlex (CC0). Public source for all-source inference of index row A19. |  |
+| `OPENALEX-10.1201-9781003460268-16` | Publisher-supplied abstract of DOI 10.1201/9781003460268-16, as indexed by OpenAlex (CC0). Public source for all-source inference of index row A17. |  |
+| `OPENALEX-10.1201-9781003460268-3` | Publisher-supplied abstract of DOI 10.1201/9781003460268-3, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B04. |  |
+| `OPENALEX-10.1201-9781003460268-4` | Publisher-supplied abstract of DOI 10.1201/9781003460268-4, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B04. |  |
+| `OPENALEX-10.1201-9781003460268-5` | Publisher-supplied abstract of DOI 10.1201/9781003460268-5, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B04. |  |
+| `OPENALEX-10.1201-B22101-23` | Publisher-supplied abstract of DOI 10.1201/b22101-23, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B03. |  |
+| `OPENALEX-10.1201-B22101-5` | Publisher-supplied abstract of DOI 10.1201/b22101-5, as indexed by OpenAlex (CC0). Public source for all-source inference of index row B03. |  |
+| `OPENALEX-10.4324-9781315769189-8` | Publisher-supplied abstract of DOI 10.4324/9781315769189-8, as indexed by OpenAlex (CC0). Public source for all-source inference of index row C03. |  |
 
 ## Claims that are not conformance IDs
 
