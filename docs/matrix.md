@@ -9,3 +9,19 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘manufacturer’ means any natural or legal person who manufactures a product or has a product designed or manufactured
 - Accessibility, row M08: **consumer** is consumer of product or service under EU-DIR-2019-882 (constraint)
   > ‘consumer’ means any natural person who purchases the relevant product or is a recipient of the relevant service
+- Privacy, child protection, and age assurance, row R01: **processor** is consumer of personal data under EU-REG-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **processor** is onBehalfOf of personal data under EU-REG-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **recipient** is consumer of personal data under EU-REG-2016-679 (constraint)
+  > ‘recipient’ means a natural or legal person, public authority, agency or another body, to which the personal data are disclosed
+- Privacy, child protection, and age assurance, row R01: **representative** is onBehalfOf of personal data under EU-REG-2016-679 (constraint)
+  > represents the controller or processor with regard to their respective obligations under this Regulation
+- Privacy, child protection, and age assurance, row R01: **processor** is consumer of personal data under UK-EUR-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **processor** is onBehalfOf of personal data under UK-EUR-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **recipient** is consumer of personal data under UK-EUR-2016-679 (constraint)
+  > ‘recipient’ means a natural or legal person, public authority, agency or another body, to which the personal data are disclosed
+- Privacy, child protection, and age assurance, row R01: **representative** is onBehalfOf of personal data under UK-EUR-2016-679 (constraint)
+  > who, designated by the controller or processor in writing pursuant to Article 27, represents the controller or processor
