@@ -237,6 +237,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `AU-F2023L01424` | The Australian classification categories for computer games, the six classifiable elements and the gambling-like content rules. Index row Q07. |  |
 | `ISTQB-CT-GAME-1.0.1` | The CT-GaMe syllabus: its chapters, learning objectives, typical roles of the game development team and lifecycle stages. Index row O04. |  |
 | `OWASP-GAME-SECURITY-FRAMEWORK` | The GSF risk components: attack surfaces, vulnerabilities, exploits, attacker goals, negative outcomes and defenses. Index row T01. |  |
+| `IAB-OPENRTB-2.6` | The OpenRTB 2.6 bid request (section 3.2) and bid response (section 4.2) objects and their attributes. Index row U10. |  |
 
 ## Claims that are not conformance IDs
 
