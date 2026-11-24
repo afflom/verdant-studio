@@ -472,6 +472,21 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `PMC-8019968-FACS-ACTION-UNITS-2021` | Open-access study whose Table 3 lists the 44 action units defined in FACS (Ekman et al. 2002) by number and description. Inference source for index row E02 (pinned EKMAN-FACS-2002). |  |
 | `PMC-8600328-VITAAL-SUS-2021` | Open-access study that administers the System Usability Scale citing Brooke (1996) and reproduces its ten items and response anchors in the Table 3 footnote. Inference source for index row L08 (pinned BROOKE-SUS-1996). |  |
 | `PMC-9998603-IMMERSIVE-SUS-2021` | Open-access study whose Table 7 lists the questions of the System Usability Scale (SUS; Brooke 1996). Corroborates the L08 items. |  |
+| `GAMEANALYTICS-METRICS-DOC` | GameAnalytics' published list of the metrics in its Explore Tool, by category (Engagement, Business, Ads, Sessions and others). One vendor's definitions, as the row names it. Index row W07. |  |
+| `HDMI-FOR-GAMING-VRR-PAGE` | The HDMI issuer's page on the HDMI enhanced gaming features (VRR, ALLM, QFT, QMS). The specification itself is adopter-only, and vesa.org refuses automated fetches. Index row G16. |  |
+| `HGIG-HDR-GAMING-BEST-PRACTICE-1.1` | The HGIG recommendation that an HDR game parameterize its tone mapper from the display's tone-map luminance values (MaxTML, MaxFFTML, MinTML). Index row G10. |  |
+| `HORN-COOPER-DETERDING-SKILL-CHAIN-2017` | Open accepted manuscript that states the skill atom model first articulated by Dan Cook and extended by Deterding: the five elements of a skill atom and skill chains. lostgarden.com's original article is gone (404). Index row B09. |  |
+| `IGDA-LOCSIG-BEST-PRACTICES-V22` | The IGDA LocSIG guide, whose Culturalization chapter defines the levels of game culturalization and the top four cultural variables. Index row N10. |  |
+| `LEE-TENNIS-CLARKE-CARPENTER-VGMS-2013` | The GAMER Group paper that introduces the 16 CORE elements of the Video Game Metadata Schema (Table 2). Index row Y04. |  |
+| `MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE` | The issuer's page for the MIDI 1.0 Detailed Specification, stating what the 1996 revision includes. The PDF itself needs a midi.org login. Index row I06. |  |
+| `MS-XBOX-REQUIREMENTS-CERT-TESTED-16.10` | Microsoft's public list of the certification-tested Xbox Requirements (XRs), each with its test cases. Index row P02. |  |
+| `OH-KISHOTENKETSU-TEXT-2025` | Open-access article that states the four acts of kishotenketsu and notes that games use it to build levels and introduce mechanics. The row's Game Developer interview URL now redirects to a section index. Index row B18. |  |
+| `ORKIN-FEAR-GDC-2006` | Orkin's GDC 2006 paper on Goal-Oriented Action Planning in F.E.A.R.; the author's own URL is gone (404), so the university-hosted copy of the same paper is pinned. Index row J03. |  |
+| `PELLETIER-ROP-REVIEW-2005` | Open review stating the organisation of Salen and Zimmerman's Rules of Play (MIT Press, 2003) into its three main sections. mitpress.mit.edu refuses automated fetches. Index row B05. |  |
+| `PLAYING-FOR-THE-PLANET-HOME` | The alliance's statement of who it is and its three objectives. unep.org and wedocs.unep.org refuse automated fetches. Index row X06. |  |
+| `PMC-9872527-GAMING-MOTIVATION-INVENTORY-2022` | Open-access article that states the Quantic Foundry model (Yee, 2015b): 12 distinct motives in six higher-order clusters. quanticfoundry.com refuses automated fetches. Index row B13. |  |
+| `TECH-COALITION-TRUST-FRAMEWORK-2025` | The Tech Coalition's principles-based framework for online child sexual exploitation and abuse (CSEA) transparency reporting: five principles and three recommended report categories. Index row S05. |  |
+| `VALVE-BOOTH-L4D-AI-SYSTEMS-2009` | Valve's own publication of the Left 4 Dead AI Director, including the Adaptive Dramatic Pacing algorithm and its population modes. Index row J09. |  |
 
 ## Claims that are not conformance IDs
 
