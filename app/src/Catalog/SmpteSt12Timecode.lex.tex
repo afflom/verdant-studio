@@ -1,0 +1,180 @@
+\begin{lexlean}{Catalog.SmpteSt12Timecode}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SmpteSt12TimecodeBinaryGroupUsage,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: characterSetNotSpecifiedAndUnspecifiedClockTimeBGF20BGF10BGF00, fields: []},
+    {name: eightBitCharacterSetAndUnspecifiedClockTimeBGF20BGF10BGF01, fields: []},
+    {name: characterSetNotSpecifiedAndClockTimeSpecifiedBGF20BGF11BGF00, fields: []},
+    {name: reservedBinaryGroupUsageAndReservedClockTimeBGF20BGF11BGF01, fields: []},
+    {name: dateTimeZoneAndUnspecifiedClockTimeBGF21BGF10BGF00, fields: []},
+    {name: pageLineMultiplexSystemAndUnspecifiedClockTimeBGF21BGF10BGF01, fields: []},
+    {name: dateTimeZoneAndClockTimeBGF21BGF11BGF00, fields: []},
+    {name: pageLineMultiplexSystemAndClockTimeSpecifiedBGF21BGF11BGF01, fields: []}
+  ]
+}
+
+inductive{
+  name: SmpteSt12TimecodeClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2ConformanceNotation, fields: []},
+    {name: n3NormativeReferences, fields: []},
+    {name: n4Definitions, fields: []},
+    {name: n41TimeAndControlCode, fields: []},
+    {name: n42LinearTimeCodeLTC, fields: []},
+    {name: n43VerticalIntervalTimeCodeVITC, fields: []},
+    {name: n44AncillaryTimeCodeATC, fields: []},
+    {name: n45Frame, fields: []},
+    {name: n46Field, fields: []},
+    {name: n47TimeCodeSourceOriginalSource, fields: []},
+    {name: n48BinaryCodedDecimalBCDSystem, fields: []},
+    {name: n49FrameRate, fields: []},
+    {name: n410FramePair, fields: []},
+    {name: n5TimeRepresentationIn30And60FramesPerSecondSystems, fields: []},
+    {name: n51DefinitionsOfRealTimeAndNTSCTime, fields: []},
+    {name: n511DefinitionOfRealTime, fields: []},
+    {name: n512DefinitionOfNTSCTime, fields: []},
+    {name: n52TimeAddressOfAFrame, fields: []},
+    {name: u0035u002Eu0032u002Eu0031u0020u004Eu006Fu006Eu002Du0064u0072u006Fu0070u0020u0066u0072u0061u006Du0065u0020u2013u0020u0055u006Eu0063u006Fu006Du0070u0065u006Eu0073u0061u0074u0065u0064u0020u006Du006Fu0064u0065, fields: []},
+    {name: u0035u002Eu0032u002Eu0032u0020u0044u0072u006Fu0070u0020u0066u0072u0061u006Du0065u0020u2013u0020u004Eu0054u0053u0043u0020u0074u0069u006Du0065u0020u0063u006Fu006Du0070u0065u006Eu0073u0061u0074u0065u0064u0020u006Du006Fu0064u0065, fields: []},
+    {name: n53ColorFrameIdentificationInNTSCAnalogCompositeTelevisionSystems, fields: []},
+    {name: n6TimeRepresentationIn25And50FramesPerSecondSystems, fields: []},
+    {name: n61DefinitionOfRealTime, fields: []},
+    {name: n62TimeAddressOfAFrame, fields: []},
+    {name: n63ColorFrameIdentificationInPALCompositeTelevisionSystems, fields: []},
+    {name: n631LogicalRelationship, fields: []},
+    {name: n632ArithmeticRelationship, fields: []},
+    {name: n7TimeRepresentationIn24And48FramesPerSecondSystems, fields: []},
+    {name: n71DefinitionsOfRealTimeAndNTSCTime, fields: []},
+    {name: n711DefinitionOfRealTime, fields: []},
+    {name: n712DefinitionOfNTSCTime, fields: []},
+    {name: n72TimeAddressOfAFrame, fields: []},
+    {name: n8StructureOfTheTimeAddressAndControlBits, fields: []},
+    {name: n81NumericCode, fields: []},
+    {name: n82TimeAddress, fields: []},
+    {name: n83FlagBits, fields: []},
+    {name: n831DropFrameFlag, fields: []},
+    {name: n832ColorFrameFlagNTSCAndPALCompositeColorSystems, fields: []},
+    {name: n833BinaryGroupFlags, fields: []},
+    {name: n834ModulationMethodSpecificFlag, fields: []},
+    {name: n84UseOfTheBinaryGroups, fields: []},
+    {name: n841CharacterSetNotSpecifiedAndUnspecifiedClockTimeBGF20BGF10BGF00, fields: []},
+    {name: n842EightBitCharacterSetAndUnspecifiedClockTimeBGF20BGF10BGF01, fields: []},
+    {name: n843CharacterSetNotSpecifiedAndClockTimeSpecifiedBGF20BGF11BGF00, fields: []},
+    {name: n844ReservedBinaryGroupUsageAndReservedClockTimeBGF20BGF11BGF01, fields: []},
+    {name: n845DateTimeZoneAndUnspecifiedClockTimeBGF21BGF10BGF00, fields: []},
+    {name: n846PageLineMultiplexSystemAndUnspecifiedClockTimeBGF21BGF10BGF01, fields: []},
+    {name: n847DateTimeZoneAndClockTimeBGF21BGF11BGF00, fields: []},
+    {name: n848PageLineMultiplexSystemAndClockTimeSpecifiedBGF21BGF11BGF01, fields: []},
+    {name: u0038u002Eu0035u0020u0043u006Cu006Fu0063u006Bu0020u0054u0069u006Du0065u0020u0052u0065u0066u0065u0072u0065u006Eu0063u0065u0020u2013u0020u0042u0069u006Eu0061u0072u0079u0020u0047u0072u006Fu0075u0070u0020u0046u006Cu0061u0067u0020u0043u006Fu006Du0062u0069u006Eu0061u0074u0069u006Fu006Eu0073, fields: []},
+    {name: n9LinearTimeCodeApplication, fields: []},
+    {name: n91CodewordFormat, fields: []},
+    {name: n92CodewordDataContent, fields: []},
+    {name: n921TimeAddress, fields: []},
+    {name: n922FlagBits, fields: []},
+    {name: n923BiphaseMarkPolarityCorrection, fields: []},
+    {name: n924BinaryGroups, fields: []},
+    {name: n925SynchronizationWord, fields: []},
+    {name: n93ModulationMethod, fields: []},
+    {name: n94BitRate, fields: []},
+    {name: n95TimingOfTheCodewordRelativeToATelevisionSignal, fields: []},
+    {name: n96LinearTimeCodeInterfaceElectricalAndMechanicalCharacteristics, fields: []},
+    {name: n961RiseFallTime, fields: []},
+    {name: n962AmplitudeDistortion, fields: []},
+    {name: n963TimingOfTheTransitions, fields: []},
+    {name: n964InterfaceConnectorInformative, fields: []},
+    {name: n965OutputImpedance, fields: []},
+    {name: n966OutputAmplitudeInformative, fields: []},
+    {name: u0031u0030u0020u0056u0065u0072u0074u0069u0063u0061u006Cu0020u0049u006Eu0074u0065u0072u0076u0061u006Cu0020u0041u0070u0070u006Cu0069u0063u0061u0074u0069u006Fu006Eu0020u2014u0020u0041u006Eu0061u006Cu006Fu0067u0020u0054u0065u006Cu0065u0076u0069u0073u0069u006Fu006Eu0020u0053u0079u0073u0074u0065u006Du0073, fields: []},
+    {name: n101CodewordFormat, fields: []},
+    {name: n102CodewordDataContent, fields: []},
+    {name: n1021TimeAddress, fields: []},
+    {name: n1022FlagBits, fields: []},
+    {name: n1023BinaryGroups, fields: []},
+    {name: n1024FieldIdentificationFlag, fields: []},
+    {name: n1025SynchronizationBits, fields: []},
+    {name: n1026CyclicRedundancyCheckCode, fields: []},
+    {name: n103ModulationMethod, fields: []},
+    {name: n104BitTiming, fields: []},
+    {name: n105TimingOfTheCodewordRelativeToTheTelevisionSignal, fields: []},
+    {name: n10515255994TelevisionSystem, fields: []},
+    {name: n105262550TelevisionSystem, fields: []},
+    {name: n106LocationOfTheVITCCodewordInTheVerticalInterval, fields: []},
+    {name: n10615255994TelevisionSystem, fields: []},
+    {name: n106262550TelevisionSystem, fields: []},
+    {name: n1063ComponentTelevisionSystems, fields: []},
+    {name: n107Redundancy, fields: []},
+    {name: n108VerticalIntervalTimeCodeWaveformCharacteristics, fields: []},
+    {name: n1081LogicLevel, fields: []},
+    {name: n1082RiseFallTime, fields: []},
+    {name: n1083AmplitudeDistortion, fields: []},
+    {name: n11RelationshipBetweenLTCAndVITC, fields: []},
+    {name: n111TimeAddressData, fields: []},
+    {name: n112BinaryGroupData, fields: []},
+    {name: n1121TransferringVITCBinaryGroupDataToLTCBinaryGroupData, fields: []},
+    {name: n1122TransferringLTCBinaryGroupDataToVITCBinaryGroupData, fields: []},
+    {name: n113VITCAndLTCCodewordComparison, fields: []},
+    {name: n12ProgressiveSystemsWithFrameRatesGreaterThan30FramesPerSecond, fields: []},
+    {name: n121TimeAddressOfAFramePairIn4850And60FramesPerSecondProgressiveSystems, fields: []},
+    {name: n122ImplementationGuidelinesInformative, fields: []},
+    {name: annexAExplanatoryNotesInformative, fields: []},
+    {name: a1TimePrecision, fields: []},
+    {name: a2LeapSecondCorrections, fields: []},
+    {name: a3FramesAndTimeCode, fields: []},
+    {name: b1ConversionOf2410012398FpsVideoTo3010012997FpsVideo, fields: []},
+    {name: b2ConversionOf24FpsVideoTo25FpsVideo, fields: []},
+    {name: annexCBibliographyInformative, fields: []},
+    {name: annexDTimeCodeSystemRoadmapInformative, fields: []}
+  ]
+}
+
+inductive{
+  name: SmpteSt12TimecodeDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: timeAndControlCode, fields: []},
+    {name: linearTimeCodeLTC, fields: []},
+    {name: verticalIntervalTimeCodeVITC, fields: []},
+    {name: ancillaryTimeCodeATC, fields: []},
+    {name: frame, fields: []},
+    {name: field, fields: []},
+    {name: timeCodeSourceOriginalSource, fields: []},
+    {name: binaryCodedDecimalBCDSystem, fields: []},
+    {name: frameRate, fields: []},
+    {name: framePair, fields: []}
+  ]
+}
+
+inductive{
+  name: SmpteSt12TimecodeFlagBit,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: dropFrameFlag, fields: []},
+    {name: colorFrameFlagNTSCAndPALCompositeColorSystems, fields: []},
+    {name: binaryGroupFlags, fields: []},
+    {name: modulationMethodSpecificFlag, fields: []}
+  ]
+}
+
+structure{
+  name: SmpteSt12Timecode,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: binaryGroupUsage, type: (Option SmpteSt12TimecodeBinaryGroupUsage)},
+    {name: clause, type: (Option SmpteSt12TimecodeClause)},
+    {name: definedTerm, type: (Option SmpteSt12TimecodeDefinedTerm)},
+    {name: flagBit, type: (Option SmpteSt12TimecodeFlagBit)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

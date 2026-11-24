@@ -1,0 +1,113 @@
+\begin{lexlean}{Catalog.Iso30042Tbx}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso30042TbxClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4FundamentalPrinciplesAndConcepts, fields: []},
+    {name: n5DataCategories, fields: []},
+    {name: n51General, fields: []},
+    {name: n52DataCategoriesSpecifiedInTheCoreStructureModule, fields: []},
+    {name: n53DataCategoriesSpecifiedInTheDataCategoryModules, fields: []},
+    {name: n6DCAAndDCTStyles, fields: []},
+    {name: n7Dialects, fields: []},
+    {name: n71General, fields: []},
+    {name: n72DialectNaming, fields: []},
+    {name: n73ExampleOfADialect, fields: []},
+    {name: n74RequirementsForADialectToBeTBXCompliant, fields: []},
+    {name: n75ValidatingATBXDocumentInstance, fields: []},
+    {name: n76RequirementsForCompliantTBXAgents, fields: []},
+    {name: n8TheCoreStructure, fields: []},
+    {name: n81General, fields: []},
+    {name: n82Metamodel, fields: []},
+    {name: n83PositionOfElementsWithinAConceptEntry, fields: []},
+    {name: n831ElementsThatMayAppearAtMultipleLevels, fields: []},
+    {name: n832ElementsThatOccurOnlyAtTheTermLevel, fields: []},
+    {name: n84TypologyOfElements, fields: []},
+    {name: n841ElementsThatPlayAClassificationOrGroupingRole, fields: []},
+    {name: n842ElementsThatRepresentDataCategories, fields: []},
+    {name: n843InlineMarkupElements, fields: []},
+    {name: n85Attributes, fields: []},
+    {name: n851Type, fields: []},
+    {name: n852XmlLang, fields: []},
+    {name: n853IdAndTarget, fields: []},
+    {name: n854Module, fields: []},
+    {name: n86TypesOfText, fields: []},
+    {name: n87CharacterSetsAndEncoding, fields: []},
+    {name: n9DefiningDataCategoryModules, fields: []},
+    {name: n91General, fields: []},
+    {name: n92NamingTheModule, fields: []},
+    {name: n93SelectingDataCategories, fields: []},
+    {name: n94DefiningDataCategoryProperties, fields: []},
+    {name: n95DefiningDataCategoryConstraints, fields: []},
+    {name: n96UsingModules, fields: []},
+    {name: n10ReferencingObjects, fields: []},
+    {name: n101General, fields: []},
+    {name: n102ReferencingAFileThatIsEmbeddedInTheBackMatter, fields: []},
+    {name: n103ReferencingAFileFromTheBackMatter, fields: []},
+    {name: n104ReferencingAFileDirectlyInTheEntry, fields: []},
+    {name: n105ReferencingAnExternalSource, fields: []},
+    {name: n106ReferencingAndDocumentingABibliographicSource, fields: []},
+    {name: n107ReferencingAndDocumentingInformationAboutAPersonOrOrganization, fields: []},
+    {name: n108ReferencingOriginalDataFromNoteTextEntities, fields: []},
+    {name: annexANormativeDescriptionsOfTheCoreStructureElementsAndAttributes, fields: []},
+    {name: annexBInformativeDataCategoryNames, fields: []},
+    {name: annexCInformativeRelaxNGSchemasForTheCoreStructureAndTBXModuleDescriptionTBXMD, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso30042TbxDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: attributeClass, fields: []},
+    {name: childElement, fields: []},
+    {name: classificationElement, fields: []},
+    {name: complementaryInformation, fields: []},
+    {name: conceptEntry, fields: []},
+    {name: coreStructure, fields: []},
+    {name: coreStructureModule, fields: []},
+    {name: dataCategory, fields: []},
+    {name: dataCategoryModule, fields: []},
+    {name: dCA, fields: []},
+    {name: dCT, fields: []},
+    {name: dialect, fields: []},
+    {name: displayName, fields: []},
+    {name: documentInstance, fields: []},
+    {name: exchange, fields: []},
+    {name: globalInformation, fields: []},
+    {name: groupingElement, fields: []},
+    {name: objectLanguage, fields: []},
+    {name: pID, fields: []},
+    {name: privateDialect, fields: []},
+    {name: publicDialect, fields: []},
+    {name: rootElement, fields: []},
+    {name: tBXAgent, fields: []},
+    {name: tBXExport, fields: []},
+    {name: tBXImport, fields: []},
+    {name: tBXModuleDescription, fields: []},
+    {name: termComponent, fields: []},
+    {name: termbase, fields: []},
+    {name: terminologicalDataCollection, fields: []},
+    {name: workingLanguage, fields: []}
+  ]
+}
+
+structure{
+  name: Iso30042Tbx,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso30042TbxClause)},
+    {name: definedTerm, type: (Option Iso30042TbxDefinedTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,82 @@
+\begin{lexlean}{Catalog.LearnedMotionMatching}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: LearnedMotionMatchingLocomotionFeature,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n2DFutureTrajectoryPositionsProjectedOnTheGround, fields: []},
+    {name: futureTrajectoryFacingDirections, fields: []},
+    {name: twoFootJointPositions, fields: []},
+    {name: twoFootJointVelocities, fields: []},
+    {name: hipJointVelocity, fields: []}
+  ]
+}
+
+inductive{
+  name: LearnedMotionMatchingNetwork,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: decompressor, fields: []},
+    {name: compressor, fields: []},
+    {name: stepper, fields: []},
+    {name: projector, fields: []}
+  ]
+}
+
+inductive{
+  name: LearnedMotionMatchingSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1INTRODUCTION, fields: []},
+    {name: n2RELATEDWORK, fields: []},
+    {name: n21DataDrivenAnimationSynthesis, fields: []},
+    {name: n22MotionMatching, fields: []},
+    {name: n3BASICMOTIONMATCHING, fields: []},
+    {name: n4LEARNEDMOTIONMATCHING, fields: []},
+    {name: n41Decompressor, fields: []},
+    {name: n42Stepper, fields: []},
+    {name: n43Projector, fields: []},
+    {name: n44Training, fields: []},
+    {name: n5RESULTS, fields: []},
+    {name: n6EVALUATION, fields: []},
+    {name: n61Comparison, fields: []},
+    {name: n62Performance, fields: []},
+    {name: n63Experiments, fields: []},
+    {name: n64UserStudy, fields: []},
+    {name: n7DISCUSSION, fields: []},
+    {name: n71MultipleNetworks, fields: []},
+    {name: n72Generalization, fields: []},
+    {name: n8LIMITATIONSANDFUTUREWORK, fields: []},
+    {name: n9CONCLUSION, fields: []}
+  ]
+}
+
+inductive{
+  name: LearnedMotionMatchingStage,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: projection, fields: []},
+    {name: stepping, fields: []},
+    {name: decompression, fields: []}
+  ]
+}
+
+structure{
+  name: LearnedMotionMatching,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: locomotionFeature, type: (Option LearnedMotionMatchingLocomotionFeature)},
+    {name: network, type: (Option LearnedMotionMatchingNetwork)},
+    {name: section, type: (Option LearnedMotionMatchingSection)},
+    {name: stage, type: (Option LearnedMotionMatchingStage)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
