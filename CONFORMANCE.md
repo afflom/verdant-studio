@@ -433,6 +433,28 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `ISO-IEC-IEEE-29119-4-2021-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-4:2021 (ISO-IEC-IEEE-29119-4-2021), same edition; source of the inferred encoding. Index row O03. |  |
 | `ISO-IEC-IEEE-29119-5-2024-PREVIEW` | Public preview of ISO/IEC/IEEE 29119-5:2024 (ISO-IEC-IEEE-29119-5-2024), same edition; source of the inferred encoding. Index row O03. |  |
 | `PCI-DSS-4.0.1-PDF` | Public PDF of PCI DSS v4.0.1 (PCI-DSS-4.0.1), same edition; source of the inferred encoding. Index row T08. |  |
+| `CROSSREF-CHAPTERS-9780198794844` | The publisher's chapter-level DOI deposits for the pinned edition DRACHEN-MIRZA-BABAEI-NACKE-GUR-2018: its chapter titles in order. Inference source for index row L05. |  |
+| `CROSSREF-CHAPTERS-9780262270694` | The publisher's chapter-level DOI deposits for the pinned edition COLLINS-GAME-SOUND-2008: its chapter titles in order. Inference source for index row I05. |  |
+| `CROSSREF-CHAPTERS-9780520351271` | The publisher's chapter-level DOI deposits for the pinned edition ARNHEIM-ART-VISUAL-PERCEPTION-1974: its chapter titles in order. Inference source for index row D18. |  |
+| `CROSSREF-CHAPTERS-9781003199519` | The publisher's chapter-level DOI deposits for the pinned edition HODENT-GAMERS-BRAIN-2E-2026: its chapter titles in order. Inference source for index row L03. |  |
+| `CROSSREF-CHAPTERS-9781003371519` | The publisher's chapter-level DOI deposits for the pinned edition GREGORY-GAME-ENGINE-ARCHITECTURE-4E-2026: its chapter titles in order. Inference source for index row H06. |  |
+| `CROSSREF-CHAPTERS-9781351053303` | The publisher's chapter-level DOI deposits for the pinned edition MILLINGTON-AI-FOR-GAMES-3E-2019: its chapter titles in order. Inference source for index row J01. |  |
+| `EN-ISO-9241-392-2017-PREVIEW` | Public preview of the pinned edition ISO-9241-392-2015 inside its identical European adoption: the ISO contents list and the terms the preview shows. Inference source for index row G15. |  |
+| `HOLDEN-LMM-2020-AUTHOR-COPY` | Author copy of the pinned edition HOLDEN-LEARNED-MOTION-MATCHING-2020: its networks, stages and locomotion features. Source for index row E09. |  |
+| `IEC-61966-2-1-1999-PREVIEW` | Public preview of the pinned edition IEC-61966-2-1-1999: its English contents list. Inference source for index row G07. |  |
+| `IEC-61966-2-1-CD1-1997` | Public committee draft of the pinned edition IEC-61966-2-1-1999: its reference display and viewing condition parameter names. A draft, so the final edition may differ. Inference source for index row G07. |  |
+| `IEEE-754-2019-WG-CONFORMANCE` | The 754 working group's note on conformance and options in IEEE-754-2019: the clauses of the new recommended operations. Inference source for index row H03. |  |
+| `IEEE-754-2019-WG-OVERVIEW` | The 754 working group's overview of IEEE-754-2019: the new recommended operations it lists. Inference source for index row H03. |  |
+| `IEEE-754-2019-WG-PREDICATES` | The 754 working group's note on comparison predicates: the four comparison outcomes. Inference source for index row H03. |  |
+| `IEEE-SPECTRUM-MORI-UNCANNY-VALLEY-2012` | Free republication of the pinned translation MORI-UNCANNY-VALLEY-2012: its section headings and figure captions. Source for index row D19. |  |
+| `ISO-17100-2015-PREVIEW` | Public preview of the pinned edition ISO-17100-2015: its contents list and the clause-3 terms the preview shows. Inference source for index row N07. |  |
+| `ISO-18587-2017-PREVIEW` | Public preview of the pinned edition ISO-18587-2017: its contents list and the clause-3 terms the preview shows. Inference source for index row N08. |  |
+| `ISO-30042-2019-PREVIEW` | Public preview of the pinned edition ISO-30042-2019: its contents list and the clause-3 terms the preview shows. Inference source for index row N05. |  |
+| `ISO-9241-11-2018-PREVIEW` | Public preview of the pinned edition ISO-9241-11-2018: its contents list and the clause-3 terms the preview shows. Inference source for index row L02. |  |
+| `ISO-9241-210-2019-PREVIEW` | Public preview of the pinned edition ISO-9241-210-2019: its contents list and the clause-3 terms the preview shows. Inference source for index row L01. |  |
+| `ISO-IEC-42001-2023-PREVIEW` | Public preview of the pinned edition ISO-IEC-42001-2023: its contents list and the clause-3 terms the preview shows. Inference source for index row J15. |  |
+| `SMPTE-ST-12-1-2014-LIBRARY` | The full text of the pinned edition SMPTE-ST-12-1-2014 as SMPTE publishes it free in its Document Library. Source for index row F04. |  |
+| `SMPTE-ST-2084-2014-LIBRARY` | The full text of the pinned edition SMPTE-ST-2084-2014 as SMPTE publishes it free in its Document Library. Source for index row G09. |  |
 
 ## Claims that are not conformance IDs
 
