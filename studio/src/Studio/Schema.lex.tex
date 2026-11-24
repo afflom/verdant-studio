@@ -177,6 +177,39 @@ definition{
 }
 
 definition{
+  name: escapedPiece,
+  parameters: [text : Bytes, offset : Nat, point : Nat],
+  result: Bytes,
+  body: (if ((((lowerLetter point) || (upperLetter point)) && ((if (point =? 117) then false else true) && (if (point =? 85) then false else true))) || ((digit point) && (0 <? offset))) then (LexLeanStd.Text::sliceOr text offset 1) else (if (point <? 65536) then (prim append (Studio.Doc::lit "u") (hexFrom 8 point 4 0x) : Bytes) else (prim append (Studio.Doc::lit "U") (hexFrom 8 point 8 0x) : Bytes))),
+  executable: true
+}
+
+definition{
+  name: escapedFrom,
+  parameters: [fuel : Nat, text : Bytes, offset : Nat, out : Bytes],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] out)
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then (ctor Option.some [Bytes] out) else (match (decodeAt text offset)
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some decoded => (escapedFrom rest text (offset + (second decoded)) (prim append out (escapedPiece text offset (first decoded)) : Bytes))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: escapedName,
+  parameters: [text : Bytes],
+  result: (Option Bytes),
+  body: (match (escapedFrom (prim length text : Nat) text 0 0x)
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some name => (if ((prim length name : Nat) =? 0) then (ctor Option.none [Bytes]) else (ctor Option.some [Bytes] name))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: asciiOnly,
   parameters: [fuel : Nat, text : Bytes, offset : Nat],
   result: Bool,
@@ -198,6 +231,54 @@ definition{
     | Option.none => (ctor Option.none [Bytes])
     | Option.some byte => (if (digit (prim to_nat byte : Nat)) then (ctor Option.some [Bytes] (prim append (Studio.Doc::lit "n") name : Bytes)) else (ctor Option.none [Bytes]))))) else (codePointsFrom (prim length text : Nat) text 0 0x)),
   axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: nameAs,
+  parameters: [escaped : Bool, text : Bytes],
+  result: (Option Bytes),
+  body: (if escaped then (escapedName text) else (stringName text)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: namesOf,
+  parameters: [escaped : Bool, texts : (List Bytes)],
+  result: (List Bytes),
+  body: (match texts
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (nameAs escaped head)
+      | Option.none => (namesOf escaped rest)
+      | Option.some name => (cons name (namesOf escaped rest)))),
+  recursive_argument: texts,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: collides,
+  parameters: [texts : (List Bytes)],
+  result: Bool,
+  body: (match texts
+    | List.nil => false
+    | List.cons head rest => (match (stringName head)
+      | Option.none => true
+      | Option.some name => ((Studio.Doc::memberBytes name (namesOf false rest)) || (collides rest)))),
+  recursive_argument: texts,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: keysOf,
+  parameters: [properties : (List (Bytes * LexLeanStd.Json::Json))],
+  result: (List Bytes),
+  body: (match properties
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (first head) (keysOf rest))),
+  recursive_argument: properties,
   executable: true
 }
 
@@ -520,19 +601,28 @@ definition{
 }
 
 definition{
-  name: fieldsOf,
-  parameters: [owner : Bytes, properties : (List (Bytes * LexLeanStd.Json::Json)), required : (List Bytes), positional : Bool],
+  name: fieldsWith,
+  parameters: [escaped : Bool, owner : Bytes, properties : (List (Bytes * LexLeanStd.Json::Json)), required : (List Bytes), positional : Bool],
   result: (Result ((List Bytes) * (List Job)) Bytes),
   body: (match properties
     | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
-    | List.cons head rest => (match (stringName (first head))
+    | List.cons head rest => (match (nameAs escaped (first head))
       | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable property ") (cons (first head) (nil Bytes)))))
-      | Option.some name => (if (Studio.Doc::memberBytes name (propertyNames rest)) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two properties derive the field name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n, any other by its code points as uXXXX)") (nil Bytes)))))) else (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
+      | Option.some name => (if (Studio.Doc::memberBytes name (namesOf escaped (keysOf rest))) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two properties derive the field name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n, any other by its code points as uXXXX; when those names are not distinct, every name in the set keeps its letters and digits and writes each other character, a leading digit, u and U as a C11 universal character name, uXXXX or UXXXXXXXX)") (nil Bytes)))))) else (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
       | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
-      | Result.ok found => (let typeText : Bytes := (if (Studio.Doc::memberBytes (first head) required) then (first found) else (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes)))))); (match (fieldsOf owner rest required positional)
+      | Result.ok found => (let typeText : Bytes := (if (Studio.Doc::memberBytes (first head) required) then (first found) else (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes)))))); (match (fieldsWith escaped owner rest required positional)
         | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
         | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (if positional then typeText else (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", type: ") (cons typeText (cons (Studio.Doc::lit "}") (nil Bytes)))))))) (first others)), (appendJobs (second found) (second others)))))))))),
   recursive_argument: properties,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: fieldsOf,
+  parameters: [owner : Bytes, properties : (List (Bytes * LexLeanStd.Json::Json)), required : (List Bytes), positional : Bool],
+  result: (Result ((List Bytes) * (List Job)) Bytes),
+  body: (fieldsWith (collides (keysOf properties)) owner properties required positional),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -552,10 +642,10 @@ definition{
 
 definition{
   name: enumName,
-  parameters: [value : LexLeanStd.Json::Json],
+  parameters: [escaped : Bool, value : LexLeanStd.Json::Json],
   result: (Option Bytes),
   body: (match value
-    | LexLeanStd.Json::Json.JStr text => (stringName text)
+    | LexLeanStd.Json::Json.JStr text => (nameAs escaped text)
     | LexLeanStd.Json::Json.JInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (negative && (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
     | LexLeanStd.Json::Json.JBool flag => (ctor Option.none [Bytes])
     | LexLeanStd.Json::Json.JArr items => (ctor Option.none [Bytes])
@@ -568,17 +658,26 @@ definition{
 }
 
 definition{
-  name: constructorsOf,
-  parameters: [values : (List LexLeanStd.Json::Json), named : (List Bytes)],
+  name: constructorsWith,
+  parameters: [escaped : Bool, values : (List LexLeanStd.Json::Json), named : (List Bytes)],
   result: (Result (List Bytes) Bytes),
   body: (match values
     | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
-    | List.cons head rest => (match (enumName head)
+    | List.cons head rest => (match (enumName escaped head)
       | Option.none => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable enum value ") (cons (LexLeanStd.Json::writeJson head) (nil Bytes)))))
-      | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two enum values derive the constructor name ") (cons name (cons (Studio.Doc::lit " (an ASCII string is named in camel case, any other string by its code points as uXXXX, an integer n is named nN, and a negative one nMinusN)") (nil Bytes)))))) else (match (constructorsOf rest (cons name named))
+      | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two enum values derive the constructor name ") (cons name (cons (Studio.Doc::lit " (an ASCII string is named in camel case, any other string by its code points as uXXXX, an integer n is named nN, and a negative one nMinusN; when the string names are not distinct, every string keeps its letters and digits and writes each other character, a leading digit, u and U as a C11 universal character name, uXXXX or UXXXXXXXX)") (nil Bytes)))))) else (match (constructorsWith escaped rest (cons name named))
         | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
         | Result.ok others => (ctor Result.ok [(List Bytes), Bytes] (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: []}") (nil Bytes))))) others)))))),
   recursive_argument: values,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: constructorsOf,
+  parameters: [values : (List LexLeanStd.Json::Json), named : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (constructorsWith (collides (Studio.Doc::strings values)) values named),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -631,21 +730,43 @@ definition{
 }
 
 definition{
-  name: branchConstructors,
-  parameters: [owner : Bytes, branches : (List LexLeanStd.Json::Json), key : Bytes, named : (List Bytes)],
+  name: branchesWith,
+  parameters: [escaped : Bool, owner : Bytes, branches : (List LexLeanStd.Json::Json), key : Bytes, named : (List Bytes)],
   result: (Result ((List Bytes) * (List Job)) Bytes),
   body: (match branches
     | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
     | List.cons head rest => (match (tagIn head key)
       | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::lit "a oneOf branch has no tag"))
-      | Option.some tag => (match (stringName tag)
+      | Option.some tag => (match (nameAs escaped tag)
         | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable oneOf tag ") (cons tag (nil Bytes)))))
         | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two oneOf branches derive the constructor name ") (cons name (cons (Studio.Doc::lit ", so the oneOf is ambiguous") (nil Bytes)))))) else (match (fieldsOf (prim append owner (pascal tag) : Bytes) (withoutKey (Studio.Doc::membersOf (Studio.Doc::field head (Studio.Doc::lit "properties"))) key) (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field head (Studio.Doc::lit "required")))) true)
           | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
-          | Result.ok found => (match (branchConstructors owner rest key (cons name named))
+          | Result.ok found => (match (branchesWith escaped owner rest key (cons name named))
             | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
             | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: [") (cons (joinWith (first found) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (first others)), (appendJobs (second found) (second others)))))))))),
   recursive_argument: branches,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: tagsOf,
+  parameters: [branches : (List LexLeanStd.Json::Json), key : Bytes],
+  result: (List Bytes),
+  body: (match branches
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (tagIn head key)
+      | Option.none => (tagsOf rest key)
+      | Option.some tag => (cons tag (tagsOf rest key)))),
+  recursive_argument: branches,
+  executable: true
+}
+
+definition{
+  name: branchConstructors,
+  parameters: [owner : Bytes, branches : (List LexLeanStd.Json::Json), key : Bytes, named : (List Bytes)],
+  result: (Result ((List Bytes) * (List Job)) Bytes),
+  body: (branchesWith (collides (tagsOf branches key)) owner branches key named),
   axioms: [Quot.sound, propext],
   executable: true
 }
