@@ -162,22 +162,22 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **J13** Unity ML-Agents / reinforcement learning for game agents (NPC, agent, and game AI models): exactMatch UNITY-MLAGENTS-AGENT-INFO-PROTO (derived from its citation)
 - **J14** EU Artificial Intelligence Act (Regulation (EU) 2024/1689) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J15** ISO/IEC 42001 AI management system (NPC, agent, and game AI models), not reached from any origin: no mapping yet
-- **J16** NIST AI Risk Management Framework (AI RMF 1.0) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
-- **J17** C2PA Content Credentials (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J16** NIST AI Risk Management Framework (AI RMF 1.0) (NPC, agent, and game AI models), not reached from any origin: exactMatch NIST-AI-RMF-PLAYBOOK (staged)
+- **J17** C2PA Content Credentials (NPC, agent, and game AI models), not reached from any origin: exactMatch C2PA-SPEC-2.3 (staged)
 - **J18** Steam AI content disclosure (NPC, agent, and game AI models): exactMatch STEAM-AI-CONTENT-DISCLOSURE-2024 (derived from its citation)
 - **K01** Client-server with client-side prediction and lag compensation (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
 - **K02** Deterministic lockstep (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
 - **K03** Rollback netcode (GGPO) (Networking, multiplayer, and online services): exactMatch GGPO-GGPONET-H (derived from its citation)
 - **K04** Tribes networking model (Networking, multiplayer, and online services): exactMatch TRIBES-ENGINE-NETWORKING-MODEL (derived from its citation)
-- **K05** UDP (RFC 768), TCP (RFC 9293), QUIC (RFC 9000) (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
-- **K06** ICE / STUN / TURN (RFC 8445, 8489, 8656) (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
-- **K07** WebRTC and WebSocket (RFC 6455) (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
+- **K05** UDP (RFC 768), TCP (RFC 9293), QUIC (RFC 9000) (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-768 (staged); narrowMatch IETF-RFC-9000 (staged); narrowMatch IETF-RFC-9293 (staged)
+- **K06** ICE / STUN / TURN (RFC 8445, 8489, 8656) (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-8445 (staged); narrowMatch IETF-RFC-8489 (staged); narrowMatch IETF-RFC-8656 (staged)
+- **K07** WebRTC and WebSocket (RFC 6455) (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-6455 (staged); narrowMatch W3C-WEBRTC-2025 (staged)
 - **K08** Elo / Glicko-2 (Networking, multiplayer, and online services): exactMatch GLICKMAN-GLICKO-2-2022 (derived from its citation)
 - **K09** TrueSkill / TrueSkill 2 (Networking, multiplayer, and online services): exactMatch MSR-TRUESKILL-NIPS-2006 (derived from its citation)
-- **K10** Open Match (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
-- **K11** Agones (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
+- **K10** Open Match (Networking, multiplayer, and online services), not reached from any origin: exactMatch OPEN-MATCH-1.8.1-MESSAGES (staged)
+- **K11** Agones (Networking, multiplayer, and online services), not reached from any origin: exactMatch AGONES-1.62.0-INSTALL (staged)
 - **K12** Platform online service requirements (PSN, Xbox network, Nintendo Switch Online, Steamworks, Epic Online Services) (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
-- **K13** OAuth 2.0 (RFC 6749) and OpenID Connect (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
+- **K13** OAuth 2.0 (RFC 6749) and OpenID Connect (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-6749 (staged); narrowMatch OIDF-OPENID-CONNECT-CORE-1.0 (staged)
 - **L01** ISO 9241-210 Human-centred design for interactive systems (Player experience, UX, and games user research), not reached from any origin: no mapping yet
 - **L02** ISO 9241-11 Usability: definitions and concepts (Player experience, UX, and games user research), not reached from any origin: no mapping yet
 - **L03** The Gamer's Brain / game UX framework (usability + engage-ability) (Player experience, UX, and games user research), not reached from any origin: no mapping yet
@@ -193,8 +193,8 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **M03** Accessible Games Initiative tags (Accessibility): exactMatch ESA-ACCESSIBLE-GAMES-INITIATIVE-TAGS (derived from its citation)
 - **M04** Accessible Player Experiences (APX) patterns (Accessibility): exactMatch ABLEGAMERS-APX (derived from its citation)
 - **M05** IGDA Game Accessibility SIG resources (Accessibility), not reached from any origin: no mapping yet
-- **M06** WCAG 2.2 (ISO/IEC 40500 = WCAG 2.0) (Accessibility), not reached from any origin: no mapping yet
-- **M07** CVAA (21st Century Communications and Video Accessibility Act) (Accessibility), not reached from any origin: no mapping yet
+- **M06** WCAG 2.2 (ISO/IEC 40500 = WCAG 2.0) (Accessibility), not reached from any origin: exactMatch W3C-WCAG22-2024 (staged); exactMatch W3C-WCAG22-JSON (staged)
+- **M07** CVAA (21st Century Communications and Video Accessibility Act) (Accessibility), not reached from any origin: exactMatch US-PL-111-260 (staged)
 - **M08** European Accessibility Act (Directive (EU) 2019/882) and EN 301 549 (Accessibility): exactMatch ETSI-EN-301-549-3.2.1 (derived from its citation)
 - **M09** Photosensitive epilepsy guidelines: ITU-R BT.1702, Ofcom guidance, Harding test (Accessibility), not reached from any origin: no mapping yet
 - **M10** Subtitle and caption standards: BBC Subtitle Guidelines, W3C TTML/IMSC, WebVTT (Accessibility), not reached from any origin: no mapping yet
