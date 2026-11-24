@@ -2,6 +2,20 @@
 \useglossary{lexlean.std.nat@1.2.0}
 \title{Natural number addition}
 \begin{semanticmodule}
+inductive{
+  name: JsonValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: null, fields: []},
+    {name: boolean, fields: [Bool]},
+    {name: number, fields: [(Int * Int)]},
+    {name: string, fields: [Bytes]},
+    {name: array, fields: [(List JsonValue)]},
+    {name: object, fields: [(List (Bytes * JsonValue))]}
+  ]
+}
+
 structure{
   name: Channel,
   type_parameters: [],
@@ -9,7 +23,8 @@ structure{
   fields: [
     {name: id, type: (Option Bytes)},
     {name: name, type: (Option Bytes)},
-    {name: domain, type: (Option Bytes)}
+    {name: domain, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -20,7 +35,8 @@ structure{
   fields: [
     {name: id, type: (Option Bytes)},
     {name: name, type: (Option Bytes)},
-    {name: value, type: (Option Bytes)}
+    {name: value, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -32,7 +48,8 @@ structure{
     {name: id, type: (Option Bytes)},
     {name: name, type: (Option Bytes)},
     {name: cids, type: (Option (List Bytes))},
-    {name: segment, type: (Option (List Segment))}
+    {name: segment, type: (Option (List Segment))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -43,7 +60,8 @@ structure{
   fields: [
     {name: id, type: (Option Bytes)},
     {name: name, type: (Option Bytes)},
-    {name: domain, type: (Option Bytes)}
+    {name: domain, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -56,7 +74,8 @@ structure{
     {name: name, type: (Option Bytes)},
     {name: cattax, type: (Option Int)},
     {name: cat, type: (Option (List Bytes))},
-    {name: domain, type: (Option Bytes)}
+    {name: domain, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -97,7 +116,8 @@ structure{
     {name: network, type: (Option Network)},
     {name: channel, type: (Option Channel)},
     {name: realtime, type: (Option Int)},
-    {name: firstbroadcast, type: (Option Int)}
+    {name: firstbroadcast, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -110,7 +130,8 @@ structure{
     {name: name, type: (Option Bytes)},
     {name: cattax, type: (Option Int)},
     {name: cat, type: (Option (List Bytes))},
-    {name: domain, type: (Option Bytes)}
+    {name: domain, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -135,7 +156,8 @@ structure{
     {name: content, type: (Option Content)},
     {name: keywords, type: (Option Bytes)},
     {name: kwarray, type: (Option (List Bytes))},
-    {name: inventorypartnerdomain, type: (Option Bytes)}
+    {name: inventorypartnerdomain, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -151,7 +173,8 @@ structure{
     {name: publisher, type: (Option Publisher)},
     {name: domain, type: (Option Bytes)},
     {name: keywords, type: (Option Bytes)},
-    {name: content, type: (Option Content)}
+    {name: content, type: (Option Content)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -172,7 +195,8 @@ structure{
     {name: metro, type: (Option Bytes)},
     {name: city, type: (Option Bytes)},
     {name: zip, type: (Option Bytes)},
-    {name: utcoffset, type: (Option Int)}
+    {name: utcoffset, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -182,7 +206,8 @@ structure{
   parameters: [],
   fields: [
     {name: brand, type: Bytes},
-    {name: version, type: (Option (List Bytes))}
+    {name: version, type: (Option (List Bytes))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -197,7 +222,8 @@ structure{
     {name: architecture, type: (Option Bytes)},
     {name: bitness, type: (Option Bytes)},
     {name: model, type: (Option Bytes)},
-    {name: source, type: (Option Int)}
+    {name: source, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -237,7 +263,8 @@ structure{
     {name: dpidsha1, type: (Option Bytes)},
     {name: dpidmd5, type: (Option Bytes)},
     {name: macsha1, type: (Option Bytes)},
-    {name: macmd5, type: (Option Bytes)}
+    {name: macmd5, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -250,7 +277,8 @@ structure{
     {name: h, type: (Option Int)},
     {name: wratio, type: (Option Int)},
     {name: hratio, type: (Option Int)},
-    {name: wmin, type: (Option Int)}
+    {name: wmin, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -270,7 +298,8 @@ structure{
     {name: expdir, type: (Option (List Int))},
     {name: api, type: (Option (List Int))},
     {name: id, type: (Option Bytes)},
-    {name: vcm, type: (Option Int)}
+    {name: vcm, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -281,7 +310,8 @@ structure{
   fields: [
     {name: mindur, type: (Option Int)},
     {name: maxdur, type: (Option Int)},
-    {name: bidfloor, type: (Option (Int * Int))}
+    {name: bidfloor, type: (Option (Int * Int))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -314,7 +344,8 @@ structure{
     {name: feed, type: (Option Int)},
     {name: stitched, type: (Option Int)},
     {name: nvol, type: (Option Int)},
-    {name: durfloors, type: (Option (List DurFloors))}
+    {name: durfloors, type: (Option (List DurFloors))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -325,7 +356,8 @@ structure{
   fields: [
     {name: type, type: Bytes},
     {name: value, type: (Int * Int)},
-    {name: vendor, type: (Option Bytes)}
+    {name: vendor, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -337,7 +369,8 @@ structure{
     {name: request, type: Bytes},
     {name: ver, type: (Option Bytes)},
     {name: api, type: (Option (List Int))},
-    {name: battr, type: (Option (List Int))}
+    {name: battr, type: (Option (List Int))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -354,7 +387,8 @@ structure{
     {name: wadomain, type: (Option (List Bytes))},
     {name: guar, type: (Option Int)},
     {name: mincpmpersec, type: (Option (Int * Int))},
-    {name: durfloors, type: (Option (List DurFloors))}
+    {name: durfloors, type: (Option (List DurFloors))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -364,7 +398,8 @@ structure{
   parameters: [],
   fields: [
     {name: privateAuction, type: (Option Int)},
-    {name: deals, type: (Option (List Deal))}
+    {name: deals, type: (Option (List Deal))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -375,7 +410,8 @@ structure{
   fields: [
     {name: multiplier, type: (Int * Int)},
     {name: sourcetype, type: (Option Int)},
-    {name: vendor, type: (Option Bytes)}
+    {name: vendor, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -385,7 +421,8 @@ structure{
   parameters: [],
   fields: [
     {name: reftype, type: (Option Int)},
-    {name: minint, type: (Option Int)}
+    {name: minint, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -395,7 +432,8 @@ structure{
   parameters: [],
   fields: [
     {name: refsettings, type: (Option (List RefSettings))},
-    {name: count, type: (Option Int)}
+    {name: count, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -438,7 +476,8 @@ structure{
     {name: api, type: (Option (List Int))},
     {name: companiontype, type: (Option (List Int))},
     {name: poddedupe, type: (Option (List Int))},
-    {name: durfloors, type: (Option (List DurFloors))}
+    {name: durfloors, type: (Option (List DurFloors))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -468,7 +507,8 @@ structure{
     {name: exp, type: (Option Int)},
     {name: qty, type: (Option Qty)},
     {name: dt, type: (Option (Int * Int))},
-    {name: refresh, type: (Option Refresh)}
+    {name: refresh, type: (Option Refresh)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -481,7 +521,8 @@ structure{
     {name: gdpr, type: (Option Int)},
     {name: usPrivacy, type: (Option Bytes)},
     {name: gpp, type: (Option Bytes)},
-    {name: gppSid, type: (Option (List Int))}
+    {name: gppSid, type: (Option (List Int))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -506,7 +547,8 @@ structure{
     {name: content, type: (Option Content)},
     {name: keywords, type: (Option Bytes)},
     {name: kwarray, type: (Option (List Bytes))},
-    {name: inventorypartnerdomain, type: (Option Bytes)}
+    {name: inventorypartnerdomain, type: (Option Bytes)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -520,7 +562,8 @@ structure{
     {name: rid, type: (Option Bytes)},
     {name: name, type: (Option Bytes)},
     {name: domain, type: (Option Bytes)},
-    {name: hp, type: (Option Int)}
+    {name: hp, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -531,7 +574,8 @@ structure{
   fields: [
     {name: ver, type: Bytes},
     {name: complete, type: Int},
-    {name: nodes, type: (List SupplyChainNode)}
+    {name: nodes, type: (List SupplyChainNode)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -543,7 +587,8 @@ structure{
     {name: fd, type: (Option Int)},
     {name: tid, type: (Option Bytes)},
     {name: pchain, type: (Option Bytes)},
-    {name: schain, type: (Option SupplyChain)}
+    {name: schain, type: (Option SupplyChain)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -553,7 +598,8 @@ structure{
   parameters: [],
   fields: [
     {name: id, type: (Option Bytes)},
-    {name: atype, type: (Option Int)}
+    {name: atype, type: (Option Int)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -566,7 +612,8 @@ structure{
     {name: source, type: (Option Bytes)},
     {name: matcher, type: (Option Bytes)},
     {name: mm, type: (Option Int)},
-    {name: uids, type: (Option (List UID))}
+    {name: uids, type: (Option (List UID))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -585,7 +632,8 @@ structure{
     {name: geo, type: (Option Geo)},
     {name: data, type: (Option (List Data))},
     {name: consent, type: (Option Bytes)},
-    {name: eids, type: (Option (List EID))}
+    {name: eids, type: (Option (List EID))},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 
@@ -616,7 +664,8 @@ structure{
     {name: badv, type: (Option (List Bytes))},
     {name: bapp, type: (Option (List Bytes))},
     {name: source, type: (Option Source)},
-    {name: regs, type: (Option Regs)}
+    {name: regs, type: (Option Regs)},
+    {name: ext, type: (Option (List (Bytes * JsonValue)))}
   ]
 }
 \end{semanticmodule}
