@@ -1,0 +1,1 @@
+{"$comment":"DetourNavMesh.h, enum dtPolyTypes, as declared in the pinned header","$schema":"https://json-schema.org/draft/2020-12/schema","enum":["DT_POLYTYPE_GROUND","DT_POLYTYPE_OFFMESH_CONNECTION"],"title":"dtPolyTypes"}

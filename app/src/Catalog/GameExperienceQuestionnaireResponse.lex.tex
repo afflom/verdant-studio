@@ -1,0 +1,64 @@
+\begin{lexlean}{Catalog.GameExperienceQuestionnaireResponse}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GeqModule,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: coreModule, fields: []},
+    {name: inGameVersion, fields: []},
+    {name: socialPresenceModule, fields: []},
+    {name: postGameModule, fields: []}
+  ]
+}
+
+inductive{
+  name: GeqComponent,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: competence, fields: []},
+    {name: sensoryAndImaginativeImmersion, fields: []},
+    {name: flow, fields: []},
+    {name: tensionAnnoyance, fields: []},
+    {name: challenge, fields: []},
+    {name: negativeAffect, fields: []},
+    {name: positiveAffect, fields: []},
+    {name: tension, fields: []},
+    {name: u0050u0073u0079u0063u0068u006Fu006Cu006Fu0067u0069u0063u0061u006Cu0020u0049u006Eu0076u006Fu006Cu0076u0065u006Du0065u006Eu0074u0020u2013u0020u0045u006Du0070u0061u0074u0068u0079, fields: []},
+    {name: u0050u0073u0079u0063u0068u006Fu006Cu006Fu0067u0069u0063u0061u006Cu0020u0049u006Eu0076u006Fu006Cu0076u0065u006Du0065u006Eu0074u0020u2013u0020u004Eu0065u0067u0061u0074u0069u0076u0065u0020u0046u0065u0065u006Cu0069u006Eu0067u0073, fields: []},
+    {name: behaviouralInvolvement, fields: []},
+    {name: positiveExperience, fields: []},
+    {name: negativeExperience, fields: []},
+    {name: tiredness, fields: []},
+    {name: returningToReality, fields: []}
+  ]
+}
+
+inductive{
+  name: GeqScaleLabel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: notAtAll, fields: []},
+    {name: slightly, fields: []},
+    {name: moderately, fields: []},
+    {name: fairly, fields: []},
+    {name: extremely, fields: []}
+  ]
+}
+
+structure{
+  name: GameExperienceQuestionnaireResponse,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: module, type: GeqModule},
+    {name: item, type: Nat},
+    {name: score, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
