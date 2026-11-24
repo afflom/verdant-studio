@@ -5,9 +5,12 @@
 # to the same pull request, so the owner never reviews a conflicting one.
 name: refresh
 
+# A pull request that opens while main moves is caught when it opens, too.
 on:
   push:
     branches: [main]
+  pull_request:
+    types: [opened]
 
 permissions:
   contents: read
@@ -115,7 +118,8 @@ jobs:
               continue
             fi
             if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
-              grep -m 20 'error' target/export.log | sed 's/^/::error::#'"$pr"': /'
+              grep -m 20 'error' target/export.log | sed 's/^/::error::#'"$pr"': /' || echo "::error::#${pr}: the Lean export failed without an error line; its last lines follow"
+              tail -n 40 target/export.log
               git reset -q --hard origin/main
               failed="$failed $pr"
               gh pr ready "$pr" || true

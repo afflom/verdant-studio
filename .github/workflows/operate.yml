@@ -4,10 +4,11 @@
 # as the Verdant Studio GitHub App for the owner to review.
 name: operate
 
+# Every push to main runs advance. next (under a second) is the only gate, so a run
+# that defers to an open advance pull request always has a successor when that merges.
 on:
   push:
     branches: [main]
-    paths: ['model/bindings/**', 'model/encodings/**', 'model/queue/**', 'model/authorities.toml']
   workflow_dispatch:
     inputs:
       args:
@@ -84,7 +85,8 @@ jobs:
           test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
           ll="$PWD/target/lexlean/bin/lexlean"
           if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
-            grep -m 20 'error' target/export.log | sed 's/^/::error::/'
+            grep -m 20 'error' target/export.log | sed 's/^/::error::/' || echo "::error::the Lean export failed without an error line; its last lines follow"
+            tail -n 40 target/export.log
             exit 1
           fi
           rm -rf certified
@@ -104,8 +106,8 @@ jobs:
             echo "### Definitions this adds or changes"
             echo
             {
-              while read -r file line; do head -n "$line" "$file" | grep '^  name: ' | tail -n 1; done < target/hunks.txt
-              git diff -U0 -- studio/src | grep '^[+]  name: ' | cut -c2-
+              while read -r file line; do head -n "$line" "$file" | { grep '^  name: ' || true; } | tail -n 1; done < target/hunks.txt
+              { git diff -U0 -- studio/src | grep '^[+]  name: ' || true; } | cut -c2-
             } | awk '{ sub("^  name: ", "- `"); sub(",$", "`"); print }' | sort -u
             echo
             slash=/
