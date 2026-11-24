@@ -1,0 +1,79 @@
+\begin{lexlean}{Catalog.Iso18295CustomerContactCentre}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso18295CustomerContactCentreClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4CustomerRelationshipRequirements, fields: []},
+    {name: n41General, fields: []},
+    {name: n42CommunicationOfInformationToCustomers, fields: []},
+    {name: n43MeasuringAndMonitoringOfCustomerExperience, fields: []},
+    {name: n44ComplaintsHandling, fields: []},
+    {name: n45CustomerProtection, fields: []},
+    {name: n5CustomerFocusedLeadership, fields: []},
+    {name: n51General, fields: []},
+    {name: n52CustomerExperienceDesignAndDelivery, fields: []},
+    {name: n53EmployeeSatisfactionEngagement, fields: []},
+    {name: n6HumanResources, fields: []},
+    {name: n61General, fields: []},
+    {name: n62Functions, fields: []},
+    {name: n63AgentCompetencies, fields: []},
+    {name: n631General, fields: []},
+    {name: n632CommunicationAndCustomerServiceCompetencies, fields: []},
+    {name: n633TechnicalCompetencies, fields: []},
+    {name: n634ClientSpecificCompetencies, fields: []},
+    {name: n64SkillsDevelopment, fields: []},
+    {name: n65CommunicationOfInformationToEmployees, fields: []},
+    {name: n7OperationalProcesses, fields: []},
+    {name: n71General, fields: []},
+    {name: n72CustomerRelatedProcesses, fields: []},
+    {name: n73WorkforcePlanning, fields: []},
+    {name: n74QualityAssuranceRelatedToCustomerInteractions, fields: []},
+    {name: n8ServiceDeliveryInfrastructure, fields: []},
+    {name: n81General, fields: []},
+    {name: n82HandlingCustomerInteractions, fields: []},
+    {name: n83CustomerData, fields: []},
+    {name: n84WorkEnvironment, fields: []},
+    {name: n85ContinuationOfService, fields: []},
+    {name: n9ClientRelationship, fields: []},
+    {name: u0041u006Eu006Eu0065u0078u0020u0041u0020u004Du0065u0074u0072u0069u0063u0073u0020u2014u0020u0047u0075u0069u0064u0065u006Cu0069u006Eu0065u0073, fields: []},
+    {name: annexBClientCCCRelationship, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso18295CustomerContactCentreTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: agent, fields: []},
+    {name: accessibility, fields: []},
+    {name: campaign, fields: []},
+    {name: channel, fields: []},
+    {name: client, fields: []},
+    {name: customerContactCentre, fields: []},
+    {name: cCC, fields: []},
+    {name: customer, fields: []},
+    {name: complaint, fields: []},
+    {name: inbound, fields: []},
+    {name: outbound, fields: []}
+  ]
+}
+
+structure{
+  name: Iso18295CustomerContactCentre,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso18295CustomerContactCentreClause)},
+    {name: term, type: (Option Iso18295CustomerContactCentreTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

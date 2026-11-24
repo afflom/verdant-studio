@@ -1,0 +1,58 @@
+\begin{lexlean}{Catalog.IsoIec25010ProductQualityModel}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec25010ProductQualityModelClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4ProductQualityModel, fields: []},
+    {name: n41ProductQualityModelStructure, fields: []},
+    {name: n42TargetsOfTheProductQualityModel, fields: []},
+    {name: n5RelationshipToTheQualityInUseModel, fields: []},
+    {name: annexAComparisonWithTheProductQualityModelInISOIEC250102011, fields: []},
+    {name: annexBExampleOfMappingToDependability, fields: []},
+    {name: annexCUsingTheQualityModelForMeasurement, fields: []},
+    {name: u0041u006Eu006Eu0065u0078u0020u0044u0020u0051u0075u0061u006Cu0069u0074u0079u0020u0066u0072u006Fu006Du0020u0064u0069u0066u0066u0065u0072u0065u006Eu0074u0020u0073u0074u0061u006Bu0065u0068u006Fu006Cu0064u0065u0072u0073u2019u0020u0070u0065u0072u0073u0070u0065u0063u0074u0069u0076u0065u0073, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec25010ProductQualityModelTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: functionalSuitability, fields: []},
+    {name: functionalCompleteness, fields: []},
+    {name: functionalCorrectness, fields: []},
+    {name: functionalAppropriateness, fields: []},
+    {name: performanceEfficiency, fields: []},
+    {name: timeBehaviour, fields: []},
+    {name: resourceUtilization, fields: []},
+    {name: capacity, fields: []},
+    {name: compatibility, fields: []},
+    {name: coExistence, fields: []},
+    {name: interoperability, fields: []},
+    {name: interactionCapability, fields: []},
+    {name: appropriatenessRecognizability, fields: []},
+    {name: learnability, fields: []},
+    {name: operability, fields: []},
+    {name: userErrorProtection, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec25010ProductQualityModel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec25010ProductQualityModelClause)},
+    {name: term, type: (Option IsoIec25010ProductQualityModelTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

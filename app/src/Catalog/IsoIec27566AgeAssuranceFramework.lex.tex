@@ -1,0 +1,123 @@
+\begin{lexlean}{Catalog.IsoIec27566AgeAssuranceFramework}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IsoIec27566AgeAssuranceFrameworkClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n31TermsRelatingToAgeAssurance, fields: []},
+    {name: n32TermsRelatingToActorsAndParties, fields: []},
+    {name: n33TermsRelatingToDataAndProcesses, fields: []},
+    {name: n4OverviewOfAgeAssurance, fields: []},
+    {name: n41Age, fields: []},
+    {name: n42CharacteristicsOfAgeAssuranceSystems, fields: []},
+    {name: n43AgeAssuranceMethods, fields: []},
+    {name: n431OverviewOfAgeAssuranceMethods, fields: []},
+    {name: n432AgeVerificationMethods, fields: []},
+    {name: n433AgeEstimationMethods, fields: []},
+    {name: n434AgeInferenceMethods, fields: []},
+    {name: n435SuccessiveValidation, fields: []},
+    {name: n44Stakeholders, fields: []},
+    {name: n441General, fields: []},
+    {name: n442PolicyMakers, fields: []},
+    {name: n443ConsumerProtectionAgencies, fields: []},
+    {name: n444SectorAssociations, fields: []},
+    {name: n5FunctionalCharacteristics, fields: []},
+    {name: n51AgeAssuranceSystems, fields: []},
+    {name: n511General, fields: []},
+    {name: n512AgeAssuranceProviders, fields: []},
+    {name: n513Intermediaries, fields: []},
+    {name: n52DataAcquisitionForAgeAssuranceComponents, fields: []},
+    {name: n521SourcesOfData, fields: []},
+    {name: n522PrimaryAndSecondaryCredentials, fields: []},
+    {name: n523DateTranspositionErrors, fields: []},
+    {name: n53BindingOfAgeAssuranceResultToTheCorrectIndividual, fields: []},
+    {name: n531BindingCharacteristics, fields: []},
+    {name: n532ApproachesToBinding, fields: []},
+    {name: n54AgeAssuranceDataProcessing, fields: []},
+    {name: n55ConfigurationManagement, fields: []},
+    {name: n56ContextInUse, fields: []},
+    {name: n57DeliveryOfAgeAssuranceResult, fields: []},
+    {name: n6PerformanceCharacteristics, fields: []},
+    {name: n61PerformanceEffectiveness, fields: []},
+    {name: n611General, fields: []},
+    {name: n612EffectiveAgeAssuranceSystems, fields: []},
+    {name: n613IneffectiveAgeAssuranceSystems, fields: []},
+    {name: n614UseOfSelfAssertedAge, fields: []},
+    {name: n615OtherFactorsAffectingEffectiveness, fields: []},
+    {name: n62IndicatorsOfEffectiveness, fields: []},
+    {name: n63PerformanceMetrics, fields: []},
+    {name: n631ClassificationAccuracy, fields: []},
+    {name: n632PrimaryMetrics, fields: []},
+    {name: n633OutcomeErrorParity, fields: []},
+    {name: n634PerformanceEfficiency, fields: []},
+    {name: n64ResourceUtilization, fields: []},
+    {name: n65Testability, fields: []},
+    {name: n7PrivacyCharacteristics, fields: []},
+    {name: n71General, fields: []},
+    {name: n72PrivacyByDesignAndDefault, fields: []},
+    {name: n73DataMinimization, fields: []},
+    {name: n731CollectionLimitation, fields: []},
+    {name: n732NonDisclosureOfAgeRelatedData, fields: []},
+    {name: n733ComplianceWithLegalObligations, fields: []},
+    {name: n734PurposeLimitation, fields: []},
+    {name: n735AccessControl, fields: []},
+    {name: n736DataDisposal, fields: []},
+    {name: n74AvoidanceOfAddingToDigitalFootprint, fields: []},
+    {name: n75UserAwareness, fields: []},
+    {name: n76AuditLogs, fields: []},
+    {name: n8SecurityCharacteristics, fields: []},
+    {name: n81SecurityByDesignAndDefault, fields: []},
+    {name: n82ReplayForwardingOrReuseOfAgeAssuranceResult, fields: []},
+    {name: n821ReplayOfAnAgeAssuranceResult, fields: []},
+    {name: n822ForwardingOfAnAgeAssuranceResult, fields: []},
+    {name: n823PlannedMemorizationOrReuseOfAnAgeAssuranceResult, fields: []},
+    {name: n83ResistanceToAttack, fields: []},
+    {name: n831PreparationForAttack, fields: []},
+    {name: n832AttackVectors, fields: []},
+    {name: n833BiometricPresentationAttacks, fields: []},
+    {name: n834SpoofingAttack, fields: []},
+    {name: n835CounterfeitingAttack, fields: []},
+    {name: n84ContraIndicators, fields: []},
+    {name: n85FailSafe, fields: []},
+    {name: n9AcceptabilityCharacteristics, fields: []},
+    {name: n91General, fields: []},
+    {name: n92Inclusivity, fields: []},
+    {name: n93UserEngagementAndAssistance, fields: []},
+    {name: n94ComplaintHandling, fields: []},
+    {name: n10PracticeStatements, fields: []},
+    {name: n101General, fields: []},
+    {name: n102PracticeStatementsByAgeAssuranceProviders, fields: []},
+    {name: n103PracticeStatementsByRelyingParties, fields: []},
+    {name: n104PracticeStatementsByIntermediaries, fields: []}
+  ]
+}
+
+inductive{
+  name: IsoIec27566AgeAssuranceFrameworkTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: ageAssurance, fields: []},
+    {name: ageAssuranceResult, fields: []},
+    {name: age, fields: []},
+    {name: identity, fields: []}
+  ]
+}
+
+structure{
+  name: IsoIec27566AgeAssuranceFramework,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option IsoIec27566AgeAssuranceFrameworkClause)},
+    {name: term, type: (Option IsoIec27566AgeAssuranceFrameworkTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

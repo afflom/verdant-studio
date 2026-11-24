@@ -1,0 +1,76 @@
+\begin{lexlean}{Catalog.Iso20671BrandEvaluation}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso20671BrandEvaluationClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2NormativeReferences, fields: []},
+    {name: n3TermsAndDefinitions, fields: []},
+    {name: n4PrinciplesOfConductingABrandEvaluation, fields: []},
+    {name: n41GeneralPrinciples, fields: []},
+    {name: n42Transparency, fields: []},
+    {name: n43Consistency, fields: []},
+    {name: n44Objectivity, fields: []},
+    {name: n5BrandEvaluationFundamentals, fields: []},
+    {name: n51General, fields: []},
+    {name: n52Elements, fields: []},
+    {name: n521General, fields: []},
+    {name: n522TangibleElements, fields: []},
+    {name: n523QualityElements, fields: []},
+    {name: n524InnovationElements, fields: []},
+    {name: n525ServiceElements, fields: []},
+    {name: n526IntangibleElements, fields: []},
+    {name: n53Dimensions, fields: []},
+    {name: n531LegalDimension, fields: []},
+    {name: n532CustomerOtherStakeholderDimension, fields: []},
+    {name: n533MarketDimension, fields: []},
+    {name: n534EconomicAndPoliticalEnvironmentDimension, fields: []},
+    {name: n535FinancialDimension, fields: []},
+    {name: n6BrandEvaluationConsiderations, fields: []},
+    {name: n61Personnel, fields: []},
+    {name: n62PracticesAndProcesses, fields: []},
+    {name: n63BrandEvaluationAudit, fields: []},
+    {name: n64DataSourcing, fields: []},
+    {name: n65BrandEvaluationResults, fields: []},
+    {name: annexAExamplesOfIndicatorsForElementsAndDimensions, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso20671BrandEvaluationTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: brand, fields: []},
+    {name: entity, fields: []},
+    {name: stakeholders, fields: []},
+    {name: category, fields: []},
+    {name: brandStrength, fields: []},
+    {name: brandPerformance, fields: []},
+    {name: marketTest, fields: []},
+    {name: dimensions, fields: []},
+    {name: elements, fields: []},
+    {name: indicator, fields: []},
+    {name: indicatorCategory, fields: []},
+    {name: measure, fields: []},
+    {name: brandEvaluation, fields: []},
+    {name: brandValue, fields: []},
+    {name: brandValuation, fields: []}
+  ]
+}
+
+structure{
+  name: Iso20671BrandEvaluation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso20671BrandEvaluationClause)},
+    {name: term, type: (Option Iso20671BrandEvaluationTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

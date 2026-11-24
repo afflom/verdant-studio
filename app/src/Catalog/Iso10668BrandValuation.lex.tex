@@ -1,0 +1,67 @@
+\begin{lexlean}{Catalog.Iso10668BrandValuation}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso10668BrandValuationClause,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1Scope, fields: []},
+    {name: n2TermsAndDefinitions, fields: []},
+    {name: n3GeneralRequirements, fields: []},
+    {name: n31Transparency, fields: []},
+    {name: n32Validity, fields: []},
+    {name: n33Reliability, fields: []},
+    {name: n34Sufficiency, fields: []},
+    {name: n35Objectivity, fields: []},
+    {name: n36FinancialBehaviouralAndLegalParameters, fields: []},
+    {name: n4SpecificRequirements, fields: []},
+    {name: n41DeclarationOfPurpose, fields: []},
+    {name: n42ValueConcept, fields: []},
+    {name: n43IdentificationOfBrand, fields: []},
+    {name: n5ValuationApproachesAndMethods, fields: []},
+    {name: n51GeneralConsiderations, fields: []},
+    {name: n52IncomeApproach, fields: []},
+    {name: n53MarketApproach, fields: []},
+    {name: n54CostApproach, fields: []},
+    {name: n6NecessaryValuationInputs, fields: []},
+    {name: n61MarketAndFinancialData, fields: []},
+    {name: n62BehaviouralAspects, fields: []},
+    {name: n63LegalAspects, fields: []},
+    {name: n64SourcingAndUseOfQualityDataAndAssumptions, fields: []},
+    {name: n7Reporting, fields: []},
+    {name: n8Independence, fields: []}
+  ]
+}
+
+inductive{
+  name: Iso10668BrandValuationTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: asset, fields: []},
+    {name: brand, fields: []},
+    {name: intangibleAsset, fields: []},
+    {name: monetaryBrandValue, fields: []},
+    {name: brandValue, fields: []},
+    {name: premiseOfValue, fields: []},
+    {name: presentValue, fields: []},
+    {name: stakeholder, fields: []},
+    {name: tradeMark, fields: []},
+    {name: valuationDate, fields: []},
+    {name: valueDate, fields: []}
+  ]
+}
+
+structure{
+  name: Iso10668BrandValuation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clause, type: (Option Iso10668BrandValuationClause)},
+    {name: term, type: (Option Iso10668BrandValuationTerm)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
