@@ -1,0 +1,111 @@
+\begin{lexlean}{Catalog.OwaspGameSecurityFramework}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: OwaspGameSecurityFrameworkAttackSurface,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: localGameClient, fields: []},
+    {name: gameNetworkTraffic, fields: []},
+    {name: gameServer, fields: []},
+    {name: gameEconomy, fields: []},
+    {name: gameMechanics, fields: []}
+  ]
+}
+
+inductive{
+  name: OwaspGameSecurityFrameworkVulnerability,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: abilityToEditInGameResources, fields: []},
+    {name: abilityToBypassLicenseRequirement, fields: []},
+    {name: networkDenialOfServicePlayer, fields: []},
+    {name: playerBandwidthExhaustion, fields: []},
+    {name: playerGameClientResourceExhaustion, fields: []},
+    {name: applicationLevelDenialOfServicePlayer, fields: []},
+    {name: playerApplicationLogicDenialOfService, fields: []},
+    {name: applicationLevelDenialOfServiceServer, fields: []},
+    {name: serverApplicationLogicDenialOfService, fields: []},
+    {name: abilityToModifyGameLadderRankings, fields: []},
+    {name: abilityToModifyOwnPlayerResources, fields: []},
+    {name: abilityToModifyPricesForInGameItems, fields: []}
+  ]
+}
+
+inductive{
+  name: OwaspGameSecurityFrameworkExploit,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: dDoS, fields: []},
+    {name: clientModification, fields: []},
+    {name: maliciousMacros, fields: []},
+    {name: socialEngineering, fields: []},
+    {name: usePhysicsBug, fields: []},
+    {name: malformNetworkTraffic, fields: []}
+  ]
+}
+
+inductive{
+  name: OwaspGameSecurityFrameworkAttackerGoal,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: avoidDamage, fields: []},
+    {name: gainGear, fields: []},
+    {name: gainInGameCurrency, fields: []},
+    {name: enhanceGear, fields: []},
+    {name: takeOpponentOffline, fields: []},
+    {name: skipContent, fields: []}
+  ]
+}
+
+inductive{
+  name: OwaspGameSecurityFrameworkNegativeOutcome,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: currencyMagnification, fields: []},
+    {name: playerAnger, fields: []},
+    {name: playersStopPlayingTheGame, fields: []},
+    {name: invulnerablePositions, fields: []},
+    {name: itemMultiplication, fields: []},
+    {name: unfairLadderVictory, fields: []},
+    {name: unauthorizedAdminCommandUse, fields: []},
+    {name: lostRevenue, fields: []}
+  ]
+}
+
+inductive{
+  name: OwaspGameSecurityFrameworkDefense,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cryptographicValidationOfClient, fields: []},
+    {name: enterpriseLevelDDoSProtection, fields: []},
+    {name: basicApplicationSecurityDefenses, fields: []},
+    {name: authenticationLockouts, fields: []},
+    {name: twoFactorAuthentication, fields: []},
+    {name: betterCode, fields: []},
+    {name: serverSideValidation, fields: []}
+  ]
+}
+
+structure{
+  name: OwaspGameSecurityFramework,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: attackSurface, type: (Option OwaspGameSecurityFrameworkAttackSurface)},
+    {name: vulnerability, type: (Option OwaspGameSecurityFrameworkVulnerability)},
+    {name: exploit, type: (Option OwaspGameSecurityFrameworkExploit)},
+    {name: attackerGoal, type: (Option OwaspGameSecurityFrameworkAttackerGoal)},
+    {name: negativeOutcome, type: (Option OwaspGameSecurityFrameworkNegativeOutcome)},
+    {name: defense, type: (Option OwaspGameSecurityFrameworkDefense)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
