@@ -131,9 +131,9 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **H10** USB HID usage tables / SDL GameController DB / Microsoft GameInput (Engine, runtime, languages, and software engineering): exactMatch USB-HID-HUT-1.6 (derived from its citation)
 - **H11** Physics middleware (Havok, PhysX, Jolt, Chaos) and USD Physics schema (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **H12** Version control: Perforce Helix Core, Git + Git LFS, Unity Version Control (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
-- **H13** Semantic Versioning 2.0.0 (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H13** Semantic Versioning 2.0.0 (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch SEMVER-2.0.0 (staged)
 - **H14** DORA metrics / Accelerate (Engine, runtime, languages, and software engineering): exactMatch DORA-SOFTWARE-DELIVERY-METRICS (derived from its citation)
-- **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
+- **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch W3C-GAMEPAD-20261119 (staged)
 - **H16** Platform SDK minimums: Google Play target API level; Apple minimum SDK/Xcode requirements (Engine, runtime, languages, and software engineering), not reached from any origin: no mapping yet
 - **I01** ITU-R BS.1770 loudness measurement (LUFS/LKFS) (Audio, music, and voice): exactMatch ITU-R-BS-1770-5 (derived from its citation)
 - **I02** EBU R 128 (Audio, music, and voice): exactMatch EBU-R128-2023 (derived from its citation)
@@ -141,10 +141,10 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **I04** Audio middleware: Audiokinetic Wwise, FMOD Studio (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I05** Interactive music techniques: horizontal resequencing, vertical layering, stingers (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice), not reached from any origin: no mapping yet
-- **I07** AES69 (SOFA) HRTF format (Audio, music, and voice), not reached from any origin: no mapping yet
-- **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): exactMatch AMBIX-AMBISONICS-FORMAT-2011 (derived from its citation)
+- **I07** AES69 (SOFA) HRTF format (Audio, music, and voice), not reached from any origin: exactMatch SOFA-SIMPLEFREEFIELDHRIR-1.0 (staged)
+- **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): narrowMatch AMBIX-AMBISONICS-FORMAT-2011 (staged)
 - **I09** Broadcast Wave Format (EBU Tech 3285) (Audio, music, and voice): exactMatch EBU-TECH-3285-2 (derived from its citation)
-- **I10** Ogg Vorbis / Opus (RFC 6716) (Audio, music, and voice), not reached from any origin: no mapping yet
+- **I10** Ogg Vorbis / Opus (RFC 6716) (Audio, music, and voice), not reached from any origin: narrowMatch IETF-RFC-3533 (staged); narrowMatch IETF-RFC-6716 (staged); narrowMatch IETF-RFC-7845 (staged); narrowMatch XIPH-VORBIS-I (staged)
 - **I11** IASIG 3D audio guidelines (I3DL1/I3DL2) (Audio, music, and voice), not reached from any origin: no mapping yet
 - **I12** Music licensing and performing rights (sync, master, PRO registration) (Audio, music, and voice), not reached from any origin: no mapping yet
 - **J01** Finite state machines / hierarchical FSMs (NPC, agent, and game AI models), not reached from any origin: no mapping yet
@@ -153,14 +153,14 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **J04** Hierarchical Task Network (HTN) planning (NPC, agent, and game AI models): exactMatch HUMPHREYS-HTN-GAME-AI-PRO-12 (derived from its citation)
 - **J05** Utility AI / Infinite Axis Utility System (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J06** A* search (NPC, agent, and game AI models), not reached from any origin: no mapping yet
-- **J07** Navigation meshes: Recast & Detour (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J07** Navigation meshes: Recast & Detour (NPC, agent, and game AI models), not reached from any origin: exactMatch RECAST-DETOUR-NAVMESH-H (staged)
 - **J08** Steering behaviors and flocking (boids) (NPC, agent, and game AI models): exactMatch REYNOLDS-STEERING-BEHAVIORS-1999 (derived from its citation)
 - **J09** Smart objects and AI directors (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J10** Artificial Intelligence and Games (academic reference model) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J11** Procedural Content Generation in Games (NPC, agent, and game AI models): exactMatch PCG-BOOK-CHAPTER-1 (derived from its citation)
 - **J12** Video Game Description Language (VGDL) / GVGAI (NPC, agent, and game AI models): exactMatch ARXIV-1802.10363-V4 (derived from its citation)
 - **J13** Unity ML-Agents / reinforcement learning for game agents (NPC, agent, and game AI models): exactMatch UNITY-MLAGENTS-AGENT-INFO-PROTO (derived from its citation)
-- **J14** EU Artificial Intelligence Act (Regulation (EU) 2024/1689) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
+- **J14** EU Artificial Intelligence Act (Regulation (EU) 2024/1689) (NPC, agent, and game AI models), not reached from any origin: exactMatch EU-REG-2024-1689 (staged)
 - **J15** ISO/IEC 42001 AI management system (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J16** NIST AI Risk Management Framework (AI RMF 1.0) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J17** C2PA Content Credentials (NPC, agent, and game AI models), not reached from any origin: no mapping yet
