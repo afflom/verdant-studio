@@ -1,0 +1,46 @@
+\begin{lexlean}{Catalog.XboxRequirement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: XboxRequirementRequirement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: xR001TitleStability, fields: []},
+    {name: xR003TitleQualityForSubmission, fields: []},
+    {name: xR013LinkingMicrosoftAccountsWithPublisherAccounts, fields: []},
+    {name: xR014PlayerDataAndPersonalInformation, fields: []},
+    {name: xR015ManagingPlayerCommunication, fields: []},
+    {name: xR018UserGeneratedContent, fields: []},
+    {name: xR022OfficialNamingStandards, fields: []},
+    {name: xR037DependenciesOnContentPackages, fields: []},
+    {name: xR045XBOXNetworkAndAccountPrivileges, fields: []},
+    {name: xR046DisplayNameAndGamerpic, fields: []},
+    {name: xR047UserProfileAccess, fields: []},
+    {name: xR048ProfileSettingsUsage, fields: []},
+    {name: xR052UserStateAndTitleSaveLocationRoamingAndDependencies, fields: []},
+    {name: xR055AchievementsAndGamerscore, fields: []},
+    {name: xR057UnlockingAchievements, fields: []},
+    {name: xR064JoinableGameSessionsAndOnlinePlay, fields: []},
+    {name: xR067MaintainingRecentlyPlayedWithInteractions, fields: []},
+    {name: xR070FriendsLists, fields: []},
+    {name: xR074LossOfConnectivityToXBOXAndPartnerServices, fields: []},
+    {name: xR112EstablishingAUserAndControllerDuringInitialActivationAndResume, fields: []},
+    {name: xR115AdditionAndRemovalOfUsersOrControllersDuringGameplay, fields: []},
+    {name: xR117BetaGamePreviewNotification, fields: []},
+    {name: xR130XBOXSeriesXSGeneration, fields: []},
+    {name: xR132ServiceAccessLimitations, fields: []}
+  ]
+}
+
+structure{
+  name: XboxRequirement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: requirement, type: XboxRequirementRequirement}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
