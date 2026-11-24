@@ -18,7 +18,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **A13** ISO/IEC/IEEE 15288 System life cycle processes (Lifecycle and process reference models), not reached from any origin: exactMatch ISO-IEC-IEEE-15288-2023 (staged)
 - **A14** ISO/IEC/IEEE 24748 series Life cycle management (Lifecycle and process reference models), not reached from any origin: exactMatch ISO-IEC-IEEE-24748-1-2024 (staged)
 - **A15** CMMI (Capability Maturity Model Integration) v3 (Lifecycle and process reference models), not reached from any origin: no mapping yet
-- **A16** Production Tracking: Flow Production Tracking (ShotGrid), Jira, Hansoft (Lifecycle and process reference models), not reached from any origin: narrowMatch ATLASSIAN-JIRA-CLOUD-REST-V3-OPENAPI (staged)
+- **A16** Production Tracking: Flow Production Tracking (ShotGrid), Jira, Hansoft (Lifecycle and process reference models): narrowMatch ATLASSIAN-JIRA-CLOUD-REST-V3-OPENAPI (staged)
 - **A17** Design documentation conventions: GDD, TDD, art bible, audio bible, narrative bible, one-pager, pitch deck (Lifecycle and process reference models), not reached from any origin: narrowMatch FULLERTON-GDW-5E-2024 (staged)
 - **A18** ISO 31000 Risk management guidelines (Lifecycle and process reference models), not reached from any origin: exactMatch ISO-31000-2018 (staged)
 - **A19** The Game Production Toolbox / Game Production Handbook (Lifecycle and process reference models), not reached from any origin: exactMatch CHANDLER-GAME-PRODUCTION-TOOLBOX-2020 (staged)
