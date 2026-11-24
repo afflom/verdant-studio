@@ -282,6 +282,48 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `US-LA-HB-570-2025` | Age verification and parental consent at the app store, and developer use of age signals (Louisiana). Index row R12. |  |
 | `US-TX-SB-2420-89R` | Age verification and parental consent at the app store, and developer use of age signals (Texas). Index row R12. |  |
 | `US-UT-SB-142-2025` | Age verification and parental consent at the app store, and developer use of age signals (Utah). Index row R12. |  |
+| `AICPA-TSC-2017-POF-2022` | The trust services criteria for security, availability, processing integrity, confidentiality and privacy used in SOC 2 examinations. Index row T07. |  |
+| `APPLE-ADATTRIBUTIONKIT` | Apple's privacy-preserving ad attribution API. Index row W08. |  |
+| `APPLE-SKADNETWORK` | Apple's privacy-preserving install attribution API. Index row W08. |  |
+| `APPLETON-EXPERIENCE-OF-LANDSCAPE-REV` | Prospect-refuge theory of safety and vista, used for encounter and pacing design. Index row Z06. |  |
+| `AU-F2022L00062-C01` | The Basic Online Safety Expectations for online services, made under section 45 of the Online Safety Act 2021. Index row S04. |  |
+| `AXELOS-ITIL-4` | IT service management practices: incident, problem, change and release. Index row W02. |  |
+| `EC-ECI-STOP-DESTROYING-VIDEOGAMES-REPLY-2026` | The Commission's reply declining mandatory end-of-life obligations for games. Index row Y08. |  |
+| `EPIC-FORTNITE-ISLAND-CREATOR-RULES` | Content, monetization and IP rules for islands created in Fortnite. Index row S08. |  |
+| `ESIC-INTEGRITY-PROGRAM` | The ESIC Integrity Program: Code of Ethics, Code of Conduct, Anti-Corruption Code, Anti-Doping Code and Disciplinary Procedure. Index row S06. |  |
+| `EU-COM-2026-1100-DFA` | The proposed Digital Fairness Act, repealing Directive 2005/29/EC, with rules on dark patterns, addictive design, virtual currencies, paid random items and minors; a proposal pending the legislative process. Index row U02. |  |
+| `EU-CPC-VIRTUAL-CURRENCIES-2025` | Price transparency in real currency, no obscured costs, protection of minors and contract terms for in-game virtual currencies. Index row U01. |  |
+| `FPA-ADL-DHG-FRAMEWORK-2020` | The shared taxonomy of disruptive behaviour and harms in online games, with design and moderation responses. Index row S01. |  |
+| `GOOGLE-PRIVACY-SANDBOX-ANDROID-ATTRIBUTION` | The Android Privacy Sandbox Attribution Reporting API. Index row W08. |  |
+| `HILLIER-HANSON-SOCIAL-LOGIC-OF-SPACE-1984` | Space syntax: integration, connectivity and visibility analysis of spatial configuration. Index row Z03. |  |
+| `HULLETT-WHITEHEAD-FPS-LEVEL-PATTERNS-2010` | The pattern catalogue for shooter level geometry: arenas, chokepoints, sniper locations and flanks. Index row Z04. |  |
+| `IFRS-15` | Recognition of revenue from contracts with customers, applied to game sales, DLC, virtual currency and live-service obligations. Index row U08. |  |
+| `IGDA-DSS-2023` | Workforce benchmarks on crunch, diversity and compensation. Index row X04. |  |
+| `JP-ACT-134-1962` | The Japanese premiums and representations act under which complete gacha is prohibited. Index row U05. |  |
+| `LEVEL-DESIGN-BOOK-METRICS` | Gameplay metrics for blockout: player capsule, jump and cover heights and grid units. Index row Z07. |  |
+| `LEVEL-DESIGN-BOOK` | The open practitioner reference for level design process, typology and analysis. Index row Z08. |  |
+| `LOC-RFS-2025-2026` | Preferred formats and documentation to deposit for software and video games (section: software and video games). Index row Y03. |  |
+| `LYNCH-IMAGE-OF-THE-CITY-1960` | Paths, edges, districts, nodes and landmarks as the legibility vocabulary for wayfinding and open-world layout. Index row Z01. |  |
+| `MINECRAFT-USAGE-GUIDELINES` | Rules for fans and creators using Minecraft content, including commercial use. Index row S08. |  |
+| `MODIO-DOCUMENTATION` | mod.io UGC distribution, versioning and moderation. Index row S07. |  |
+| `NINTENDO-GAME-CONTENT-GUIDELINES` | Terms under which players may stream, monetize and share Nintendo game footage. Index row S09. |  |
+| `PCI-DSS-4.0.1` | Payment card data security requirements and testing procedures. Index row T08. |  |
+| `PEGI-CODE-OF-CONDUCT` | The PEGI Code of Conduct, including its rules on rating display and content in game advertising. Index row V01. |  |
+| `RIOT-NA-COMMUNITY-COMPETITION-GUIDELINES` | Riot's rules for running and monetizing community competitions of its games in North America. Index row S10. |  |
+| `ROBLOX-COMMUNITY-STANDARDS` | Content and conduct rules for experiences created on Roblox. Index row S08. |  |
+| `SPN-ARL-FAIR-USE-SOFTWARE-PRESERVATION-2018` | Legal and practical guidance for preserving software, including games, under fair use. Index row Y10. |  |
+| `SPRINGER-GAME-ANALYTICS-2013` | Telemetry design, game metrics and player modelling. Index row W06. |  |
+| `STEAMWORKS-UPLOADING` | Steam depot and build upload rules that constrain patch packaging and delta updates. Index row W12. |  |
+| `STEAMWORKS-WORKSHOP` | Steam Workshop mod distribution, versioning and moderation. Index row S07. |  |
+| `TOTTEN-ARCHITECTURAL-LEVEL-DESIGN-2E` | Architectural theory applied to levels: prospect-refuge, spatial sequencing and molecule diagrams. Index row Z02. |  |
+| `TOTTEN-LEVEL-DESIGN-PROCESSES-2017` | Practitioner level design process: blockout, metrics, gating, pacing and critical path. Index row Z05. |  |
+| `TPN-MPA-CONTENT-SECURITY-BEST-PRACTICES` | The content security best practices against which TPN assesses vendors. Index row T13. |  |
+| `UK-DCMS-LOOT-BOXES-INDUSTRY-PROTECTIONS` | The government's account of the Ukie industry principles on paid loot boxes (2023): parental controls, probability disclosure and no purchase by under-18s without consent. Index row U04. |  |
+| `UNITY-TERMS-OF-SERVICE` | Unity's licence terms, including its subscription and fee models. Index row X03. |  |
+| `US-FTC-EPIC-CONSENT-88FR354` | The FTC's administrative consent order against Epic Games on billing consent and interface design for in-game purchases. Index row U07. |  |
+| `WIPO-BERNE-1979` | Copyright protection of literary and artistic works, covering game code, art, audio and narrative. Index row X01. |  |
+| `WIPO-LEGAL-STATUS-VIDEO-GAMES-2013` | WIPO's comparative study of how national laws classify and protect video games. Index row X01. |  |
+| `XBOX-GAME-CONTENT-USAGE-RULES` | Terms under which players may use and share Microsoft game content, including video. Index row S09. |  |
 
 ## Claims that are not conformance IDs
 
