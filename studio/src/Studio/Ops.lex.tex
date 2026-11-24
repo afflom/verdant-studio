@@ -188,10 +188,25 @@ definition{
 
 
 definition{
+  name: startsAny,
+  parameters: [lines : (List Bytes), key : Bytes],
+  result: Bool,
+  body: (match lines
+    | List.nil => false
+    | List.cons head rest => (if (LexLeanStd.Text::startsWith head key) then true else (startsAny rest key))),
+  recursive_argument: lines,
+  executable: true
+}
+
+definition{
   name: blockNamed,
   parameters: [block : (List Bytes), entry : Bytes],
   result: Bool,
-  body: (Studio.Doc::memberBytes entry (Studio.Check::tomlIds (Studio.Schema::joinWith block 0x0a))),
+  body: (match (LexLeanStd.Text::splitOn entry (34 : UInt8))
+    | List.nil => false
+    | List.cons whole rest => (match rest
+      | List.nil => (startsAny block (Studio.Doc::cat (cons (Studio.Doc::lit "id = \"") (cons whole (cons (Studio.Doc::lit "\"") (nil Bytes))))))
+      | List.cons second others => false)),
   executable: true
 }
 
