@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"The measures named by EBU R 128-2023 for normalising and characterising an audio signal.","enum":["Programme Loudness","Loudness Range","Maximum True Peak Level","Maximum Momentary Loudness","Maximum Short-term Loudness"],"title":"EBU R 128-2023 measure"}

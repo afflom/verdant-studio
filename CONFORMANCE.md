@@ -194,6 +194,20 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `REYNOLDS-STEERING-BEHAVIORS-1999` | The three-layer motion hierarchy (action selection, steering, locomotion) and the named steering behaviors. Index row J08. |  |
 | `TRIBES-ENGINE-NETWORKING-MODEL` | Data delivery requirement classes, the connection, stream and simulation layers, and the stream managers. Index row K04. |  |
 | `USB-HID-HUT-1.6` | The HID usage pages and usages, summarised in Table 3.1 Usage Page Summary. Index row H10. |  |
+| `ALEEM-DGMM-2016` | The Digital Game Maturity Model: three perspectives, eighteen game development process activities and a five-level maturity scale. Index row A03. |  |
+| `AMBIX-AMBISONICS-FORMAT-2011` | The ambiX basic and extended formats: ACN channel ordering, SN3D normalisation and the CAF chunks used. Index row I08. |  |
+| `ARXIV-1802.10363-V4` | The Video Game Description Language as used by GVGAI: Sprite Set, Interaction Set, Termination Set and Mapping Set. Index row J12. |  |
+| `ASWF-OPENVDB-TYPES-14.0.0` | The OpenVDB grid classes, vector types and merge policies, as the library's Types.h declares them. Index row D05. |  |
+| `C3D-USER-GUIDE` | The C3D biomechanics file format: its 512-byte header section, parameter section and data section. Index row E07 (C3D; BVH has no official specification). |  |
+| `CHURCH-FADT-1999` | Church's formal abstract design tools: intention, perceivable consequence and story. Index row B15. |  |
+| `ESA-ACCESSIBLE-GAMES-INITIATIVE-TAGS` | The Accessible Games Initiative accessibility tags shown on game product pages and storefronts. Index row M03. |  |
+| `HUMPHREYS-HTN-GAME-AI-PRO-12` | HTN building blocks: world state, sensors, primitive tasks (preconditions, operator, effects), compound tasks and their methods (conditions, subtasks). Index row J04. |  |
+| `LAZZARO-WHY-WE-PLAY-2004` | Lazzaro's Four Keys that unlock emotion in play: Hard Fun, Easy Fun, Altered States and The People Factor. Index row B14. |  |
+| `PCG-BOOK-CHAPTER-1` | The desirable properties of a PCG solution (section 1.5) and the dimensions of the PCG taxonomy (section 1.6). Index row J11. |  |
+| `RYAN-RIGBY-PRZYBYLSKI-2006` | Self-determination theory applied to games and the Player Experience of Need Satisfaction (PENS) measures: autonomy, competence, relatedness, presence and intuitive controls. Index row B11. |  |
+| `STEAM-AI-CONTENT-DISCLOSURE-2024` | The AI disclosure section of the Steam Content Survey and its two categories of AI usage, Pre-Generated and Live-Generated. Index row J18. |  |
+| `VES-EPIC-VP-GLOSSARY` | The defined terms of the Virtual Production Glossary and its categories. Index row F02. |  |
+| `WDAS-PTEX-IO-2.5.4` | The Ptex per-face texture file format: its Header and ExtHeader records, as the library's PtexIO.h declares them. Index row D14 (Ptex; UDIM is a convention with no specification). |  |
 
 ## Claims that are not conformance IDs
 

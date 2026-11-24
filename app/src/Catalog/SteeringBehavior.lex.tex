@@ -1,0 +1,44 @@
+\begin{lexlean}{Catalog.SteeringBehavior}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SteeringMotionLayer,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: actionSelection, fields: []},
+    {name: steering, fields: []},
+    {name: locomotion, fields: []}
+  ]
+}
+
+inductive{
+  name: SteeringBehavior,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: seek, fields: []},
+    {name: flee, fields: []},
+    {name: pursuit, fields: []},
+    {name: evasion, fields: []},
+    {name: offsetPursuit, fields: []},
+    {name: arrival, fields: []},
+    {name: obstacleAvoidance, fields: []},
+    {name: wander, fields: []},
+    {name: pathFollowing, fields: []},
+    {name: wallFollowing, fields: []},
+    {name: containment, fields: []},
+    {name: flowFieldFollowing, fields: []},
+    {name: unalignedCollisionAvoidance, fields: []},
+    {name: separation, fields: []},
+    {name: cohesion, fields: []},
+    {name: alignment, fields: []},
+    {name: flocking, fields: []},
+    {name: leaderFollowing, fields: []},
+    {name: interpose, fields: []},
+    {name: hide, fields: []}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

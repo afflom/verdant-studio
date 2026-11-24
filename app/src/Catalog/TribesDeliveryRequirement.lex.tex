@@ -1,0 +1,43 @@
+\begin{lexlean}{Catalog.TribesDeliveryRequirement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: TribesNetworkLayer,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: connectionLayer, fields: []},
+    {name: streamLayer, fields: []},
+    {name: simulationLayer, fields: []}
+  ]
+}
+
+inductive{
+  name: TribesManager,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: connectionManager, fields: []},
+    {name: streamManager, fields: []},
+    {name: eventManager, fields: []},
+    {name: ghostManager, fields: []},
+    {name: moveManager, fields: []},
+    {name: datablockManager, fields: []},
+    {name: stringManager, fields: []}
+  ]
+}
+
+inductive{
+  name: TribesDeliveryRequirement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nonGuaranteed, fields: []},
+    {name: guaranteed, fields: []},
+    {name: mostRecentState, fields: []},
+    {name: guaranteedQuickest, fields: []}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

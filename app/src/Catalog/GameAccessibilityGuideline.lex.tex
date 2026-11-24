@@ -1,0 +1,40 @@
+\begin{lexlean}{Catalog.GameAccessibilityGuideline}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GagCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: motor, fields: []},
+    {name: cognitive, fields: []},
+    {name: vision, fields: []},
+    {name: hearing, fields: []},
+    {name: speech, fields: []},
+    {name: general, fields: []}
+  ]
+}
+
+inductive{
+  name: GagLevel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: basic, fields: []},
+    {name: intermediate, fields: []},
+    {name: advanced, fields: []}
+  ]
+}
+
+structure{
+  name: GameAccessibilityGuideline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: category, type: GagCategory},
+    {name: level, type: GagLevel}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
