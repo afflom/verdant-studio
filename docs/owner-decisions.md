@@ -53,3 +53,7 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ## REQ-CONTENT-BOUNDARY (afflom, 2026-11-24T00:10:02Z)
 
 > it's important to differentiate Verdant Studio from its managed content, so that Verdant Studio is not conflating its features and its demos/examples/pipelines
+
+##  (afflom, 2026-11-24T12:22:32Z)
+
+> right, we arent going to block or delay our work for korean game laws.
