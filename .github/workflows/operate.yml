@@ -71,8 +71,8 @@ jobs:
           cat > target/input/change.patch <<< "$INPUT"
           # A patch larger than a dispatch input can carry arrives gzipped and base64-encoded.
           if head -c 4 target/input/change.patch | grep -q '^H4sI'; then base64 -d < target/input/change.patch | gunzip > target/input/change.diff; mv target/input/change.diff target/input/change.patch; fi
-          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^features/suites/' -e '^README.md$' || true)
-          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, features/suites and README.md, not: $outside"; exit 1; fi
+          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^stdlib/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^features/suites/' -e '^README.md$' || true)
+          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, stdlib/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, features/suites and README.md, not: $outside"; exit 1; fi
           git apply target/input/change.patch
           if [ ! -x "$HOME/.elan/bin/elan" ]; then
             curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
@@ -99,7 +99,7 @@ jobs:
             echo "::error::propose-command needs a plain-language account before the patch: what changes and why, the requirement or decision it serves, what it unblocks, and the risk and how it was verified"
             exit 1
           fi
-          git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio | awk 'index($0, "+++ b") == 1 { file = substr($0, 7) } index($0, "@@") == 1 { parts = split($3, at, ","); start = substr(at[1], 2); count = (parts > 1) ? at[2] : 1; print file " " ((count > 0) ? start + count - 1 : start) }' > target/hunks.txt
+          git diff -U0 -- studio/src stdlib/src app/src/Contract.lex.tex app/src/Studio | awk 'index($0, "+++ b") == 1 { file = substr($0, 7) } index($0, "@@") == 1 { parts = split($3, at, ","); start = substr(at[1], 2); count = (parts > 1) ? at[2] : 1; print file " " ((count > 0) ? start + count - 1 : start) }' > target/hunks.txt
           {
             cat target/summary.md
             echo
@@ -107,7 +107,7 @@ jobs:
             echo
             {
               while read -r file line; do head -n "$line" "$file" | { grep '^  name: ' || true; } | tail -n 1; done < target/hunks.txt
-              { git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio | grep '^[+]  name: ' || true; } | cut -c2-
+              { git diff -U0 -- studio/src stdlib/src app/src/Contract.lex.tex app/src/Studio | grep '^[+]  name: ' || true; } | cut -c2-
             } | awk '{ sub("^  name: ", "- `"); sub(",$", "`"); print }' | sort -u
             echo
             slash=/
@@ -116,7 +116,7 @@ jobs:
             echo "Exported again with Lean as $(basename studio/.lexlean/production/*/). The studio check replays it, then runs check, build and publish."
             echo
             echo '```'
-            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml features/suites README.md
+            git diff --stat -- studio/src stdlib/src app/src/Contract.lex.tex app/src/Studio model/ids.toml features/suites README.md
             echo '```'
             echo
             echo "<${slash}details>"
