@@ -1,0 +1,30 @@
+\begin{lexlean}{Catalog.Iso24748LifeCycleStage}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Iso24748LifeCycleStageStage,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: conceptStage, fields: []},
+    {name: developmentStage, fields: []},
+    {name: productionStage, fields: []},
+    {name: utilizationStage, fields: []},
+    {name: supportStage, fields: []},
+    {name: retirementStage, fields: []}
+  ]
+}
+
+structure{
+  name: Iso24748LifeCycleStage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: stage, type: Iso24748LifeCycleStageStage},
+    {name: purpose, type: Bytes},
+    {name: outcomes, type: (List Bytes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
