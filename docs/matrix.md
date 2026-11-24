@@ -21,6 +21,90 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > http://data.europa.eu/esco/occupation/d68ff35f-e34d-4e32-88ab-d6c06a6c25b9,digital games designer,optional,knowledge,http://data.europa.eu/esco/skill/4c016b68-4116-468c-9dc6-42710c239e4a,C#
 - Engine, runtime, languages, and software engineering, row H01: **digital games designer** is esco:hasOptionalSkill of C++ (ISO/IEC 14882) under EC-ESCO-1.2.1 (constraint)
   > http://data.europa.eu/esco/occupation/d68ff35f-e34d-4e32-88ab-d6c06a6c25b9,digital games designer,optional,knowledge,http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f,C++
+- Business, IP, labor, and sustainability, row X10: **manufacturer** is producer of product under EU-DIR-2024-2853 (constraint)
+  > manufacturer means any natural or legal person who: (a) develops, manufactures or produces a product
+- Business, IP, labor, and sustainability, row X10: **authorised representative** is onBehalfOf of product under EU-DIR-2024-2853 (constraint)
+  > authorised representative means any natural or legal person established within the Union who has received a written mandate from a manufacturer to act on that manufacturer’s behalf
+- End of life, preservation, and archiving, row Y02: **CREATOR** is attributed of METS document under LOC-METS-1.12.1 (constraint)
+  > CREATOR: The person(s) or institution(s) responsible for the METS document.
+- End of life, preservation, and archiving, row Y02: **EDITOR** is producer of METS metadata under LOC-METS-1.12.1 (constraint)
+  > EDITOR: The person(s) or institution(s) that prepares the metadata for encoding.
+- End of life, preservation, and archiving, row Y02: **ARCHIVIST** is attributed of document/collection under LOC-METS-1.12.1 (constraint)
+  > ARCHIVIST: The person(s) or institution(s) responsible for the document/collection.
+- Launch, marketing, and branding, row V06: **person with billable contributions toward creation or publication of a game** is producer of game under IGDA-GAME-CREDITING-GUIDE-10.1 (constraint)
+  > INCL.1 – Any person, be they contractor, freelancer, external agency employee, vendor, part time employee, or full time employee with billable contributions toward creation or publication of a game in any discipline must be credited.
+- Launch, marketing, and branding, row V06: **credited person (first name, last name, associated role)** is attributed of credit under IGDA-GAME-CREDITING-GUIDE-10.1 (constraint)
+  > ATTR.1 – Credit must include a first, last name and associated role.
+- Lifecycle and process reference models, row A07: **Developers** is producer of Increment under SCRUM-GUIDE-2020 (constraint)
+  > Developers are the people in the Scrum Team that are committed to creating any aspect of a usable Increment each Sprint.
+- Lifecycle and process reference models, row A07: **Product Owner** is producer of Product Backlog item under SCRUM-GUIDE-2020 (constraint)
+  > Creating and clearly communicating Product Backlog items
+- Lifecycle and process reference models, row A07: **Developers** is attributed of Sprint Backlog under SCRUM-GUIDE-2020 (constraint)
+  > The Sprint Backlog is a plan by and for the Developers.
+- Live operations, reliability, support, and analytics, row W05: **provider** is observation of tracking event under OPENFEATURE-SPEC-0.9.0 (refinement)
+  > The `provider` MAY define a function for tracking the occurrence of a particular user action or application state
+- Monetization, consumer protection, and virtual economies, row U03: **person acting on behalf of a trader** is onBehalfOf of contract under EU-DIR-2011-83 (constraint)
+  > including through any other person acting in his name or on his behalf
+- Monetization, consumer protection, and virtual economies, row U11: **person acting on behalf of a trader** is onBehalfOf of contract under EU-DIR-2019-770 (constraint)
+  > including through any other person acting in that natural or legal person's name or on that person's behalf
+- Monetization, consumer protection, and virtual economies, row U03: **person acting on behalf of a trader** is onBehalfOf of commercial practice under EU-DIR-2005-29 (constraint)
+  > anyone acting in the name of or on behalf of a trader
+- Monetization, consumer protection, and virtual economies, row U11: **consumer** is consumer of digital service under EU-DIR-2019-770 (constraint)
+  > a service that allows the consumer to create, process, store or access data in digital form
+- Networking, multiplayer, and online services, row K05: **Endpoint** is producer of QUIC packet under IETF-RFC-9000 (constraint)
+  > Endpoint: An entity that can participate in a QUIC connection by generating, receiving, and processing QUIC packets.
+- Networking, multiplayer, and online services, row K05: **Endpoint** is consumer of QUIC packet under IETF-RFC-9000 (constraint)
+  > Endpoint: An entity that can participate in a QUIC connection by generating, receiving, and processing QUIC packets.
+- Networking, multiplayer, and online services, row K05: **Application** is consumer of QUIC under IETF-RFC-9000 (constraint)
+  > Application: An entity that uses QUIC to send and receive data.
+- Networking, multiplayer, and online services, row K13: **client** is onBehalfOf of protected resource request under IETF-RFC-6749 (constraint)
+  > client An application making protected resource requests on behalf of the resource owner and with its authorization.
+- Networking, multiplayer, and online services, row K13: **authorization server** is producer of access token under IETF-RFC-6749 (constraint)
+  > authorization server The server issuing access tokens to the client after successfully authenticating the resource owner
+- NPC, agent, and game AI models, row J14: **authorised representative** is onBehalfOf of AI system under EU-REG-2024-1689 (constraint)
+  > has received and accepted a written mandate from a provider of an AI system or a general-purpose AI model to, respectively, perform and carry out on its behalf
+- NPC, agent, and game AI models, row J14: **provider** is producer of AI system under EU-REG-2024-1689 (constraint)
+  > ‘provider’ means a natural or legal person, public authority, agency or other body that develops an AI system or a general-purpose AI model
+- NPC, agent, and game AI models, row J14: **deployer** is consumer of AI system under EU-REG-2024-1689 (constraint)
+  > ‘deployer’ means a natural or legal person, public authority, agency or other body using an AI system under its authority
+- NPC, agent, and game AI models, row J17: **Claim generator** is producer of claim under C2PA-SPEC-2.3 (constraint)
+  > Claim generator The non-human (hardware or software) actor that generates the claim about an asset as well as the claim signature
+- NPC, agent, and game AI models, row J17: **C2PA Manifest Consumer** is consumer of C2PA Manifest under C2PA-SPEC-2.3 (constraint)
+  > A C2PA Manifest Consumer shall never process an assertion, assertion store, claim, claim signature or C2PA Manifest that is not contained inside of a C2PA Manifest Store.
+- Privacy, child protection, and age assurance, row R01: **processor** is consumer of personal data under EU-REG-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **processor** is onBehalfOf of personal data under EU-REG-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **recipient** is consumer of personal data under EU-REG-2016-679 (constraint)
+  > ‘recipient’ means a natural or legal person, public authority, agency or another body, to which the personal data are disclosed
+- Privacy, child protection, and age assurance, row R01: **representative** is onBehalfOf of personal data under EU-REG-2016-679 (constraint)
+  > represents the controller or processor with regard to their respective obligations under this Regulation
+- Privacy, child protection, and age assurance, row R01: **processor** is consumer of personal data under UK-EUR-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **processor** is onBehalfOf of personal data under UK-EUR-2016-679 (constraint)
+  > ‘processor’ means a natural or legal person, public authority, agency or other body which processes personal data on behalf of the controller
+- Privacy, child protection, and age assurance, row R01: **recipient** is consumer of personal data under UK-EUR-2016-679 (constraint)
+  > ‘recipient’ means a natural or legal person, public authority, agency or another body, to which the personal data are disclosed
+- Privacy, child protection, and age assurance, row R01: **representative** is onBehalfOf of personal data under UK-EUR-2016-679 (constraint)
+  > who, designated by the controller or processor in writing pursuant to Article 27, represents the controller or processor
+- Security, anti-cheat, and supply chain, row T14: **manufacturer** is producer of product with digital elements under EU-REG-2024-2847 (constraint)
+  > manufacturer means a natural or legal person who develops or manufactures products with digital elements
+- Security, anti-cheat, and supply chain, row T14: **authorised representative** is onBehalfOf of product with digital elements under EU-REG-2024-2847 (constraint)
+  > authorised representative means a natural or legal person established within the Union who has received a written mandate from a manufacturer to act on its behalf
+- Security, anti-cheat, and supply chain, row T09: **BOM author** is producer of BOM under ECMA-424-CYCLONEDX-1.6 (constraint)
+  > The person(s) who created the BOM.
+- Security, anti-cheat, and supply chain, row T09: **BOM manufacturer** is producer of BOM under ECMA-424-CYCLONEDX-1.6 (constraint)
+  > The organization that created the BOM.
+- Security, anti-cheat, and supply chain, row T10: **container provider (CNA or ADP)** is attributed of CVE record container under CVE-RECORD-FORMAT-5.2.0 (constraint)
+  > Details related to the information container provider (CNA or ADP).
+- Security, anti-cheat, and supply chain, row T12: **WebAuthn Relying Party** is consumer of Web Authentication API under W3C-WEBAUTHN-3-20260825 (constraint)
+  > The entity whose web application utilizes the Web Authentication API to register and authenticate users.
+- Security, anti-cheat, and supply chain, row T15: **payment service user** is consumer of payment service under EU-DIR-2015-2366 (constraint)
+  > ‘payment service user’ means a natural or legal person making use of a payment service in the capacity of payer, payee, or both
+- Security, anti-cheat, and supply chain, row T15: **agent** is onBehalfOf of payment service under EU-DIR-2015-2366 (constraint)
+  > ‘agent’ means a natural or legal person who acts on behalf of a payment institution in providing payment services
+- Security, anti-cheat, and supply chain, row T15: **agent** is onBehalfOf of payment service under EU-DIR-2015-2366 (constraint)
+  > ‘agent’ means a natural or legal person who acts on behalf of a payment institution in providing payment services
 - Online safety, community, user-generated content, and esports, row S03: **person acting on behalf of a trader** is onBehalfOf of intermediary service under EU-REG-2022-2065 (constraint)
   > including through any person acting in his or her name or on his or her behalf
 - Online safety, community, user-generated content, and esports, row S03: **recipient of the service** is consumer of intermediary service under EU-REG-2022-2065 (constraint)
