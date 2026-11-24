@@ -1,0 +1,38 @@
+\begin{lexlean}{Catalog.AmbixFile}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AmbixFormat,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: basicFormat, fields: []},
+    {name: extendedFormat, fields: []}
+  ]
+}
+
+inductive{
+  name: AmbixCafChunk,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cAFFileHeader, fields: []},
+    {name: audioDescriptionChunk, fields: []},
+    {name: audioDataChunk, fields: []},
+    {name: userDefinedChunk, fields: []}
+  ]
+}
+
+structure{
+  name: AmbixFile,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: format, type: AmbixFormat},
+    {name: channelOrdering, type: Bytes},
+    {name: normalization, type: Bytes}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

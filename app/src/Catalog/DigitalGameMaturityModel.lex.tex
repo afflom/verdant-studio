@@ -1,0 +1,66 @@
+\begin{lexlean}{Catalog.DigitalGameMaturityModel}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Perspective,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: developer, fields: []},
+    {name: consumer, fields: []},
+    {name: business, fields: []}
+  ]
+}
+
+inductive{
+  name: ProcessActivity,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gameDesignDocumentManagement, fields: []},
+    {name: teamConfigurationAndManagement, fields: []},
+    {name: requirementsManagementAndModelling, fields: []},
+    {name: gamePrototyping, fields: []},
+    {name: riskManagement, fields: []},
+    {name: qualityArchitecture, fields: []},
+    {name: assetsManagement, fields: []},
+    {name: gameEngineAndDevelopment, fields: []},
+    {name: testManagement, fields: []},
+    {name: maintenanceSupport, fields: []},
+    {name: funFactorAnalysis, fields: []},
+    {name: easeOfUse, fields: []},
+    {name: marketOrientation, fields: []},
+    {name: timeToMarket, fields: []},
+    {name: relationshipManagement, fields: []},
+    {name: monetizationStrategy, fields: []},
+    {name: innovation, fields: []},
+    {name: stakeholderCollaboration, fields: []}
+  ]
+}
+
+inductive{
+  name: MaturityLevel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: adHoc, fields: []},
+    {name: opportunistic, fields: []},
+    {name: consistent, fields: []},
+    {name: organized, fields: []},
+    {name: optimized, fields: []}
+  ]
+}
+
+structure{
+  name: DigitalGameMaturityModel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: perspective, type: Perspective},
+    {name: activity, type: ProcessActivity},
+    {name: level, type: MaturityLevel}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

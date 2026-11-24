@@ -1,0 +1,37 @@
+\begin{lexlean}{Catalog.HtnCompoundTask}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: HtnMethod,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: conditions, type: (List Bytes)},
+    {name: subtasks, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: HtnPrimitiveTask,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: taskName, type: Bytes},
+    {name: preconditions, type: (Option (List Bytes))},
+    {name: operator, type: Bytes},
+    {name: effects, type: (Option (List Bytes))}
+  ]
+}
+
+structure{
+  name: HtnCompoundTask,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: taskName, type: Bytes},
+    {name: methods, type: (List HtnMethod)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

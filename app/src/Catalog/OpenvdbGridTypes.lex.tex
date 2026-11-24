@@ -1,0 +1,51 @@
+\begin{lexlean}{Catalog.OpenvdbGridTypes}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GridClass,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gRIDUNKNOWN, fields: []},
+    {name: gRIDLEVELSET, fields: []},
+    {name: gRIDFOGVOLUME, fields: []},
+    {name: gRIDSTAGGERED, fields: []}
+  ]
+}
+
+inductive{
+  name: VecType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: vECINVARIANT, fields: []},
+    {name: vECCOVARIANT, fields: []},
+    {name: vECCOVARIANTNORMALIZE, fields: []},
+    {name: vECCONTRAVARIANTRELATIVE, fields: []},
+    {name: vECCONTRAVARIANTABSOLUTE, fields: []}
+  ]
+}
+
+inductive{
+  name: MergePolicy,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mERGEACTIVESTATES, fields: []},
+    {name: mERGENODES, fields: []},
+    {name: mERGEACTIVESTATESANDNODES, fields: []}
+  ]
+}
+
+structure{
+  name: OpenvdbGridTypes,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: gridClass, type: GridClass},
+    {name: vectorType, type: VecType}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

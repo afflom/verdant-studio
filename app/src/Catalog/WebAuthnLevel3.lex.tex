@@ -1,0 +1,123 @@
+\begin{lexlean}{Catalog.WebAuthnLevel3}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: CollectedClientData,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: Bytes},
+    {name: challenge, type: Bytes},
+    {name: origin, type: Bytes},
+    {name: crossOrigin, type: (Option Bool)},
+    {name: topOrigin, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3AuthenticatorAttachment,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: platform, fields: []},
+    {name: crossPlatform, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3ResidentKeyRequirement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: discouraged, fields: []},
+    {name: preferred, fields: []},
+    {name: required, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3AttestationConveyancePreference,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: none, fields: []},
+    {name: indirect, fields: []},
+    {name: direct, fields: []},
+    {name: enterprise, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3TokenBindingStatus,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: present, fields: []},
+    {name: supported, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3PublicKeyCredentialType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: publicKey, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3AuthenticatorTransport,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: usb, fields: []},
+    {name: nfc, fields: []},
+    {name: ble, fields: []},
+    {name: smartCard, fields: []},
+    {name: hybrid, fields: []},
+    {name: internal, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3UserVerificationRequirement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: required, fields: []},
+    {name: preferred, fields: []},
+    {name: discouraged, fields: []}
+  ]
+}
+
+inductive{
+  name: WebAuthnLevel3PublicKeyCredentialHint,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: securityKey, fields: []},
+    {name: clientDevice, fields: []},
+    {name: hybrid, fields: []}
+  ]
+}
+
+structure{
+  name: WebAuthnLevel3,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: authenticatorAttachment, type: (Option WebAuthnLevel3AuthenticatorAttachment)},
+    {name: residentKeyRequirement, type: (Option WebAuthnLevel3ResidentKeyRequirement)},
+    {name: attestationConveyancePreference, type: (Option WebAuthnLevel3AttestationConveyancePreference)},
+    {name: tokenBindingStatus, type: (Option WebAuthnLevel3TokenBindingStatus)},
+    {name: publicKeyCredentialType, type: (Option WebAuthnLevel3PublicKeyCredentialType)},
+    {name: authenticatorTransport, type: (Option WebAuthnLevel3AuthenticatorTransport)},
+    {name: userVerificationRequirement, type: (Option WebAuthnLevel3UserVerificationRequirement)},
+    {name: publicKeyCredentialHint, type: (Option WebAuthnLevel3PublicKeyCredentialHint)},
+    {name: collectedClientData, type: (Option CollectedClientData)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

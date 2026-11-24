@@ -2854,3 +2854,88 @@ statement = "The Ptex per-face texture file format: its Header and ExtHeader rec
 artifact = "authorities/WDAS-PTEX-IO-2.5.4/PtexIO.h"
 checksum = "93187b0ee6f2c4d1900afc51b63b2f1f3d493091448e5ad9210cf86bfb43830c"
 realized_by = []
+
+[[authority]]
+id = "ABLEGAMERS-APX"
+name = "Accessible Player Experiences (APX)"
+issuer = "AbleGamers Charity"
+edition = "22 design patterns, retrieved 2026-11-24"
+canonical_id = "https://accessible.games/accessible-player-experiences/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://accessible.games/accessible-player-experiences/"
+media_type = "text/html"
+license = "Copyright AbleGamers Charity"
+redistribution = "citation-only"
+statement = "The APX design language: the Access and Challenge categories, the 12 Access patterns (Control and Presentation) and the 10 Challenge patterns. Index row M04."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "ETSI-EN-301-549-3.2.1"
+name = "EN 301 549 Accessibility requirements for ICT products and services"
+issuer = "ETSI, CEN and CENELEC"
+edition = "V3.2.1 (2021-03)"
+canonical_id = "https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/en_301549v030201p.pdf"
+media_type = "application/pdf"
+license = "ETSI copyright, free download"
+redistribution = "citation-only"
+statement = "Functional performance statements (clause 4.2) and the requirement clauses 5 to 13. Directive 2019/882 is bound separately. Index row M08."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "HE-COHEN-SALESIN-VC-1996"
+name = "The Virtual Cinematographer: A Paradigm for Automatic Real-Time Camera Control and Directing"
+issuer = "Li-wei He, Michael F. Cohen and David H. Salesin"
+edition = "SIGGRAPH 1996"
+canonical_id = "https://grail.cs.washington.edu/wp-content/uploads/2015/08/he-1996-tvc.pdf"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://grail.cs.washington.edu/wp-content/uploads/2015/08/he-1996-tvc.pdf"
+media_type = "application/pdf"
+license = "No license stated"
+redistribution = "citation-only"
+statement = "The Virtual Cinematographer: camera placements relative to the line of interest, camera modules, and film idioms encoded as hierarchical finite state machines. Index row F06."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "MACHINATIONS-DOCS"
+name = "Machinations documentation: nodes and connections"
+issuer = "Machinations S.a.r.l."
+edition = "docs.machinations.io, retrieved 2026-11-24"
+canonical_id = "https://docs.machinations.io/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://docs.machinations.io/"
+media_type = "text/html"
+license = "No license stated"
+redistribution = "citation-only"
+statement = "The Machinations internal-economy diagram language: its node types, gate types and connection types. Index row B08."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "OPENTYPE-1.9.1"
+name = "OpenType specification, The OpenType Font File"
+issuer = "Microsoft and Adobe"
+edition = "OpenType 1.9.1"
+canonical_id = "https://learn.microsoft.com/en-us/typography/opentype/spec/"
+source_role = "normative"
+retrieval_date = "2026-11-24"
+url = "https://learn.microsoft.com/en-us/typography/opentype/spec/otff"
+media_type = "text/html"
+license = "Microsoft Learn terms of use"
+redistribution = "citation-only"
+statement = "The OpenType font file organisation and its font tables by tag: required tables, outline, bitmap, advanced typographic, variation, colour and other tables. Index row N11."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []

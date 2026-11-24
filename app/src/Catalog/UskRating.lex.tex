@@ -1,0 +1,76 @@
+\begin{lexlean}{Catalog.UskRating}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: UskRatingAgeRating,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: approvedWithoutAgeRestriction, fields: []},
+    {name: approvedForChildrenAged6AndAbove, fields: []},
+    {name: approvedForChildrenAged12AndAbove, fields: []},
+    {name: approvedForChildrenAged16AndAbove, fields: []},
+    {name: notApprovedForYoungPersonsAgedUnder18, fields: []}
+  ]
+}
+
+inductive{
+  name: UskRatingReasonsItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: impliedViolence, fields: []},
+    {name: comicViolence, fields: []},
+    {name: fantasyViolence, fields: []},
+    {name: violence, fields: []},
+    {name: explicitViolence, fields: []},
+    {name: sexualisedViolence, fields: []},
+    {name: warThemes, fields: []},
+    {name: scaryMoments, fields: []},
+    {name: darkAtmosphere, fields: []},
+    {name: horror, fields: []},
+    {name: burdensomeThemes, fields: []},
+    {name: sexualInnuendo, fields: []},
+    {name: sexualContent, fields: []},
+    {name: occasionalSwearing, fields: []},
+    {name: explicitLanguage, fields: []},
+    {name: tobaccoUse, fields: []},
+    {name: drugs, fields: []},
+    {name: alcohol, fields: []},
+    {name: gamblingThemes, fields: []},
+    {name: pressureToAct, fields: []},
+    {name: increasedIncentivesToBuy, fields: []},
+    {name: pressureToPlayExcessively, fields: []},
+    {name: problematicAdvertisingContent, fields: []},
+    {name: increasedCommunicationsRisks, fields: []},
+    {name: contactRisks, fields: []},
+    {name: criminalRoleModels, fields: []},
+    {name: sexualizedRoleModels, fields: []}
+  ]
+}
+
+inductive{
+  name: UskRatingAdditionalFunctionsItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: inGamePurchases, fields: []},
+    {name: chats, fields: []},
+    {name: inGamePurchasesRandomObjects, fields: []},
+    {name: locationSharing, fields: []}
+  ]
+}
+
+structure{
+  name: UskRating,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ageRating, type: UskRatingAgeRating},
+    {name: reasons, type: (Option (List UskRatingReasonsItem))},
+    {name: additionalFunctions, type: (Option (List UskRatingAdditionalFunctionsItem))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
