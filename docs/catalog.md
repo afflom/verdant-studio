@@ -65,7 +65,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **C11** Game design as narrative architecture (environmental storytelling) (Narrative, writing, and interactive story): exactMatch JENKINS-NARRATIVE-ARCHITECTURE-2004 (derived from its citation)
 - **C12** Morphology of the Folktale (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C13** Transmedia storytelling (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
-- **D01** OpenUSD and AOUSD Core Specification 1.0 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch OPENUSD-USD-SCHEMA-26.11.1 (staged)
+- **D01** OpenUSD and AOUSD Core Specification 1.0 (Visual art, 3D content, materials, and asset interchange), not reached from any origin: narrowMatch OPENUSD-USD-SCHEMA-26.11.1 (staged)
 - **D02** glTF 2.0 (ISO/IEC 12113:2022) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch KHRONOS-GLTF-2.0 (staged)
 - **D03** FBX (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
 - **D04** Alembic (Visual art, 3D content, materials, and asset interchange), not reached from any origin: no mapping yet
