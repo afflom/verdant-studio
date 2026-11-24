@@ -1,0 +1,44 @@
+\begin{lexlean}{Catalog.Swhid}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CoreIdentifierObjectType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: snp, fields: []},
+    {name: rel, fields: []},
+    {name: rev, fields: []},
+    {name: dir, fields: []},
+    {name: cnt, fields: []}
+  ]
+}
+
+structure{
+  name: CoreIdentifier,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: schemeVersion, type: Bytes},
+    {name: objectType, type: CoreIdentifierObjectType},
+    {name: objectId, type: Bytes}
+  ]
+}
+
+structure{
+  name: Swhid,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: core, type: CoreIdentifier},
+    {name: origin, type: (Option Bytes)},
+    {name: visit, type: (Option Bytes)},
+    {name: anchor, type: (Option Bytes)},
+    {name: path, type: (Option Bytes)},
+    {name: lines, type: (Option Bytes)},
+    {name: bytes, type: (Option Bytes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -153,3 +153,13 @@ Each construct and the citation that admits it.
 - `Studio.Engine.Repin`: req REQ-ENGINE-TRACKING
 - `Studio.Engine.Link`: std PRISM-TEMPLATE-CONTRACT-2
 - `Catalog.C3dHeaderV2`: std C3D-USER-GUIDE row E07
+- `Catalog.AppleAppReviewGuideline`: std APPLE-APP-REVIEW-GUIDELINES row P05
+- `Catalog.CeroRating`: std CERO-RATING-SYSTEM row Q05
+- `Catalog.GhgProtocolCorporate`: std GHG-PROTOCOL-CORPORATE-REVISED row X08
+- `Catalog.IcoChildrensCodeStandard`: std ICO-AADC-STANDARDS row R03
+- `Catalog.Lgpd`: std BR-LEI-13709-2018 row R05
+- `Catalog.OaisReferenceModel`: std CCSDS-650.0-M-3 row Y01
+- `Catalog.OtelTraceApi`: std OTEL-SPEC-1.40.0-TRACE-API row W04
+- `Catalog.SteamDeckCompatibility`: std STEAMWORKS-DECK-COMPAT row O08
+- `Catalog.SteamStoreAssets`: std STEAMWORKS-STORE-ASSETS row V05
+- `Catalog.Swhid`: std SWHID-1.2-SYNTAX row Y06

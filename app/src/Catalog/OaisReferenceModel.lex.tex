@@ -1,0 +1,79 @@
+\begin{lexlean}{Catalog.OaisReferenceModel}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: PreservationDescriptionInformation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: referenceInformation, type: (Option Bytes)},
+    {name: contextInformation, type: (Option Bytes)},
+    {name: provenanceInformation, type: (Option Bytes)},
+    {name: fixityInformation, type: (Option Bytes)},
+    {name: accessRightsInformation, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: InformationPackageType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: submissionInformationPackage, fields: []},
+    {name: archivalInformationPackage, fields: []},
+    {name: disseminationInformationPackage, fields: []}
+  ]
+}
+
+structure{
+  name: InformationPackage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: InformationPackageType},
+    {name: contentInformation, type: (Option Bytes)},
+    {name: preservationDescriptionInformation, type: (Option PreservationDescriptionInformation)},
+    {name: packagingInformation, type: Bytes},
+    {name: packageDescriptions, type: (Option (List Bytes))}
+  ]
+}
+
+inductive{
+  name: OaisReferenceModelEnvironmentEntity,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: producer, fields: []},
+    {name: management, fields: []},
+    {name: consumer, fields: []}
+  ]
+}
+
+inductive{
+  name: OaisReferenceModelFunctionalEntity,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: commonServices, fields: []},
+    {name: ingest, fields: []},
+    {name: archivalStorage, fields: []},
+    {name: dataManagement, fields: []},
+    {name: administration, fields: []},
+    {name: preservationPlanning, fields: []},
+    {name: access, fields: []}
+  ]
+}
+
+structure{
+  name: OaisReferenceModel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: environmentEntity, type: (Option OaisReferenceModelEnvironmentEntity)},
+    {name: functionalEntity, type: (Option OaisReferenceModelFunctionalEntity)},
+    {name: informationPackage, type: (Option InformationPackage)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

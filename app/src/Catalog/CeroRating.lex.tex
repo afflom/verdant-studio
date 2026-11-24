@@ -1,0 +1,39 @@
+\begin{lexlean}{Catalog.CeroRating}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CeroRatingAgeDivisionMark,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: a, fields: []},
+    {name: b, fields: []},
+    {name: c, fields: []},
+    {name: d, fields: []},
+    {name: z, fields: []}
+  ]
+}
+
+inductive{
+  name: CeroRatingOtherMark,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: educationalDatabase, fields: []},
+    {name: cERORegulationsCompatible, fields: []},
+    {name: ratingScheduled, fields: []}
+  ]
+}
+
+structure{
+  name: CeroRating,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ageDivisionMark, type: (Option CeroRatingAgeDivisionMark)},
+    {name: otherMark, type: (Option CeroRatingOtherMark)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

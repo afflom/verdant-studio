@@ -1,0 +1,78 @@
+\begin{lexlean}{Catalog.Lgpd}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: LgpdDefinedTerm,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: dadoPessoal, fields: []},
+    {name: dadoPessoalSensvel, fields: []},
+    {name: dadoAnonimizado, fields: []},
+    {name: bancoDeDados, fields: []},
+    {name: titular, fields: []},
+    {name: controlador, fields: []},
+    {name: operador, fields: []},
+    {name: encarregado, fields: []},
+    {name: agentesDeTratamento, fields: []},
+    {name: tratamento, fields: []},
+    {name: anonimizao, fields: []},
+    {name: consentimento, fields: []},
+    {name: bloqueio, fields: []},
+    {name: eliminao, fields: []},
+    {name: transfernciaInternacionalDeDados, fields: []},
+    {name: usoCompartilhadoDeDados, fields: []},
+    {name: relatrioDeImpactoProteoDeDadosPessoais, fields: []},
+    {name: rgoDePesquisa, fields: []},
+    {name: autoridadeNacional, fields: []}
+  ]
+}
+
+inductive{
+  name: LgpdLegalBasis,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: i, fields: []},
+    {name: iI, fields: []},
+    {name: iII, fields: []},
+    {name: iV, fields: []},
+    {name: v, fields: []},
+    {name: vI, fields: []},
+    {name: vII, fields: []},
+    {name: vIII, fields: []},
+    {name: iX, fields: []},
+    {name: x, fields: []}
+  ]
+}
+
+inductive{
+  name: LgpdDataSubjectRight,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: i, fields: []},
+    {name: iI, fields: []},
+    {name: iII, fields: []},
+    {name: iV, fields: []},
+    {name: v, fields: []},
+    {name: vI, fields: []},
+    {name: vII, fields: []},
+    {name: vIII, fields: []},
+    {name: iX, fields: []}
+  ]
+}
+
+structure{
+  name: Lgpd,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: definedTerm, type: (Option LgpdDefinedTerm)},
+    {name: legalBasis, type: (Option LgpdLegalBasis)},
+    {name: dataSubjectRight, type: (Option LgpdDataSubjectRight)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
