@@ -314,3 +314,5 @@ Each construct and the citation that admits it.
 - `Catalog.SemanticVersion`: std SEMVER-2.0.0 row H13
 - `Catalog.TweeThreePassage`: std IFTF-TWEE-3.0.2 row C07
 - `Catalog.UeAssetNameModifier`: std ALLAR-UE-STYLE-GUIDE row D20
+- `Catalog.OwaspAsvsRequirement`: std OWASP-ASVS-5.0.0 row T02
+- `Catalog.SpdxLicense`: std SPDX-LICENSE-LIST-3.29.0 row X02

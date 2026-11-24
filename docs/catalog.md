@@ -302,7 +302,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **W11** Recommended game events schema (Google Analytics 4 / Firebase) (Live operations, reliability, support, and analytics): exactMatch GOOGLE-GA4-RECOMMENDED-EVENTS (derived from its citation)
 - **W12** Platform patching and content delivery rules (patch size, delta patching, day-one patch policies) (Live operations, reliability, support, and analytics), not reached from any origin: narrowMatch STEAMWORKS-UPLOADING (staged)
 - **X01** Berne Convention / copyright law; WIPO guide on video games (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch WIPO-BERNE-1979 (staged); narrowMatch WIPO-LEGAL-STATUS-VIDEO-GAMES-2013 (staged)
-- **X02** SPDX License List and OSI-approved licenses (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch SPDX-LICENSE-LIST-3.29.0 (staged)
+- **X02** SPDX License List and OSI-approved licenses (Business, IP, labor, and sustainability): narrowMatch SPDX-LICENSE-LIST-3.29.0 (staged)
 - **X03** Engine and middleware license terms (Unreal EULA, Unity terms) (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch UNITY-TERMS-OF-SERVICE (staged)
 - **X04** IGDA Developer Satisfaction Survey and quality-of-life guidance (Business, IP, labor, and sustainability), not reached from any origin: narrowMatch IGDA-DSS-2023 (staged)
 - **X05** ISO 45003 Psychological health and safety at work (Business, IP, labor, and sustainability), not reached from any origin: exactMatch ISO-45003-2021 (staged)
