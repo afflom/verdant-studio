@@ -103,8 +103,6 @@ Each PROV-O edge: producer is prov:wasGeneratedBy with prov:wasAttributedTo, con
   > ‘payment service user’ means a natural or legal person making use of a payment service in the capacity of payer, payee, or both
 - Security, anti-cheat, and supply chain, row T15: **agent** is onBehalfOf of payment service under EU-DIR-2015-2366 (constraint)
   > ‘agent’ means a natural or legal person who acts on behalf of a payment institution in providing payment services
-- Security, anti-cheat, and supply chain, row T15: **agent** is onBehalfOf of payment service under EU-DIR-2015-2366 (constraint)
-  > ‘agent’ means a natural or legal person who acts on behalf of a payment institution in providing payment services
 - Online safety, community, user-generated content, and esports, row S03: **person acting on behalf of a trader** is onBehalfOf of intermediary service under EU-REG-2022-2065 (constraint)
   > including through any person acting in his or her name or on his or her behalf
 - Online safety, community, user-generated content, and esports, row S03: **recipient of the service** is consumer of intermediary service under EU-REG-2022-2065 (constraint)
