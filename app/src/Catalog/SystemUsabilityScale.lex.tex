@@ -1,0 +1,46 @@
+\begin{lexlean}{Catalog.SystemUsabilityScale}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SystemUsabilityScaleItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iThinkThatIWouldLikeToUseThisSystemFrequently, fields: []},
+    {name: iFoundTheSystemUnnecessarilyComplex, fields: []},
+    {name: iThoughtTheSystemWasEasyToUse, fields: []},
+    {name: iThinkThatIWouldNeedTheSupportOfATechnicalPersonToBeAbleToUseThisSystem, fields: []},
+    {name: iFoundTheVariousFunctionsInThisSystemWereWellIntegrated, fields: []},
+    {name: iThoughtThereWasTooMuchInconsistencyInThisSystem, fields: []},
+    {name: iWouldImagineThatMostPeopleWouldLearnToUseThisSystemVeryQuickly, fields: []},
+    {name: iFoundTheSystemVeryCumbersomeToUse, fields: []},
+    {name: iFeltVeryConfidentUsingTheSystem, fields: []},
+    {name: iNeededToLearnALotOfThingsBeforeICouldGetGoingWithThisSystem, fields: []}
+  ]
+}
+
+inductive{
+  name: SystemUsabilityScaleResponseAnchor,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: stronglyDisagree, fields: []},
+    {name: disagree, fields: []},
+    {name: neutral, fields: []},
+    {name: agree, fields: []},
+    {name: stronglyAgree, fields: []}
+  ]
+}
+
+structure{
+  name: SystemUsabilityScale,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: item, type: (Option SystemUsabilityScaleItem)},
+    {name: responseAnchor, type: (Option SystemUsabilityScaleResponseAnchor)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

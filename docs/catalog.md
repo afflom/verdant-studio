@@ -86,7 +86,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **D19** Uncanny valley (Visual art, 3D content, materials, and asset interchange): exactMatch MORI-UNCANNY-VALLEY-2012 (staged)
 - **D20** Asset naming and project structure conventions (e.g. community Unreal style guide) (Visual art, 3D content, materials, and asset interchange): exactMatch ALLAR-UE-STYLE-GUIDE (staged)
 - **E01** Twelve principles of animation (Characters, rigging, animation, and performance capture): exactMatch WIKIPEDIA-TWELVE-PRINCIPLES-OF-ANIMATION (derived from its citation); inverse of closeMatch from http://data.europa.eu/esco/skill/1c00bc98-2713-4c62-82c5-6d86f2e6a4cb (staged)
-- **E02** Facial Action Coding System (FACS) (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch EKMAN-FACS-2002 (staged)
+- **E02** Facial Action Coding System (FACS) (Characters, rigging, animation, and performance capture): exactMatch EKMAN-FACS-2002 (staged)
 - **E03** ARKit 52 blendshapes (Characters, rigging, animation, and performance capture): exactMatch APPLE-ARKIT-BLENDSHAPELOCATION (derived from its citation)
 - **E04** H-Anim (ISO/IEC 19774) (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch WEB3D-X3D-4.0-XSD (staged)
 - **E05** VRM avatar format (Characters, rigging, animation, and performance capture), not reached from any origin: exactMatch VRMC-VRM-1.0 (staged)
@@ -152,7 +152,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **J03** Goal-Oriented Action Planning (GOAP) (NPC, agent, and game AI models), not reached from any origin: no mapping yet
 - **J04** Hierarchical Task Network (HTN) planning (NPC, agent, and game AI models): exactMatch HUMPHREYS-HTN-GAME-AI-PRO-12 (derived from its citation)
 - **J05** Utility AI / Infinite Axis Utility System (NPC, agent, and game AI models), not reached from any origin: no mapping yet
-- **J06** A* search (NPC, agent, and game AI models), not reached from any origin: exactMatch HART-NILSSON-RAPHAEL-ASTAR-1968 (staged)
+- **J06** A* search (NPC, agent, and game AI models): exactMatch HART-NILSSON-RAPHAEL-ASTAR-1968 (staged)
 - **J07** Navigation meshes: Recast & Detour (NPC, agent, and game AI models): narrowMatch RECAST-DETOUR-NAVMESH-H (staged)
 - **J08** Steering behaviors and flocking (boids) (NPC, agent, and game AI models): exactMatch REYNOLDS-STEERING-BEHAVIORS-1999 (derived from its citation)
 - **J09** Smart objects and AI directors (NPC, agent, and game AI models), not reached from any origin: no mapping yet
@@ -181,11 +181,11 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **L01** ISO 9241-210 Human-centred design for interactive systems (Player experience, UX, and games user research): exactMatch ISO-9241-210-2019 (staged)
 - **L02** ISO 9241-11 Usability: definitions and concepts (Player experience, UX, and games user research): exactMatch ISO-9241-11-2018 (staged)
 - **L03** The Gamer's Brain / game UX framework (usability + engage-ability) (Player experience, UX, and games user research): exactMatch HODENT-GAMERS-BRAIN-2E-2026 (staged)
-- **L04** Heuristic evaluation for playability (PLAY, HEP, Pinelle heuristics) (Player experience, UX, and games user research), not reached from any origin: narrowMatch PINELLE-WONG-STACH-HEURISTICS-2008 (staged)
+- **L04** Heuristic evaluation for playability (PLAY, HEP, Pinelle heuristics) (Player experience, UX, and games user research): narrowMatch PINELLE-WONG-STACH-HEURISTICS-2008 (staged)
 - **L05** Games User Research methods (Player experience, UX, and games user research): exactMatch DRACHEN-MIRZA-BABAEI-NACKE-GUR-2018 (staged)
 - **L06** Game Experience Questionnaire (GEQ) (Player experience, UX, and games user research): exactMatch IJSSELSTEIJN-GEQ-2013 (staged)
 - **L07** Player Experience Inventory (PXI) (Player experience, UX, and games user research), not reached from any origin: exactMatch VANDEN-ABEELE-PXI-2020 (staged)
-- **L08** System Usability Scale (SUS) (Player experience, UX, and games user research), not reached from any origin: exactMatch BROOKE-SUS-1996 (staged)
+- **L08** System Usability Scale (SUS) (Player experience, UX, and games user research): exactMatch BROOKE-SUS-1996 (staged)
 - **L09** Platform human interface guidelines (Apple HIG, Xbox design guidance, Material for Play) (Player experience, UX, and games user research), not reached from any origin: narrowMatch APPLE-HIG (staged)
 - **L10** HUD/UI component taxonomy: diegetic, non-diegetic, spatial, meta (Player experience, UX, and games user research): exactMatch FAGERHOLT-LORENTZON-BEYOND-THE-HUD-2009 (derived from its citation)
 - **M01** Game Accessibility Guidelines (Accessibility): exactMatch GAME-ACCESSIBILITY-GUIDELINES (derived from its citation)

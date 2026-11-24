@@ -394,3 +394,7 @@ Each construct and the citation that admits it.
 - `Catalog.IsoIec27002InformationSecurityControls`: std ISO-IEC-27002-2022-PREVIEW row T06
 - `Catalog.Itil4PracticeGuideStructure`: std AXELOS-ITIL-4-PEOPLECERT-PRACTICE-GUIDES row W02
 - `Catalog.ProspectRefugeTheory`: std APPLETON-EXPERIENCE-OF-LANDSCAPE-REV-EV1998 row Z06
+- `Catalog.AStarSearch`: std HART-NILSSON-RAPHAEL-ASTAR-1968 row J06
+- `Catalog.FacialActionCodingSystem`: std EKMAN-FACS-2002 row E02
+- `Catalog.PinelleGameUsabilityHeuristics`: std PINELLE-WONG-STACH-HEURISTICS-2008 row L04
+- `Catalog.SystemUsabilityScale`: std BROOKE-SUS-1996 row L08
