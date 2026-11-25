@@ -71,8 +71,14 @@ jobs:
           cat > target/input/change.patch <<< "$INPUT"
           # A patch larger than a dispatch input can carry arrives gzipped and base64-encoded.
           if head -c 4 target/input/change.patch | grep -q '^H4sI'; then base64 -d < target/input/change.patch | gunzip > target/input/change.diff; mv target/input/change.diff target/input/change.patch; fi
-          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' || true)
-          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites and README.md, not: $outside"; exit 1; fi
+          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^app/lexlean.toml$' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' || true)
+          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, app/lexlean.toml, model/ids.toml, model/strata.json, features/suites and README.md, not: $outside"; exit 1; fi
+          # app/lexlean.toml changes only in its source_package blocks, each a path package that is a
+          # workspace member pinned by version, so every import stays locked (R6); the lock is written by lexlean.
+          if git apply --numstat target/input/change.patch | cut -f3 | grep -qx app/lexlean.toml; then
+            other=$(awk 'index($0, "diff --git") == 1 { f = ($3 == "a/app/lexlean.toml") } f && /^[+-]/ && !/^(\+\+\+|---) /' target/input/change.patch | grep -v -E '^[+-](\[\[source_package\]\]|package = "[a-z0-9.-]+"|version = "[0-9]+[.][0-9]+[.][0-9]+"|kind = "path"|path = "[a-z0-9-]+"|)$' || true)
+            if [ -n "$other" ]; then echo "::error::propose-command changes app/lexlean.toml only in its source_package blocks, each a pinned path package of the workspace, not: $other"; exit 1; fi
+          fi
           git apply target/input/change.patch
           if [ ! -x "$HOME/.elan/bin/elan" ]; then
             curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
@@ -84,7 +90,7 @@ jobs:
           test -d "$HOME/.elan/toolchains/leanprover--lean4---v4.32.2" || elan toolchain install leanprover/lean4:v4.32.2
           test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
           ll="$PWD/target/lexlean/bin/lexlean"
-          if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
+          if ! (cd app && "$ll" lock) && (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
             grep -m 20 'error' target/export.log | sed 's/^/::error::/' || echo "::error::the Lean export failed without an error line; its last lines follow"
             tail -n 40 target/export.log
             exit 1
@@ -116,7 +122,7 @@ jobs:
             echo "Exported again with Lean as $(basename studio/.lexlean/production/*/). The studio check replays it, then runs check, build and publish."
             echo
             echo '```'
-            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md
+            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio app/lexlean.toml model/ids.toml model/strata.json features/suites README.md
             echo '```'
             echo
             echo "<${slash}details>"
