@@ -108,6 +108,15 @@ definition{
   executable: true
 }
 
+definition{
+  name: valueOf,
+  parameters: [seen : Seen, path : Bytes],
+  result: (Option Studio.Schema::Value),
+  body: (Studio.Schema::readAny (contents seen path)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
 
 definition{
   name: arrayOf,
@@ -763,7 +772,7 @@ definition{
 
 definition{
   name: encodingPlan,
-  parameters: [seen : Seen, schemaText : Bytes, schema : LexLeanStd.Json::Json, name : Bytes, citation : (List Bytes), reads : (List Bytes)],
+  parameters: [seen : Seen, schemaText : Bytes, schema : Studio.Schema::Value, name : Bytes, citation : (List Bytes), reads : (List Bytes)],
   result: Plan,
   body: (match (missing seen (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/strata.json") (cons (Studio.Doc::lit "model/register-lock.json") (cons (Studio.Doc::lit "app/lexlean.toml") reads)))))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
@@ -778,7 +787,7 @@ definition{
 
 definition{
   name: deferredEncodingPlan,
-  parameters: [seen : Seen, schemaText : Bytes, schema : LexLeanStd.Json::Json, name : Bytes, citation : (List Bytes), reads : (List Bytes)],
+  parameters: [seen : Seen, schemaText : Bytes, schema : Studio.Schema::Value, name : Bytes, citation : (List Bytes), reads : (List Bytes)],
   result: Plan,
   body: (match (missing seen (cons (Studio.Doc::lit "model/owner-decisions.json") (nil Bytes)))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
@@ -798,7 +807,7 @@ definition{
   result: Plan,
   body: (match (missing seen (cons path (nil Bytes)))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (match (jsonOf seen path)
+    | List.nil => (match (valueOf seen path)
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the encoding is not JSON\n"))
       | Option.some schema => (deferredEncodingPlan seen (contents seen path) schema name citation (cons path (nil Bytes))))),
   axioms: [Quot.sound, propext],
@@ -1031,9 +1040,9 @@ definition{
 definition{
   name: stagedEntry,
   parameters: [seen : Seen, path : Bytes],
-  result: LexLeanStd.Json::Json,
-  body: (match (jsonOf seen path)
-    | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+  result: Studio.Schema::Value,
+  body: (match (valueOf seen path)
+    | Option.none => (ctor Studio.Schema::Value.VNil)
     | Option.some entry => entry),
   axioms: [Quot.sound, propext],
   executable: true
@@ -1041,9 +1050,9 @@ definition{
 
 definition{
   name: admittedSchemaPath,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bytes,
-  body: (Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal (Studio.Doc::str entry (Studio.Doc::lit "name"))) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))),
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal (Studio.Schema::str entry (Studio.Doc::lit "name"))) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1054,7 +1063,7 @@ definition{
   result: (List Bytes),
   body: (match paths
     | List.nil => (nil Bytes)
-    | List.cons head rest => (let entry : LexLeanStd.Json::Json := (stagedEntry seen head); (if (Studio.Doc::memberBytes (encodingModule (Studio.Doc::str entry (Studio.Doc::lit "name"))) constructs) then (cons (admittedSchemaPath entry) (admittedSchemaPaths seen rest constructs)) else (admittedSchemaPaths seen rest constructs)))),
+    | List.cons head rest => (let entry : Studio.Schema::Value := (stagedEntry seen head); (if (Studio.Doc::memberBytes (encodingModule (Studio.Schema::str entry (Studio.Doc::lit "name"))) constructs) then (cons (admittedSchemaPath entry) (admittedSchemaPaths seen rest constructs)) else (admittedSchemaPaths seen rest constructs)))),
   recursive_argument: paths,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1066,8 +1075,8 @@ definition{
   result: (Option Bytes),
   body: (match paths
     | List.nil => (ctor Option.none [Bytes])
-    | List.cons head rest => (let entry : LexLeanStd.Json::Json := (stagedEntry seen head); (if ((Studio.Doc::memberBytes (encodingModule (Studio.Doc::str entry (Studio.Doc::lit "name"))) constructs) && (Studio.Doc::same (LexLeanStd.Json::writeJsonFile (match (Studio.Doc::field entry (Studio.Doc::lit "schema"))
-        | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+    | List.cons head rest => (let entry : Studio.Schema::Value := (stagedEntry seen head); (if ((Studio.Doc::memberBytes (encodingModule (Studio.Schema::str entry (Studio.Doc::lit "name"))) constructs) && (Studio.Doc::same (Studio.Schema::writeFile (match (Studio.Schema::field entry (Studio.Doc::lit "schema"))
+        | Option.none => (ctor Studio.Schema::Value.VNil)
         | Option.some schema => schema)) (contents seen (admittedSchemaPath entry)))) then (firstUnadmitted seen rest constructs) else (ctor Option.some [Bytes] head)))),
   recursive_argument: paths,
   axioms: [Quot.sound, propext],
@@ -1823,9 +1832,9 @@ definition{
 
 definition{
   name: stagedEncoding,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bool,
-  body: ((filled entry (Studio.Doc::lit "name")) && ((hasField entry (Studio.Doc::lit "schema")) && (match (citationJson (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field entry (Studio.Doc::lit "citation")))))
+  body: ((Studio.Schema::filled entry (Studio.Doc::lit "name")) && ((Studio.Schema::hasField entry (Studio.Doc::lit "schema")) && (match (citationJson (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field entry (Studio.Doc::lit "citation")))))
     | Option.none => false
     | Option.some cited => true))),
   executable: true
@@ -1837,11 +1846,11 @@ definition{
   result: (Option (List (Bytes * Bytes))),
   body: (match lines
     | List.nil => (ctor Option.some [(List (Bytes * Bytes))] (nil (Bytes * Bytes)))
-    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stageEncodingLines rest) else (match (Studio.Doc::readAny line)
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stageEncodingLines rest) else (match (Studio.Schema::readAny line)
       | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
       | Option.some entry => (if (stagedEncoding entry) then (match (stageEncodingLines rest)
         | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
-        | Option.some staged => (ctor Option.some [(List (Bytes * Bytes))] (cons ((Studio.Doc::cat (cons (encodingsDir) (cons (Studio.Doc::lit "/") (cons (Studio.Schema::pascal (Studio.Doc::str entry (Studio.Doc::lit "name"))) (cons (Studio.Doc::lit ".json") (nil Bytes)))))), (prim append line 0x0a : Bytes)) staged))) else (ctor Option.none [(List (Bytes * Bytes))])))))),
+        | Option.some staged => (ctor Option.some [(List (Bytes * Bytes))] (cons ((Studio.Doc::cat (cons (encodingsDir) (cons (Studio.Doc::lit "/") (cons (Studio.Schema::pascal (Studio.Schema::str entry (Studio.Doc::lit "name"))) (cons (Studio.Doc::lit ".json") (nil Bytes)))))), (prim append line 0x0a : Bytes)) staged))) else (ctor Option.none [(List (Bytes * Bytes))])))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1866,11 +1875,11 @@ definition{
   result: Plan,
   body: (match (missing seen (cons path (nil Bytes)))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (match (jsonOf seen path)
+    | List.nil => (match (valueOf seen path)
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the staged encoding is not JSON\n"))
-      | Option.some entry => (match (Studio.Doc::field entry (Studio.Doc::lit "schema"))
+      | Option.some entry => (match (Studio.Schema::field entry (Studio.Doc::lit "schema"))
         | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the staged encoding has no schema\n"))
-        | Option.some schema => (deferredEncodingPlan seen (LexLeanStd.Json::writeJsonFile schema) schema (Studio.Doc::str entry (Studio.Doc::lit "name")) (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field entry (Studio.Doc::lit "citation")))) (cons path (nil Bytes)))))),
+        | Option.some schema => (deferredEncodingPlan seen (Studio.Schema::writeFile schema) schema (Studio.Schema::str entry (Studio.Doc::lit "name")) (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field entry (Studio.Doc::lit "citation")))) (cons path (nil Bytes)))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
