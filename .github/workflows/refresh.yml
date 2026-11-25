@@ -8,12 +8,12 @@
 # regenerated in its own job, in parallel, and marked ready again only once it is pushed.
 name: refresh
 
-# A pull request that opens while main moves is caught when it opens, too.
+# A pull request that opens while main moves is caught too: operate starts this workflow
+# right after it opens one, so every regeneration takes this one path.
 on:
   push:
     branches: [main]
-  pull_request:
-    types: [opened]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -129,14 +129,26 @@ jobs:
             git checkout -q -B refresh origin/main
             git clean -fdq
             git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md > target/change.patch
+            # model/strata.json is one line, so two changes that each add a stratum row always
+            # conflict there. Its rows are keyed by path (VS-05), so the merge is main's rows, then
+            # each row the pull request adds whose path main does not have, in the pull request's order.
             if ! git apply --3way target/change.patch 2> target/apply.err; then
-              sed 's/^/::error::#'"$pr"' does not apply to main: /' target/apply.err | head -20
-              git reset -q --hard origin/main
-              failed="$failed $pr"
-              # A failed regeneration stays a draft, so the owner is never handed a red pull request.
-              { echo "This change no longer applies to main $(git rev-parse --short origin/main), so it stays a draft until it is proposed again:"; echo; echo '```'; head -20 target/apply.err; echo '```'; } > target/comment.md
-              gh pr comment "$pr" --body-file target/comment.md || true
-              continue
+              if [ "$(git diff --name-only --diff-filter=U)" = model/strata.json ]; then
+                base=$(git merge-base origin/main "origin/$branch")
+                git show "$base:model/strata.json" > target/strata-base.json
+                git show "origin/$branch:model/strata.json" > target/strata-pr.json
+                git show origin/main:model/strata.json | jq -c --slurpfile pr target/strata-pr.json --slurpfile base target/strata-base.json '(map(.path)) as $have | ($base[0] | map(.path)) as $old | . + [$pr[0][] | select(.path as $p | (($have | index($p)) == null) and (($old | index($p)) == null))]' > model/strata.json
+                git add model/strata.json
+                echo "::notice::#${pr}: merged its stratum rows into main's by path"
+              else
+                sed 's/^/::error::#'"$pr"' does not apply to main: /' target/apply.err | head -20
+                git reset -q --hard origin/main
+                failed="$failed $pr"
+                # A failed regeneration stays a draft, so the owner is never handed a red pull request.
+                { echo "This change no longer applies to main $(git rev-parse --short origin/main), so it stays a draft until it is proposed again:"; echo; echo '```'; head -20 target/apply.err; echo '```'; } > target/comment.md
+                gh pr comment "$pr" --body-file target/comment.md || true
+                continue
+              fi
             fi
             if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
               grep -m 20 'error' target/export.log | sed 's/^/::error::#'"$pr"': /' || echo "::error::#${pr}: the Lean export failed without an error line; its last lines follow"
