@@ -97,7 +97,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **E10** SAG-AFTRA Interactive Media Agreement (2025) (Characters, rigging, animation, and performance capture), not reached from any origin: no mapping yet
 - **F01** Film grammar: shot sizes, 180-degree rule, continuity editing (Cinematics, cinematography, and virtual production), not reached from any origin: no mapping yet
 - **F02** VES Handbook of Visual Effects / VES Virtual Production glossary (Cinematics, cinematography, and virtual production): narrowMatch VES-EPIC-VP-GLOSSARY (staged)
-- **F03** OpenTrackIO (Cinematics, cinematography, and virtual production), not reached from any origin: exactMatch SMPTE-OPENTRACKIO-SCHEMA (staged)
+- **F03** OpenTrackIO (Cinematics, cinematography, and virtual production): exactMatch SMPTE-OPENTRACKIO-SCHEMA (staged)
 - **F04** SMPTE ST 12-1 timecode (Cinematics, cinematography, and virtual production): exactMatch SMPTE-ST-12-1-2014 (staged)
 - **F05** OpenTimelineIO (Cinematics, cinematography, and virtual production): exactMatch ASWF-OPENTIMELINEIO-0.18.1 (staged)
 - **F06** Virtual cinematographer and real-time camera control (Cinematics, cinematography, and virtual production): exactMatch HE-COHEN-SALESIN-VC-1996 (derived from its citation)
