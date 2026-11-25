@@ -500,6 +500,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `PMC-9872527-GAMING-MOTIVATION-INVENTORY-2022` | Open-access article that states the Quantic Foundry model (Yee, 2015b): 12 distinct motives in six higher-order clusters. quanticfoundry.com refuses automated fetches. Index row B13. |  |
 | `TECH-COALITION-TRUST-FRAMEWORK-2025` | The Tech Coalition's principles-based framework for online child sexual exploitation and abuse (CSEA) transparency reporting: five principles and three recommended report categories. Index row S05. |  |
 | `VALVE-BOOTH-L4D-AI-SYSTEMS-2009` | Valve's own publication of the Left 4 Dead AI Director, including the Adaptive Dramatic Pacing algorithm and its population modes. Index row J09. |  |
+| `YAML-1.2.2` | The YAML 1.2 character set, block and flow syntax, scalar styles and the JSON and core schemas that a Verdant Studio YAML reader implements production by production, so YAML registries (index row D16) take the JSON Schema path. |  |
 
 ## Claims that are not conformance IDs
 

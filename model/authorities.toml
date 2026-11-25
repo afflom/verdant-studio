@@ -7597,3 +7597,20 @@ statement = "Valve's own publication of the Left 4 Dead AI Director, including t
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "YAML-1.2.2"
+name = "YAML Ain't Markup Language (YAML) version 1.2, revision 1.2.2"
+issuer = "YAML Language Development Team"
+edition = "Revision 1.2.2 (2021-10-01)"
+canonical_id = "https://yaml.org/spec/1.2.2/"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://raw.githubusercontent.com/yaml/yaml-spec/80c6bde43887cf83424defb5c45c2485464659b9/spec/1.2.2/spec.md"
+media_type = "text/markdown"
+license = "YAML specification notice: may be freely copied, provided it is not modified"
+redistribution = "redistributable"
+statement = "The YAML 1.2 character set, block and flow syntax, scalar styles and the JSON and core schemas that a Verdant Studio YAML reader implements production by production, so YAML registries (index row D16) take the JSON Schema path."
+artifact = "authorities/YAML-1.2.2/spec.md"
+checksum = "df30dd0fc931ff04881c0ffb2788c29cbe03b2e6eda8a8bfb20cfb030248a018"
+realized_by = []
