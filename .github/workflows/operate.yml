@@ -247,6 +247,8 @@ jobs:
           gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
           if [ "$ARGS" = propose-command ]; then
             echo "::notice::a change to the API itself waits for the owner's review"
+            # main may have moved while this ran, so refresh checks the new pull request at once.
+            gh workflow run refresh.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning::refresh could not be started; it runs on the next push to main"
           elif [ "$(target/release/verdant_studio merge-gate target/rules.json)" = merge ]; then
             gh pr merge "$branch" --auto --squash --delete-branch
           else
