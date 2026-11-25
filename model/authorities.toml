@@ -7767,3 +7767,20 @@ statement = "The Web IDL fragments of the WebXR Device API, extracted by Reffy i
 artifact = "authorities/W3C-WEBREF-IDL-WEBXR-A0114B8/webxr.idl"
 checksum = "6ced23707b5a1b691600f8cc8dd06017cbc63d955d1d93afaea3c50d7f135a7f"
 realized_by = []
+
+[[authority]]
+id = "LOC-METS-XLINK-2"
+name = "METS XLink Schema, version 2"
+issuer = "Library of Congress"
+edition = "METS XLink Schema, v. 2, Nov. 15, 2004"
+canonical_id = "http://www.w3.org/1999/xlink"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "http://www.loc.gov/standards/xlink/xlink.xsd"
+media_type = "application/xml"
+license = "Library of Congress (no known restrictions)"
+redistribution = "redistributable"
+statement = "The XLink attribute declarations and attribute groups (simpleLink, extendedLink, locatorLink, arcLink, resourceLink) that the METS 1.12.1 schema imports from its schemaLocation. Index row Y02."
+artifact = "authorities/LOC-METS-XLINK-2/xlink.xsd"
+checksum = "f1f5bb6003165cdd8f6c1fcc32f8fd1f965e1681010f3b9806d9460bcffa8a3c"
+realized_by = []
