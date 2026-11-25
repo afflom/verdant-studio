@@ -1,0 +1,70 @@
+\begin{lexlean}{Studio.Guard}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: asciiByte,
+  parameters: [code : Nat],
+  result: Bool,
+  body: (code <=? 127),
+  executable: true
+}
+
+definition{
+  name: breaksAsciiByte,
+  parameters: [code : Nat],
+  result: Bool,
+  body: (((asciiByte code) && (127 <? code)) || ((code <=? 127) && (not (asciiByte code))))
+}
+
+theorem{
+  name: guard_refuses_exactly_non_ascii,
+  parameters: [code : Nat],
+  statement: ((breaksAsciiByte code) = false),
+  proof: linear_arithmetic{definitions: [asciiByte, breaksAsciiByte]},
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: asciiFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => true
+      | Option.some raw => (if (asciiByte (prim to_nat raw : Nat)) then (asciiFrom value (offset + 1) rest) else false))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: asciiText,
+  parameters: [value : Bytes],
+  result: Bool,
+  body: (asciiFrom value 0 (prim length value : Nat)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: guardRefusal,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (prim append (prim utf8_encode "refused: a host request is ASCII text, so it is never decoded by assumption, and " : Bytes) (prim append value (prim utf8_encode " is not\n" : Bytes) : Bytes) : Bytes),
+  executable: true
+}
+
+definition{
+  name: guardAnswer,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (if (asciiText value) then (prim utf8_encode "accepted" : Bytes) else (guardRefusal value)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+\end{semanticmodule}
+\end{lexlean}

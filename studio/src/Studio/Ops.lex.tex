@@ -5,6 +5,7 @@
 \importmodule{LexLeanStd.Text}
 \importmodule{LexLeanStd.Order}
 \importmodule{LexLeanStd.Sha256}
+\importmodule{VerdantStudio.Studio.Guard}
 \importmodule{Studio.Doc}
 \importmodule{Studio.Check}
 \importmodule{Studio.Csv}
@@ -2158,26 +2159,12 @@ definition{
 }
 
 definition{
-  name: asciiFrom,
-  parameters: [value : Bytes, offset : Nat, remaining : Nat],
-  result: Bool,
-  body: (match remaining
-    | Nat.zero => true
-    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
-      | Option.none => true
-      | Option.some raw => (if ((prim to_nat raw : Nat) <=? 127) then (asciiFrom value (offset + 1) rest) else false))),
-  recursive_argument: remaining,
-  axioms: [Quot.sound, propext],
-  executable: true
-}
-
-definition{
   name: firstNonAscii,
   parameters: [values : (List Bytes)],
   result: (Option Bytes),
   body: (match values
     | List.nil => (ctor Option.none [Bytes])
-    | List.cons head rest => (if (asciiFrom head 0 (prim length head : Nat)) then (firstNonAscii rest) else (ctor Option.some [Bytes] head))),
+    | List.cons head rest => (if (VerdantStudio.Studio.Guard::asciiText head) then (firstNonAscii rest) else (ctor Option.some [Bytes] head))),
   recursive_argument: values,
   axioms: [Quot.sound, propext],
   executable: true
@@ -2194,7 +2181,7 @@ definition{
       | Plan.done writes message => (firstNonAscii (firstsOf writes))
       | Plan.refuse reason => (ctor Option.none [Bytes]))
     | Option.none => planned
-    | Option.some value => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: a host request is ASCII text, so it is never decoded by assumption, and ") (cons value (cons (Studio.Doc::lit " is not\n") (nil Bytes))))))),
+    | Option.some value => (ctor Plan.refuse (VerdantStudio.Studio.Guard::guardRefusal value))),
   axioms: [Quot.sound, propext],
   executable: true
 }

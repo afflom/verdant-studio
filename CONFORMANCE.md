@@ -21,7 +21,7 @@ The three honesty levels (R2):
 | ID | Level | Statement | Evidence |
 | --- | --- | --- | --- |
 | `TC-01` | `build` | The checker answers conformant exactly when every universal policy file's observed label equals its locked label | `Contract.conformant_decides` |
-| `TC-02` | `build` | The checker answers invalid request to a request that is not exactly one locked and one observed label for each universal policy file | `Contract.accepts_exactly_a_request`, refuses with `invalid request` |
+| `TC-02` | `build` | The checker answers invalid request to a request that is neither exactly one locked and one observed label for each universal policy file nor a Studio guard request shorter than 192 bytes, and no request is read as both | `Contract.accepts_exactly_a_request`, `Contract.forms_are_disjoint`, refuses with `invalid request` |
 
 ## admission
 
@@ -34,6 +34,12 @@ The three honesty levels (R2):
 | `VS-05` | `build` | The modules are grounded only when every module has a stratum row, every stratum row names a module, and every stratum is at most 7 | `Studio.Admission.module_grounded_only_when_declared` |
 | `VS-06` | `build` | The registers are monotone only when every locked entry is still present | `Studio.Admission.monotone_keeps_every_locked_entry` |
 | `VS-07` | `some-true` | An authority's committed artifact is refused when its bytes are not the checksum its row records |  |
+
+## guard
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-08` | `build` | The host-request guard accepts a byte exactly when its code is at most 127, so it refuses by name every request that is not ASCII text, through one definition that the CLI and the app both run | `Studio.Guard.guard_refuses_exactly_non_ascii`, refuses with `refused: a host request is ASCII text, so it is never decoded by assumption, and café.jsonl is not ` |
 
 ## Cited authorities
 
