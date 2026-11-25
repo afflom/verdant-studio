@@ -266,7 +266,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **T07** SOC 2 (Security, anti-cheat, and supply chain): narrowMatch AICPA-TSC-2017-POF-2022-NIST-XW (derived from its citation); exactMatch AICPA-TSC-2017-POF-2022 (staged)
 - **T08** PCI DSS v4.0 (Security, anti-cheat, and supply chain): narrowMatch PCI-DSS-4.0.1-PDF (derived from its citation); exactMatch PCI-DSS-4.0.1 (staged)
 - **T09** SBOM: SPDX (ISO/IEC 5962) and CycloneDX (ECMA-424); SLSA (Security, anti-cheat, and supply chain): narrowMatch SLSA-1.1-LEVELS (derived from its citation); narrowMatch ECMA-424-CYCLONEDX-1.6 (staged); narrowMatch SPDX-3.0.1 (staged)
-- **T10** CVSS v4.0 and CVE (Security, anti-cheat, and supply chain), not reached from any origin: narrowMatch CVE-RECORD-FORMAT-5.2.0 (staged); narrowMatch FIRST-CVSS-4.0 (staged)
+- **T10** CVSS v4.0 and CVE (Security, anti-cheat, and supply chain): narrowMatch CVE-RECORD-FORMAT-5.2.0 (staged); narrowMatch FIRST-CVSS-4.0 (staged)
 - **T11** Anti-cheat and DRM systems (Easy Anti-Cheat, BattlEye, Riot Vanguard, Denuvo, VAC) (Security, anti-cheat, and supply chain), not reached from any origin: no mapping yet
 - **T12** FIDO2 / WebAuthn passkeys (Security, anti-cheat, and supply chain): narrowMatch W3C-WEBAUTHN-3-20260825 (staged)
 - **T13** Pre-release asset security programs (TPN, MPA content security best practices) (Security, anti-cheat, and supply chain), not reached from any origin: exactMatch TPN-MPA-CONTENT-SECURITY-BEST-PRACTICES (staged)
