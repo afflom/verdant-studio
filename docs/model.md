@@ -142,10 +142,10 @@ Each construct and the citation that admits it.
 - `Catalog.VirtualCinematographer`: std HE-COHEN-SALESIN-VC-1996 row F06
 - `Catalog.VirtualProductionGlossary`: std VES-EPIC-VP-GLOSSARY row F02
 - `Catalog.WebAuthnLevel3`: std W3C-WEBAUTHN-3-20260825 row T12
-- `Studio.Engine.Release`: std VERDANT-ENGINE-RELEASE-LEDGER-2.20.1
-- `Studio.Engine.Capability`: std VERDANT-ENGINE-IDS-2.20.1
-- `Studio.Engine.EngineAuthority`: std VERDANT-ENGINE-AUTHORITIES-2.20.1
-- `Studio.Engine.StandardBinding`: std VERDANT-ENGINE-STANDARDS-LOCK-2.20.1
+- `Studio.Engine.Release`: std VERDANT-ENGINE-RELEASE-LEDGER-2.22.4
+- `Studio.Engine.Capability`: std VERDANT-ENGINE-IDS-2.22.4
+- `Studio.Engine.EngineAuthority`: std VERDANT-ENGINE-AUTHORITIES-2.22.4
+- `Studio.Engine.StandardBinding`: std VERDANT-ENGINE-STANDARDS-LOCK-2.22.4
 - `Studio.Engine.SoleSubstrate`: req REQ-D1
 - `Studio.Engine.Scope`: req REQ-ENGINE-RUNTIME-ONLY
 - `Studio.Engine.Fidelity`: req REQ-ENGINE-FIDELITY
@@ -421,7 +421,7 @@ Each construct and the citation that admits it.
 - `Studio.Error.Observation`: std W3C-SOSA-2017
 - `Studio.Error.Incident`: std AXELOS-ITIL-4-PEOPLECERT-PRACTICE-GUIDES row W02
 - `Studio.Error.Problem`: std ISO-IEC-20000-1-2018-PREVIEW row W03
-- `Studio.Error.Agenda`: std VERDANT-ENGINE-IDS-2.20.1
+- `Studio.Error.Agenda`: std VERDANT-ENGINE-IDS-2.22.4
 - `Studio.Error.Regression`: der pattern from Studio.Error.Problem, P5, P10, P12
 - `Studio.Error.Repair`: der pattern from Studio.SelfHealing, Studio.Error.Agenda, Studio.Error.Regression, Studio.Ops, AgentIdentity, D8
 - `Studio.Error.Recovery`: std DORA-SOFTWARE-DELIVERY-METRICS row H14
