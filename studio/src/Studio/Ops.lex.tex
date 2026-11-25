@@ -13,6 +13,7 @@
 \importmodule{Studio.Schema}
 \importmodule{Studio.Xml}
 \importmodule{Studio.Xsd}
+\importmodule{Studio.WebIdl}
 \importmodule{LexLeanStd.Numeral}
 \title{Natural number addition}
 \begin{semanticmodule}
@@ -697,6 +698,30 @@ definition{
     | List.nil => (match (Studio.Xsd::translateXsd (contents seen path))
       | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "XSD not translated: ") (cons reason (cons 0x0a (nil Bytes))))))
       | Result.ok translated => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "-- ") (cons (LexLeanStd.Numeral::decimal (first translated)) (cons (Studio.Doc::lit " simple types\n") (cons (second translated) (nil Bytes))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: contentsOf,
+  parameters: [seen : Seen, paths : (List Bytes)],
+  result: (List Bytes),
+  body: (match paths
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (contents seen head) (contentsOf seen rest))),
+  recursive_argument: paths,
+  executable: true
+}
+
+definition{
+  name: planReadWebIdl,
+  parameters: [seen : Seen, path : Bytes, imports : (List Bytes)],
+  result: Plan,
+  body: (match (missing seen (cons path imports))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (Studio.WebIdl::translateWebIdl (contents seen path) (contentsOf seen imports))
+      | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "Web IDL not translated: ") (cons reason (cons 0x0a (nil Bytes))))))
+      | Result.ok translated => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "-- ") (cons (LexLeanStd.Numeral::decimal (first translated)) (cons (Studio.Doc::lit " Web IDL definitions translated\n") (cons (second translated) (nil Bytes))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2264,7 +2289,7 @@ definition{
   name: usage,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::lit "usage: verdant_studio check | next [SKIP...] | agenda | stage-bindings JSONL | stage-admissions JSONL | stage-decisions JSONL | stage-mappings JSONL | stage-matrix JSONL | admit JSONL | record-decision JSONL | stage-encodings JSONL | admit-encoding STAGED | merge-gate RULES | ingest-index CSV | read-xml FILE | read-xsd FILE | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
+  body: (Studio.Doc::lit "usage: verdant_studio check | next [SKIP...] | agenda | stage-bindings JSONL | stage-admissions JSONL | stage-decisions JSONL | stage-mappings JSONL | stage-matrix JSONL | admit JSONL | record-decision JSONL | stage-encodings JSONL | admit-encoding STAGED | merge-gate RULES | ingest-index CSV | read-xml FILE | read-xsd FILE | read-webidl FILE [IMPORT...] | ingest-authority BINDING | propose-encoding SCHEMA NAME CITATION... | build | publish\n"),
   executable: true
 }
 
@@ -2298,9 +2323,9 @@ definition{
     | List.nil => (ctor Plan.refuse (usage))
     | List.cons op rest => (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheck seen) else (if (Studio.Doc::same op (Studio.Doc::lit "next")) then (planNext seen rest) else (if (Studio.Doc::same op (Studio.Doc::lit "build")) then (planBuild seen) else (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else (if (Studio.Doc::same op (Studio.Doc::lit "agenda")) then (planAgenda seen) else (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "read-xml")) then (planReadXml seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "read-xsd")) then (planReadXsd seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (stageGuard seen path (planStage seen path)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-mappings")) then (stageGuard seen path (planStageInto seen path false)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-matrix")) then (stageGuard seen path (planStageInto seen path true)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (stageGuard seen path (planStageQueue seen path false)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (stageGuard seen path (planStageQueue seen path true)) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (stageGuard seen path (planStageEncodings seen path)) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
+      | List.cons path more => (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "read-xml")) then (planReadXml seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "read-xsd")) then (planReadXsd seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "read-webidl")) then (planReadWebIdl seen path more) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (stageGuard seen path (planStage seen path)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-mappings")) then (stageGuard seen path (planStageInto seen path false)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-matrix")) then (stageGuard seen path (planStageInto seen path true)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (stageGuard seen path (planStageQueue seen path false)) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (stageGuard seen path (planStageQueue seen path true)) else (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (stageGuard seen path (planStageEncodings seen path)) else (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
         | List.nil => (ctor Plan.refuse (usage))
-        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage)))))))))))))))))))))))),
+        | List.cons name citation => (planProposeEncoding seen path name citation)) else (ctor Plan.refuse (usage))))))))))))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
