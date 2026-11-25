@@ -134,7 +134,6 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `OIDF-OPENID-CONNECT-CORE-1.0` | The OpenID Connect identity layer on OAuth 2.0: ID tokens, claims and authentication flows, in its official plain-text form. |  |
 | `OPENFEATURE-SPEC-0.9.0` | The official machine-readable OpenFeature specification.json: every numbered requirement and condition of the flag evaluation API, providers, hooks, events and tracking. Index row W05. |  |
 | `OWASP-ASVS-5.0.0` | The official ASVS 5.0.0 JSON export: chapters, sections and each verification requirement with its identifier and level. Index row T02. |  |
-| `OWASP-MASVS-2.1.0` | The official MASVS 2.1.0 YAML release asset: the control groups and each control with its identifier and statement. Index row T02. |  |
 | `SIX-ISO-4217-LIST-ONE` | The ISO 4217 current currency and fund codes in the maintenance agency's official XML form. |  |
 | `SPDX-3.0.1` | The official SPDX 3.0.1 model in RDF Turtle: the Core, Software, Licensing, Security and Build profiles' classes and properties. Index row T09. |  |
 | `SPDX-LICENSE-LIST-3.29.0` | The official SPDX License List data in JSON: each license identifier, name, reference and its OSI-approved and FSF-libre flags. Index row X02. |  |
@@ -511,6 +510,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-WEBREF-IDL-WEBIDL-A0114B8` | The Web IDL fragments of the Web IDL Standard, extracted by Reffy into W3C webref (Source: Web IDL Standard (https://webidl.spec.whatwg.org/)). Read by read-webidl for index rows G05, G14 and H15. |  |
 | `W3C-WEBREF-IDL-WEBXR-A0114B8` | The Web IDL fragments of the WebXR Device API, extracted by Reffy into W3C webref (Source: WebXR Device API (https://www.w3.org/TR/webxr/)). Read by read-webidl for index rows G14. |  |
 | `LOC-METS-XLINK-2` | The XLink attribute declarations and attribute groups (simpleLink, extendedLink, locatorLink, arcLink, resourceLink) that the METS 1.12.1 schema imports from its schemaLocation. Index row Y02. |  |
+| `OWASP-MASVS-2.1.0` | The official MASVS 2.1.0 YAML release asset: the control groups and each control with its identifier and statement. Index row T02. |  |
 
 ## Claims that are not conformance IDs
 

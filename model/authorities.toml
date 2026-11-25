@@ -1377,23 +1377,6 @@ checksum = "bcdbec214d70abcfad9284a31d4f9e5134305831d628aad3aa85d7e26626cb35"
 realized_by = []
 
 [[authority]]
-id = "OWASP-MASVS-2.1.0"
-name = "OWASP Mobile Application Security Verification Standard 2.1.0 (YAML)"
-issuer = "OWASP Foundation"
-edition = "MASVS 2.1.0"
-canonical_id = "https://mas.owasp.org/MASVS/"
-source_role = "normative"
-retrieval_date = "2026-11-23"
-url = "https://github.com/OWASP/masvs/releases/download/v2.1.0/OWASP_MASVS.yaml"
-media_type = "application/yaml"
-license = "unstated in release asset"
-redistribution = "citation-only"
-statement = "The official MASVS 2.1.0 YAML release asset: the control groups and each control with its identifier and statement. Index row T02."
-checksum = "none"
-checksum_reason = "The authority is citation-only, so no artifact is committed."
-realized_by = []
-
-[[authority]]
 id = "SIX-ISO-4217-LIST-ONE"
 name = "ISO 4217 currency codes, List One"
 issuer = "SIX Financial Information (ISO 4217 Maintenance Agency)"
@@ -7783,4 +7766,21 @@ redistribution = "redistributable"
 statement = "The XLink attribute declarations and attribute groups (simpleLink, extendedLink, locatorLink, arcLink, resourceLink) that the METS 1.12.1 schema imports from its schemaLocation. Index row Y02."
 artifact = "authorities/LOC-METS-XLINK-2/xlink.xsd"
 checksum = "f1f5bb6003165cdd8f6c1fcc32f8fd1f965e1681010f3b9806d9460bcffa8a3c"
+realized_by = []
+
+[[authority]]
+id = "OWASP-MASVS-2.1.0"
+name = "OWASP Mobile Application Security Verification Standard 2.1.0 (YAML)"
+issuer = "OWASP Foundation"
+edition = "MASVS 2.1.0"
+canonical_id = "https://mas.owasp.org/MASVS/"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://github.com/OWASP/masvs/releases/download/v2.1.0/OWASP_MASVS.yaml"
+media_type = "application/yaml"
+license = "CC-BY-SA-4.0 (the v2.1.0 tag License.md and README)"
+redistribution = "redistributable"
+statement = "The official MASVS 2.1.0 YAML release asset: the control groups and each control with its identifier and statement. Index row T02."
+artifact = "authorities/OWASP-MASVS-2.1.0/OWASP_MASVS.yaml"
+checksum = "1175fe92ddb846c327b48f8efbd3fcb0148397cfb1ae0bb5a06f8c169e5e34a8"
 realized_by = []
