@@ -1,0 +1,883 @@
+\begin{lexlean}{Studio.Yaml}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.JsonRead}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
+\importmodule{Studio.Xml}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: no,
+  parameters: [flag : Bool],
+  result: Bool,
+  body: (if flag then false else true),
+  executable: true
+}
+
+definition{
+  name: larger,
+  parameters: [left : Nat, right : Nat],
+  result: Nat,
+  body: (if (left <? right) then right else left),
+  executable: true
+}
+
+definition{
+  name: at,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (LexLeanStd.JsonRead::byteOf source position),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: slice,
+  parameters: [source : Bytes, start : Nat, stop : Nat],
+  result: Bytes,
+  body: (LexLeanStd.Text::sliceOr source start (prim subtract stop start : Nat)),
+  executable: true
+}
+
+definition{
+  name: blank,
+  parameters: [value : Nat],
+  result: Bool,
+  body: ((value =? 32) || (value =? 9)),
+  executable: true
+}
+
+definition{
+  name: brk,
+  parameters: [value : Nat],
+  result: Bool,
+  body: ((value =? 10) || (value =? 256)),
+  executable: true
+}
+
+definition{
+  name: newlines,
+  parameters: [count : Nat],
+  result: Bytes,
+  body: (match count
+    | Nat.zero => 0x
+    | Nat.succ rest => (prim append 0x0a (newlines rest) : Bytes)),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: foldText,
+  parameters: [count : Nat],
+  result: Bytes,
+  body: (if (count =? 0) then 0x20 else (newlines count)),
+  executable: true
+}
+
+definition{
+  name: lineStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (if (brk (at source position)) then (ctor Option.none [Nat]) else (ctor Option.some [Nat] (position + 1))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: lineEnd,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (lineStep source position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: nextLine,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (let stop : Nat := (lineEnd source position); (if (stop <? (prim length source : Nat)) then (stop + 1) else stop)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: backStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (if ((0 <? position) && (no ((at source (prim subtract position 1 : Nat)) =? 10))) then (ctor Option.some [Nat] (prim subtract position 1 : Nat)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: lineStart,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (back : Nat) => (backStep source back)) (position + 1) position : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: column,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (prim subtract position (lineStart source position) : Nat),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: spaceStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (if ((at source position) =? 32) then (ctor Option.some [Nat] (position + 1)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: spacesEnd,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (spaceStep source position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: whiteStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (if (blank (at source position)) then (ctor Option.some [Nat] (position + 1)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: whiteEnd,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (whiteStep source position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: marker,
+  parameters: [source : Bytes, position : Nat],
+  result: Bool,
+  body: ((((Studio.Xml::startsAt source position "---") || (Studio.Xml::startsAt source position "...")) && ((blank (at source (position + 3))) || (brk (at source (position + 3))))) && ((column source position) =? 0)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: emptyOrComment,
+  parameters: [source : Bytes, position : Nat],
+  result: Bool,
+  body: (let stop : Nat := (whiteEnd source position); ((brk (at source stop)) || ((at source stop) =? 35))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: commentStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (if ((position <? (prim length source : Nat)) && (emptyOrComment source position)) then (ctor Option.some [Nat] (nextLine source position)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: skipLines,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (commentStep source position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: tail,
+  parameters: [source : Bytes, position : Nat],
+  result: (Result Nat Bytes),
+  body: (let stop : Nat := (whiteEnd source position); (let value : Nat := (at source stop); (if ((brk value) || ((value =? 35) && (position <? stop))) then (ctor Result.ok [Nat, Bytes] (nextLine source stop)) else (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "only white space and a comment may follow a node on its line (YAML 1.2.2 [77])" stop))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: flowIndicator,
+  parameters: [value : Nat],
+  result: Bool,
+  body: ((((value =? 44) || (value =? 91)) || ((value =? 93) || (value =? 123))) || (value =? 125)),
+  executable: true
+}
+
+definition{
+  name: indicator,
+  parameters: [value : Nat],
+  result: Bool,
+  body: ((flowIndicator value) || (((((value =? 45) || (value =? 63)) || ((value =? 58) || (value =? 35))) || (((value =? 38) || (value =? 42)) || ((value =? 33) || (value =? 124)))) || ((((value =? 62) || (value =? 39)) || ((value =? 34) || (value =? 37))) || ((value =? 64) || (value =? 96))))),
+  executable: true
+}
+
+definition{
+  name: plainSafe,
+  parameters: [value : Nat, flow : Bool],
+  result: Bool,
+  body: (no (((blank value) || (brk value)) || (flow && (flowIndicator value)))),
+  executable: true
+}
+
+definition{
+  name: plainFirst,
+  parameters: [source : Bytes, position : Nat, flow : Bool],
+  result: Bool,
+  body: (let value : Nat := (at source position); (if ((blank value) || (brk value)) then false else (if (((value =? 45) || (value =? 63)) || (value =? 58)) then (plainSafe (at source (position + 1)) flow) else (no (indicator value))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: plainStep,
+  parameters: [source : Bytes, flow : Bool, state : (Nat * Nat)],
+  result: (Option (Nat * Nat)),
+  body: (let position : Nat := (first state); (let value : Nat := (at source position); (if (brk value) then (ctor Option.none [(Nat * Nat)]) else (if (blank value) then (ctor Option.some [(Nat * Nat)] ((position + 1), (second state))) else (if ((value =? 58) && (no (plainSafe (at source (position + 1)) flow))) then (ctor Option.none [(Nat * Nat)]) else (if ((value =? 35) && (blank (at source (prim subtract position 1 : Nat)))) then (ctor Option.none [(Nat * Nat)]) else (if (flow && (flowIndicator value)) then (ctor Option.none [(Nat * Nat)]) else (ctor Option.some [(Nat * Nat)] ((position + 1), (position + 1)))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: plainEnd,
+  parameters: [source : Bytes, start : Nat, flow : Bool],
+  result: Nat,
+  body: (second (first (prim iterate_until (fun [flow, source] (state : (Nat * Nat)) => (plainStep source flow state)) ((prim length source : Nat) + 1) (start, start) : ((Nat * Nat) * Bool)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: hexDigit,
+  parameters: [value : Nat],
+  result: (Option Nat),
+  body: (if ((48 <=? value) && (value <=? 57)) then (ctor Option.some [Nat] (prim subtract value 48 : Nat)) else (if ((97 <=? value) && (value <=? 102)) then (ctor Option.some [Nat] (prim subtract value 87 : Nat)) else (if ((65 <=? value) && (value <=? 70)) then (ctor Option.some [Nat] (prim subtract value 55 : Nat)) else (ctor Option.none [Nat])))),
+  executable: true
+}
+
+definition{
+  name: hexValue,
+  parameters: [source : Bytes, position : Nat, width : Nat, total : Nat],
+  result: (Option Nat),
+  body: (match width
+    | Nat.zero => (ctor Option.some [Nat] total)
+    | Nat.succ rest => (match (hexDigit (at source position))
+      | Option.none => (ctor Option.none [Nat])
+      | Option.some digit => (hexValue source (position + 1) rest ((prim multiply total 16 : Nat) + digit)))),
+  recursive_argument: width,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: escape,
+  parameters: [value : Nat],
+  result: (Option Bytes),
+  body: (if (value =? 48) then (ctor Option.some [Bytes] 0x00) else (if (value =? 97) then (ctor Option.some [Bytes] 0x07) else (if (value =? 98) then (ctor Option.some [Bytes] 0x08) else (if ((value =? 116) || (value =? 9)) then (ctor Option.some [Bytes] 0x09) else (if (value =? 110) then (ctor Option.some [Bytes] 0x0a) else (if (value =? 118) then (ctor Option.some [Bytes] 0x0b) else (if (value =? 102) then (ctor Option.some [Bytes] 0x0c) else (if (value =? 114) then (ctor Option.some [Bytes] 0x0d) else (if (value =? 101) then (ctor Option.some [Bytes] 0x1b) else (if (value =? 32) then (ctor Option.some [Bytes] 0x20) else (if (value =? 34) then (ctor Option.some [Bytes] 0x22) else (if (value =? 47) then (ctor Option.some [Bytes] 0x2f) else (if (value =? 92) then (ctor Option.some [Bytes] 0x5c) else (if (value =? 78) then (ctor Option.some [Bytes] 0xc285) else (if (value =? 95) then (ctor Option.some [Bytes] 0xc2a0) else (if (value =? 76) then (ctor Option.some [Bytes] 0xe280a8) else (if (value =? 80) then (ctor Option.some [Bytes] 0xe280a9) else (ctor Option.none [Bytes])))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: foldFrom,
+  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, count : Nat],
+  result: (Result (Nat * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Nat * Nat), Bytes] (Studio.Xml::failure "the input ends inside a scalar" position))
+    | Nat.succ rest => (let start : Nat := (position + 1); (let indented : Nat := (spacesEnd source start); (let content : Nat := (whiteEnd source indented); (let value : Nat := (at source content); (if (marker source start) then (ctor Result.error [(Nat * Nat), Bytes] (Studio.Xml::failure "a document marker cannot appear inside a scalar (YAML 1.2.2 [206])" start)) else (if (value =? 10) then (foldFrom source content limit rest (count + 1)) else (if (value =? 256) then (ctor Result.error [(Nat * Nat), Bytes] (Studio.Xml::failure "the input ends inside a quoted scalar (YAML 1.2.2 [109], [120])" content)) else (if ((prim subtract indented start : Nat) <? limit) then (ctor Result.error [(Nat * Nat), Bytes] (Studio.Xml::failure "a continuation line of a scalar is indented less than its node (YAML 1.2.2 [69])" indented)) else (ctor Result.ok [(Nat * Nat), Bytes] (count, content))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: doubleRunStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (let value : Nat := (at source position); (if ((((value =? 34) || (value =? 92)) || (blank value)) || (brk value)) then (ctor Option.none [Nat]) else (ctor Option.some [Nat] (position + 1)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: doubleRun,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (doubleRunStep source position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: singleRunStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (let value : Nat := (at source position); (if (((value =? 39) || (blank value)) || (brk value)) then (ctor Option.none [Nat]) else (ctor Option.some [Nat] (position + 1)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: singleRun,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (singleRunStep source position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: oneLine,
+  parameters: [position : Nat],
+  result: Bytes,
+  body: (Studio.Xml::failure "an implicit key must be on one line (YAML 1.2.2 [154])" position),
+  executable: true
+}
+
+definition{
+  name: doubleFrom,
+  parameters: [source : Bytes, position : Nat, limit : Nat, single : Bool, fuel : Nat, out : Bytes],
+  result: (Result (Bytes * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "the input ends inside a double-quoted scalar (YAML 1.2.2 [109])" position))
+    | Nat.succ rest => (let value : Nat := (at source position); (if (value =? 34) then (ctor Result.ok [(Bytes * Nat), Bytes] (out, (position + 1))) else (if (value =? 256) then (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "the input ends inside a double-quoted scalar (YAML 1.2.2 [109])" position)) else (if (value =? 92) then (let code : Nat := (at source (position + 1)); (match (escape code)
+      | Option.some piece => (doubleFrom source (position + 2) limit single rest (prim append out piece : Bytes))
+      | Option.none => (if (code =? 10) then (if single then (ctor Result.error [(Bytes * Nat), Bytes] (oneLine position)) else (match (foldFrom source (position + 1) limit rest 0)
+        | Result.error reason => (ctor Result.error [(Bytes * Nat), Bytes] reason)
+        | Result.ok folded => (doubleFrom source (second folded) limit single rest (prim append out (newlines (first folded)) : Bytes)))) else (let width : Nat := (if (code =? 120) then 2 else (if (code =? 117) then 4 else (if (code =? 85) then 8 else 0))); (if (width =? 0) then (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "an escape must be one of YAML 1.2.2 [42] to [62]" position)) else (match (hexValue source (position + 2) width 0)
+        | Option.none => (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "an escape must name a Unicode scalar value (YAML 1.2.2 [59] to [61])" position))
+        | Option.some point => (if ((1114111 <? point) || ((55296 <=? point) && (point <=? 57343))) then (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "an escape must name a Unicode scalar value (YAML 1.2.2 [59] to [61])" position)) else (doubleFrom source ((position + 2) + width) limit single rest (prim append out (Studio.Xml::utf8Of point) : Bytes))))))))) else (if ((blank value) || (value =? 10)) then (let stop : Nat := (whiteEnd source position); (if ((at source stop) =? 10) then (if single then (ctor Result.error [(Bytes * Nat), Bytes] (oneLine position)) else (match (foldFrom source stop limit rest 0)
+      | Result.error reason => (ctor Result.error [(Bytes * Nat), Bytes] reason)
+      | Result.ok folded => (doubleFrom source (second folded) limit single rest (prim append out (foldText (first folded)) : Bytes)))) else (doubleFrom source stop limit single rest (prim append out (slice source position stop) : Bytes)))) else (let stop : Nat := (doubleRun source position); (doubleFrom source stop limit single rest (prim append out (slice source position stop) : Bytes))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: singleFrom,
+  parameters: [source : Bytes, position : Nat, limit : Nat, single : Bool, fuel : Nat, out : Bytes],
+  result: (Result (Bytes * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "the input ends inside a single-quoted scalar (YAML 1.2.2 [120])" position))
+    | Nat.succ rest => (let value : Nat := (at source position); (if (value =? 39) then (if ((at source (position + 1)) =? 39) then (singleFrom source (position + 2) limit single rest (prim append out 0x27 : Bytes)) else (ctor Result.ok [(Bytes * Nat), Bytes] (out, (position + 1)))) else (if (value =? 256) then (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "the input ends inside a single-quoted scalar (YAML 1.2.2 [120])" position)) else (if ((blank value) || (value =? 10)) then (let stop : Nat := (whiteEnd source position); (if ((at source stop) =? 10) then (if single then (ctor Result.error [(Bytes * Nat), Bytes] (oneLine position)) else (match (foldFrom source stop limit rest 0)
+      | Result.error reason => (ctor Result.error [(Bytes * Nat), Bytes] reason)
+      | Result.ok folded => (singleFrom source (second folded) limit single rest (prim append out (foldText (first folded)) : Bytes)))) else (singleFrom source stop limit single rest (prim append out (slice source position stop) : Bytes)))) else (let stop : Nat := (singleRun source position); (singleFrom source stop limit single rest (prim append out (slice source position stop) : Bytes)))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: quoted,
+  parameters: [source : Bytes, position : Nat, limit : Nat, single : Bool],
+  result: (Result (Bytes * Nat) Bytes),
+  body: (if ((at source position) =? 34) then (doubleFrom source (position + 1) limit single ((prim length source : Nat) + 2) 0x) else (singleFrom source (position + 1) limit single ((prim length source : Nat) + 2) 0x)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: colonAt,
+  parameters: [source : Bytes, position : Nat],
+  result: Bool,
+  body: (((at source position) =? 58) && ((blank (at source (position + 1))) || (brk (at source (position + 1))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: keyAt,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (let value : Nat := (at source position); (if ((value =? 34) || (value =? 39)) then (match (quoted source position 0 true)
+    | Result.error reason => (ctor Option.none [Nat])
+    | Result.ok read => (let stop : Nat := (whiteEnd source (second read)); (if (colonAt source stop) then (ctor Option.some [Nat] stop) else (ctor Option.none [Nat])))) else (if (plainFirst source position false) then (let stop : Nat := (whiteEnd source (plainEnd source position false)); (if (colonAt source stop) then (ctor Option.some [Nat] stop) else (ctor Option.none [Nat]))) else (ctor Option.none [Nat])))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: keyText,
+  parameters: [source : Bytes, position : Nat],
+  result: Bytes,
+  body: (let value : Nat := (at source position); (if ((value =? 34) || (value =? 39)) then (match (quoted source position 0 true)
+    | Result.error reason => 0x
+    | Result.ok read => (first read)) else (slice source position (plainEnd source position false)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: radixStep,
+  parameters: [source : Bytes, base : Nat, state : (Nat * Nat)],
+  result: (Option (Nat * Nat)),
+  body: (match (hexDigit (at source (first state)))
+    | Option.none => (ctor Option.none [(Nat * Nat)])
+    | Option.some digit => (if (digit <? base) then (ctor Option.some [(Nat * Nat)] (((first state) + 1), ((prim multiply (second state) base : Nat) + digit))) else (ctor Option.none [(Nat * Nat)]))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: radix,
+  parameters: [source : Bytes, base : Nat, start : Nat],
+  result: (Nat * Nat),
+  body: (first (prim iterate_until (fun [base, source] (state : (Nat * Nat)) => (radixStep source base state)) ((prim length source : Nat) + 1) (start, 0) : ((Nat * Nat) * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: isText,
+  parameters: [text : Bytes, value : String],
+  result: Bool,
+  body: (Studio.Doc::same text (Studio.Doc::lit value)),
+  executable: true
+}
+
+definition{
+  name: numberText,
+  parameters: [text : Bytes],
+  result: (Option Bytes),
+  body: (let total : Nat := (prim length text : Nat); (let lead : Nat := (at text 0); (let start : Nat := (if ((lead =? 43) || (lead =? 45)) then 1 else 0); (let wholeEnd : Nat := (LexLeanStd.JsonRead::digitsEnd text start); (let dotted : Bool := ((at text wholeEnd) =? 46); (let fractionStart : Nat := (if dotted then (wholeEnd + 1) else wholeEnd); (let fractionEnd : Nat := (if dotted then (LexLeanStd.JsonRead::digitsEnd text fractionStart) else wholeEnd); (let mark : Nat := (at text fractionEnd); (let marked : Bool := ((mark =? 101) || (mark =? 69)); (let signByte : Nat := (at text (fractionEnd + 1)); (let signed : Bool := (marked && ((signByte =? 43) || (signByte =? 45))); (let exponentStart : Nat := (if marked then (if signed then (fractionEnd + 2) else (fractionEnd + 1)) else fractionEnd); (let exponentEnd : Nat := (if marked then (LexLeanStd.JsonRead::digitsEnd text exponentStart) else fractionEnd); (let whole : Bytes := (slice text start wholeEnd); (let skip : Nat := (Studio.Doc::leadingZeros whole); (if (((exponentEnd =? total) && ((start <? wholeEnd) || (dotted && (fractionStart <? fractionEnd)))) && ((no marked) || (exponentStart <? exponentEnd))) then (ctor Option.some [Bytes] (Studio.Doc::cat (cons (if (lead =? 45) then 0x2d else 0x) (cons (if (skip =? (prim length whole : Nat)) then 0x30 else (slice whole skip (prim length whole : Nat))) (cons (if (fractionStart <? fractionEnd) then (prim append 0x2e (slice text fractionStart fractionEnd) : Bytes) else 0x) (cons (if marked then (prim append (if (signed && (signByte =? 45)) then 0x652d else 0x65) (slice text exponentStart exponentEnd) : Bytes) else 0x) (nil Bytes))))))) else (ctor Option.none [Bytes]))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: nullReason,
+  parameters: [position : Nat],
+  result: Bytes,
+  body: (Studio.Xml::failure "a null node is not read: Studio.Value has no null (YAML 1.2.2 section 10.3.2)" position),
+  executable: true
+}
+
+definition{
+  name: rangeReason,
+  parameters: [position : Nat],
+  result: Bytes,
+  body: (Studio.Xml::failure "a number outside the range Studio.Value holds is not read (YAML 1.2.2 section 10.3.2)" position),
+  executable: true
+}
+
+definition{
+  name: radixValue,
+  parameters: [text : Bytes, base : Nat, position : Nat],
+  result: (Result Studio.Schema::Value Bytes),
+  body: (let read : (Nat * Nat) := (radix text base 2); (if ((first read) =? (prim length text : Nat)) then (if (LexLeanStd.JsonRead::inRange false (second read)) then (ctor Result.ok [Studio.Schema::Value, Bytes] (ctor Studio.Schema::Value.VInt false (second read))) else (ctor Result.error [Studio.Schema::Value, Bytes] (rangeReason position))) else (ctor Result.ok [Studio.Schema::Value, Bytes] (ctor Studio.Schema::Value.VStr text)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: resolve,
+  parameters: [text : Bytes, position : Nat],
+  result: (Result Studio.Schema::Value Bytes),
+  body: (if (((((prim length text : Nat) =? 0) || (isText text "~")) || ((isText text "null") || (isText text "Null"))) || (isText text "NULL")) then (ctor Result.error [Studio.Schema::Value, Bytes] (nullReason position)) else (if (((isText text "true") || (isText text "True")) || (isText text "TRUE")) then (ctor Result.ok [Studio.Schema::Value, Bytes] (ctor Studio.Schema::Value.VBool true)) else (if (((isText text "false") || (isText text "False")) || (isText text "FALSE")) then (ctor Result.ok [Studio.Schema::Value, Bytes] (ctor Studio.Schema::Value.VBool false)) else (if (((((isText text ".inf") || (isText text ".Inf")) || ((isText text ".INF") || (isText text "+.inf"))) || (((isText text "+.Inf") || (isText text "+.INF")) || ((isText text "-.inf") || (isText text "-.Inf")))) || (((isText text "-.INF") || (isText text ".nan")) || ((isText text ".NaN") || (isText text ".NAN")))) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "an infinite or not-a-number float is not read: Studio.Value has none (YAML 1.2.2 section 10.3.2)" position)) else (if ((Studio.Xml::startsAt text 0 "0o") && (2 <? (prim length text : Nat))) then (radixValue text 8 position) else (if ((Studio.Xml::startsAt text 0 "0x") && (2 <? (prim length text : Nat))) then (radixValue text 16 position) else (match (numberText text)
+    | Option.none => (ctor Result.ok [Studio.Schema::Value, Bytes] (ctor Studio.Schema::Value.VStr text))
+    | Option.some json => (match (Studio.Schema::readNumber json 0)
+      | Option.none => (ctor Result.error [Studio.Schema::Value, Bytes] (rangeReason position))
+      | Option.some read => (if ((first read) =? (prim length json : Nat)) then (ctor Result.ok [Studio.Schema::Value, Bytes] (second read)) else (ctor Result.error [Studio.Schema::Value, Bytes] (rangeReason position))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: emptyStep,
+  parameters: [source : Bytes, state : (Nat * Nat)],
+  result: (Option (Nat * Nat)),
+  body: (let stop : Nat := (whiteEnd source (first state)); (if ((at source stop) =? 10) then (ctor Option.some [(Nat * Nat)] ((stop + 1), ((second state) + 1))) else (ctor Option.none [(Nat * Nat)]))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: emptyLines,
+  parameters: [source : Bytes, start : Nat],
+  result: (Nat * Nat),
+  body: (first (prim iterate_until (fun [source] (state : (Nat * Nat)) => (emptyStep source state)) ((prim length source : Nat) + 1) (start, 0) : ((Nat * Nat) * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: mappingReason,
+  parameters: [position : Nat],
+  result: Bytes,
+  body: (Studio.Xml::failure "a mapping value is not allowed here: a plain scalar holds ': ' (YAML 1.2.2 [130])" position),
+  executable: true
+}
+
+definition{
+  name: plainLines,
+  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, out : Bytes],
+  result: (Result (Bytes * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "a plain scalar has more lines than the input" position))
+    | Nat.succ rest => (let stop : Nat := (whiteEnd source position); (let value : Nat := (at source stop); (if (value =? 58) then (ctor Result.error [(Bytes * Nat), Bytes] (mappingReason stop)) else (if ((value =? 35) || (value =? 256)) then (ctor Result.ok [(Bytes * Nat), Bytes] (out, (nextLine source stop))) else (let found : (Nat * Nat) := (emptyLines source (stop + 1)); (let line : Nat := (first found); (let indented : Nat := (spacesEnd source line); (let content : Nat := (whiteEnd source indented); (let lead : Nat := (at source content); (if ((((lead =? 256) || ((prim subtract indented line : Nat) <? limit)) || (lead =? 35)) || (marker source line)) then (ctor Result.ok [(Bytes * Nat), Bytes] (out, (stop + 1))) else (let next : Nat := (plainEnd source content false); (if (next =? content) then (ctor Result.error [(Bytes * Nat), Bytes] (mappingReason content)) else (plainLines source next limit rest (Studio.Doc::cat (cons out (cons (foldText (second found)) (cons (slice source content next) (nil Bytes))))))))))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: chompOf,
+  parameters: [value : Nat],
+  result: Nat,
+  body: (if (value =? 45) then 1 else (if (value =? 43) then 2 else 0)),
+  executable: true
+}
+
+definition{
+  name: digitOf,
+  parameters: [value : Nat],
+  result: Nat,
+  body: (if ((49 <=? value) && (value <=? 57)) then (prim subtract value 48 : Nat) else 0),
+  executable: true
+}
+
+definition{
+  name: indentStep,
+  parameters: [source : Bytes, start : Nat, indent : Nat, position : Nat],
+  result: (Option Nat),
+  body: (if (((at source position) =? 32) && ((prim subtract position start : Nat) <? indent)) then (ctor Option.some [Nat] (position + 1)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: indentEnd,
+  parameters: [source : Bytes, start : Nat, indent : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [indent, source, start] (position : Nat) => (indentStep source start indent position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: breakStep,
+  parameters: [source : Bytes, indent : Nat, state : (Nat * Nat)],
+  result: (Option (Nat * Nat)),
+  body: (let stop : Nat := (indentEnd source (first state) indent); (if ((at source stop) =? 10) then (ctor Option.some [(Nat * Nat)] ((stop + 1), ((second state) + 1))) else (ctor Option.none [(Nat * Nat)]))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: scanBreaks,
+  parameters: [source : Bytes, start : Nat, indent : Nat],
+  result: (Result (Nat * Nat) Bytes),
+  body: (let state : (Nat * Nat) := (first (prim iterate_until (fun [indent, source] (state : (Nat * Nat)) => (breakStep source indent state)) ((prim length source : Nat) + 1) (start, 0) : ((Nat * Nat) * Bool))); (let stop : Nat := (indentEnd source (first state) indent); (if (((at source stop) =? 9) && ((prim subtract stop (first state) : Nat) <? indent)) then (ctor Result.error [(Nat * Nat), Bytes] (Studio.Xml::failure "a tab cannot indent a block scalar line (YAML 1.2.2 [63], [70])" stop)) else (ctor Result.ok [(Nat * Nat), Bytes] ((second state), (first state)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: member,
+  parameters: [source : Bytes, line : Nat, indent : Nat],
+  result: Bool,
+  body: (let stop : Nat := (indentEnd source line indent); (((prim subtract stop line : Nat) =? indent) && (no ((at source stop) =? 256)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: scalarLines,
+  parameters: [source : Bytes, line : Nat, indent : Nat, folded : Bool, fuel : Nat, chunks : Bytes, breaks : Nat],
+  result: (Result (Bytes * (Nat * Nat)) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Bytes * (Nat * Nat)), Bytes] (Studio.Xml::failure "a block scalar has more lines than the input" line))
+    | Nat.succ rest => (let start : Nat := (indentEnd source line indent); (let leading : Bool := (no (blank (at source start))); (let stop : Nat := (lineEnd source start); (let text : Bytes := (Studio.Doc::cat (cons chunks (cons (newlines breaks) (cons (slice source start stop) (nil Bytes))))); (match (scanBreaks source (nextLine source stop) indent)
+      | Result.error reason => (ctor Result.error [(Bytes * (Nat * Nat)), Bytes] reason)
+      | Result.ok scanned => (let next : Nat := (second scanned); (let after : Nat := (indentEnd source next indent); (if (member source next indent) then (scalarLines source next indent folded rest (prim append text (if ((folded && leading) && (no (blank (at source after)))) then (if ((first scanned) =? 0) then 0x20 else 0x) else 0x0a) : Bytes) (first scanned)) else (ctor Result.ok [(Bytes * (Nat * Nat)), Bytes] (text, ((first scanned), (if ((at source after) =? 256) then after else next))))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: leadStep,
+  parameters: [source : Bytes, state : (Nat * Nat)],
+  result: (Option (Nat * Nat)),
+  body: (let stop : Nat := (spacesEnd source (first state)); (if ((at source stop) =? 10) then (ctor Option.some [(Nat * Nat)] ((stop + 1), (larger (second state) (prim subtract stop (first state) : Nat)))) else (ctor Option.none [(Nat * Nat)]))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: countStep,
+  parameters: [source : Bytes, state : (Nat * Nat)],
+  result: (Option (Nat * Nat)),
+  body: (if ((first state) <? (prim length source : Nat)) then (ctor Option.some [(Nat * Nat)] ((nextLine source (first state)), ((second state) + 1))) else (ctor Option.none [(Nat * Nat)])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: lineCount,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (second (first (prim iterate_until (fun [source] (state : (Nat * Nat)) => (countStep source state)) ((prim length source : Nat) + 1) (start, 0) : ((Nat * Nat) * Bool)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: blockBody,
+  parameters: [source : Bytes, start : Nat, indent : Nat, folded : Bool, chomp : Nat],
+  result: (Result (Studio.Schema::Value * Nat) Bytes),
+  body: (match (scanBreaks source start indent)
+    | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+    | Result.ok scanned => (let line : Nat := (second scanned); (let after : Nat := (indentEnd source line indent); (if (member source line indent) then (match (scalarLines source line indent folded ((prim length source : Nat) + 2) 0x (first scanned))
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok read => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VStr (Studio.Doc::cat (cons (first read) (cons (if (chomp =? 1) then 0x else 0x0a) (cons (if (chomp =? 2) then (newlines (first (second read))) else 0x) (nil Bytes)))))), (second (second read))))) else (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VStr (if (chomp =? 2) then (newlines (first scanned)) else 0x)), (if ((at source after) =? 256) then after else line))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: blockScalar,
+  parameters: [source : Bytes, position : Nat, limit : Nat],
+  result: (Result (Studio.Schema::Value * Nat) Bytes),
+  body: (let folded : Bool := ((at source position) =? 62); (let first1 : Nat := (at source (position + 1)); (let second1 : Nat := (at source (position + 2)); (let chomp1 : Nat := (chompOf first1); (let digit1 : Nat := (digitOf first1); (let used : Bool := ((0 <? chomp1) || (0 <? digit1)); (let chomp2 : Nat := (if (0 <? digit1) then (chompOf second1) else 0); (let digit2 : Nat := (if (0 <? chomp1) then (digitOf second1) else 0); (let chomp : Nat := (chomp1 + chomp2); (let explicit : Nat := (digit1 + digit2); (let header : Nat := ((position + 1) + ((if used then 1 else 0) + (if ((0 <? chomp2) || (0 <? digit2)) then 1 else 0))); (match (tail source header)
+    | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+    | Result.ok start => (if (0 <? explicit) then (blockBody source start (prim subtract (limit + explicit) 1 : Nat) folded chomp) else (let lead : (Nat * Nat) := (first (prim iterate_until (fun [source] (state : (Nat * Nat)) => (leadStep source state)) ((prim length source : Nat) + 1) (start, 0) : ((Nat * Nat) * Bool))); (let content : Nat := (spacesEnd source (first lead)); (if ((at source content) =? 256) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VStr (if (chomp =? 2) then (newlines (lineCount source start)) else 0x)), (prim length source : Nat))) else (let indent : Nat := (larger (prim subtract content (first lead) : Nat) limit); (if (indent <? (second lead)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a leading empty line of a block scalar holds more spaces than its first content line (YAML 1.2.2 section 8.1.1.1)" start)) else (blockBody source start indent folded chomp))))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: property,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Bytes),
+  body: (let value : Nat := (at source position); (let loose : Bool := (no (plainSafe (at source (position + 1)) true)); (if ((value =? 58) && loose) then (ctor Option.some [Bytes] (Studio.Xml::failure "a null key is not read: Studio.Value has no null (YAML 1.2.2 section 10.3.2)" position)) else (if (value =? 38) then (ctor Option.some [Bytes] (Studio.Xml::failure "an anchor is not read (YAML 1.2.2 [101])" position)) else (if (value =? 42) then (ctor Option.some [Bytes] (Studio.Xml::failure "an alias is not read (YAML 1.2.2 [104])" position)) else (if (value =? 33) then (ctor Option.some [Bytes] (Studio.Xml::failure "a tag is not read (YAML 1.2.2 [97])" position)) else (if ((value =? 63) && loose) then (ctor Option.some [Bytes] (Studio.Xml::failure "an explicit key is not read (YAML 1.2.2 [143], [189])" position)) else (ctor Option.none [Bytes])))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: flowSpaceStep,
+  parameters: [source : Bytes, limit : Nat, state : (Nat * Bool)],
+  result: (Option (Nat * Bool)),
+  body: (let position : Nat := (first state); (let value : Nat := (at source position); (if (second state) then (ctor Option.none [(Nat * Bool)]) else (if (blank value) then (ctor Option.some [(Nat * Bool)] ((position + 1), false)) else (if ((value =? 35) && (((position =? 0) || (blank (at source (prim subtract position 1 : Nat)))) || ((at source (prim subtract position 1 : Nat)) =? 10))) then (ctor Option.some [(Nat * Bool)] ((lineEnd source position), false)) else (if (value =? 10) then (let line : Nat := (position + 1); (let indented : Nat := (spacesEnd source line); (let content : Nat := (whiteEnd source indented); (if ((marker source line) || ((((prim subtract indented line : Nat) <? limit) && (no (brk (at source content)))) && (no ((at source content) =? 35)))) then (ctor Option.some [(Nat * Bool)] (line, true)) else (ctor Option.some [(Nat * Bool)] (indented, false)))))) else (ctor Option.none [(Nat * Bool)]))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: flowSpace,
+  parameters: [source : Bytes, start : Nat, limit : Nat],
+  result: (Result Nat Bytes),
+  body: (let state : (Nat * Bool) := (first (prim iterate_until (fun [limit, source] (state : (Nat * Bool)) => (flowSpaceStep source limit state)) ((prim length source : Nat) + 1) (start, false) : ((Nat * Bool) * Bool))); (if (second state) then (if (marker source (first state)) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a document marker cannot appear inside a flow collection (YAML 1.2.2 [206])" (first state))) else (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a line of a flow collection is indented less than its node (YAML 1.2.2 [80])" (first state)))) else (ctor Result.ok [Nat, Bytes] (first state)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: flowKey,
+  parameters: [source : Bytes, position : Nat, limit : Nat],
+  result: (Result (Bytes * Nat) Bytes),
+  body: (let value : Nat := (at source position); (if ((value =? 34) || (value =? 39)) then (quoted source position limit false) else (match (property source position)
+    | Option.some reason => (ctor Result.error [(Bytes * Nat), Bytes] reason)
+    | Option.none => (if ((value =? 91) || (value =? 123)) then (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "a collection as a mapping key is not read: Studio.Value keys are strings (YAML 1.2.2 [142])" position)) else (if (plainFirst source position true) then (let stop : Nat := (plainEnd source position true); (ctor Result.ok [(Bytes * Nat), Bytes] ((slice source position stop), stop))) else (ctor Result.error [(Bytes * Nat), Bytes] (Studio.Xml::failure "a flow mapping key must be a scalar (YAML 1.2.2 [142])" position))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: flowNode,
+  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, mode : Nat, seen : (List Bytes)],
+  result: (Result (Studio.Schema::Value * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "the document nests deeper than it is long" position))
+    | Nat.succ rest => (if (mode =? 1) then (match (flowNode source position limit rest 0 (nil Bytes))
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok item => (match (flowSpace source (second item) limit)
+        | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+        | Result.ok after => (let value : Nat := (at source after); (if (value =? 58) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a single-pair mapping inside a flow sequence is not read (YAML 1.2.2 [150])" after)) else (if (value =? 93) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VItem (first item) (ctor Studio.Schema::Value.VNil)), (after + 1))) else (if (value =? 44) then (match (flowSpace source (after + 1) limit)
+          | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+          | Result.ok next => (if ((at source next) =? 93) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VItem (first item) (ctor Studio.Schema::Value.VNil)), (next + 1))) else (match (flowNode source next limit rest 1 (nil Bytes))
+            | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+            | Result.ok more => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VItem (first item) (first more)), (second more)))))) else (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a flow sequence entry must be followed by , or ] (YAML 1.2.2 [137])" after)))))))) else (if (mode =? 2) then (match (flowKey source position limit)
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok key => (match (flowSpace source (second key) limit)
+        | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+        | Result.ok colon => (if (no ((at source colon) =? 58)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a flow mapping entry needs : and a value; a null value is not read (YAML 1.2.2 [142])" colon)) else (match (flowSpace source (colon + 1) limit)
+          | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+          | Result.ok start => (if (((at source start) =? 44) || ((at source start) =? 125)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (nullReason start)) else (match (flowNode source start limit rest 0 (nil Bytes))
+            | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+            | Result.ok item => (if (Studio.Xml::member (first key) seen) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a mapping key appears twice (YAML 1.2.2 section 3.2.1.1)" position)) else (match (flowSpace source (second item) limit)
+              | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+              | Result.ok after => (let value : Nat := (at source after); (if (value =? 125) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VMember (first key) (first item) (ctor Studio.Schema::Value.VNil)), (after + 1))) else (if (value =? 44) then (match (flowSpace source (after + 1) limit)
+                | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+                | Result.ok next => (if ((at source next) =? 125) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VMember (first key) (first item) (ctor Studio.Schema::Value.VNil)), (next + 1))) else (match (flowNode source next limit rest 2 (cons (first key) seen))
+                  | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+                  | Result.ok more => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VMember (first key) (first item) (first more)), (second more)))))) else (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a flow mapping entry must be followed by , or } (YAML 1.2.2 [140])" after))))))))))))) else (let value : Nat := (at source position); (if ((value =? 91) || (value =? 123)) then (match (flowSpace source (position + 1) limit)
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok start => (if ((at source start) =? (value + 2)) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((if (value =? 91) then (ctor Studio.Schema::Value.VArr (ctor Studio.Schema::Value.VNil)) else (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VNil))), (start + 1))) else (match (flowNode source start limit rest (if (value =? 91) then 1 else 2) (nil Bytes))
+        | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+        | Result.ok spine => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((if (value =? 91) then (ctor Studio.Schema::Value.VArr (first spine)) else (ctor Studio.Schema::Value.VObj (first spine))), (second spine)))))) else (if ((value =? 34) || (value =? 39)) then (match (quoted source position limit false)
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok read => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VStr (first read)), (second read)))) else (match (property source position)
+      | Option.some reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Option.none => (if (no (plainFirst source position true)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a plain scalar cannot start with an indicator (YAML 1.2.2 [126])" position)) else (let stop : Nat := (plainEnd source position true); (let white : Nat := (whiteEnd source stop); (match (if ((at source white) =? 10) then (flowSpace source white limit) else (ctor Result.ok [Nat, Bytes] white))
+        | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+        | Result.ok next => (if ((((at source white) =? 10) && (no (flowIndicator (at source next)))) && (no ((at source next) =? 58))) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a multi-line plain scalar inside a flow collection is not read (YAML 1.2.2 [135])" white)) else (match (resolve (slice source position stop) position)
+          | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+          | Result.ok scalar => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] (scalar, stop))))))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: scalarOrFlow,
+  parameters: [source : Bytes, position : Nat, limit : Nat],
+  result: (Result (Studio.Schema::Value * Nat) Bytes),
+  body: (let value : Nat := (at source position); (if ((value =? 124) || (value =? 62)) then (blockScalar source position limit) else (if ((value =? 34) || (value =? 39)) then (match (quoted source position limit false)
+    | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+    | Result.ok read => (match (tail source (second read))
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok next => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VStr (first read)), next)))) else (if ((value =? 91) || (value =? 123)) then (match (flowNode source position limit ((prim length source : Nat) + 2) 0 (nil Bytes))
+    | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+    | Result.ok node => (if ((at source (whiteEnd source (second node))) =? 58) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a collection as a mapping key is not read: Studio.Value keys are strings (YAML 1.2.2 [154])" position)) else (match (tail source (second node))
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok next => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((first node), next))))) else (match (property source position)
+    | Option.some reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+    | Option.none => (if (no (plainFirst source position false)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a plain scalar cannot start with an indicator (YAML 1.2.2 [126])" position)) else (let stop : Nat := (plainEnd source position false); (match (plainLines source stop limit ((prim length source : Nat) + 2) (slice source position stop))
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok read => (match (resolve (first read) position)
+        | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+        | Result.ok scalar => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] (scalar, (second read)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: isEntry,
+  parameters: [source : Bytes, position : Nat],
+  result: Bool,
+  body: (((at source position) =? 45) && ((blank (at source (position + 1))) || (brk (at source (position + 1))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: hasKey,
+  parameters: [source : Bytes, position : Nat],
+  result: Bool,
+  body: (match (keyAt source position)
+    | Option.none => false
+    | Option.some colon => true),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: wrap,
+  parameters: [sequence : Bool, read : (Result (Studio.Schema::Value * Nat) Bytes)],
+  result: (Result (Studio.Schema::Value * Nat) Bytes),
+  body: (match read
+    | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+    | Result.ok spine => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((if sequence then (ctor Studio.Schema::Value.VArr (first spine)) else (ctor Studio.Schema::Value.VObj (first spine))), (second spine)))),
+  executable: true
+}
+
+definition{
+  name: block,
+  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, mode : Nat, compact : Bool, outer : Nat, seen : (List Bytes)],
+  result: (Result (Studio.Schema::Value * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "the document nests deeper than it is long" position))
+    | Nat.succ rest => (if (mode =? 0) then (let content : Nat := (spacesEnd source position); (let indent : Nat := (prim subtract content position : Nat); (if ((at source content) =? 9) then (let start : Nat := (whiteEnd source content); (if ((isEntry source start) || (hasKey source start)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a tab cannot indent a block node (YAML 1.2.2 [63])" start)) else (match (property source start)
+      | Option.some reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Option.none => (scalarOrFlow source start limit)))) else (if (isEntry source content) then (wrap true (block source content limit rest 2 false indent (nil Bytes))) else (match (property source content)
+      | Option.some reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Option.none => (if (hasKey source content) then (wrap false (block source content limit rest 3 false indent (nil Bytes))) else (scalarOrFlow source content limit))))))) else (if (mode =? 1) then (let start : Nat := (whiteEnd source position); (let value : Nat := (at source start); (if ((brk value) || ((value =? 35) && (position <? start))) then (let line : Nat := (skipLines source (nextLine source start)); (if (((prim length source : Nat) <=? line) || (marker source line)) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (nullReason start)) else (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if (limit <=? indent) then (block source line limit rest 0 false 0 (nil Bytes)) else (if (((no compact) && (indent =? outer)) && (isEntry source (line + indent))) then (wrap true (block source (line + indent) limit rest 2 false indent (nil Bytes))) else (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (nullReason start))))))) else (if (compact && (isEntry source start)) then (wrap true (block source start limit rest 2 false (column source start) (nil Bytes))) else (match (property source start)
+      | Option.some reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Option.none => (if (compact && (hasKey source start)) then (wrap false (block source start limit rest 3 false (column source start) (nil Bytes))) else (scalarOrFlow source start limit))))))) else (if (mode =? 2) then (match (block source (position + 1) (outer + 1) rest 1 true outer (nil Bytes))
+      | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Result.ok entry => (let line : Nat := (skipLines source (second entry)); (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if ((prim length source : Nat) <=? line) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VItem (first entry) (ctor Studio.Schema::Value.VNil)), line)) else (if ((indent =? outer) && (isEntry source (line + indent))) then (match (block source (line + indent) limit rest 2 false outer (nil Bytes))
+        | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+        | Result.ok more => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VItem (first entry) (first more)), (second more)))) else (if (outer <? indent) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a line is indented more than its block sequence entry allows (YAML 1.2.2 [183])" (line + indent))) else (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VItem (first entry) (ctor Studio.Schema::Value.VNil)), line)))))))) else (match (property source position)
+      | Option.some reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+      | Option.none => (match (keyAt source position)
+        | Option.none => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a block mapping entry must be an implicit key and : (YAML 1.2.2 [188])" position))
+        | Option.some colon => (let key : Bytes := (keyText source position); (if (Studio.Xml::member key seen) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a mapping key appears twice (YAML 1.2.2 section 3.2.1.1)" position)) else (match (block source (colon + 1) (outer + 1) rest 1 false outer (nil Bytes))
+          | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+          | Result.ok entry => (let line : Nat := (skipLines source (second entry)); (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if ((prim length source : Nat) <=? line) then (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VMember key (first entry) (ctor Studio.Schema::Value.VNil)), line)) else (if (((indent =? outer) && (no (isEntry source (line + indent)))) && (no (marker source line))) then (match (block source (line + indent) limit rest 3 false outer (cons key seen))
+            | Result.error reason => (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] reason)
+            | Result.ok more => (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VMember key (first entry) (first more)), (second more)))) else (if (outer <? indent) then (ctor Result.error [(Studio.Schema::Value * Nat), Bytes] (Studio.Xml::failure "a line is indented more than its block mapping entry allows (YAML 1.2.2 [187])" (line + indent))) else (ctor Result.ok [(Studio.Schema::Value * Nat), Bytes] ((ctor Studio.Schema::Value.VMember key (first entry) (ctor Studio.Schema::Value.VNil)), line)))))))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: printable,
+  parameters: [point : Nat],
+  result: Bool,
+  body: ((((point =? 9) || (point =? 10)) || ((point =? 13) || ((32 <=? point) && (point <=? 126)))) || (((point =? 133) || ((160 <=? point) && (point <=? 55295))) || (((57344 <=? point) && (point <=? 65533)) || ((65536 <=? point) && (point <=? 1114111))))),
+  executable: true
+}
+
+definition{
+  name: printStep,
+  parameters: [source : Bytes, position : Nat],
+  result: (Option Nat),
+  body: (match (Studio.Schema::decodeAt source position)
+    | Option.none => (ctor Option.none [Nat])
+    | Option.some decoded => (if (printable (first decoded)) then (ctor Option.some [Nat] (position + (second decoded))) else (ctor Option.none [Nat]))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: printableEnd,
+  parameters: [source : Bytes],
+  result: Nat,
+  body: (first (prim iterate_until (fun [source] (position : Nat) => (printStep source position)) ((prim length source : Nat) + 1) 0 : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: documentEnd,
+  parameters: [source : Bytes, position : Nat],
+  result: (Result Nat Bytes),
+  body: (let line : Nat := (skipLines source position); (let total : Nat := (prim length source : Nat); (if ((line <? total) && ((Studio.Xml::startsAt source line "...") && (marker source line))) then (match (tail source (line + 3))
+    | Result.error reason => (ctor Result.error [Nat, Bytes] reason)
+    | Result.ok next => (let after : Nat := (skipLines source next); (if (after <? total) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a stream of more than one document is not read (YAML 1.2.2 [211])" after)) else (ctor Result.ok [Nat, Bytes] after)))) else (if ((line <? total) && (marker source line)) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a stream of more than one document is not read (YAML 1.2.2 [211])" line)) else (if (line <? total) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "only comments may follow the root node (YAML 1.2.2 [207])" line)) else (ctor Result.ok [Nat, Bytes] line)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: readYaml,
+  parameters: [raw : Bytes],
+  result: (Result Studio.Schema::Value Bytes),
+  body: (let unmarked : Bytes := (if (LexLeanStd.Text::matchAt raw 0xefbbbf 0) then (LexLeanStd.Text::sliceOr raw 3 (prim subtract (prim length raw : Nat) 3 : Nat)) else raw); (let source : Bytes := (Studio.Xml::normalizeLines unmarked); (let total : Nat := (prim length source : Nat); (let valid : Nat := (printableEnd source); (let fuel : Nat := (total + 2); (let start : Nat := (skipLines source 0); (if (valid <? total) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "the input is not a sequence of printable characters in UTF-8 (YAML 1.2.2 [1], section 5.2)" valid)) else (if (((start <? total) && (Studio.Xml::startsAt source start "...")) && (marker source start)) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "a stream with no document is not read (YAML 1.2.2 [211])" start)) else (if ((at source start) =? 37) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "a directive is not read (YAML 1.2.2 [82])" start)) else (if (total <=? start) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "a stream with no document is not read (YAML 1.2.2 [211])" start)) else (match (if ((Studio.Xml::startsAt source start "---") && (marker source start)) then (block source (start + 3) 0 fuel 1 false 0 (nil Bytes)) else (block source start 0 fuel 0 false 0 (nil Bytes)))
+    | Result.error reason => (ctor Result.error [Studio.Schema::Value, Bytes] reason)
+    | Result.ok root => (match (documentEnd source (second root))
+      | Result.error reason => (ctor Result.error [Studio.Schema::Value, Bytes] reason)
+      | Result.ok after => (ctor Result.ok [Studio.Schema::Value, Bytes] (first root)))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+\end{semanticmodule}
+\end{lexlean}
