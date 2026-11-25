@@ -415,3 +415,4 @@ Each construct and the citation that admits it.
 - `Catalog.XboxRequirement`: std MS-XBOX-REQUIREMENTS-CERT-TESTED-16.10 row P02
 - `Catalog.CvssV4`: std FIRST-CVSS-4.0 row T10
 - `Catalog.OpenTrackIo`: std SMPTE-OPENTRACKIO-SCHEMA row F03
+- `Catalog.InkJsonStory`: std INKLE-INK-JSON-1.2.1 row C05
