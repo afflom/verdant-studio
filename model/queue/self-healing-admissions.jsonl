@@ -1,0 +1,9 @@
+{"evidence":{"identity":{"agent":"afflom","artifact":"docs/owner-decisions.md"}},"id":"REQ-SELF-HEALING","stakeholder":"afflom","statement":"When an operation of the Verdant Studio API fails, the API records the failure in the model as an error that holds its exact refusal and the requirement it breaks, restores service by its own operations, derives the repair from the error as the Verdant Engine Observer derives its refinement agenda, and dispatches that repair through the App behind the same self-verification check plus a regression vector built from the error, so that the bug is fixed by the API itself in normal operation and cannot return, and nothing reaches main red."}
+{"construct":"Studio.SelfHealing","req":"REQ-SELF-HEALING"}
+{"construct":"Studio.Error.Observation","std":{"authority":"W3C-SOSA-2017"}}
+{"construct":"Studio.Error.Incident","std":{"authority":"AXELOS-ITIL-4-PEOPLECERT-PRACTICE-GUIDES","row":"W02"}}
+{"construct":"Studio.Error.Problem","std":{"authority":"ISO-IEC-20000-1-2018-PREVIEW","row":"W03"}}
+{"construct":"Studio.Error.Agenda","std":{"authority":"VERDANT-ENGINE-IDS-2.20.1"}}
+{"construct":"Studio.Error.Regression","der":{"check":"VS-04","inputs":["Studio.Error.Problem","P5","P10","P12"],"rule":"pattern"}}
+{"construct":"Studio.Error.Repair","der":{"check":"VS-04","inputs":["Studio.SelfHealing","Studio.Error.Agenda","Studio.Error.Regression","Studio.Ops","AgentIdentity","D8"],"rule":"pattern"}}
+{"construct":"Studio.Error.Recovery","std":{"authority":"DORA-SOFTWARE-DELIVERY-METRICS","row":"H14"}}
