@@ -1,0 +1,90 @@
+\begin{lexlean}{Catalog.InkJsonStory}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: ControlCommand,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: ev, fields: []},
+    {name: u002Fev, fields: []},
+    {name: ou0075t, fields: []},
+    {name: pop, fields: []},
+    {name: u002Du003Eu002Du003E, fields: []},
+    {name: u007Eret, fields: []},
+    {name: du0075, fields: []},
+    {name: str, fields: []},
+    {name: u002Fstr, fields: []},
+    {name: nop, fields: []},
+    {name: choiceCnt, fields: []},
+    {name: tu0075rn, fields: []},
+    {name: tu0075rns, fields: []},
+    {name: visit, fields: []},
+    {name: seq, fields: []},
+    {name: thread, fields: []},
+    {name: done, fields: []},
+    {name: end, fields: []}
+  ]
+}
+
+inductive{
+  name: NativeFunction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: u002B, fields: []},
+    {name: u002D, fields: []},
+    {name: u002F, fields: []},
+    {name: u002A, fields: []},
+    {name: u0025, fields: []},
+    {name: u005F, fields: []},
+    {name: u003Du003D, fields: []},
+    {name: u003E, fields: []},
+    {name: u003C, fields: []},
+    {name: u003Eu003D, fields: []},
+    {name: u003Cu003D, fields: []},
+    {name: u0021u003D, fields: []},
+    {name: u0021, fields: []},
+    {name: u0026u0026, fields: []},
+    {name: u007Cu007C, fields: []},
+    {name: MIN, fields: []},
+    {name: MAX, fields: []}
+  ]
+}
+
+structure{
+  name: ChoicePoint,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: u002A, type: Bytes},
+    {name: flg, type: Nat}
+  ]
+}
+
+inductive{
+  name: JsonValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: null, fields: []},
+    {name: boolean, fields: [Bool]},
+    {name: number, fields: [(Int * Int)]},
+    {name: string, fields: [Bytes]},
+    {name: array, fields: [(List JsonValue)]},
+    {name: object, fields: [(List (Bytes * JsonValue))]}
+  ]
+}
+
+structure{
+  name: InkJsonStory,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: inkVersion, type: Int},
+    {name: root, type: (List JsonValue)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

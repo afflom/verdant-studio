@@ -56,7 +56,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **C02** Three-act structure and Freytag's pyramid (Narrative, writing, and interactive story): narrowMatch WIKIPEDIA-THREE-ACT-STRUCTURE (staged)
 - **C03** Interactive Digital Narrative: System-Process-Product (SPP) model (Narrative, writing, and interactive story): exactMatch KOENITZ-IDN-2015 (staged)
 - **C04** Branching narrative structures (branch-and-bottleneck, quality-based, storylets, hub) (Narrative, writing, and interactive story): exactMatch ASHWELL-STANDARD-PATTERNS-2015 (derived from its citation)
-- **C05** ink narrative scripting language (Narrative, writing, and interactive story), not reached from any origin: exactMatch INKLE-INK-JSON-1.2.1 (staged)
+- **C05** ink narrative scripting language (Narrative, writing, and interactive story): exactMatch INKLE-INK-JSON-1.2.1 (staged)
 - **C06** Yarn Spinner (Narrative, writing, and interactive story), not reached from any origin: exactMatch YARNSPINNER-PARSER-3.3.1 (staged)
 - **C07** Twee 3 specification (Narrative, writing, and interactive story): exactMatch IFTF-TWEE-3.0.2 (staged)
 - **C08** articy:draft data model (Narrative, writing, and interactive story), not reached from any origin: exactMatch ARTICY-DRAFT-X-JSON-EXPORT (staged)
