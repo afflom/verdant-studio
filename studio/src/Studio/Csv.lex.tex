@@ -44,7 +44,7 @@ definition{
   result: Nat,
   body: (match (prim index text offset : (Option UInt8))
     | Option.none => 256
-    | Option.some byte => (prim to_nat byte : Nat)),
+    | Option.some byte => (Studio.Doc::byteValue byte)),
   axioms: [Quot.sound, propext],
   executable: true
 }
