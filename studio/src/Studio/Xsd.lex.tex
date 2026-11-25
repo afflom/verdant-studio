@@ -1,0 +1,402 @@
+\begin{lexlean}{Studio.Xsd}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
+\importmodule{Studio.Xml}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: xsdNamespace,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "http://www.w3.org/2001/XMLSchema"),
+  executable: true
+}
+
+definition{
+  name: xmlNamespace,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "http://www.w3.org/XML/1998/namespace"),
+  executable: true
+}
+
+definition{
+  name: xmlnsNamespace,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "http://www.w3.org/2000/xmlns/"),
+  executable: true
+}
+
+definition{
+  name: attrValue,
+  parameters: [attrs : Studio.Xml::Xml, key : Bytes],
+  result: (Option Bytes),
+  body: (match attrs
+    | Studio.Xml::Xml.XAttr label value rest => (if (Studio.Doc::same label key) then (ctor Option.some [Bytes] value) else (attrValue rest key))
+    | Studio.Xml::Xml.XElem label inner content => (ctor Option.none [Bytes])
+    | Studio.Xml::Xml.XText text => (ctor Option.none [Bytes])
+    | Studio.Xml::Xml.XItem head rest => (ctor Option.none [Bytes])
+    | Studio.Xml::Xml.XNil => (ctor Option.none [Bytes])),
+  recursive_argument: attrs,
+  executable: true
+}
+
+definition{
+  name: prefixOf,
+  parameters: [qname : Bytes],
+  result: Bytes,
+  body: (match (Studio.Xml::findFrom qname (Studio.Doc::lit ":") 0)
+    | Option.none => 0x
+    | Option.some colon => (LexLeanStd.Text::sliceOr qname 0 colon)),
+  executable: true
+}
+
+definition{
+  name: localOf,
+  parameters: [qname : Bytes],
+  result: Bytes,
+  body: (match (Studio.Xml::findFrom qname (Studio.Doc::lit ":") 0)
+    | Option.none => qname
+    | Option.some colon => (LexLeanStd.Text::sliceOr qname (colon + 1) (prim subtract (prim length qname : Nat) (colon + 1) : Nat))),
+  executable: true
+}
+
+definition{
+  name: declarations,
+  parameters: [attrs : Studio.Xml::Xml, scope : (List (Bytes * Bytes))],
+  result: (Result (List (Bytes * Bytes)) Bytes),
+  body: (match attrs
+    | Studio.Xml::Xml.XAttr label value rest => (match (declarations rest scope)
+      | Result.error reason => (ctor Result.error [(List (Bytes * Bytes)), Bytes] reason)
+      | Result.ok inner => (if (Studio.Doc::same label (Studio.Doc::lit "xmlns")) then (if ((Studio.Doc::same value (xmlNamespace)) || (Studio.Doc::same value (xmlnsNamespace))) then (ctor Result.error [(List (Bytes * Bytes)), Bytes] (Studio.Doc::lit "the default namespace must not be the xml or xmlns namespace name (Namespaces in XML 1.0, section 3, NSC: Reserved Prefixes and Namespace Names)")) else (ctor Result.ok [(List (Bytes * Bytes)), Bytes] (cons (0x, value) inner))) else (if (LexLeanStd.Text::startsWith label (Studio.Doc::lit "xmlns:")) then (let declared : Bytes := (LexLeanStd.Text::sliceOr label 6 (prim subtract (prim length label : Nat) 6 : Nat)); (if (Studio.Doc::same declared (Studio.Doc::lit "xmlns")) then (ctor Result.error [(List (Bytes * Bytes)), Bytes] (Studio.Doc::lit "the prefix xmlns must not be declared (Namespaces in XML 1.0, section 3, NSC: Reserved Prefixes and Namespace Names)")) else (if ((Studio.Doc::same declared (Studio.Doc::lit "xml")) && (if (Studio.Doc::same value (xmlNamespace)) then false else true)) then (ctor Result.error [(List (Bytes * Bytes)), Bytes] (Studio.Doc::lit "the prefix xml may be bound only to its own namespace name (Namespaces in XML 1.0, section 3, NSC: Reserved Prefixes and Namespace Names)")) else (if (((Studio.Doc::same value (xmlNamespace)) || (Studio.Doc::same value (xmlnsNamespace))) && (if (Studio.Doc::same declared (Studio.Doc::lit "xml")) then false else true)) then (ctor Result.error [(List (Bytes * Bytes)), Bytes] (Studio.Doc::lit "the xml and xmlns namespace names must not be bound to another prefix (Namespaces in XML 1.0, section 3, NSC: Reserved Prefixes and Namespace Names)")) else (if (Studio.Doc::same value 0x) then (ctor Result.error [(List (Bytes * Bytes)), Bytes] (Studio.Doc::lit "a prefix must not be undeclared (Namespaces in XML 1.0, section 3, NSC: No Prefix Undeclaring)")) else (ctor Result.ok [(List (Bytes * Bytes)), Bytes] (cons (declared, value) inner))))))) else (ctor Result.ok [(List (Bytes * Bytes)), Bytes] inner))))
+    | Studio.Xml::Xml.XElem label inner content => (ctor Result.ok [(List (Bytes * Bytes)), Bytes] scope)
+    | Studio.Xml::Xml.XText text => (ctor Result.ok [(List (Bytes * Bytes)), Bytes] scope)
+    | Studio.Xml::Xml.XItem head rest => (ctor Result.ok [(List (Bytes * Bytes)), Bytes] scope)
+    | Studio.Xml::Xml.XNil => (ctor Result.ok [(List (Bytes * Bytes)), Bytes] scope)),
+  recursive_argument: attrs,
+  executable: true
+}
+
+definition{
+  name: lookup,
+  parameters: [scope : (List (Bytes * Bytes)), wanted : Bytes],
+  result: (Option Bytes),
+  body: (match scope
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::same (first head) wanted) then (ctor Option.some [Bytes] (second head)) else (lookup rest wanted))),
+  recursive_argument: scope,
+  executable: true
+}
+
+definition{
+  name: expand,
+  parameters: [scope : (List (Bytes * Bytes)), qname : Bytes],
+  result: (Result (Bytes * Bytes) Bytes),
+  body: (let prefix : Bytes := (prefixOf qname); (if (Studio.Doc::same prefix 0x) then (match (lookup scope 0x)
+    | Option.none => (ctor Result.ok [(Bytes * Bytes), Bytes] (0x, qname))
+    | Option.some uri => (ctor Result.ok [(Bytes * Bytes), Bytes] (uri, qname))) else (if (Studio.Doc::same prefix (Studio.Doc::lit "xml")) then (ctor Result.ok [(Bytes * Bytes), Bytes] ((xmlNamespace), (localOf qname))) else (match (lookup scope prefix)
+    | Option.none => (ctor Result.error [(Bytes * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the prefix ") (cons prefix (cons (Studio.Doc::lit " is not declared (Namespaces in XML 1.0, section 5, NSC: Prefix Declared)") (nil Bytes))))))
+    | Option.some uri => (ctor Result.ok [(Bytes * Bytes), Bytes] (uri, (localOf qname))))))),
+  executable: true
+}
+
+definition{
+  name: isXsd,
+  parameters: [expanded : (Bytes * Bytes), local : String],
+  result: Bool,
+  body: ((Studio.Doc::same (first expanded) (xsdNamespace)) && (Studio.Doc::same (second expanded) (prim utf8_encode local : Bytes))),
+  executable: true
+}
+
+definition{
+  name: builtinParent,
+  parameters: [local : Bytes],
+  result: (Option Bytes),
+  body: (if (Studio.Xml::member local (cons (Studio.Doc::lit "string") (cons (Studio.Doc::lit "boolean") (cons (Studio.Doc::lit "decimal") (cons (Studio.Doc::lit "float") (cons (Studio.Doc::lit "double") (cons (Studio.Doc::lit "duration") (cons (Studio.Doc::lit "dateTime") (cons (Studio.Doc::lit "time") (cons (Studio.Doc::lit "date") (cons (Studio.Doc::lit "gYearMonth") (cons (Studio.Doc::lit "gYear") (cons (Studio.Doc::lit "gMonthDay") (cons (Studio.Doc::lit "gDay") (cons (Studio.Doc::lit "gMonth") (cons (Studio.Doc::lit "hexBinary") (cons (Studio.Doc::lit "base64Binary") (cons (Studio.Doc::lit "anyURI") (cons (Studio.Doc::lit "QName") (cons (Studio.Doc::lit "NOTATION") (nil Bytes))))))))))))))))))))) then (ctor Option.some [Bytes] (Studio.Doc::lit "anyAtomicType")) else (if (Studio.Doc::same local (Studio.Doc::lit "normalizedString")) then (ctor Option.some [Bytes] (Studio.Doc::lit "string")) else (if (Studio.Doc::same local (Studio.Doc::lit "token")) then (ctor Option.some [Bytes] (Studio.Doc::lit "normalizedString")) else (if (Studio.Xml::member local (cons (Studio.Doc::lit "language") (cons (Studio.Doc::lit "NMTOKEN") (cons (Studio.Doc::lit "Name") (nil Bytes))))) then (ctor Option.some [Bytes] (Studio.Doc::lit "token")) else (if (Studio.Doc::same local (Studio.Doc::lit "NCName")) then (ctor Option.some [Bytes] (Studio.Doc::lit "Name")) else (if (Studio.Xml::member local (cons (Studio.Doc::lit "ID") (cons (Studio.Doc::lit "IDREF") (cons (Studio.Doc::lit "ENTITY") (nil Bytes))))) then (ctor Option.some [Bytes] (Studio.Doc::lit "NCName")) else (if (Studio.Doc::same local (Studio.Doc::lit "integer")) then (ctor Option.some [Bytes] (Studio.Doc::lit "decimal")) else (if (Studio.Xml::member local (cons (Studio.Doc::lit "nonPositiveInteger") (cons (Studio.Doc::lit "long") (cons (Studio.Doc::lit "nonNegativeInteger") (nil Bytes))))) then (ctor Option.some [Bytes] (Studio.Doc::lit "integer")) else (if (Studio.Doc::same local (Studio.Doc::lit "negativeInteger")) then (ctor Option.some [Bytes] (Studio.Doc::lit "nonPositiveInteger")) else (if (Studio.Doc::same local (Studio.Doc::lit "int")) then (ctor Option.some [Bytes] (Studio.Doc::lit "long")) else (if (Studio.Doc::same local (Studio.Doc::lit "short")) then (ctor Option.some [Bytes] (Studio.Doc::lit "int")) else (if (Studio.Doc::same local (Studio.Doc::lit "byte")) then (ctor Option.some [Bytes] (Studio.Doc::lit "short")) else (if (Studio.Xml::member local (cons (Studio.Doc::lit "unsignedLong") (cons (Studio.Doc::lit "positiveInteger") (nil Bytes)))) then (ctor Option.some [Bytes] (Studio.Doc::lit "nonNegativeInteger")) else (if (Studio.Doc::same local (Studio.Doc::lit "unsignedInt")) then (ctor Option.some [Bytes] (Studio.Doc::lit "unsignedLong")) else (if (Studio.Doc::same local (Studio.Doc::lit "unsignedShort")) then (ctor Option.some [Bytes] (Studio.Doc::lit "unsignedInt")) else (if (Studio.Doc::same local (Studio.Doc::lit "unsignedByte")) then (ctor Option.some [Bytes] (Studio.Doc::lit "unsignedShort")) else (if (Studio.Xml::member local (cons (Studio.Doc::lit "yearMonthDuration") (cons (Studio.Doc::lit "dayTimeDuration") (nil Bytes)))) then (ctor Option.some [Bytes] (Studio.Doc::lit "duration")) else (if (Studio.Doc::same local (Studio.Doc::lit "dateTimeStamp")) then (ctor Option.some [Bytes] (Studio.Doc::lit "dateTime")) else (if (Studio.Xml::member local (cons (Studio.Doc::lit "NMTOKENS") (cons (Studio.Doc::lit "IDREFS") (cons (Studio.Doc::lit "ENTITIES") (cons (Studio.Doc::lit "anyAtomicType") (nil Bytes)))))) then (ctor Option.some [Bytes] (Studio.Doc::lit "anySimpleType")) else (ctor Option.none [Bytes])))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: builtinType,
+  parameters: [local : Bytes, fuel : Nat],
+  result: (Result Bytes Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [Bytes, Bytes] (Studio.Doc::lit "the built-in datatype hierarchy is deeper than XSD 1.1 Part 2 section 3 defines"))
+    | Nat.succ rest => (if (Studio.Xml::member local (cons (Studio.Doc::lit "NMTOKENS") (cons (Studio.Doc::lit "IDREFS") (cons (Studio.Doc::lit "ENTITIES") (nil Bytes))))) then (ctor Result.ok [Bytes, Bytes] (Studio.Doc::lit "(List Bytes)")) else (if (Studio.Doc::same local (Studio.Doc::lit "nonNegativeInteger")) then (ctor Result.ok [Bytes, Bytes] (Studio.Doc::lit "Nat")) else (if (Studio.Doc::same local (Studio.Doc::lit "integer")) then (ctor Result.ok [Bytes, Bytes] (Studio.Doc::lit "Int")) else (if (Studio.Doc::same local (Studio.Doc::lit "decimal")) then (ctor Result.ok [Bytes, Bytes] (Studio.Schema::numberType)) else (if (Studio.Doc::same local (Studio.Doc::lit "boolean")) then (ctor Result.ok [Bytes, Bytes] (Studio.Doc::lit "Bool")) else (if ((Studio.Doc::same local (Studio.Doc::lit "float")) || (Studio.Doc::same local (Studio.Doc::lit "double"))) then (ctor Result.error [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "xs:") (cons local (cons (Studio.Doc::lit " is not translated, because its value space holds positive and negative zero, the infinities and NaN, which no exact LexLean number type holds (XSD 1.1 Part 2, sections 3.3.4 and 3.3.5)") (nil Bytes)))))) else (if ((Studio.Doc::same local (Studio.Doc::lit "anySimpleType")) || (Studio.Doc::same local (Studio.Doc::lit "anyAtomicType"))) then (ctor Result.error [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "xs:") (cons local (cons (Studio.Doc::lit " is not translated, because it is the union of every simple value space and has no one LexLean type (XSD 1.1 Part 2, sections 3.2.1 and 3.2.2)") (nil Bytes)))))) else (match (builtinParent local)
+      | Option.none => (ctor Result.error [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "xs:") (cons local (cons (Studio.Doc::lit " is not a built-in datatype of XSD 1.1 Part 2") (nil Bytes))))))
+      | Option.some parent => (if (Studio.Doc::same parent (Studio.Doc::lit "anyAtomicType")) then (ctor Result.ok [Bytes, Bytes] (Studio.Doc::lit "Bytes")) else (builtinType parent rest))))))))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: typeOf,
+  parameters: [scope : (List (Bytes * Bytes)), target : Bytes, qname : Bytes],
+  result: (Result (Bytes * (List Bytes)) Bytes),
+  body: (match (expand scope qname)
+    | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+    | Result.ok expanded => (if (Studio.Doc::same (first expanded) (xsdNamespace)) then (match (builtinType (second expanded) 16)
+      | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+      | Result.ok found => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] (found, (nil Bytes)))) else (if (Studio.Doc::same (first expanded) target) then (let named : Bytes := (Studio.Schema::pascal (second expanded)); (ctor Result.ok [(Bytes * (List Bytes)), Bytes] (named, (cons named (nil Bytes))))) else (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the type ") (cons qname (cons (Studio.Doc::lit " is in the namespace ") (cons (first expanded) (cons (Studio.Doc::lit ", which is neither XML Schema's nor this document's target namespace; imported schema documents are not read yet") (nil Bytes))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: enumerations,
+  parameters: [content : Studio.Xml::Xml, scope : (List (Bytes * Bytes))],
+  result: (Result (List Studio.Schema::Value) Bytes),
+  body: (match content
+    | Studio.Xml::Xml.XItem head rest => (match (enumerations rest scope)
+      | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+      | Result.ok later => (match head
+        | Studio.Xml::Xml.XElem label attrs inner => (match (declarations attrs scope)
+          | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+          | Result.ok local => (match (expand local label)
+            | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+            | Result.ok expanded => (if (isXsd expanded "enumeration") then (match (attrValue attrs (Studio.Doc::lit "value"))
+              | Option.none => (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Doc::lit "an enumeration facet must have a value attribute (XSD 1.1 Part 2, section 4.3.5.2)"))
+              | Option.some value => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (cons (ctor Studio.Schema::Value.VStr value) later))) else (ctor Result.ok [(List Studio.Schema::Value), Bytes] later))))
+        | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(List Studio.Schema::Value), Bytes] later)
+        | Studio.Xml::Xml.XText text => (ctor Result.ok [(List Studio.Schema::Value), Bytes] later)
+        | Studio.Xml::Xml.XItem first1 more => (ctor Result.ok [(List Studio.Schema::Value), Bytes] later)
+        | Studio.Xml::Xml.XNil => (ctor Result.ok [(List Studio.Schema::Value), Bytes] later)))
+    | Studio.Xml::Xml.XElem label attrs inner => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (nil Studio.Schema::Value))
+    | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (nil Studio.Schema::Value))
+    | Studio.Xml::Xml.XText text => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (nil Studio.Schema::Value))
+    | Studio.Xml::Xml.XNil => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (nil Studio.Schema::Value))),
+  recursive_argument: content,
+  executable: true
+}
+
+definition{
+  name: derivation,
+  parameters: [content : Studio.Xml::Xml, scope : (List (Bytes * Bytes))],
+  result: (Result (Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))) Bytes),
+  body: (match content
+    | Studio.Xml::Xml.XItem head rest => (match head
+      | Studio.Xml::Xml.XElem label attrs inner => (match (declarations attrs scope)
+        | Result.error reason => (ctor Result.error [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] reason)
+        | Result.ok local => (match (expand local label)
+          | Result.error reason => (ctor Result.error [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] reason)
+          | Result.ok expanded => (if ((isXsd expanded "restriction") || ((isXsd expanded "list") || (isXsd expanded "union"))) then (ctor Result.ok [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] (ctor Option.some [(Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))] ((second expanded), (attrs, (inner, local))))) else (derivation rest scope))))
+      | Studio.Xml::Xml.XAttr label value more => (derivation rest scope)
+      | Studio.Xml::Xml.XText text => (derivation rest scope)
+      | Studio.Xml::Xml.XItem first1 more => (derivation rest scope)
+      | Studio.Xml::Xml.XNil => (derivation rest scope))
+    | Studio.Xml::Xml.XElem label attrs inner => (ctor Result.ok [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] (ctor Option.none [(Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))]))
+    | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] (ctor Option.none [(Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))]))
+    | Studio.Xml::Xml.XText text => (ctor Result.ok [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] (ctor Option.none [(Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))]))
+    | Studio.Xml::Xml.XNil => (ctor Result.ok [(Option (Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))), Bytes] (ctor Option.none [(Bytes * (Studio.Xml::Xml * (Studio.Xml::Xml * (List (Bytes * Bytes)))))]))),
+  recursive_argument: content,
+  executable: true
+}
+
+definition{
+  name: valueStructure,
+  parameters: [named : Bytes, carried : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons named (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n    {name: value, type: ") (cons carried (cons (Studio.Doc::lit "}\n  ]\n}\n") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: located,
+  parameters: [reason : Bytes, named : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons reason (cons (Studio.Doc::lit " at simpleType ") (cons named (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: distinctValues,
+  parameters: [literals : (List Studio.Schema::Value), seen : (List Bytes)],
+  result: (List Studio.Schema::Value),
+  body: (match literals
+    | List.nil => (nil Studio.Schema::Value)
+    | List.cons head rest => (let text : Bytes := (Studio.Schema::writeText head); (if (Studio.Doc::memberBytes text seen) then (distinctValues rest seen) else (cons head (distinctValues rest (cons text seen)))))),
+  recursive_argument: literals,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: simpleType,
+  parameters: [named : Bytes, content : Studio.Xml::Xml, scope : (List (Bytes * Bytes)), target : Bytes],
+  result: (Result (Bytes * (List Bytes)) Bytes),
+  body: (let typeName : Bytes := (Studio.Schema::pascal named); (match (derivation content scope)
+    | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located reason named))
+    | Result.ok found => (match found
+      | Option.none => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located (Studio.Doc::lit "a simpleType must have a restriction, list or union child (XSD 1.1 Part 2, section 4.1.2)") named))
+      | Option.some chosen => (let kind : Bytes := (first chosen); (let attrs : Studio.Xml::Xml := (first (second chosen)); (let inner : Studio.Xml::Xml := (first (second (second chosen))); (let local : (List (Bytes * Bytes)) := (second (second (second chosen))); (if (Studio.Doc::same kind (Studio.Doc::lit "union")) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located (Studio.Doc::lit "a union is not translated, because a literal can be valid for more than one member type, so no LexLean inductive keeps its members disjoint (XSD 1.1 Part 2, section 2.4.1.3)") named)) else (if (Studio.Doc::same kind (Studio.Doc::lit "list")) then (match (attrValue attrs (Studio.Doc::lit "itemType"))
+        | Option.none => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located (Studio.Doc::lit "a list with an anonymous item type is not translated yet") named))
+        | Option.some item => (match (typeOf local target item)
+          | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located reason named))
+          | Result.ok carried => (if (LexLeanStd.Text::startsWith (first carried) (Studio.Doc::lit "(List ")) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located (Studio.Doc::lit "the item type of a list must not itself be a list (XSD 1.1 Part 2, section 4.1.5)") named)) else (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((valueStructure typeName (Studio.Doc::cat (cons (Studio.Doc::lit "(List ") (cons (first carried) (cons (Studio.Doc::lit ")") (nil Bytes)))))), (second carried)))))) else (match (attrValue attrs (Studio.Doc::lit "base"))
+        | Option.none => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located (Studio.Doc::lit "a restriction with an anonymous base type is not translated yet") named))
+        | Option.some base => (match (typeOf local target base)
+          | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located reason named))
+          | Result.ok carried => (match (enumerations inner local)
+            | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located reason named))
+            | Result.ok listed => (let values : (List Studio.Schema::Value) := (distinctValues listed (nil Bytes)); (match values
+              | List.nil => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((valueStructure typeName (first carried)), (second carried)))
+              | List.cons head others => (match (Studio.Schema::constructorsWith (Studio.Schema::collides (Studio.Schema::strings values)) values (nil Bytes))
+                | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (located reason named))
+                | Result.ok constructors => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::inductiveText typeName constructors), (nil Bytes)))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: simpleTypes,
+  parameters: [content : Studio.Xml::Xml, scope : (List (Bytes * Bytes)), target : Bytes],
+  result: (Result (List (Bytes * ((List Bytes) * Bytes))) Bytes),
+  body: (match content
+    | Studio.Xml::Xml.XItem head rest => (match (simpleTypes rest scope target)
+      | Result.error reason => (ctor Result.error [(List (Bytes * ((List Bytes) * Bytes))), Bytes] reason)
+      | Result.ok later => (match head
+        | Studio.Xml::Xml.XElem label attrs inner => (match (declarations attrs scope)
+          | Result.error reason => (ctor Result.error [(List (Bytes * ((List Bytes) * Bytes))), Bytes] reason)
+          | Result.ok local => (match (expand local label)
+            | Result.error reason => (ctor Result.error [(List (Bytes * ((List Bytes) * Bytes))), Bytes] reason)
+            | Result.ok expanded => (if (isXsd expanded "simpleType") then (match (attrValue attrs (Studio.Doc::lit "name"))
+              | Option.none => (ctor Result.error [(List (Bytes * ((List Bytes) * Bytes))), Bytes] (Studio.Doc::lit "a top-level simpleType must have a name (XSD 1.1 Part 2, section 4.1.2)"))
+              | Option.some named => (match (simpleType named inner local target)
+                | Result.error reason => (ctor Result.error [(List (Bytes * ((List Bytes) * Bytes))), Bytes] reason)
+                | Result.ok translated => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] (cons ((Studio.Schema::pascal named), ((second translated), (first translated))) later)))) else (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] later))))
+        | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] later)
+        | Studio.Xml::Xml.XText text => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] later)
+        | Studio.Xml::Xml.XItem first1 more => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] later)
+        | Studio.Xml::Xml.XNil => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] later)))
+    | Studio.Xml::Xml.XElem label attrs inner => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] (nil (Bytes * ((List Bytes) * Bytes))))
+    | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] (nil (Bytes * ((List Bytes) * Bytes))))
+    | Studio.Xml::Xml.XText text => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] (nil (Bytes * ((List Bytes) * Bytes))))
+    | Studio.Xml::Xml.XNil => (ctor Result.ok [(List (Bytes * ((List Bytes) * Bytes))), Bytes] (nil (Bytes * ((List Bytes) * Bytes))))),
+  recursive_argument: content,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: typeNames,
+  parameters: [types : (List (Bytes * ((List Bytes) * Bytes)))],
+  result: (List Bytes),
+  body: (match types
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (first head) (typeNames rest))),
+  recursive_argument: types,
+  executable: true
+}
+
+definition{
+  name: duplicateName,
+  parameters: [names : (List Bytes)],
+  result: (Option Bytes),
+  body: (match names
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::memberBytes head rest) then (ctor Option.some [Bytes] head) else (duplicateName rest))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: missingName,
+  parameters: [wanted : (List Bytes), defined : (List Bytes)],
+  result: (Option Bytes),
+  body: (match wanted
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::memberBytes head defined) then (missingName rest defined) else (ctor Option.some [Bytes] head))),
+  recursive_argument: wanted,
+  executable: true
+}
+
+definition{
+  name: undefinedReference,
+  parameters: [types : (List (Bytes * ((List Bytes) * Bytes))), defined : (List Bytes)],
+  result: (Option Bytes),
+  body: (match types
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (match (missingName (first (second head)) defined)
+      | Option.some absent => (ctor Option.some [Bytes] absent)
+      | Option.none => (undefinedReference rest defined))),
+  recursive_argument: types,
+  executable: true
+}
+
+definition{
+  name: pickReady,
+  parameters: [pending : (List (Bytes * ((List Bytes) * Bytes))), emitted : (List Bytes)],
+  result: (Option ((Bytes * Bytes) * (List (Bytes * ((List Bytes) * Bytes))))),
+  body: (match pending
+    | List.nil => (ctor Option.none [((Bytes * Bytes) * (List (Bytes * ((List Bytes) * Bytes))))])
+    | List.cons head rest => (match (missingName (first (second head)) emitted)
+      | Option.none => (ctor Option.some [((Bytes * Bytes) * (List (Bytes * ((List Bytes) * Bytes))))] (((first head), (second (second head))), rest))
+      | Option.some absent => (match (pickReady rest emitted)
+        | Option.none => (ctor Option.none [((Bytes * Bytes) * (List (Bytes * ((List Bytes) * Bytes))))])
+        | Option.some picked => (ctor Option.some [((Bytes * Bytes) * (List (Bytes * ((List Bytes) * Bytes))))] ((first picked), (cons head (second picked))))))),
+  recursive_argument: pending,
+  executable: true
+}
+
+definition{
+  name: ordered,
+  parameters: [fuel : Nat, pending : (List (Bytes * ((List Bytes) * Bytes))), emitted : (List Bytes), out : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (match fuel
+    | Nat.zero => (match pending
+      | List.nil => (ctor Result.ok [(List Bytes), Bytes] out)
+      | List.cons waiting others => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::lit "the simple types derive from each other in a cycle (XSD 1.1 Part 2, section 4.1.5)")))
+    | Nat.succ rest => (match pending
+      | List.nil => (ctor Result.ok [(List Bytes), Bytes] out)
+      | List.cons waiting others => (match (pickReady pending emitted)
+        | Option.none => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::lit "the simple types derive from each other in a cycle (XSD 1.1 Part 2, section 4.1.5)"))
+        | Option.some picked => (ordered rest (second picked) (cons (first (first picked)) emitted) (cons (second (first picked)) out))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: reversed,
+  parameters: [items : (List Bytes), done : (List Bytes)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => done
+    | List.cons head rest => (reversed rest (cons head done))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: translateXsd,
+  parameters: [raw : Bytes],
+  result: (Result (Nat * Bytes) Bytes),
+  body: (match (Studio.Xml::readXml raw)
+    | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "not well-formed XML: ") (cons reason (nil Bytes)))))
+    | Result.ok root => (match root
+      | Studio.Xml::Xml.XElem label attrs content => (match (declarations attrs (nil (Bytes * Bytes)))
+        | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+        | Result.ok scope => (match (expand scope label)
+          | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+          | Result.ok expanded => (if (isXsd expanded "schema") then (let target : Bytes := (match (attrValue attrs (Studio.Doc::lit "targetNamespace"))
+            | Option.none => 0x
+            | Option.some uri => uri); (match (simpleTypes content scope target)
+            | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+            | Result.ok types => (let names : (List Bytes) := (typeNames types); (match (duplicateName names)
+              | Option.some twice => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two simple types derive the type name ") (cons twice (nil Bytes)))))
+              | Option.none => (match (undefinedReference types names)
+                | Option.some absent => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the type ") (cons absent (cons (Studio.Doc::lit " is not a simple type of this schema document") (nil Bytes))))))
+                | Option.none => (match (ordered ((prim length names : Nat) + 1) types (nil Bytes) (nil Bytes))
+                  | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+                  | Result.ok texts => (ctor Result.ok [(Nat * Bytes), Bytes] ((prim length names : Nat), (Studio.Schema::joinWith (reversed texts (nil Bytes)) (Studio.Doc::lit "\n")))))))))) else (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::lit "the root element must be xs:schema in the XML Schema namespace (XSD 1.1 Part 1, section 3.17.2)")))))
+      | Studio.Xml::Xml.XAttr label value more => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::lit "the document has no root element"))
+      | Studio.Xml::Xml.XText text => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::lit "the document has no root element"))
+      | Studio.Xml::Xml.XItem head rest => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::lit "the document has no root element"))
+      | Studio.Xml::Xml.XNil => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::lit "the document has no root element")))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}
