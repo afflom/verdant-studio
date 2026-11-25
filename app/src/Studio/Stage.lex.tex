@@ -1,0 +1,148 @@
+\begin{lexlean}{Studio.Stage}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Foundation.Bytes}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: bindingSchema,
+  parameters: [],
+  result: Bytes,
+  body: (prim utf8_encode "prismpm/authority-binding/1" : Bytes),
+  executable: true
+}
+
+definition{
+  name: bound,
+  parameters: [schema : Bytes, entry : Bytes],
+  result: Bool,
+  body: ((prim equal schema (bindingSchema) : Bool) && (not ((prim length entry : Nat) =? 0))),
+  executable: true
+}
+
+definition{
+  name: slashCode,
+  parameters: [code : Nat],
+  result: Bool,
+  body: (code =? 47),
+  executable: true
+}
+
+definition{
+  name: endsInSlash,
+  parameters: [url : Bytes],
+  result: Bool,
+  body: (match (prim length url : Nat)
+    | Nat.zero => true
+    | Nat.succ last => (match (prim index url last : (Option UInt8))
+      | Option.none => true
+      | Option.some raw => (slashCode (prim to_nat raw : Nat)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: unnamed,
+  parameters: [redistribution : Bytes, url : Bytes],
+  result: Bool,
+  body: ((prim equal redistribution (prim utf8_encode "redistributable" : Bytes) : Bool) && (endsInSlash url)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: bindingRefusal,
+  parameters: [],
+  result: Bytes,
+  body: (prim utf8_encode "every line must be one prismpm/authority-binding/1 binding with an id\n" : Bytes),
+  executable: true
+}
+
+definition{
+  name: unnamedRefusal,
+  parameters: [entry : Bytes],
+  result: Bytes,
+  body: (prim append (prim utf8_encode "binding " : Bytes) (prim append entry (prim utf8_encode ": a redistributable source.url must name a file, because ingest-authority saves the download under the last segment of its path, and this URL ends in /\n" : Bytes) : Bytes) : Bytes),
+  executable: true
+}
+
+definition{
+  name: stageOutcome,
+  parameters: [isBound : Bool, isUnnamed : Bool],
+  result: Nat,
+  body: (if isBound then (if isUnnamed then 2 else 0) else 1)
+}
+
+definition{
+  name: stageAnswer,
+  parameters: [isBound : Bool, isUnnamed : Bool, entry : Bytes],
+  result: Bytes,
+  body: (match (stageOutcome isBound isUnnamed)
+    | Nat.zero => (prim utf8_encode "accepted" : Bytes)
+    | Nat.succ code => (match code
+      | Nat.zero => (bindingRefusal)
+      | Nat.succ other => (unnamedRefusal entry)))
+}
+
+definition{
+  name: fieldAt,
+  parameters: [value : Bytes, start : Nat, stop : Nat],
+  result: Bytes,
+  body: (match (Foundation.Bytes::sliceBytes value start (prim subtract stop start : Nat))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: tabFields,
+  parameters: [value : Bytes, offset : Nat, start : Nat, remaining : Nat],
+  result: (List Bytes),
+  body: (match remaining
+    | Nat.zero => (cons (fieldAt value start offset) (nil Bytes))
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => (cons (fieldAt value start offset) (nil Bytes))
+      | Option.some raw => (if ((prim to_nat raw : Nat) =? 9) then (cons (fieldAt value start offset) (tabFields value (offset + 1) (offset + 1) rest)) else (tabFields value (offset + 1) start rest)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: stageRequest,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (tabFields value 0 0 (prim length value : Nat))
+    | List.cons entry more => (match more
+      | List.cons schema more2 => (match more2
+        | List.cons redistribution more3 => (match more3
+          | List.cons url more4 => (match more4
+            | List.nil => (stageAnswer (bound schema entry) (unnamed redistribution url) entry)
+            | List.cons extra others => (prim utf8_encode "invalid request" : Bytes))
+          | List.nil => (prim utf8_encode "invalid request" : Bytes))
+        | List.nil => (prim utf8_encode "invalid request" : Bytes))
+      | List.nil => (prim utf8_encode "invalid request" : Bytes))
+    | List.nil => (prim utf8_encode "invalid request" : Bytes)),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: stage_refuses_a_line_that_is_no_binding,
+  parameters: [isUnnamed : Bool],
+  statement: ((stageOutcome false isUnnamed) = 1),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: stage_refuses_an_unnamed_artifact,
+  parameters: [],
+  statement: ((stageOutcome true true) = 2),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: stage_accepts_a_named_binding,
+  parameters: [],
+  statement: ((stageOutcome true false) = 0),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}
