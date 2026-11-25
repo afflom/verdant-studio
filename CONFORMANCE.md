@@ -21,7 +21,7 @@ The three honesty levels (R2):
 | ID | Level | Statement | Evidence |
 | --- | --- | --- | --- |
 | `TC-01` | `build` | The checker answers conformant exactly when every universal policy file's observed label equals its locked label | `Contract.conformant_decides` |
-| `TC-02` | `build` | The checker answers invalid request to a request that is neither exactly one locked and one observed label for each universal policy file nor a Studio guard request shorter than 192 bytes, and no request is read as both | `Contract.accepts_exactly_a_request`, `Contract.forms_are_disjoint`, refuses with `invalid request` |
+| `TC-02` | `build` | The checker answers invalid request to a request that is neither exactly one locked and one observed label for each universal policy file nor a Studio guard or stage-bindings request shorter than 192 bytes, and no request is read as both | `Contract.accepts_exactly_a_request`, `Contract.forms_are_disjoint`, refuses with `invalid request` |
 
 ## admission
 
@@ -40,6 +40,13 @@ The three honesty levels (R2):
 | ID | Level | Statement | Evidence |
 | --- | --- | --- | --- |
 | `VS-08` | `build` | The host-request guard accepts a byte exactly when its code is at most 127, so it refuses by name every request that is not ASCII text, through one definition that the CLI and the app both run | `Studio.Guard.guard_refuses_exactly_non_ascii`, refuses with `refused: a host request is ASCII text, so it is never decoded by assumption, and café.jsonl is not ` |
+
+## stage
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-09` | `build` | stage-bindings refuses a line that is not one prismpm/authority-binding/1 binding with an id, and accepts one that is, through one definition that the CLI and the app both run | `Studio.Stage.stage_refuses_a_line_that_is_no_binding`, `Studio.Stage.stage_accepts_a_named_binding`, refuses with `every line must be one prismpm/authority-binding/1 binding with an id ` |
+| `VS-10` | `build` | stage-bindings refuses a redistributable binding whose source.url ends in /, naming the binding, because ingest-authority saves the download under the last segment of the URL's path | `Studio.Stage.stage_refuses_an_unnamed_artifact`, refuses with `binding W3C-XML-1.0-5E: a redistributable source.url must name a file, because ingest-authority saves the download under the last segment of its path, and this URL ends in / ` |
 
 ## Cited authorities
 

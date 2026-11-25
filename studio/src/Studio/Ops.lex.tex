@@ -6,6 +6,7 @@
 \importmodule{LexLeanStd.Order}
 \importmodule{LexLeanStd.Sha256}
 \importmodule{VerdantStudio.Studio.Guard}
+\importmodule{VerdantStudio.Studio.Stage}
 \importmodule{Studio.Doc}
 \importmodule{Studio.Check}
 \importmodule{Studio.Csv}
@@ -389,6 +390,7 @@ definition{
 }
 
 
+
 definition{
   name: lastPiece,
   parameters: [pieces : (List Bytes)],
@@ -401,7 +403,6 @@ definition{
   recursive_argument: pieces,
   executable: true
 }
-
 
 definition{
   name: basename,
@@ -658,7 +659,7 @@ definition{
   name: bindingSchema,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::lit "prismpm/authority-binding/1"),
+  body: (VerdantStudio.Studio.Stage::bindingSchema),
   executable: true
 }
 
@@ -922,7 +923,7 @@ definition{
     | List.nil => (ctor Option.some [(List (Bytes * Bytes))] (nil (Bytes * Bytes)))
     | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stageLines rest) else (match (Studio.Doc::readAny line)
       | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
-      | Option.some binding => (let entry : Bytes := (Studio.Doc::str binding (Studio.Doc::lit "id")); (if ((Studio.Doc::same (Studio.Doc::str binding (Studio.Doc::lit "schema")) (bindingSchema)) && (negate ((prim length entry : Nat) =? 0))) then (match (stageLines rest)
+      | Option.some binding => (let entry : Bytes := (Studio.Doc::str binding (Studio.Doc::lit "id")); (if (VerdantStudio.Studio.Stage::bound (Studio.Doc::str binding (Studio.Doc::lit "schema")) entry) then (match (stageLines rest)
         | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
         | Option.some staged => (ctor Option.some [(List (Bytes * Bytes))] (cons ((stagedPath entry), (prim append line 0x0a : Bytes)) staged))) else (ctor Option.none [(List (Bytes * Bytes))]))))))),
   recursive_argument: lines,
@@ -951,7 +952,7 @@ definition{
       | Option.none => (unnamedArtifact rest)
       | Option.some binding => (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
         | Option.none => (unnamedArtifact rest)
-        | Option.some source => (if ((Studio.Doc::same (Studio.Doc::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable")) && ((prim length (basename (Studio.Doc::str source (Studio.Doc::lit "url"))) : Nat) =? 0)) then (ctor Option.some [Bytes] (Studio.Doc::str binding (Studio.Doc::lit "id"))) else (unnamedArtifact rest))))),
+        | Option.some source => (if (VerdantStudio.Studio.Stage::unnamed (Studio.Doc::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::str source (Studio.Doc::lit "url"))) then (ctor Option.some [Bytes] (Studio.Doc::str binding (Studio.Doc::lit "id"))) else (unnamedArtifact rest))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -964,9 +965,9 @@ definition{
   body: (match (missing seen (cons path (nil Bytes)))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (stageLines (LexLeanStd.Text::lines (contents seen path)))
-      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "every line must be one prismpm/authority-binding/1 binding with an id\n"))
+      | Option.none => (ctor Plan.refuse (VerdantStudio.Studio.Stage::bindingRefusal))
       | Option.some staged => (match (unnamedArtifact (LexLeanStd.Text::lines (contents seen path)))
-        | Option.some entry => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "binding ") (cons entry (cons (Studio.Doc::lit ": a redistributable source.url must name a file, because ingest-authority saves the download under the last segment of its path, and this URL ends in /\n") (nil Bytes))))))
+        | Option.some entry => (ctor Plan.refuse (VerdantStudio.Studio.Stage::unnamedRefusal entry))
         | Option.none => (ctor Plan.done staged (Studio.Doc::cat (cons (Studio.Doc::lit "staged ") (cons (LexLeanStd.Text::joinWith (firstsOf staged) (Studio.Doc::lit " ")) (cons 0x0a (nil Bytes))))))))),
   axioms: [Quot.sound, propext],
   executable: true
