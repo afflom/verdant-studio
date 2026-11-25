@@ -7614,3 +7614,20 @@ statement = "The YAML 1.2 character set, block and flow syntax, scalar styles an
 artifact = "authorities/YAML-1.2.2/spec.md"
 checksum = "df30dd0fc931ff04881c0ffb2788c29cbe03b2e6eda8a8bfb20cfb030248a018"
 realized_by = []
+
+[[authority]]
+id = "WHATWG-WEBIDL-RD-2026-09"
+name = "Web IDL Standard"
+issuer = "WHATWG"
+edition = "WHATWG Review Draft September 2026"
+canonical_id = "https://webidl.spec.whatwg.org/"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://webidl.spec.whatwg.org/review-drafts/2026-09/index.html"
+media_type = "text/html"
+license = "Creative Commons Attribution 4.0 International"
+redistribution = "redistributable"
+statement = "The Web IDL language and its LL(1) grammar, in which WebGPU, WebXR and the Gamepad API define their interfaces. Index rows G05, G14 and H15."
+artifact = "authorities/WHATWG-WEBIDL-RD-2026-09/index.html"
+checksum = "4adb80574b80397d2e8cf4dda33b943da1d57b59d598d5189b56ffdc4fc9c8c7"
+realized_by = []
