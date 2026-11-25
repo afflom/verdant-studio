@@ -868,14 +868,22 @@ definition{
 }
 
 definition{
+  name: presenceBranch,
+  parameters: [branch : Value],
+  result: Bool,
+  body: (let alternatives : Value := (match (field branch (Studio.Doc::lit "anyOf"))
+    | Option.none => (ctor Value.VNil)
+    | Option.some found => found); ((onlyKeys (memberSpine branch) (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "anyOf") (nil Bytes)))) && (requiredOnly (spineItems alternatives)))),
+  executable: true
+}
+
+definition{
   name: presenceOnly,
   parameters: [branches : (List Value)],
   result: Bool,
   body: (match branches
     | List.nil => true
-    | List.cons head rest => ((onlyKeys (memberSpine head) (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "anyOf") (nil Bytes)))) && ((requiredOnly (spineItems (match (field head (Studio.Doc::lit "anyOf"))
-      | Option.none => (ctor Value.VNil)
-      | Option.some found => found))) && (presenceOnly rest)))),
+    | List.cons head rest => ((presenceBranch head) && (presenceOnly rest))),
   recursive_argument: branches,
   executable: true
 }

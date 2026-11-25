@@ -462,10 +462,59 @@ definition{
 }
 
 definition{
+  name: keywordTable,
+  parameters: [],
+  result: (List (Bytes * (Bool * Bytes))),
+  body: (cons ((Studio.Doc::lit "boolean"), (true, (Studio.Doc::lit "Bool")))
+    (cons ((Studio.Doc::lit "byte"), (true, (Studio.Doc::lit "Int")))
+    (cons ((Studio.Doc::lit "octet"), (true, (Studio.Doc::lit "Nat")))
+    (cons ((Studio.Doc::lit "bigint"), (true, (Studio.Doc::lit "Int")))
+    (cons ((Studio.Doc::lit "float"), (true, (Studio.Schema::numberType)))
+    (cons ((Studio.Doc::lit "double"), (true, (Studio.Schema::numberType)))
+    (cons ((Studio.Doc::lit "DOMString"), (true, (Studio.Doc::lit "(List Nat)")))
+    (cons ((Studio.Doc::lit "USVString"), (true, (Studio.Doc::lit "Bytes")))
+    (cons ((Studio.Doc::lit "ByteString"), (true, (Studio.Doc::lit "Bytes")))
+    (cons ((Studio.Doc::lit "ArrayBuffer"), (true, (Studio.Doc::lit "Bytes")))
+    (cons ((Studio.Doc::lit "SharedArrayBuffer"), (true, (Studio.Doc::lit "Bytes")))
+    (cons ((Studio.Doc::lit "DataView"), (true, (Studio.Doc::lit "Bytes")))
+    (cons ((Studio.Doc::lit "Int8Array"), (true, (Studio.Doc::lit "(List Int)")))
+    (cons ((Studio.Doc::lit "Int16Array"), (true, (Studio.Doc::lit "(List Int)")))
+    (cons ((Studio.Doc::lit "Int32Array"), (true, (Studio.Doc::lit "(List Int)")))
+    (cons ((Studio.Doc::lit "BigInt64Array"), (true, (Studio.Doc::lit "(List Int)")))
+    (cons ((Studio.Doc::lit "Uint8Array"), (true, (Studio.Doc::lit "(List Nat)")))
+    (cons ((Studio.Doc::lit "Uint16Array"), (true, (Studio.Doc::lit "(List Nat)")))
+    (cons ((Studio.Doc::lit "Uint32Array"), (true, (Studio.Doc::lit "(List Nat)")))
+    (cons ((Studio.Doc::lit "Uint8ClampedArray"), (true, (Studio.Doc::lit "(List Nat)")))
+    (cons ((Studio.Doc::lit "BigUint64Array"), (true, (Studio.Doc::lit "(List Nat)")))
+    (cons ((Studio.Doc::lit "Float16Array"), (false, (Studio.Doc::lit "Float16Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)")))
+    (cons ((Studio.Doc::lit "Float32Array"), (false, (Studio.Doc::lit "Float32Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)")))
+    (cons ((Studio.Doc::lit "Float64Array"), (false, (Studio.Doc::lit "Float64Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)")))
+    (cons ((Studio.Doc::lit "any"), (false, (Studio.Doc::lit "any is not translated, because it is the union of every Web IDL type and has no one LexLean type (Web IDL 2.13.1)")))
+    (cons ((Studio.Doc::lit "object"), (false, (Studio.Doc::lit "object is not translated, because its values are references to JavaScript objects of any shape, which no LexLean type holds (Web IDL 2.13.20)")))
+    (cons ((Studio.Doc::lit "symbol"), (false, (Studio.Doc::lit "symbol is not translated, because a symbol value has identity but no content that a LexLean type holds (Web IDL 2.13.21)")))
+    (cons ((Studio.Doc::lit "undefined"), (false, (Studio.Doc::lit "undefined is not translated, because it is the type of the absence of a value (Web IDL 2.13.2)")))
+    (nil (Bytes * (Bool * Bytes))))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: keywordFrom,
+  parameters: [word : Bytes, table : (List (Bytes * (Bool * Bytes)))],
+  result: (Option (Bool * Bytes)),
+  body: (match table
+    | List.nil => (ctor Option.none [(Bool * Bytes)])
+    | List.cons head rest => (if (Studio.Doc::same word (first head)) then (ctor Option.some [(Bool * Bytes)] (second head)) else (keywordFrom word rest))),
+  recursive_argument: table,
+  executable: true
+}
+
+definition{
   name: keywordType,
   parameters: [word : Bytes],
   result: (Option (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))),
-  body: (if (Studio.Doc::same word (Studio.Doc::lit "boolean")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bool"))) else (if (Studio.Doc::same word (Studio.Doc::lit "byte")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Int"))) else (if (Studio.Doc::same word (Studio.Doc::lit "octet")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Nat"))) else (if (Studio.Doc::same word (Studio.Doc::lit "bigint")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Int"))) else (if (Studio.Doc::same word (Studio.Doc::lit "float")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Schema::numberType))) else (if (Studio.Doc::same word (Studio.Doc::lit "double")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Schema::numberType))) else (if (Studio.Doc::same word (Studio.Doc::lit "DOMString")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "USVString")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "ByteString")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "ArrayBuffer")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "SharedArrayBuffer")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "DataView")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Int8Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Int16Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Int32Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "BigInt64Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint8Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint16Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint32Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint8ClampedArray")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "BigUint64Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Float16Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "Float16Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Float32Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "Float32Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Float64Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "Float64Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "any")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "any is not translated, because it is the union of every Web IDL type and has no one LexLean type (Web IDL 2.13.1)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "object")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "object is not translated, because its values are references to JavaScript objects of any shape, which no LexLean type holds (Web IDL 2.13.20)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "symbol")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "symbol is not translated, because a symbol value has identity but no content that a LexLean type holds (Web IDL 2.13.21)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "undefined")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "undefined is not translated, because it is the type of the absence of a value (Web IDL 2.13.2)"))) else (ctor Option.none [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))]))))))))))))))))))))))))))))),
+  body: (match (keywordFrom word (keywordTable))
+    | Option.none => (ctor Option.none [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))])
+    | Option.some found => (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (if (first found) then (plain (second found)) else (untranslated (second found))))),
   executable: true
 }
 
