@@ -146,7 +146,7 @@ jobs:
                 failed="$failed $pr"
                 # A failed regeneration stays a draft, so the owner is never handed a red pull request.
                 { echo "This change no longer applies to main $(git rev-parse --short origin/main), so it stays a draft until it is proposed again:"; echo; echo '```'; head -20 target/apply.err; echo '```'; } > target/comment.md
-                gh pr comment "$pr" --body-file target/comment.md || true
+                gh api --silent "repos/${GITHUB_REPOSITORY}/issues/${pr}/comments" -F body=@target/comment.md || true
                 continue
               fi
             fi
@@ -156,7 +156,7 @@ jobs:
               git reset -q --hard origin/main
               failed="$failed $pr"
               { echo "The Lean export failed on main $(git rev-parse --short origin/main), so this stays a draft until it is fixed:"; echo; echo '```'; grep -m 20 'error' target/export.log || tail -n 20 target/export.log; echo '```'; } > target/comment.md
-              gh pr comment "$pr" --body-file target/comment.md || true
+              gh api --silent "repos/${GITHUB_REPOSITORY}/issues/${pr}/comments" -F body=@target/comment.md || true
               continue
             fi
             rm -rf studio/.lexlean/production
