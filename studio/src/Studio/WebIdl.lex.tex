@@ -1,0 +1,1156 @@
+\begin{lexlean}{Studio.WebIdl}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.JsonRead}
+\importmodule{LexLeanStd.Numeral}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
+\importmodule{Studio.Xml}
+\importmodule{Studio.Xsd}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IdlDef,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: D, fields: [Nat, Bytes, Bytes, (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), (List Bytes), (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))]}
+  ]
+}
+
+definition{
+  name: isAlpha,
+  parameters: [point : Nat],
+  result: Bool,
+  body: (((65 <=? point) && (point <=? 90)) || ((97 <=? point) && (point <=? 122))),
+  executable: true
+}
+
+definition{
+  name: isDigit,
+  parameters: [point : Nat],
+  result: Bool,
+  body: ((48 <=? point) && (point <=? 57)),
+  executable: true
+}
+
+definition{
+  name: isHexDigit,
+  parameters: [point : Nat],
+  result: Bool,
+  body: ((isDigit point) || (((65 <=? point) && (point <=? 70)) || ((97 <=? point) && (point <=? 102)))),
+  executable: true
+}
+
+definition{
+  name: isOctalDigit,
+  parameters: [point : Nat],
+  result: Bool,
+  body: ((48 <=? point) && (point <=? 55)),
+  executable: true
+}
+
+definition{
+  name: isIdentifierByte,
+  parameters: [point : Nat],
+  result: Bool,
+  body: ((isAlpha point) || ((isDigit point) || ((point =? 95) || (point =? 45)))),
+  executable: true
+}
+
+definition{
+  name: inClass,
+  parameters: [kind : Nat, point : Nat],
+  result: Bool,
+  body: (if (kind =? 0) then (isDigit point) else (if (kind =? 1) then (isHexDigit point) else (if (kind =? 2) then (isOctalDigit point) else (isIdentifierByte point)))),
+  executable: true
+}
+
+definition{
+  name: runStep,
+  parameters: [source : Bytes, kind : Nat, position : Nat],
+  result: (Option Nat),
+  body: (if (inClass kind (Studio.Xml::at source position)) then (ctor Option.some [Nat] (position + 1)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: runEnd,
+  parameters: [source : Bytes, kind : Nat, start : Nat],
+  result: Nat,
+  body: (first (prim iterate_until (fun [kind, source] (position : Nat) => (runStep source kind position)) ((prim length source : Nat) + 1) start : (Nat * Bool))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: exponentEnd,
+  parameters: [source : Bytes, mark : Nat],
+  result: Nat,
+  body: (let letter : Nat := (Studio.Xml::at source mark); (if ((letter =? 69) || (letter =? 101)) then (let sign : Nat := (Studio.Xml::at source (mark + 1)); (let digits : Nat := (if ((sign =? 43) || (sign =? 45)) then (mark + 2) else (mark + 1)); (let stop : Nat := (runEnd source 0 digits); (if (digits <? stop) then stop else mark)))) else mark)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: integerEnd,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (let lead : Nat := (Studio.Xml::at source start); (if (lead =? 48) then (let marker : Nat := (Studio.Xml::at source (start + 1)); (if (((marker =? 88) || (marker =? 120)) && (isHexDigit (Studio.Xml::at source (start + 2)))) then (runEnd source 1 (start + 2)) else (runEnd source 2 (start + 1)))) else (if (isDigit lead) then (runEnd source 0 start) else start))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: decimalEnd,
+  parameters: [source : Bytes, start : Nat],
+  result: Nat,
+  body: (let whole : Nat := (runEnd source 0 start); (if ((Studio.Xml::at source whole) =? 46) then (let fraction : Nat := (runEnd source 0 (whole + 1)); (if ((start <? whole) || ((whole + 1) <? fraction)) then (exponentEnd source fraction) else start)) else (if (start <? whole) then (let scaled : Nat := (exponentEnd source whole); (if (whole <? scaled) then scaled else start)) else start))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: reverseTokens,
+  parameters: [items : (List (Nat * Bytes)), done : (List (Nat * Bytes))],
+  result: (List (Nat * Bytes)),
+  body: (match items
+    | List.nil => done
+    | List.cons head rest => (reverseTokens rest (cons head done))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: failure,
+  parameters: [reason : String, position : Nat],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (prim utf8_encode reason : Bytes) (cons (Studio.Doc::lit " at byte ") (cons (LexLeanStd.Numeral::decimal position) (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: tokensAt,
+  parameters: [fuel : Nat, source : Bytes, position : Nat, acc : (List (Nat * Bytes))],
+  result: (Result (List (Nat * Bytes)) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List (Nat * Bytes)), Bytes] (failure "the input has more tokens than bytes" position))
+    | Nat.succ rest => (let byte : Nat := (Studio.Xml::at source position); (if (byte =? 256) then (ctor Result.ok [(List (Nat * Bytes)), Bytes] (reverseTokens acc (nil (Nat * Bytes)))) else (if (Studio.Xml::spaceByte byte) then (tokensAt rest source (position + 1) acc) else (if (Studio.Xml::startsAt source position "//") then (match (Studio.Xml::findFrom source 0x0a position)
+    | Option.none => (ctor Result.ok [(List (Nat * Bytes)), Bytes] (reverseTokens acc (nil (Nat * Bytes))))
+    | Option.some newline => (tokensAt rest source (newline + 1) acc)) else (if (Studio.Xml::startsAt source position "/*") then (match (Studio.Xml::findFrom source (prim utf8_encode "*/" : Bytes) (position + 2))
+    | Option.none => (ctor Result.error [(List (Nat * Bytes)), Bytes] (failure "a comment is not closed (Web IDL, IDL grammar: comment)" position))
+    | Option.some close => (tokensAt rest source (close + 2) acc)) else (if (byte =? 34) then (match (Studio.Xml::findFrom source 0x22 (position + 1))
+    | Option.none => (ctor Result.error [(List (Nat * Bytes)), Bytes] (failure "a string is not closed (Web IDL, IDL grammar: string)" position))
+    | Option.some close => (tokensAt rest source (close + 1) (cons (3, (LexLeanStd.Text::sliceOr source (position + 1) (prim subtract close (position + 1) : Nat))) acc))) else (let lead : Nat := (if ((byte =? 95) || (byte =? 45)) then (position + 1) else position); (if (isAlpha (Studio.Xml::at source lead)) then (let stop : Nat := (runEnd source 3 (lead + 1)); (tokensAt rest source stop (cons (0, (LexLeanStd.Text::sliceOr source position (prim subtract stop position : Nat))) acc))) else (let digits : Nat := (if (byte =? 45) then (position + 1) else position); (let integral : Nat := (integerEnd source digits); (let decimal : Nat := (decimalEnd source digits); (if (integral <? decimal) then (tokensAt rest source decimal (cons (2, (LexLeanStd.Text::sliceOr source position (prim subtract decimal position : Nat))) acc)) else (if (digits <? integral) then (tokensAt rest source integral (cons (1, (LexLeanStd.Text::sliceOr source position (prim subtract integral position : Nat))) acc)) else (if (Studio.Xml::startsAt source position "...") then (tokensAt rest source (position + 3) (cons (4, (Studio.Doc::lit "...")) acc)) else (tokensAt rest source (position + 1) (cons (4, (LexLeanStd.Text::sliceOr source position 1)) acc))))))))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: tokens,
+  parameters: [source : Bytes],
+  result: (Result (List (Nat * Bytes)) Bytes),
+  body: (tokensAt ((prim length source : Nat) + 1) source 0 (nil (Nat * Bytes))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: isWord,
+  parameters: [token : (Nat * Bytes), word : Bytes],
+  result: Bool,
+  body: ((if ((first token) =? 3) then false else true) && (Studio.Doc::same (second token) word)),
+  executable: true
+}
+
+definition{
+  name: headIs,
+  parameters: [toks : (List (Nat * Bytes)), word : String],
+  result: Bool,
+  body: (match toks
+    | List.nil => false
+    | List.cons head rest => (isWord head (prim utf8_encode word : Bytes))),
+  executable: true
+}
+
+definition{
+  name: after,
+  parameters: [toks : (List (Nat * Bytes))],
+  result: (List (Nat * Bytes)),
+  body: (match toks
+    | List.nil => (nil (Nat * Bytes))
+    | List.cons head rest => rest),
+  executable: true
+}
+
+definition{
+  name: near,
+  parameters: [toks : (List (Nat * Bytes))],
+  result: Bytes,
+  body: (match toks
+    | List.nil => (Studio.Doc::lit "the end of the input")
+    | List.cons head rest => (Studio.Doc::cat (cons (Studio.Doc::lit "'") (cons (second head) (cons (Studio.Doc::lit "'") (nil Bytes)))))),
+  executable: true
+}
+
+definition{
+  name: expected,
+  parameters: [word : String, toks : (List (Nat * Bytes))],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "expected ") (cons (prim utf8_encode word : Bytes) (cons (Studio.Doc::lit " but found ") (cons (near toks) (cons (Studio.Doc::lit " (Web IDL, IDL grammar)") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: expect,
+  parameters: [toks : (List (Nat * Bytes)), word : String],
+  result: (Result (List (Nat * Bytes)) Bytes),
+  body: (if (headIs toks word) then (ctor Result.ok [(List (Nat * Bytes)), Bytes] (after toks)) else (ctor Result.error [(List (Nat * Bytes)), Bytes] (expected word toks))),
+  executable: true
+}
+
+definition{
+  name: identifierValue,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (if (LexLeanStd.Text::startsWith text (Studio.Doc::lit "_")) then (LexLeanStd.Text::sliceOr text 1 (prim subtract (prim length text : Nat) 1 : Nat)) else text),
+  executable: true
+}
+
+definition{
+  name: identifierAt,
+  parameters: [toks : (List (Nat * Bytes))],
+  result: (Result (Bytes * (List (Nat * Bytes))) Bytes),
+  body: (match toks
+    | List.nil => (ctor Result.error [(Bytes * (List (Nat * Bytes))), Bytes] (expected "an identifier" toks))
+    | List.cons head rest => (if ((first head) =? 0) then (ctor Result.ok [(Bytes * (List (Nat * Bytes))), Bytes] ((identifierValue (second head)), rest)) else (ctor Result.error [(Bytes * (List (Nat * Bytes))), Bytes] (expected "an identifier" toks)))),
+  executable: true
+}
+
+definition{
+  name: closerOf,
+  parameters: [word : Bytes],
+  result: Bytes,
+  body: (if (Studio.Doc::same word (Studio.Doc::lit "(")) then (Studio.Doc::lit ")") else (if (Studio.Doc::same word (Studio.Doc::lit "[")) then (Studio.Doc::lit "]") else (if (Studio.Doc::same word (Studio.Doc::lit "{")) then (Studio.Doc::lit "}") else (if (Studio.Doc::same word (Studio.Doc::lit "<")) then (Studio.Doc::lit ">") else 0x)))),
+  executable: true
+}
+
+definition{
+  name: isCloser,
+  parameters: [word : Bytes],
+  result: Bool,
+  body: ((Studio.Doc::same word (Studio.Doc::lit ")")) || ((Studio.Doc::same word (Studio.Doc::lit "]")) || ((Studio.Doc::same word (Studio.Doc::lit "}")) || (Studio.Doc::same word (Studio.Doc::lit ">"))))),
+  executable: true
+}
+
+definition{
+  name: skipNest,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes)), stack : (List Bytes), semicolon : Bool],
+  result: (Result (List (Nat * Bytes)) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List (Nat * Bytes)), Bytes] (Studio.Doc::lit "brackets nest deeper than the input is long"))
+    | Nat.succ rest => (match toks
+    | List.nil => (ctor Result.error [(List (Nat * Bytes)), Bytes] (Studio.Doc::lit "the input ends inside brackets or before the ; that closes a member (Web IDL, IDL grammar)"))
+    | List.cons head others => (if ((first head) =? 3) then (skipNest rest others stack semicolon) else (let word : Bytes := (second head); (let closer : Bytes := (closerOf word); (if (if (Studio.Doc::same closer 0x) then false else true) then (skipNest rest others (cons closer stack) semicolon) else (if (isCloser word) then (match stack
+    | List.nil => (ctor Result.error [(List (Nat * Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the closing bracket ") (cons word (cons (Studio.Doc::lit " has no opening bracket (Web IDL, IDL grammar)") (nil Bytes))))))
+    | List.cons top below => (if (Studio.Doc::same top word) then (if ((if semicolon then false else true) && ((prim length below : Nat) =? 0)) then (ctor Result.ok [(List (Nat * Bytes)), Bytes] others) else (skipNest rest others below semicolon)) else (ctor Result.error [(List (Nat * Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the closing bracket ") (cons word (cons (Studio.Doc::lit " does not match the opening bracket, which needs ") (cons top (cons (Studio.Doc::lit " (Web IDL, IDL grammar)") (nil Bytes)))))))))) else (if (semicolon && ((Studio.Doc::same word (Studio.Doc::lit ";")) && ((prim length stack : Nat) =? 0))) then (ctor Result.ok [(List (Nat * Bytes)), Bytes] others) else (skipNest rest others stack semicolon))))))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: skipMember,
+  parameters: [toks : (List (Nat * Bytes))],
+  result: (Result (List (Nat * Bytes)) Bytes),
+  body: (skipNest ((prim length toks : Nat) + 1) toks (nil Bytes) true),
+  executable: true
+}
+
+definition{
+  name: skipExtended,
+  parameters: [toks : (List (Nat * Bytes))],
+  result: (Result (List (Nat * Bytes)) Bytes),
+  body: (if (headIs toks "[") then (skipNest ((prim length toks : Nat) + 1) (after toks) (cons (Studio.Doc::lit "]") (nil Bytes)) false) else (ctor Result.ok [(List (Nat * Bytes)), Bytes] toks)),
+  executable: true
+}
+
+definition{
+  name: reservedRow0,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "Prop") (cons (Studio.Doc::lit "Sort") (cons (Studio.Doc::lit "StateRefT") (cons (Studio.Doc::lit "Type") (cons (Studio.Doc::lit "abbrev") (cons (Studio.Doc::lit "at") (cons (Studio.Doc::lit "attribute") (cons (Studio.Doc::lit "axiom") (cons (Studio.Doc::lit "bif") (cons (Studio.Doc::lit "break") (cons (Studio.Doc::lit "by") (cons (Studio.Doc::lit "calc") (cons (Studio.Doc::lit "catch") (cons (Studio.Doc::lit "class") (cons (Studio.Doc::lit "coinductive") (cons (Studio.Doc::lit "continue") (nil Bytes))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedRow1,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "def") (cons (Studio.Doc::lit "deriving") (cons (Studio.Doc::lit "do") (cons (Studio.Doc::lit "dsimproc") (cons (Studio.Doc::lit "elab") (cons (Studio.Doc::lit "else") (cons (Studio.Doc::lit "end") (cons (Studio.Doc::lit "example") (cons (Studio.Doc::lit "exists") (cons (Studio.Doc::lit "export") (cons (Studio.Doc::lit "extends") (cons (Studio.Doc::lit "finally") (cons (Studio.Doc::lit "for") (cons (Studio.Doc::lit "forall") (cons (Studio.Doc::lit "from") (cons (Studio.Doc::lit "fun") (nil Bytes))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedRow2,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "generalizing") (cons (Studio.Doc::lit "have") (cons (Studio.Doc::lit "haveI") (cons (Studio.Doc::lit "hiding") (cons (Studio.Doc::lit "idbg") (cons (Studio.Doc::lit "if") (cons (Studio.Doc::lit "import") (cons (Studio.Doc::lit "in") (cons (Studio.Doc::lit "include") (cons (Studio.Doc::lit "inductive") (cons (Studio.Doc::lit "inferInstanceAs") (cons (Studio.Doc::lit "infix") (cons (Studio.Doc::lit "infixl") (cons (Studio.Doc::lit "infixr") (cons (Studio.Doc::lit "initialize") (cons (Studio.Doc::lit "instance") (nil Bytes))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedRow3,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "let") (cons (Studio.Doc::lit "letI") (cons (Studio.Doc::lit "local") (cons (Studio.Doc::lit "logNamedError") (cons (Studio.Doc::lit "logNamedErrorAt") (cons (Studio.Doc::lit "logNamedWarning") (cons (Studio.Doc::lit "logNamedWarningAt") (cons (Studio.Doc::lit "macro") (cons (Studio.Doc::lit "match") (cons (Studio.Doc::lit "matches") (cons (Studio.Doc::lit "meta") (cons (Studio.Doc::lit "mut") (cons (Studio.Doc::lit "mutual") (cons (Studio.Doc::lit "namespace") (cons (Studio.Doc::lit "nofun") (cons (Studio.Doc::lit "nomatch") (nil Bytes))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedRow4,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "noncomputable") (cons (Studio.Doc::lit "nonrec") (cons (Studio.Doc::lit "notation") (cons (Studio.Doc::lit "omit") (cons (Studio.Doc::lit "opaque") (cons (Studio.Doc::lit "open") (cons (Studio.Doc::lit "partial") (cons (Studio.Doc::lit "postfix") (cons (Studio.Doc::lit "prefix") (cons (Studio.Doc::lit "private") (cons (Studio.Doc::lit "protected") (cons (Studio.Doc::lit "public") (cons (Studio.Doc::lit "renaming") (cons (Studio.Doc::lit "repeat") (cons (Studio.Doc::lit "reprove") (cons (Studio.Doc::lit "return") (nil Bytes))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedRow5,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "scoped") (cons (Studio.Doc::lit "seal") (cons (Studio.Doc::lit "section") (cons (Studio.Doc::lit "show") (cons (Studio.Doc::lit "simproc") (cons (Studio.Doc::lit "sorry") (cons (Studio.Doc::lit "structure") (cons (Studio.Doc::lit "suffices") (cons (Studio.Doc::lit "syntax") (cons (Studio.Doc::lit "then") (cons (Studio.Doc::lit "theorem") (cons (Studio.Doc::lit "throwError") (cons (Studio.Doc::lit "throwErrorAt") (cons (Studio.Doc::lit "throwNamedError") (cons (Studio.Doc::lit "throwNamedErrorAt") (cons (Studio.Doc::lit "try") (nil Bytes))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedRow6,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "universe") (cons (Studio.Doc::lit "unless") (cons (Studio.Doc::lit "unsafe") (cons (Studio.Doc::lit "unseal") (cons (Studio.Doc::lit "until") (cons (Studio.Doc::lit "using") (cons (Studio.Doc::lit "variable") (cons (Studio.Doc::lit "where") (cons (Studio.Doc::lit "while") (cons (Studio.Doc::lit "with") (cons (Studio.Doc::lit "reprove") (cons (Studio.Doc::lit "throwError") (cons (Studio.Doc::lit "throwErrorAt") (nil Bytes)))))))))))))),
+  executable: true
+}
+
+definition{
+  name: reservedName,
+  parameters: [name : Bytes],
+  result: Bool,
+  body: ((Studio.Doc::memberBytes name (reservedRow0)) || ((Studio.Doc::memberBytes name (reservedRow1)) || ((Studio.Doc::memberBytes name (reservedRow2)) || ((Studio.Doc::memberBytes name (reservedRow3)) || ((Studio.Doc::memberBytes name (reservedRow4)) || ((Studio.Doc::memberBytes name (reservedRow5)) || (Studio.Doc::memberBytes name (reservedRow6)))))))),
+  executable: true
+}
+
+definition{
+  name: reservedReason,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "the derived name ") (cons name (cons (Studio.Doc::lit " is a reserved token of Lean 4.32.2, which LexLean 0.4.3 refuses as a name (lexlean 0.4.3 src/backend/lean_tokens.rs, SPEC.md 17.8)") (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: reservedValue,
+  parameters: [escaped : Bool, values : (List Bytes)],
+  result: (Option Bytes),
+  body: (match values
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (match (Studio.Schema::nameAs escaped head)
+    | Option.none => (reservedValue escaped rest)
+    | Option.some spelled => (if (reservedName spelled) then (ctor Option.some [Bytes] spelled) else (reservedValue escaped rest)))),
+  recursive_argument: values,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: isType,
+  parameters: [kind : Nat],
+  result: Bool,
+  body: ((kind =? 0) || ((kind =? 2) || ((kind =? 3) || ((kind =? 4) || (kind =? 9))))),
+  executable: true
+}
+
+definition{
+  name: tyKind,
+  parameters: [value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: Nat,
+  body: (first value),
+  executable: true
+}
+
+definition{
+  name: tyText,
+  parameters: [value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: Bytes,
+  body: (first (second value)),
+  executable: true
+}
+
+definition{
+  name: tyRefs,
+  parameters: [value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: (List Bytes),
+  body: (first (second (second value))),
+  executable: true
+}
+
+definition{
+  name: tyProblem,
+  parameters: [value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: Bytes,
+  body: (first (second (second (second value)))),
+  executable: true
+}
+
+definition{
+  name: tyLabel,
+  parameters: [value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: Bytes,
+  body: (second (second (second (second value)))),
+  executable: true
+}
+
+definition{
+  name: plain,
+  parameters: [text : Bytes],
+  result: (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))),
+  body: (0, (text, ((nil Bytes), (0x, 0x)))),
+  executable: true
+}
+
+definition{
+  name: untranslated,
+  parameters: [reason : Bytes],
+  result: (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))),
+  body: (0, (0x, ((nil Bytes), (reason, 0x)))),
+  executable: true
+}
+
+definition{
+  name: anonymousUnion,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "a union type is translated only as the whole body of a typedef, whose identifier names its inductive (Web IDL 2.11 and 2.13.32)"),
+  executable: true
+}
+
+definition{
+  name: asField,
+  parameters: [inner : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))),
+  body: (if ((tyKind inner) =? 0) then inner else (0, (0x, ((tyRefs inner), ((if (Studio.Doc::same (tyProblem inner) 0x) then (anonymousUnion) else (tyProblem inner)), 0x))))),
+  executable: true
+}
+
+definition{
+  name: wrapped,
+  parameters: [prefix : String, inner : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))],
+  result: (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))),
+  body: (let field : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) := (asField inner); (0, ((Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons (prim utf8_encode prefix : Bytes) (cons (Studio.Doc::lit " ") (cons (tyText field) (cons (Studio.Doc::lit ")") (nil Bytes))))))), ((tyRefs field), ((tyProblem field), 0x))))),
+  executable: true
+}
+
+definition{
+  name: appendBytes,
+  parameters: [left : (List Bytes), right : (List Bytes)],
+  result: (List Bytes),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendBytes rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: keywordType,
+  parameters: [word : Bytes],
+  result: (Option (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))),
+  body: (if (Studio.Doc::same word (Studio.Doc::lit "boolean")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bool"))) else (if (Studio.Doc::same word (Studio.Doc::lit "byte")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Int"))) else (if (Studio.Doc::same word (Studio.Doc::lit "octet")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Nat"))) else (if (Studio.Doc::same word (Studio.Doc::lit "bigint")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Int"))) else (if (Studio.Doc::same word (Studio.Doc::lit "float")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Schema::numberType))) else (if (Studio.Doc::same word (Studio.Doc::lit "double")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Schema::numberType))) else (if (Studio.Doc::same word (Studio.Doc::lit "DOMString")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "USVString")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "ByteString")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "ArrayBuffer")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "SharedArrayBuffer")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "DataView")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "Bytes"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Int8Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Int16Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Int32Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "BigInt64Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Int)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint8Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint16Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint32Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Uint8ClampedArray")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "BigUint64Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (plain (Studio.Doc::lit "(List Nat)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Float16Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "Float16Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Float32Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "Float32Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "Float64Array")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "Float64Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "any")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "any is not translated, because it is the union of every Web IDL type and has no one LexLean type (Web IDL 2.13.1)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "object")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "object is not translated, because its values are references to JavaScript objects of any shape, which no LexLean type holds (Web IDL 2.13.20)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "symbol")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "symbol is not translated, because a symbol value has identity but no content that a LexLean type holds (Web IDL 2.13.21)"))) else (if (Studio.Doc::same word (Studio.Doc::lit "undefined")) then (ctor Option.some [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))] (untranslated (Studio.Doc::lit "undefined is not translated, because it is the type of the absence of a value (Web IDL 2.13.2)"))) else (ctor Option.none [(Nat * (Bytes * ((List Bytes) * (Bytes * Bytes))))]))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: nullable,
+  parameters: [value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))), toks : (List (Nat * Bytes))],
+  result: (Result ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))) Bytes),
+  body: (if (headIs toks "?") then (ctor Result.ok [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] ((wrapped "Option" value), (after toks))) else (ctor Result.ok [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (value, toks))),
+  executable: true
+}
+
+definition{
+  name: typeAt,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes)), mode : Nat],
+  result: (Result ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (Studio.Doc::lit "a type nests deeper than the input is long"))
+    | Nat.succ rest => (if (mode =? 0) then (match (skipExtended toks)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok ts => (if (headIs ts "(") then (match (typeAt rest (after ts) 1)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok union => (if (headIs (second union) "?") then (ctor Result.ok [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] ((0, (0x, ((tyRefs (first union)), ((Studio.Doc::lit "a nullable union type is not translated yet, because the typedef identifier names only the union (Web IDL 2.13.32)"), 0x)))), (after (second union)))) else (ctor Result.ok [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] ((first union), (second union))))) else (match ts
+    | List.nil => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "a type" ts))
+    | List.cons head others => (let word : Bytes := (second head); (if (if ((first head) =? 0) then false else true) then (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "a type" ts)) else (if ((Studio.Doc::same word (Studio.Doc::lit "sequence")) || ((Studio.Doc::same word (Studio.Doc::lit "FrozenArray")) || (Studio.Doc::same word (Studio.Doc::lit "ObservableArray")))) then (match (expect others "<")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok open => (match (typeAt rest open 0)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok inner => (match (expect (second inner) ">")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok close => (nullable (wrapped "List" (first inner)) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "async_sequence")) then (match (expect others "<")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok open => (match (typeAt rest open 0)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok inner => (match (expect (second inner) ">")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok close => (nullable (untranslated (Studio.Doc::lit "async_sequence types are not translated, because an async sequence is produced over time and is not a value (Web IDL 2.13.29)")) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "Promise")) then (match (expect others "<")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok open => (match (typeAt rest open 0)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok inner => (match (expect (second inner) ">")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok close => (nullable (untranslated (Studio.Doc::lit "Promise types are not translated, because a promise is a deferred result, not a value (Web IDL 2.13.31)")) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "record")) then (match (expect others "<")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok open => (match open
+    | List.nil => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "a string type" open))
+    | List.cons keyToken afterKey => (if ((Studio.Doc::same (second keyToken) (Studio.Doc::lit "DOMString")) || ((Studio.Doc::same (second keyToken) (Studio.Doc::lit "USVString")) || (Studio.Doc::same (second keyToken) (Studio.Doc::lit "ByteString")))) then (match (expect afterKey ",")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok comma => (match (typeAt rest comma 0)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok inner => (match (expect (second inner) ">")
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok close => (match (keywordType (second keyToken))
+    | Option.none => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "a string type" open))
+    | Option.some keyType => (let value : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) := (asField (first inner)); (nullable (0, ((Studio.Doc::cat (cons (Studio.Doc::lit "(List (") (cons (tyText keyType) (cons (Studio.Doc::lit " * ") (cons (tyText value) (cons (Studio.Doc::lit "))") (nil Bytes))))))), ((tyRefs value), ((tyProblem value), 0x)))) close)))))) else (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "DOMString, USVString or ByteString" open))))) else (if (Studio.Doc::same word (Studio.Doc::lit "unsigned")) then (if (headIs others "short") then (nullable (plain (Studio.Doc::lit "Nat")) (after others)) else (if (headIs others "long") then (let tail : (List (Nat * Bytes)) := (after others); (nullable (plain (Studio.Doc::lit "Nat")) (if (headIs tail "long") then (after tail) else tail))) else (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "short or long" others)))) else (if (Studio.Doc::same word (Studio.Doc::lit "short")) then (nullable (plain (Studio.Doc::lit "Int")) others) else (if (Studio.Doc::same word (Studio.Doc::lit "long")) then (nullable (plain (Studio.Doc::lit "Int")) (if (headIs others "long") then (after others) else others)) else (if (Studio.Doc::same word (Studio.Doc::lit "unrestricted")) then (if ((headIs others "float") || (headIs others "double")) then (nullable (untranslated (Studio.Doc::lit "unrestricted float and unrestricted double are not translated, because its value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.13 and 2.13.15)")) (after others)) else (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (expected "float or double" others))) else (match (keywordType word)
+    | Option.none => (let named : Bytes := (identifierValue word); (nullable (0, ((Studio.Schema::pascal named), ((cons named (nil Bytes)), (0x, named)))) others))
+    | Option.some known => (nullable known others))))))))))))))) else (match (typeAt rest toks 0)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok parsed => (let member : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) := (first parsed); (let piece : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) := (if ((tyKind member) =? 0) then (if (Studio.Doc::same (tyProblem member) 0x) then (if (Studio.Doc::same (tyLabel member) 0x) then (1, (0x, ((tyRefs member), ((Studio.Doc::lit "a union member type that is not a named definition gives its constructor no name, so the union is not translated yet (Web IDL 2.13.32)"), 0x)))) else (match (Studio.Schema::nameAs false (tyLabel member))
+    | Option.none => (1, (0x, ((tyRefs member), ((Studio.Doc::cat (cons (Studio.Doc::lit "the union member ") (cons (tyLabel member) (cons (Studio.Doc::lit " has no constructor name") (nil Bytes))))), 0x))))
+    | Option.some spelled => (if (reservedName spelled) then (1, (0x, ((tyRefs member), ((reservedReason spelled), 0x)))) else (1, ((Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", fields: [") (cons (tyText member) (cons (Studio.Doc::lit "]}") (nil Bytes))))))), ((tyRefs member), (0x, 0x))))))) else (1, (0x, ((tyRefs member), ((tyProblem member), 0x))))) else member); (if (headIs (second parsed) "or") then (match (typeAt rest (after (second parsed)) 2)
+    | Result.error reason => (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok more => (ctor Result.ok [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] ((1, ((if (Studio.Doc::same (tyText piece) 0x) then (tyText (first more)) else (if (Studio.Doc::same (tyText (first more)) 0x) then (tyText piece) else (Studio.Doc::cat (cons (tyText piece) (cons (Studio.Doc::lit ",\n") (cons (tyText (first more)) (nil Bytes))))))), ((appendBytes (tyRefs piece) (tyRefs (first more))), ((if (Studio.Doc::same (tyProblem piece) 0x) then (tyProblem (first more)) else (tyProblem piece)), 0x)))), (second more)))) else (if ((mode =? 2) && (headIs (second parsed) ")")) then (ctor Result.ok [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (piece, (after (second parsed)))) else (ctor Result.error [((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * (List (Nat * Bytes))), Bytes] (if (mode =? 1) then (expected "or" (second parsed)) else (expected "or or )" (second parsed))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: reverseMembers,
+  parameters: [items : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), done : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match items
+    | List.nil => done
+    | List.cons head rest => (reverseMembers rest (cons head done))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: appendMembers,
+  parameters: [left : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), right : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendMembers rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: interfaceMembers,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes)), acc : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (Result ((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] (Studio.Doc::lit "an interface has more members than the input has tokens"))
+    | Nat.succ rest => (if (headIs toks "}") then (match (expect (after toks) ";")
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] ((reverseMembers acc (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))), closed))) else (match (skipExtended toks)
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok ts => (let prefixed : (List (Nat * Bytes)) := (if ((headIs ts "stringifier") || (headIs ts "inherit")) then (after ts) else ts); (let bare : (List (Nat * Bytes)) := (if (headIs prefixed "readonly") then (after prefixed) else prefixed); (if (headIs bare "attribute") then (match (typeAt rest (after bare) 0)
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok typed => (match (identifierAt (second typed))
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok named => (match (expect (second named) ";")
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (interfaceMembers rest closed (cons ((first named), ((asField (first typed)), 0)) acc))))) else (match (skipMember ts)
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok skipped => (interfaceMembers rest skipped acc)))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: dictionaryMembers,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes)), acc : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (Result ((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] (Studio.Doc::lit "a dictionary has more members than the input has tokens"))
+    | Nat.succ rest => (if (headIs toks "}") then (match (expect (after toks) ";")
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] ((reverseMembers acc (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))), closed))) else (match (skipExtended toks)
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok ts => (let required : Bool := (headIs ts "required"); (match (typeAt rest (if required then (after ts) else ts) 0)
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok typed => (match (identifierAt (second typed))
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok named => (if ((headIs (second named) "=") && (if required then false else true)) then (match (skipMember (after (second named)))
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (dictionaryMembers rest closed (cons ((first named), ((asField (first typed)), 0)) acc))) else (match (expect (second named) ";")
+    | Result.error reason => (ctor Result.error [((List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (dictionaryMembers rest closed (cons ((first named), ((asField (first typed)), (if required then 0 else 1))) acc)))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: enumValues,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes)), acc : (List Bytes)],
+  result: (Result ((List Bytes) * (List (Nat * Bytes))) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [((List Bytes) * (List (Nat * Bytes))), Bytes] (Studio.Doc::lit "an enumeration has more values than the input has tokens"))
+    | Nat.succ rest => (match toks
+    | List.nil => (ctor Result.error [((List Bytes) * (List (Nat * Bytes))), Bytes] (expected "a string" toks))
+    | List.cons head others => (if (if ((first head) =? 3) then false else true) then (ctor Result.error [((List Bytes) * (List (Nat * Bytes))), Bytes] (expected "a string" toks)) else (if (headIs others ",") then (if (headIs (after others) "}") then (match (expect (after (after others)) ";")
+    | Result.error reason => (ctor Result.error [((List Bytes) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [((List Bytes) * (List (Nat * Bytes))), Bytes] ((LexLeanStd.Text::reverse (cons (second head) acc)), closed))) else (enumValues rest (after others) (cons (second head) acc))) else (if (headIs others "}") then (match (expect (after others) ";")
+    | Result.error reason => (ctor Result.error [((List Bytes) * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [((List Bytes) * (List (Nat * Bytes))), Bytes] ((LexLeanStd.Text::reverse (cons (second head) acc)), closed))) else (ctor Result.error [((List Bytes) * (List (Nat * Bytes))), Bytes] (expected ", or }" others))))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: bodyDefinition,
+  parameters: [fuel : Nat, kind : Nat, toks : (List (Nat * Bytes)), inherits : Bool],
+  result: (Result (IdlDef * (List (Nat * Bytes))) Bytes),
+  body: (match (identifierAt toks)
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok named => (let hasParent : Bool := (inherits && (headIs (second named) ":")); (match (if hasParent then (identifierAt (after (second named))) else (ctor Result.ok [(Bytes * (List (Nat * Bytes))), Bytes] (0x, (second named))))
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok parent => (match (expect (second parent) "{")
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok open => (match (if ((kind =? 2) || (kind =? 7)) then (dictionaryMembers fuel open (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))) else (interfaceMembers fuel open (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))))
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok members => (ctor Result.ok [(IdlDef * (List (Nat * Bytes))), Bytes] ((ctor IdlDef.D kind (first named) (first parent) (first members) (nil Bytes) (plain 0x)), (second members)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: otherDefinition,
+  parameters: [toks : (List (Nat * Bytes)), why : Bytes],
+  result: (Result (IdlDef * (List (Nat * Bytes))) Bytes),
+  body: (match (identifierAt toks)
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok named => (match (skipMember (second named))
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [(IdlDef * (List (Nat * Bytes))), Bytes] ((ctor IdlDef.D 9 (first named) 0x (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) (cons why (nil Bytes)) (plain 0x)), closed)))),
+  executable: true
+}
+
+definition{
+  name: definitionAt,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes))],
+  result: (Result (IdlDef * (List (Nat * Bytes))) Bytes),
+  body: (if (headIs toks "interface") then (if (headIs (after toks) "mixin") then (bodyDefinition fuel 1 (after (after toks)) false) else (bodyDefinition fuel 0 (after toks) true)) else (if (headIs toks "partial") then (let kept : (List (Nat * Bytes)) := (after toks); (if (headIs kept "interface") then (if (headIs (after kept) "mixin") then (bodyDefinition fuel 6 (after (after kept)) false) else (bodyDefinition fuel 5 (after kept) false)) else (if (headIs kept "dictionary") then (bodyDefinition fuel 7 (after kept) false) else (if (headIs kept "namespace") then (otherDefinition (after kept) (Studio.Doc::lit "a namespace holds operations and attributes of no object, so it is behavior, not data (Web IDL 2.6)")) else (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] (expected "interface, dictionary or namespace" kept)))))) else (if (headIs toks "dictionary") then (bodyDefinition fuel 2 (after toks) true) else (if (headIs toks "enum") then (match (identifierAt (after toks))
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok named => (match (expect (second named) "{")
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok open => (match (enumValues fuel open (nil Bytes))
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok values => (ctor Result.ok [(IdlDef * (List (Nat * Bytes))), Bytes] ((ctor IdlDef.D 3 (first named) 0x (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) (first values) (plain 0x)), (second values)))))) else (if (headIs toks "typedef") then (match (typeAt fuel (after toks) 0)
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok typed => (match (identifierAt (second typed))
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok named => (match (expect (second named) ";")
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [(IdlDef * (List (Nat * Bytes))), Bytes] ((ctor IdlDef.D 4 (first named) 0x (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) (nil Bytes) (first typed)), closed))))) else (if (headIs toks "callback") then (if (headIs (after toks) "interface") then (otherDefinition (after (after toks)) (Studio.Doc::lit "a callback interface is implemented by user code, so it is behavior, not data (Web IDL 2.4)")) else (otherDefinition (after toks) (Studio.Doc::lit "a callback function is behavior, not data (Web IDL 2.10)"))) else (if (headIs toks "namespace") then (otherDefinition (after toks) (Studio.Doc::lit "a namespace holds operations and attributes of no object, so it is behavior, not data (Web IDL 2.6)")) else (match (identifierAt toks)
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok target => (match (expect (second target) "includes")
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok word => (match (identifierAt word)
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok mixin => (match (expect (second mixin) ";")
+    | Result.error reason => (ctor Result.error [(IdlDef * (List (Nat * Bytes))), Bytes] reason)
+    | Result.ok closed => (ctor Result.ok [(IdlDef * (List (Nat * Bytes))), Bytes] ((ctor IdlDef.D 8 (first target) (first mixin) (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) (nil Bytes) (plain 0x)), closed))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: reverseDefs,
+  parameters: [items : (List IdlDef), done : (List IdlDef)],
+  result: (List IdlDef),
+  body: (match items
+    | List.nil => done
+    | List.cons head rest => (reverseDefs rest (cons head done))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: definitionsAt,
+  parameters: [fuel : Nat, toks : (List (Nat * Bytes)), acc : (List IdlDef)],
+  result: (Result (List IdlDef) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List IdlDef), Bytes] (Studio.Doc::lit "the input has more definitions than tokens"))
+    | Nat.succ rest => (match toks
+    | List.nil => (ctor Result.ok [(List IdlDef), Bytes] (reverseDefs acc (nil IdlDef)))
+    | List.cons head others => (match (skipExtended toks)
+    | Result.error reason => (ctor Result.error [(List IdlDef), Bytes] reason)
+    | Result.ok ts => (match (definitionAt rest ts)
+    | Result.error reason => (ctor Result.error [(List IdlDef), Bytes] reason)
+    | Result.ok read => (definitionsAt rest (second read) (cons (first read) acc)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: readWebIdl,
+  parameters: [raw : Bytes],
+  result: (Result (List IdlDef) Bytes),
+  body: (match (tokens raw)
+    | Result.error reason => (ctor Result.error [(List IdlDef), Bytes] reason)
+    | Result.ok toks => (definitionsAt ((prim length toks : Nat) + 1) toks (nil IdlDef))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: defKind,
+  parameters: [item : IdlDef],
+  result: Nat,
+  body: (match item
+    | IdlDef.D f0 f1 f2 f3 f4 f5 => f0),
+  executable: true
+}
+
+definition{
+  name: defName,
+  parameters: [item : IdlDef],
+  result: Bytes,
+  body: (match item
+    | IdlDef.D f0 f1 f2 f3 f4 f5 => f1),
+  executable: true
+}
+
+definition{
+  name: defParent,
+  parameters: [item : IdlDef],
+  result: Bytes,
+  body: (match item
+    | IdlDef.D f0 f1 f2 f3 f4 f5 => f2),
+  executable: true
+}
+
+definition{
+  name: defMembers,
+  parameters: [item : IdlDef],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match item
+    | IdlDef.D f0 f1 f2 f3 f4 f5 => f3),
+  executable: true
+}
+
+definition{
+  name: defValues,
+  parameters: [item : IdlDef],
+  result: (List Bytes),
+  body: (match item
+    | IdlDef.D f0 f1 f2 f3 f4 f5 => f4),
+  executable: true
+}
+
+definition{
+  name: defBody,
+  parameters: [item : IdlDef],
+  result: (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))),
+  body: (match item
+    | IdlDef.D f0 f1 f2 f3 f4 f5 => f5),
+  executable: true
+}
+
+definition{
+  name: findDef,
+  parameters: [items : (List IdlDef), kind : Nat, name : Bytes],
+  result: (Option IdlDef),
+  body: (match items
+    | List.nil => (ctor Option.none [IdlDef])
+    | List.cons head rest => (if (((defKind head) =? kind) && (Studio.Doc::same (defName head) name)) then (ctor Option.some [IdlDef] head) else (findDef rest kind name))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: partialMembers,
+  parameters: [items : (List IdlDef), kind : Nat, name : Bytes],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match items
+    | List.nil => (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))
+    | List.cons head rest => (if (((defKind head) =? kind) && (Studio.Doc::same (defName head) name)) then (appendMembers (defMembers head) (partialMembers rest kind name)) else (partialMembers rest kind name))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: mixinMembers,
+  parameters: [all : (List IdlDef), name : Bytes],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match (findDef all 1 name)
+    | Option.none => (partialMembers all 6 name)
+    | Option.some found => (appendMembers (defMembers found) (partialMembers all 6 name))),
+  executable: true
+}
+
+definition{
+  name: includedMembers,
+  parameters: [items : (List IdlDef), all : (List IdlDef), name : Bytes],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match items
+    | List.nil => (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))
+    | List.cons head rest => (if (((defKind head) =? 8) && (Studio.Doc::same (defName head) name)) then (appendMembers (mixinMembers all (defParent head)) (includedMembers rest all name)) else (includedMembers rest all name))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: missingMixin,
+  parameters: [items : (List IdlDef), all : (List IdlDef), name : Bytes],
+  result: (Option Bytes),
+  body: (match items
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (((defKind head) =? 8) && (Studio.Doc::same (defName head) name)) then (match (findDef all 1 (defParent head))
+    | Option.none => (ctor Option.some [Bytes] (defParent head))
+    | Option.some found => (missingMixin rest all name)) else (missingMixin rest all name))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: byteRank,
+  parameters: [text : Bytes, position : Nat],
+  result: Nat,
+  body: (if (position <? (prim length text : Nat)) then ((Studio.Xml::at text position) + 1) else 0),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: bytesBefore,
+  parameters: [fuel : Nat, left : Bytes, right : Bytes, position : Nat],
+  result: Bool,
+  body: (match fuel
+    | Nat.zero => false
+    | Nat.succ rest => (let x : Nat := (byteRank left position); (let y : Nat := (byteRank right position); (if (x <? y) then true else (if (y <? x) then false else (if (x =? 0) then false else (bytesBefore rest left right (position + 1)))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: insertMember,
+  parameters: [item : (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)), sorted : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match sorted
+    | List.nil => (cons item (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))))
+    | List.cons head rest => (if (bytesBefore ((prim length (first item) : Nat) + 1) (first item) (first head) 0) then (cons item (cons head rest)) else (cons head (insertMember item rest)))),
+  recursive_argument: sorted,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: sortMembers,
+  parameters: [items : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))),
+  body: (match items
+    | List.nil => (nil (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))
+    | List.cons head rest => (insertMember head (sortMembers rest))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: fullMembers,
+  parameters: [fuel : Nat, all : (List IdlDef), item : IdlDef],
+  result: (Result (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the inheritance of ") (cons (defName item) (cons (Studio.Doc::lit " is cyclic (Web IDL 2.2 and 2.7: an interface or dictionary must not inherit from itself)") (nil Bytes))))))
+    | Nat.succ rest => (let own : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))) := (if ((defKind item) =? 2) then (sortMembers (appendMembers (defMembers item) (partialMembers all 7 (defName item)))) else (appendMembers (defMembers item) (appendMembers (partialMembers all 5 (defName item)) (includedMembers all all (defName item))))); (if (Studio.Doc::same (defParent item) 0x) then (ctor Result.ok [(List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), Bytes] own) else (match (findDef all (defKind item) (defParent item))
+    | Option.none => (ctor Result.error [(List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "inherits ") (cons (defParent item) (cons (if ((defKind item) =? 2) then (Studio.Doc::lit ", which no input defines as a dictionary (Web IDL 2.7)") else (Studio.Doc::lit ", which no input defines as an interface (Web IDL 2.2)")) (nil Bytes))))))
+    | Option.some parent => (match (fullMembers rest all parent)
+    | Result.error reason => (ctor Result.error [(List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), Bytes] reason)
+    | Result.ok inherited => (ctor Result.ok [(List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat))), Bytes] (appendMembers inherited own))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: memberNames,
+  parameters: [items : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (first head) (memberNames rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: fieldsOf,
+  parameters: [escaped : Bool, items : (List (Bytes * ((Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) * Nat)))],
+  result: (Result ((List Bytes) * (List Bytes)) Bytes),
+  body: (match items
+    | List.nil => (ctor Result.ok [((List Bytes) * (List Bytes)), Bytes] ((nil Bytes), (nil Bytes)))
+    | List.cons head rest => (let typed : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) := (first (second head)); (if (if (Studio.Doc::same (tyProblem typed) 0x) then false else true) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "its member ") (cons (first head) (cons (Studio.Doc::lit ": ") (cons (tyProblem typed) (nil Bytes))))))) else (match (Studio.Schema::nameAs escaped (first head))
+    | Option.none => (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "its member ") (cons (first head) (cons (Studio.Doc::lit " has no field name") (nil Bytes))))))
+    | Option.some spelled => (if (reservedName spelled) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (reservedReason spelled)) else (if (Studio.Doc::memberBytes spelled (Studio.Schema::namesOf escaped (memberNames rest))) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two of its members derive the field name ") (cons spelled (cons (Studio.Doc::lit " (Web IDL 2.2 and 2.7: the members of one definition have distinct identifiers)") (nil Bytes)))))) else (match (fieldsOf escaped rest)
+    | Result.error reason => (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] reason)
+    | Result.ok others => (ctor Result.ok [((List Bytes) * (List Bytes)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", type: ") (cons (if ((second (second head)) =? 1) then (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (tyText typed) (cons (Studio.Doc::lit ")") (nil Bytes))))) else (tyText typed)) (cons (Studio.Doc::lit "}") (nil Bytes))))))) (first others)), (appendBytes (tyRefs typed) (second others))))))))))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: structureText,
+  parameters: [name : Bytes, fields : (List Bytes)],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n") (cons (Studio.Schema::joinWith fields (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ]\n}\n") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: strValues,
+  parameters: [items : (List Bytes)],
+  result: (List Studio.Schema::Value),
+  body: (match items
+    | List.nil => (nil Studio.Schema::Value)
+    | List.cons head rest => (cons (ctor Studio.Schema::Value.VStr head) (strValues rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: declarationOf,
+  parameters: [all : (List IdlDef), item : IdlDef],
+  result: (Result (Bytes * (List Bytes)) Bytes),
+  body: (let kind : Nat := (defKind item); (let name : Bytes := (Studio.Schema::pascal (defName item)); (if ((reservedName name) && (isType kind)) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (reservedReason name)) else (if ((kind =? 0) || (kind =? 2)) then (match (missingMixin all all (defName item))
+    | Option.none => (match (fullMembers ((prim length all : Nat) + 1) all item)
+    | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+    | Result.ok members => (if ((prim length members : Nat) =? 0) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::lit "it has no data members, and LexLean refuses a structure with no fields")) else (match (fieldsOf (Studio.Schema::collides (memberNames members)) members)
+    | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+    | Result.ok fields => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((structureText name (first fields)), (second fields))))))
+    | Option.some mixin => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "includes ") (cons mixin (cons (Studio.Doc::lit ", which no input defines as an interface mixin (Web IDL 2.3)") (nil Bytes))))))) else (if (kind =? 3) then (match (Studio.Xsd::duplicateName (defValues item))
+    | Option.none => (match (reservedValue (Studio.Schema::collides (defValues item)) (defValues item))
+    | Option.none => (match (Studio.Schema::constructorsWith (Studio.Schema::collides (defValues item)) (strValues (defValues item)) (nil Bytes))
+    | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+    | Result.ok constructors => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::inductiveText name constructors), (nil Bytes))))
+    | Option.some spelled => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (reservedReason spelled)))
+    | Option.some twice => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the enumeration value \"") (cons twice (cons (Studio.Doc::lit "\" appears twice (Web IDL 2.9: the values must be distinct)") (nil Bytes))))))) else (if (kind =? 4) then (let typedBody : (Nat * (Bytes * ((List Bytes) * (Bytes * Bytes)))) := (defBody item); (if (if (Studio.Doc::same (tyProblem typedBody) 0x) then false else true) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (tyProblem typedBody)) else (if ((tyKind typedBody) =? 1) then (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::inductiveText name (cons (tyText typedBody) (nil Bytes))), (tyRefs typedBody))) else (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Xsd::valueStructure name (tyText typedBody)), (tyRefs typedBody)))))) else (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (defValues item))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: entriesOf,
+  parameters: [items : (List IdlDef), all : (List IdlDef)],
+  result: (List (Bytes * (Bytes * (Bytes * (List Bytes))))),
+  body: (match items
+    | List.nil => (nil (Bytes * (Bytes * (Bytes * (List Bytes)))))
+    | List.cons head rest => (if (isType (defKind head)) then (let entry : (Bytes * (Bytes * (Bytes * (List Bytes)))) := (match (declarationOf all head)
+    | Result.error reason => ((defName head), (reason, (0x, (nil Bytes))))
+    | Result.ok made => ((defName head), (0x, ((first made), (second made))))); (cons entry (entriesOf rest all))) else (entriesOf rest all))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: entryFor,
+  parameters: [items : (List (Bytes * (Bytes * (Bytes * (List Bytes))))), name : Bytes],
+  result: (Option (Bytes * (Bytes * (Bytes * (List Bytes))))),
+  body: (match items
+    | List.nil => (ctor Option.none [(Bytes * (Bytes * (Bytes * (List Bytes))))])
+    | List.cons head rest => (if (Studio.Doc::same (first head) name) then (ctor Option.some [(Bytes * (Bytes * (Bytes * (List Bytes))))] head) else (entryFor rest name))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: depProblem,
+  parameters: [deps : (List Bytes), lookup : (List (Bytes * (Bytes * (Bytes * (List Bytes)))))],
+  result: Bytes,
+  body: (match deps
+    | List.nil => 0x
+    | List.cons head rest => (match (entryFor lookup head)
+    | Option.none => (Studio.Doc::cat (cons (Studio.Doc::lit "refers to ") (cons head (cons (Studio.Doc::lit ", which no input defines (Web IDL 2.13.22 to 2.13.26)") (nil Bytes)))))
+    | Option.some found => (if (Studio.Doc::same (first (second found)) 0x) then (depProblem rest lookup) else (Studio.Doc::cat (cons (Studio.Doc::lit "refers to ") (cons head (cons (Studio.Doc::lit ", which is not translated: ") (cons (first (second found)) (nil Bytes))))))))),
+  recursive_argument: deps,
+  executable: true
+}
+
+definition{
+  name: settleRound,
+  parameters: [items : (List (Bytes * (Bytes * (Bytes * (List Bytes))))), lookup : (List (Bytes * (Bytes * (Bytes * (List Bytes)))))],
+  result: (List (Bytes * (Bytes * (Bytes * (List Bytes))))),
+  body: (match items
+    | List.nil => (nil (Bytes * (Bytes * (Bytes * (List Bytes)))))
+    | List.cons head rest => (let reason : Bytes := (if (Studio.Doc::same (first (second head)) 0x) then (depProblem (second (second (second head))) lookup) else (first (second head))); (cons ((first head), (reason, (second (second head)))) (settleRound rest lookup)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: blockedCount,
+  parameters: [items : (List (Bytes * (Bytes * (Bytes * (List Bytes)))))],
+  result: Nat,
+  body: (match items
+    | List.nil => 0
+    | List.cons head rest => (if (Studio.Doc::same (first (second head)) 0x) then (blockedCount rest) else ((blockedCount rest) + 1))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: settled,
+  parameters: [fuel : Nat, items : (List (Bytes * (Bytes * (Bytes * (List Bytes)))))],
+  result: (List (Bytes * (Bytes * (Bytes * (List Bytes))))),
+  body: (match fuel
+    | Nat.zero => items
+    | Nat.succ rest => (let next : (List (Bytes * (Bytes * (Bytes * (List Bytes))))) := (settleRound items items); (if ((blockedCount next) =? (blockedCount items)) then items else (settled rest next)))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: seeds,
+  parameters: [items : (List IdlDef)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (let kind : Nat := (defKind head); (if ((kind =? 0) || ((kind =? 2) || ((kind =? 3) || ((kind =? 4) || ((kind =? 5) || ((kind =? 7) || (kind =? 8))))))) then (cons (defName head) (seeds rest)) else (seeds rest)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: closure,
+  parameters: [fuel : Nat, queue : (List Bytes), done : (List Bytes), lookup : (List (Bytes * (Bytes * (Bytes * (List Bytes)))))],
+  result: (List Bytes),
+  body: (match fuel
+    | Nat.zero => done
+    | Nat.succ rest => (match queue
+    | List.nil => done
+    | List.cons head others => (if (Studio.Doc::memberBytes head done) then (closure rest others done lookup) else (match (entryFor lookup head)
+    | Option.none => (closure rest others done lookup)
+    | Option.some found => (if (Studio.Doc::same (first (second found)) 0x) then (closure rest (appendBytes (second (second (second found))) others) (cons head done) lookup) else (closure rest others done lookup)))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: pendingOf,
+  parameters: [items : (List (Bytes * (Bytes * (Bytes * (List Bytes))))), wanted : (List Bytes)],
+  result: (List (Bytes * ((List Bytes) * Bytes))),
+  body: (match items
+    | List.nil => (nil (Bytes * ((List Bytes) * Bytes)))
+    | List.cons head rest => (if ((Studio.Doc::memberBytes (first head) wanted) && (Studio.Doc::same (first (second head)) 0x)) then (cons ((first head), ((second (second (second head))), (first (second (second head))))) (pendingOf rest wanted)) else (pendingOf rest wanted))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: ordered,
+  parameters: [fuel : Nat, pending : (List (Bytes * ((List Bytes) * Bytes))), emitted : (List Bytes), out : (List Bytes)],
+  result: ((List Bytes) * (List (Bytes * ((List Bytes) * Bytes)))),
+  body: (match fuel
+    | Nat.zero => (out, pending)
+    | Nat.succ rest => (match (Studio.Xsd::pickReady pending emitted)
+    | Option.none => (out, pending)
+    | Option.some picked => (ordered rest (second picked) (cons (first (first picked)) emitted) (cons (second (first picked)) out)))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: cycleNote,
+  parameters: [items : (List (Bytes * ((List Bytes) * Bytes)))],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "-- not translated: ") (cons (first head) (cons (Studio.Doc::lit ": it refers back to itself through its members, and the translator emits non-recursive declarations only\n") (nil Bytes))))) (cycleNote rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: kindName,
+  parameters: [kind : Nat],
+  result: Bytes,
+  body: (if (kind =? 5) then (Studio.Doc::lit "partial interface ") else (if (kind =? 7) then (Studio.Doc::lit "partial dictionary ") else (Studio.Doc::lit ""))),
+  executable: true
+}
+
+definition{
+  name: notes,
+  parameters: [items : (List IdlDef), lookup : (List (Bytes * (Bytes * (Bytes * (List Bytes))))), all : (List IdlDef)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (let kind : Nat := (defKind head); (if ((kind =? 5) || (kind =? 7)) then (match (findDef all (if (kind =? 5) then 0 else 2) (defName head))
+    | Option.none => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "-- not translated: ") (cons (kindName kind) (cons (defName head) (cons (Studio.Doc::lit ": no input defines ") (cons (defName head) (cons (Studio.Doc::lit ", so its members join no definition (Web IDL 2.2 and 2.7)\n") (nil Bytes)))))))) (notes rest lookup all))
+    | Option.some found => (notes rest lookup all)) else (if (kind =? 8) then (match (findDef all 0 (defName head))
+    | Option.none => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "-- not translated: ") (cons (defName head) (cons (Studio.Doc::lit " includes ") (cons (defParent head) (cons (Studio.Doc::lit ": no input defines the interface ") (cons (defName head) (cons (Studio.Doc::lit " (Web IDL 2.3)\n") (nil Bytes))))))))) (notes rest lookup all))
+    | Option.some found => (notes rest lookup all)) else (if (isType kind) then (match (entryFor lookup (defName head))
+    | Option.none => (notes rest lookup all)
+    | Option.some found => (if (Studio.Doc::same (first (second found)) 0x) then (notes rest lookup all) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "-- not translated: ") (cons (defName head) (cons (Studio.Doc::lit ": ") (cons (first (second found)) (cons (Studio.Doc::lit "\n") (nil Bytes))))))) (notes rest lookup all)))) else (notes rest lookup all)))))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: appendDefs,
+  parameters: [left : (List IdlDef), right : (List IdlDef)],
+  result: (List IdlDef),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendDefs rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: readAll,
+  parameters: [raws : (List Bytes)],
+  result: (Result (List IdlDef) Bytes),
+  body: (match raws
+    | List.nil => (ctor Result.ok [(List IdlDef), Bytes] (nil IdlDef))
+    | List.cons head rest => (match (readWebIdl head)
+    | Result.error reason => (ctor Result.error [(List IdlDef), Bytes] reason)
+    | Result.ok read => (match (readAll rest)
+    | Result.error reason => (ctor Result.error [(List IdlDef), Bytes] reason)
+    | Result.ok more => (ctor Result.ok [(List IdlDef), Bytes] (appendDefs read more))))),
+  recursive_argument: raws,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: translateWebIdl,
+  parameters: [raw : Bytes, imports : (List Bytes)],
+  result: (Result (Nat * Bytes) Bytes),
+  body: (match (readWebIdl raw)
+    | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "not Web IDL: ") (cons reason (nil Bytes)))))
+    | Result.ok primary => (match (readAll imports)
+    | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+    | Result.ok imported => (let all : (List IdlDef) := (appendDefs primary imported); (let lookup : (List (Bytes * (Bytes * (Bytes * (List Bytes))))) := (settled ((prim length all : Nat) + 1) (entriesOf all all)); (let wanted : (List Bytes) := (closure ((prim length lookup : Nat) + 1) (seeds primary) (nil Bytes) lookup); (let pending : (List (Bytes * ((List Bytes) * Bytes))) := (pendingOf lookup wanted); (let result : ((List Bytes) * (List (Bytes * ((List Bytes) * Bytes)))) := (ordered ((prim length pending : Nat) + 1) pending (nil Bytes) (nil Bytes)); (ctor Result.ok [(Nat * Bytes), Bytes] ((prim length (first result) : Nat), (Studio.Doc::cat (cons (Studio.Doc::cat (notes primary lookup all)) (cons (Studio.Doc::cat (cycleNote (second result))) (cons (Studio.Doc::lit "-- operations, constants and the other members that are not attributes are behavior, not data, and are not translated (Web IDL 2.5)\n") (cons (Studio.Schema::joinWith (Studio.Xsd::reversed (first result) (nil Bytes)) (Studio.Doc::lit "\n")) (nil Bytes))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}
