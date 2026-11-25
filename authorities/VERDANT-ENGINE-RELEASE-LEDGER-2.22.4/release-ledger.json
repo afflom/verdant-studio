@@ -1,0 +1,300 @@
+{
+  "spec": "verdant/release-ledger/1",
+  "managerId": "mgr-change-release",
+  "authorityId": "AUTH-SEMVER-CHANGE-KPI",
+  "currentVersion": {
+    "major": 2,
+    "minor": 22,
+    "patch": 4
+  },
+  "releaseEpoch": 38,
+  "history": [
+    {
+      "version": "0.1.0",
+      "releaseEpoch": 1,
+      "bumpKind": "minor",
+      "summary": "M1: Verified Core Engine, Progressive UORC & Multi-World Runtime (VE-01..41)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "0.2.0",
+      "releaseEpoch": 2,
+      "bumpKind": "minor",
+      "summary": "M2: VSM S1-S5 Managers, Immutable Views & Dynamic UHD Tensor Core (VE-42)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "0.3.0",
+      "releaseEpoch": 3,
+      "bumpKind": "minor",
+      "summary": "M3: Zero-Account Stitch Self-Hosting, .holo Releases & <=30KiB Blank Frame (VE-43..44)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "0.4.0",
+      "releaseEpoch": 4,
+      "bumpKind": "minor",
+      "summary": "M4: Total Prism Facet Ownership, Change/Version Manager & Observer KPI Roadmap (VE-45)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "1.0.0",
+      "releaseEpoch": 2,
+      "bumpKind": "major",
+      "summary": "M5 Complete (VE-46): Full Source DAG Self-Hosting in VerdantVcs, Autonomous vN->v(N+1) Build Loop & 13-Manager Total Prism Ownership",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "1.1.0",
+      "releaseEpoch": 3,
+      "bumpKind": "minor",
+      "summary": "Tighten prism/parametric-ratchet/2 with zero self-hosting ceilings and automate closed-loop Verdant ratchet-lift (VE-47)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.0.0",
+      "releaseEpoch": 4,
+      "bumpKind": "major",
+      "summary": "Close M6-M8 (VE-48..51): Multi-origin Stitch + WebRTC peer seeding, zero-account in-Studio VerdantVcs/.holo, 4K/8K PagedTensorArena gate, live Cargo Sparse Registry & Zenodo DOI",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.1.0",
+      "releaseEpoch": 5,
+      "bumpKind": "minor",
+      "summary": "M9: Model-proved autonomous release cadence (Cadence/Release), uorust shrink-only MIR frontier ratchet, 3 CORS-verified shard origins, live Cargo sparse registry & cross-browser studio pin sharing",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.2.0",
+      "releaseEpoch": 6,
+      "bumpKind": "minor",
+      "summary": "M10: Self-tightening autonomous ratchet, live frontier_rust_tree_sha256 binding, surface Wasm/LOC ceilings, FI-08/uorust scalar harmony & npm run ratchet",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.3.0",
+      "releaseEpoch": 7,
+      "bumpKind": "minor",
+      "summary": "M11: Wasm/capsule weight diet (-1.88 MiB), FR-03 cold-boot headroom & live interactive WebGL2 3D player in shared portable .holo apps",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.4.0",
+      "releaseEpoch": 8,
+      "bumpKind": "minor",
+      "summary": "M12: Monolith decomposition, wasm32 naga gating, 1:1 FR-03 sync, 5-shape portable 3D player & 200+ uorust/fidelity closure",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.5.0",
+      "releaseEpoch": 9,
+      "bumpKind": "minor",
+      "summary": "M13: Gzip .holo capsules (-73%), 705/705 zero-residue fidelity, unified digest.rs, VerdantVcs diff/branch & <=2200L Rust decomposition",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.6.0",
+      "releaseEpoch": 10,
+      "bumpKind": "minor",
+      "summary": "M14: Verdant implements Verdant — generative Observer self-refinement engine, lifted in-Verdant lifecycle/test gate (136 modules), 219+ MIR-lifted & <=1680L JS",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.7.0",
+      "releaseEpoch": 11,
+      "bumpKind": "minor",
+      "summary": "M15: Full in-Verdant ratchet-cycle orchestrator, 7-category lifted lifecycle (156 modules), 246+ MIR-lifted & <=1525L JS",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.8.0",
+      "releaseEpoch": 12,
+      "bumpKind": "minor",
+      "summary": "M16: Lifted operator automate, 267+ MIR-lifted functions, sub-2000L Rust (163+ lifted modules) & sub-1400L JS decomposition",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.9.0",
+      "releaseEpoch": 13,
+      "bumpKind": "minor",
+      "summary": "M17 (v2.9.0): Native in-Verdant Wasm/Registry build_ops.rs (280 MIR-lifted, 164 lifted modules) & -743 KiB sub-1 MiB gzipped verdant-uorc.wasm + sub-1.5 MiB .holo capsule",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.10.0",
+      "releaseEpoch": 14,
+      "bumpKind": "minor",
+      "summary": "M18: GitHub-free Sovereign Governance Prism Model (Governance.lex.tex, 838/838 fidelity, 10/10 measured), SovereignAuthorityLedger runtime (VE-70), 321 MIR-lifted functions, and <1800L Rust modularity",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.11.0",
+      "releaseEpoch": 15,
+      "bumpKind": "minor",
+      "summary": "M19: sub-1650L Rust & sub-1250L JS modularity, 351 MIR-lifted functions & in-Studio Sovereign Signing-Request Quorum UI",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.12.0",
+      "releaseEpoch": 16,
+      "bumpKind": "minor",
+      "summary": "M20: CI-parity lifecycle-gate (conformance-engine), -117 KiB wasm32 gltf-image split with browser createImageBitmap PBR decoding, ApprovalCertificate VCS/release custody & unified Wasm/CLI/MCP authority bridge, and net uorust residue reduction (387 lifted / 1167 residue / 1324 uncertified)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.13.0",
+      "releaseEpoch": 17,
+      "bumpKind": "minor",
+      "summary": "M21: Sub-1500L Rust modularity (179 lifted modules), sub-1125L shipped JS decomposition, wasm32 governance-catalog trim & 421 MIR-lifted functions (1164 residue / 1321 uncertified)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.14.0",
+      "releaseEpoch": 18,
+      "bumpKind": "minor",
+      "summary": "M22: Sub-2.0 MiB browser verdant-uorc.wasm breakthrough (1.96 MB raw / 554 KiB gz, -70% from 6.56 MB), 1.02 MiB .holo capsule, CLI/lifecycle-gate ApprovalCertificate custody & 454 MIR-lifted functions (1162 residue / 1319 uncertified)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.15.0",
+      "releaseEpoch": 19,
+      "bumpKind": "minor",
+      "summary": "M23: Sub-1.00 MiB .holo capsule (<1,024 KiB via native-only operator Wasm gate, verdant-uorc.wasm 1.70 MiB), sub-1360L Rust (181 lifted modules), sub-1024L JS, and 485 lifted / 1161 residue uorust frontier",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.16.0",
+      "releaseEpoch": 20,
+      "bumpKind": "minor",
+      "summary": "M24: Sub-1250L Rust (183 lifted modules), sub-920L JS, hardened stitch-mirror CI retries, sub-1.00 MiB .holo capsule & 515+ MIR-lifted functions",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.17.0",
+      "releaseEpoch": 21,
+      "bumpKind": "minor",
+      "summary": "M25 (v2.17.0, VE-77): Multi-Gateway Stitch Hosting & Serving (GitHub + Cloudflare + Netlify + IPFS + Native HTTP Gateway, Blank Frame Failover/OPFS Fallback & Stakeholder Part Routing)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.18.0",
+      "releaseEpoch": 22,
+      "bumpKind": "minor",
+      "summary": "M26 (v2.18.0, VE-78): Remove commercial cloud scaffolding & formally model public-benefit Stitch self-hosting/self-serving in Prism",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.19.0",
+      "releaseEpoch": 23,
+      "bumpKind": "minor",
+      "summary": "M27 (v2.19.0, VE-79): Stitch Layer-5 swarm seeder (stitch-swarm.mjs), offline portable single-file HTML envelope & volunteer gateway /swarm bridge",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.20.0",
+      "releaseEpoch": 24,
+      "bumpKind": "minor",
+      "summary": "Milestone M28: certified VTK-36..38 compact/affine/FP4 row contractions, ARM64 C-oracle parity, and Community Stitch Seeder persona",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.20.1",
+      "releaseEpoch": 25,
+      "bumpKind": "patch",
+      "summary": "Certify sign/two-bit weight encoders and grouped Q3_K/Q6_K row products (VTK-41, VTK-42)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.0",
+      "releaseEpoch": 26,
+      "bumpKind": "minor",
+      "summary": "M29: lexlean 0.4.5, prism-code 0.11.1, template v2, unified tensor proof scopes, VTK-43..48, and Holo v6 self-carrying proof records",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.1",
+      "releaseEpoch": 27,
+      "bumpKind": "patch",
+      "summary": "v2.21.1: certified grouped signed three-bit weight encoding (VTK-52)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.2",
+      "releaseEpoch": 28,
+      "bumpKind": "patch",
+      "summary": "v2.21.2: certified nonlinear four-bit weight encoding (VTK-53)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.3",
+      "releaseEpoch": 29,
+      "bumpKind": "patch",
+      "summary": "v2.21.3: certified binary32 error function for Gaussian activations (VTK-54)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.4",
+      "releaseEpoch": 30,
+      "bumpKind": "patch",
+      "summary": "v2.21.4: certified binary32 exponential increment in unified tensor scope (VTK-55)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.5",
+      "releaseEpoch": 31,
+      "bumpKind": "patch",
+      "summary": "v2.21.5: certified IQ3 importance-grid weight encoding (VTK-56)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.6",
+      "releaseEpoch": 32,
+      "bumpKind": "patch",
+      "summary": "v2.21.6: certified gated delta rule, selective state projection, and IQ2_S importance encoding (VTK-57, VTK-58, VTK-59)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.21.7",
+      "releaseEpoch": 33,
+      "bumpKind": "patch",
+      "summary": "v2.21.7: certified IQ2_XS, IQ2_XXS, IQ1_S, and IQ1_M importance-grid weight encodings (VTK-60, VTK-61, VTK-62)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.22.0",
+      "releaseEpoch": 34,
+      "bumpKind": "minor",
+      "summary": "M30 (v2.22.0, VE-81, VTK-63..VTK-64): Sub-1145L Rust & sub-850L JS modularity, 984 permille Observer health, 620+ uorust MIR-lifted frontier, and certified signed64/round-to-odd wide conversions",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.22.1",
+      "releaseEpoch": 35,
+      "bumpKind": "patch",
+      "summary": "v2.22.1: certified Q8_1/Q8_K activation decoding, binary64 multiplication, and modular 64-bit word arithmetic (VTK-65, VTK-66, VTK-67)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.22.2",
+      "releaseEpoch": 36,
+      "bumpKind": "patch",
+      "summary": "v2.22.2: certified Arm binary32 natural logarithm in unified quotient scope (VTK-68)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.22.3",
+      "releaseEpoch": 37,
+      "bumpKind": "patch",
+      "summary": "v2.22.3: certified exact mixed I64 and binary64 word equality in unified quotient scope (VTK-69)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    },
+    {
+      "version": "2.22.4",
+      "releaseEpoch": 38,
+      "bumpKind": "patch",
+      "summary": "v2.22.4: certified Arm binary32 reference sine in unified quotient scope (VTK-70)",
+      "citedAuthority": "AUTH-SEMVER-CHANGE-KPI"
+    }
+  ]
+}

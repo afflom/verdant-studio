@@ -7784,3 +7784,71 @@ statement = "The official MASVS 2.1.0 YAML release asset: the control groups and
 artifact = "authorities/OWASP-MASVS-2.1.0/OWASP_MASVS.yaml"
 checksum = "1175fe92ddb846c327b48f8efbd3fcb0148397cfb1ae0bb5a06f8c169e5e34a8"
 realized_by = []
+
+[[authority]]
+id = "VERDANT-ENGINE-AUTHORITIES-2.22.4"
+name = "Verdant Engine authority register"
+issuer = "afflom"
+edition = "v2.22.4"
+canonical_id = "https://github.com/afflom/verdant-engine/releases/tag/v2.22.4"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://raw.githubusercontent.com/afflom/verdant-engine/9d22f5ac364db8352d12434e1c9c3dbed65ac6c9/model/authorities.toml"
+media_type = "application/toml"
+license = "MIT OR Apache-2.0"
+redistribution = "redistributable"
+statement = "The engine's imported authorities, each catalog pinned by sha256 and mapped to the IDs that realize it (realized_by)."
+artifact = "authorities/VERDANT-ENGINE-AUTHORITIES-2.22.4/authorities.toml"
+checksum = "9dae8000e668c8b6808587407e4d56c5a2fb7c98cd1a36b80d79b1cb6acce1b3"
+realized_by = []
+
+[[authority]]
+id = "VERDANT-ENGINE-IDS-2.22.4"
+name = "Verdant Engine conformance ID register"
+issuer = "afflom"
+edition = "v2.22.4"
+canonical_id = "https://github.com/afflom/verdant-engine/releases/tag/v2.22.4"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://raw.githubusercontent.com/afflom/verdant-engine/9d22f5ac364db8352d12434e1c9c3dbed65ac6c9/model/ids.toml"
+media_type = "application/toml"
+license = "MIT OR Apache-2.0"
+redistribution = "redistributable"
+statement = "The engine's conformance IDs, each with level, suite, refusal and statement. Every engine capability Verdant Studio uses is cited by one of these IDs."
+artifact = "authorities/VERDANT-ENGINE-IDS-2.22.4/ids.toml"
+checksum = "00808d0a32eaa5fbd0dd2ddff3976af40e2236c7ea0ded4e664b299ab5fed453"
+realized_by = []
+
+[[authority]]
+id = "VERDANT-ENGINE-RELEASE-LEDGER-2.22.4"
+name = "Verdant Engine release ledger"
+issuer = "afflom"
+edition = "v2.22.4"
+canonical_id = "https://github.com/afflom/verdant-engine/releases/tag/v2.22.4"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://raw.githubusercontent.com/afflom/verdant-engine/9d22f5ac364db8352d12434e1c9c3dbed65ac6c9/site/generated/release-ledger.json"
+media_type = "application/json"
+license = "MIT OR Apache-2.0"
+redistribution = "redistributable"
+statement = "The engine's verdant/release-ledger/1: its current SemVer version, release epoch and change history."
+artifact = "authorities/VERDANT-ENGINE-RELEASE-LEDGER-2.22.4/release-ledger.json"
+checksum = "c53ca8b0a755dc776d1e94e214889df072e793c5928891af4e2bd7d94bc71009"
+realized_by = []
+
+[[authority]]
+id = "VERDANT-ENGINE-STANDARDS-LOCK-2.22.4"
+name = "Verdant Engine standards lock"
+issuer = "afflom"
+edition = "v2.22.4"
+canonical_id = "https://github.com/afflom/verdant-engine/releases/tag/v2.22.4"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://raw.githubusercontent.com/afflom/verdant-engine/9d22f5ac364db8352d12434e1c9c3dbed65ac6c9/standards.lock"
+media_type = "application/json"
+license = "MIT OR Apache-2.0"
+redistribution = "redistributable"
+statement = "The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them."
+artifact = "authorities/VERDANT-ENGINE-STANDARDS-LOCK-2.22.4/standards.lock"
+checksum = "5717dc99c3dbe05d9be26114be7e2df3f00df7128b12f3d9933b77543da8f866"
+realized_by = []
