@@ -15,7 +15,7 @@ template below.
 | `stage-encodings JSONL` | Stages one encoding per line (`name`, `schema`, `citation`) in `model/encodings/`; on merge, `advance` admits each through `admit-encoding` |
 | `agenda` | Lists the work the model shows open (today: standards-index rows no construct cites) |
 | `merge-gate RULES` | Prints `merge` when the branch rules require the `studio` check, else `wait`; `operate` uses it to decide auto-merge |
-| `propose-command` (operate only) | Applies a patch to `studio/src`, `app/src/Contract.lex.tex`, `app/src/Studio`, `model/ids.toml`, `model/strata.json`, `features/suites` or `README.md`, exports the command again with Lean, and opens the App's pull request for the owner's review; it never auto-merges |
+| `propose-command` (operate only) | Applies a patch to `studio/src`, `app/src/Contract.lex.tex`, `app/src/Studio`, the `source_package` blocks of `app/lexlean.toml`, `model/ids.toml`, `model/strata.json`, `features/suites` or `README.md`, exports the command again with Lean, and opens the App's pull request for the owner's review; it never auto-merges |
 | `check` | Every construct resolves to one Std, Req or Der citation; every module has a stratum; no locked register entry was dropped |
 | `ingest-index CSV` | Commits the standards index and pins its sha256 |
 | `ingest-authority BINDING` | Fetches a PrismPM authority binding's pinned source and refuses a sha256 mismatch |
