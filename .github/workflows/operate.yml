@@ -71,8 +71,8 @@ jobs:
           cat > target/input/change.patch <<< "$INPUT"
           # A patch larger than a dispatch input can carry arrives gzipped and base64-encoded.
           if head -c 4 target/input/change.patch | grep -q '^H4sI'; then base64 -d < target/input/change.patch | gunzip > target/input/change.diff; mv target/input/change.diff target/input/change.patch; fi
-          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^features/suites/' -e '^README.md$' || true)
-          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, features/suites and README.md, not: $outside"; exit 1; fi
+          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' || true)
+          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites and README.md, not: $outside"; exit 1; fi
           git apply target/input/change.patch
           if [ ! -x "$HOME/.elan/bin/elan" ]; then
             curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
@@ -116,7 +116,7 @@ jobs:
             echo "Exported again with Lean as $(basename studio/.lexlean/production/*/). The studio check replays it, then runs check, build and publish."
             echo
             echo '```'
-            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml features/suites README.md
+            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md
             echo '```'
             echo
             echo "<${slash}details>"
