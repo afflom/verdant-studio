@@ -163,7 +163,7 @@ definition{
   name: decimalOf,
   parameters: [whole : Bytes, fraction : Bytes, exponentNegative : Bool, exponent : Nat],
   result: (Option (Bytes * Nat)),
-  body: (let kept : Bytes := (LexLeanStd.Text::sliceOr fraction 0 (prim subtract (prim length fraction : Nat) (Studio.Doc::trailingZeros fraction) : Nat)); (let joined : Bytes := (prim append whole kept : Bytes); (let skip : Nat := (Studio.Doc::leadingZeros joined); (let mantissa : Bytes := (LexLeanStd.Text::sliceOr joined skip (prim subtract (prim length joined : Nat) skip : Nat)); (let places : Nat := (prim length kept : Nat); (let size : Nat := (prim length mantissa : Nat); (if (size =? 0) then (ctor Option.some [(Bytes * Nat)] ((Studio.Doc::lit "0"), 0)) else (if (exponentNegative || (exponent <? places)) then (let drop : Nat := (if exponentNegative then (exponent + places) else (prim subtract places exponent : Nat)); (let zeros : Nat := (Studio.Doc::trailingZeros mantissa); (if (drop <=? zeros) then (ctor Option.some [(Bytes * Nat)] ((LexLeanStd.Text::sliceOr mantissa 0 (prim subtract size drop : Nat)), 0)) else (if ((prim subtract drop zeros : Nat) <=? 19) then (ctor Option.some [(Bytes * Nat)] ((LexLeanStd.Text::sliceOr mantissa 0 (prim subtract size zeros : Nat)), (prim subtract drop zeros : Nat))) else (ctor Option.none [(Bytes * Nat)]))))) else (let shift : Nat := (prim subtract exponent places : Nat); (if ((size + shift) <=? 19) then (ctor Option.some [(Bytes * Nat)] ((prim append mantissa (Studio.Doc::zeroDigits shift) : Bytes), 0)) else (ctor Option.none [(Bytes * Nat)]))))))))))),
+  body: (let kept : Bytes := (LexLeanStd.Text::sliceOr fraction 0 (prim subtract (prim length fraction : Nat) (Studio.Doc::trailingZeros fraction) : Nat)); (let joined : Bytes := (prim append whole kept : Bytes); (let skip : Nat := (Studio.Doc::leadingZeros joined); (let mantissa : Bytes := (LexLeanStd.Text::sliceOr joined skip (prim subtract (prim length joined : Nat) skip : Nat)); (let places : Nat := (prim length kept : Nat); (let size : Nat := (prim length mantissa : Nat); (if (size =? 0) then (ctor Option.some [(Bytes * Nat)] ((Studio.Doc::lit "0"), 0)) else (if (Studio.Doc::either exponentNegative (exponent <? places)) then (let drop : Nat := (if exponentNegative then (exponent + places) else (prim subtract places exponent : Nat)); (let zeros : Nat := (Studio.Doc::trailingZeros mantissa); (if (drop <=? zeros) then (ctor Option.some [(Bytes * Nat)] ((LexLeanStd.Text::sliceOr mantissa 0 (prim subtract size drop : Nat)), 0)) else (if ((prim subtract drop zeros : Nat) <=? 19) then (ctor Option.some [(Bytes * Nat)] ((LexLeanStd.Text::sliceOr mantissa 0 (prim subtract size zeros : Nat)), (prim subtract drop zeros : Nat))) else (ctor Option.none [(Bytes * Nat)]))))) else (let shift : Nat := (prim subtract exponent places : Nat); (if ((size + shift) <=? 19) then (ctor Option.some [(Bytes * Nat)] ((prim append mantissa (Studio.Doc::zeroDigits shift) : Bytes), 0)) else (ctor Option.none [(Bytes * Nat)]))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -172,13 +172,13 @@ definition{
   name: readNumber,
   parameters: [source : Bytes, position : Nat],
   result: (Option (Nat * Value)),
-  body: (let negative : Bool := ((LexLeanStd.JsonRead::byteOf source position) =? 45); (let start : Nat := (if negative then (position + 1) else position); (let wholeEnd : Nat := (LexLeanStd.JsonRead::digitsEnd source start); (let wholeCount : Nat := (prim subtract wholeEnd start : Nat); (let dotted : Bool := ((LexLeanStd.JsonRead::byteOf source wholeEnd) =? 46); (let fractionStart : Nat := (if dotted then (wholeEnd + 1) else wholeEnd); (let fractionEnd : Nat := (if dotted then (LexLeanStd.JsonRead::digitsEnd source fractionStart) else wholeEnd); (let marker : Nat := (LexLeanStd.JsonRead::byteOf source fractionEnd); (let marked : Bool := ((marker =? 101) || (marker =? 69)); (let signByte : Nat := (LexLeanStd.JsonRead::byteOf source (fractionEnd + 1)); (let signed : Bool := (marked && ((signByte =? 43) || (signByte =? 45))); (let exponentStart : Nat := (if marked then (if signed then (fractionEnd + 2) else (fractionEnd + 1)) else fractionEnd); (let exponentEnd : Nat := (if marked then (LexLeanStd.JsonRead::digitsEnd source exponentStart) else fractionEnd); (let exponentRaw : Bytes := (LexLeanStd.Text::sliceOr source exponentStart (prim subtract exponentEnd exponentStart : Nat)); (let exponentSkip : Nat := (Studio.Doc::leadingZeros exponentRaw); (let exponentDigits : Bytes := (LexLeanStd.Text::sliceOr exponentRaw exponentSkip (prim subtract (prim length exponentRaw : Nat) exponentSkip : Nat)); (if ((wholeCount =? 0) || (((1 <? wholeCount) && ((LexLeanStd.JsonRead::byteOf source start) =? 48)) || ((dotted && (fractionEnd =? fractionStart)) || ((marked && (exponentEnd =? exponentStart)) || (18 <? (prim length exponentDigits : Nat)))))) then (ctor Option.none [(Nat * Value)]) else (match (if ((prim length exponentDigits : Nat) =? 0) then (ctor Option.some [Nat] 0) else (LexLeanStd.Numeral::parseDecimal exponentDigits))
+  body: (let negative : Bool := ((LexLeanStd.JsonRead::byteOf source position) =? 45); (let start : Nat := (if negative then (position + 1) else position); (let wholeEnd : Nat := (LexLeanStd.JsonRead::digitsEnd source start); (let wholeCount : Nat := (prim subtract wholeEnd start : Nat); (let dotted : Bool := ((LexLeanStd.JsonRead::byteOf source wholeEnd) =? 46); (let fractionStart : Nat := (if dotted then (wholeEnd + 1) else wholeEnd); (let fractionEnd : Nat := (if dotted then (LexLeanStd.JsonRead::digitsEnd source fractionStart) else wholeEnd); (let marker : Nat := (LexLeanStd.JsonRead::byteOf source fractionEnd); (let marked : Bool := ((marker =? 101) || (marker =? 69)); (let signByte : Nat := (LexLeanStd.JsonRead::byteOf source (fractionEnd + 1)); (let signed : Bool := (Studio.Doc::both marked (Studio.Doc::either (signByte =? 43) (signByte =? 45))); (let exponentStart : Nat := (if marked then (if signed then (fractionEnd + 2) else (fractionEnd + 1)) else fractionEnd); (let exponentEnd : Nat := (if marked then (LexLeanStd.JsonRead::digitsEnd source exponentStart) else fractionEnd); (let exponentRaw : Bytes := (LexLeanStd.Text::sliceOr source exponentStart (prim subtract exponentEnd exponentStart : Nat)); (let exponentSkip : Nat := (Studio.Doc::leadingZeros exponentRaw); (let exponentDigits : Bytes := (LexLeanStd.Text::sliceOr exponentRaw exponentSkip (prim subtract (prim length exponentRaw : Nat) exponentSkip : Nat)); (if ((wholeCount =? 0) || ((Studio.Doc::both (1 <? wholeCount) ((LexLeanStd.JsonRead::byteOf source start) =? 48)) || ((Studio.Doc::both dotted (fractionEnd =? fractionStart)) || (Studio.Doc::either (marked && (exponentEnd =? exponentStart)) (18 <? (prim length exponentDigits : Nat)))))) then (ctor Option.none [(Nat * Value)]) else (match (if ((prim length exponentDigits : Nat) =? 0) then (ctor Option.some [Nat] 0) else (LexLeanStd.Numeral::parseDecimal exponentDigits))
     | Option.none => (ctor Option.none [(Nat * Value)])
-    | Option.some exponent => (match (decimalOf (LexLeanStd.Text::sliceOr source start wholeCount) (LexLeanStd.Text::sliceOr source fractionStart (prim subtract fractionEnd fractionStart : Nat)) (signed && (signByte =? 45)) exponent)
+    | Option.some exponent => (match (decimalOf (LexLeanStd.Text::sliceOr source start wholeCount) (LexLeanStd.Text::sliceOr source fractionStart (prim subtract fractionEnd fractionStart : Nat)) (Studio.Doc::both signed (signByte =? 45)) exponent)
       | Option.none => (ctor Option.none [(Nat * Value)])
       | Option.some read => (if (19 <? (prim length (first read) : Nat)) then (ctor Option.none [(Nat * Value)]) else (match (LexLeanStd.Numeral::parseDecimal (first read))
         | Option.none => (ctor Option.none [(Nat * Value)])
-        | Option.some magnitude => (let sign : Bool := (negative && (0 <? magnitude)); (if (LexLeanStd.JsonRead::inRange sign magnitude) then (ctor Option.some [(Nat * Value)] (exponentEnd, (if ((second read) =? 0) then (ctor Value.VInt sign magnitude) else (ctor Value.VDec sign magnitude (second read))))) else (ctor Option.none [(Nat * Value)])))))))))))))))))))))))),
+        | Option.some magnitude => (let sign : Bool := (Studio.Doc::both negative (0 <? magnitude)); (if (LexLeanStd.JsonRead::inRange sign magnitude) then (ctor Option.some [(Nat * Value)] (exponentEnd, (if ((second read) =? 0) then (ctor Value.VInt sign magnitude) else (ctor Value.VDec sign magnitude (second read))))) else (ctor Option.none [(Nat * Value)])))))))))))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -195,7 +195,7 @@ definition{
         | Option.none => (ctor Option.none [(Value * Nat)])
         | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VItem (first item) (first spine)), (second spine)))) else (if (after =? 93) then (ctor Option.some [(Value * Nat)] ((ctor Value.VItem (first item) (ctor Value.VNil)), ((second item) + 1))) else (ctor Option.none [(Value * Nat)]))))) else (if (mode =? 2) then (match (LexLeanStd.JsonRead::scanString source (position + 1))
       | Option.none => (ctor Option.none [(Value * Nat)])
-      | Option.some key => (if ((byte =? 34) && ((LexLeanStd.JsonRead::byteOf source (first key)) =? 58)) then (match (parseAt source ((first key) + 1) rest 0)
+      | Option.some key => (if (Studio.Doc::both (byte =? 34) ((LexLeanStd.JsonRead::byteOf source (first key)) =? 58)) then (match (parseAt source ((first key) + 1) rest 0)
         | Option.none => (ctor Option.none [(Value * Nat)])
         | Option.some value => (let after : Nat := (LexLeanStd.JsonRead::byteOf source (second value)); (if (after =? 44) then (match (parseAt source ((second value) + 1) rest 2)
           | Option.none => (ctor Option.none [(Value * Nat)])
@@ -220,6 +220,47 @@ definition{
   body: (let source : Bytes := (Studio.Doc::compact raw); (match (parseAt source 0 ((prim length source : Nat) + 2) 0)
     | Option.none => (ctor Option.none [Value])
     | Option.some parsed => (if ((second parsed) =? (prim length source : Nat)) then (ctor Option.some [Value] (first parsed)) else (ctor Option.none [Value])))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: jsonOf,
+  parameters: [value : Value],
+  result: (Option LexLeanStd.Json::Json),
+  body: (match value
+    | Value.VBool flag => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JBool flag))
+    | Value.VInt negative magnitude => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JInt negative magnitude))
+    | Value.VDec negative mantissa scale => (ctor Option.none [LexLeanStd.Json::Json])
+    | Value.VStr text => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JStr text))
+    | Value.VArr inner => (match (jsonOf inner)
+      | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+      | Option.some converted => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JArr converted)))
+    | Value.VObj inner => (match (jsonOf inner)
+      | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+      | Option.some converted => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JObj converted)))
+    | Value.VNil => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JNil))
+    | Value.VItem head rest => (match (jsonOf head)
+      | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+      | Option.some converted => (match (jsonOf rest)
+        | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+        | Option.some others => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JItem converted others))))
+    | Value.VMember name head rest => (match (jsonOf head)
+      | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+      | Option.some converted => (match (jsonOf rest)
+        | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+        | Option.some others => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember name converted others))))),
+  recursive_argument: value,
+  executable: true
+}
+
+definition{
+  name: readJson,
+  parameters: [raw : Bytes],
+  result: (Option LexLeanStd.Json::Json),
+  body: (match (readAny raw)
+    | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+    | Option.some value => (jsonOf value)),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -339,11 +380,65 @@ inductive{
   ]
 }
 
+inductive{
+  name: Typed,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [Bytes, (List Job)]}
+  ]
+}
+
+inductive{
+  name: Pieces,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(List Bytes), (List Job)]}
+  ]
+}
+
+definition{
+  name: piecesText,
+  parameters: [found : Pieces],
+  result: (List Bytes),
+  body: (match found
+    | Pieces.mk text jobs => text),
+  executable: true
+}
+
+definition{
+  name: piecesJobs,
+  parameters: [found : Pieces],
+  result: (List Job),
+  body: (match found
+    | Pieces.mk text jobs => jobs),
+  executable: true
+}
+
+definition{
+  name: typedText,
+  parameters: [found : Typed],
+  result: Bytes,
+  body: (match found
+    | Typed.mk text jobs => text),
+  executable: true
+}
+
+definition{
+  name: typedJobs,
+  parameters: [found : Typed],
+  result: (List Job),
+  body: (match found
+    | Typed.mk text jobs => jobs),
+  executable: true
+}
+
 definition{
   name: isSeparator,
   parameters: [byte : Nat],
   result: Bool,
-  body: ((byte =? 95) || ((byte =? 45) || ((byte =? 32) || ((byte =? 46) || (byte =? 47))))),
+  body: (Studio.Doc::either (byte =? 95) (Studio.Doc::either (byte =? 45) (Studio.Doc::either (byte =? 32) (Studio.Doc::either (byte =? 46) (byte =? 47))))),
   executable: true
 }
 
@@ -351,7 +446,7 @@ definition{
   name: lowerLetter,
   parameters: [byte : Nat],
   result: Bool,
-  body: ((97 <=? byte) && (byte <=? 122)),
+  body: (Studio.Doc::both (97 <=? byte) (byte <=? 122)),
   executable: true
 }
 
@@ -359,7 +454,7 @@ definition{
   name: upperLetter,
   parameters: [byte : Nat],
   result: Bool,
-  body: ((65 <=? byte) && (byte <=? 90)),
+  body: (Studio.Doc::both (65 <=? byte) (byte <=? 90)),
   executable: true
 }
 
@@ -367,7 +462,7 @@ definition{
   name: digit,
   parameters: [byte : Nat],
   result: Bool,
-  body: ((48 <=? byte) && (byte <=? 57)),
+  body: (Studio.Doc::both (48 <=? byte) (byte <=? 57)),
   executable: true
 }
 
@@ -379,7 +474,7 @@ definition{
     | Nat.zero => out
     | Nat.succ rest => (match (prim index text offset : (Option UInt8))
       | Option.none => out
-      | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if (isSeparator value) then (caseFrom text (offset + 1) rest true out) else (if ((lowerLetter value) && raise) then (caseFrom text (offset + 1) rest false (prim append out (LexLeanStd.Text::sliceOr (prim utf8_encode "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : Bytes) (prim subtract value 97 : Nat) 1) : Bytes)) else (if ((lowerLetter value) || ((upperLetter value) || (digit value))) then (caseFrom text (offset + 1) rest false (prim append out (LexLeanStd.Text::sliceOr text offset 1) : Bytes)) else (caseFrom text (offset + 1) rest raise out))))))),
+      | Option.some byte => (let value : Nat := (Studio.Doc::byteValue byte); (if (isSeparator value) then (caseFrom text (offset + 1) rest true out) else (if (Studio.Doc::both (lowerLetter value) raise) then (caseFrom text (offset + 1) rest false (prim append out (LexLeanStd.Text::sliceOr (prim utf8_encode "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : Bytes) (prim subtract value 97 : Nat) 1) : Bytes)) else (if (Studio.Doc::either (lowerLetter value) (Studio.Doc::either (upperLetter value) (digit value))) then (caseFrom text (offset + 1) rest false (prim append out (LexLeanStd.Text::sliceOr text offset 1) : Bytes)) else (caseFrom text (offset + 1) rest raise out))))))),
   recursive_argument: remaining,
   axioms: [Quot.sound, propext],
   executable: true
@@ -400,7 +495,7 @@ definition{
   result: Bytes,
   body: (let raised : Bytes := (caseFrom text 0 (prim length text : Nat) false 0x); (match (prim index raised 0 : (Option UInt8))
     | Option.none => raised
-    | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if (upperLetter value) then (prim append (LexLeanStd.Text::sliceOr (prim utf8_encode "abcdefghijklmnopqrstuvwxyz" : Bytes) (prim subtract value 65 : Nat) 1) (LexLeanStd.Text::sliceOr raised 1 (prim subtract (prim length raised : Nat) 1 : Nat)) : Bytes) else raised)))),
+    | Option.some byte => (let value : Nat := (Studio.Doc::byteValue byte); (if (upperLetter value) then (prim append (LexLeanStd.Text::sliceOr (prim utf8_encode "abcdefghijklmnopqrstuvwxyz" : Bytes) (prim subtract value 65 : Nat) 1) (LexLeanStd.Text::sliceOr raised 1 (prim subtract (prim length raised : Nat) 1 : Nat)) : Bytes) else raised)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -411,7 +506,7 @@ definition{
   result: Bool,
   body: (match (prim index name 0 : (Option UInt8))
     | Option.none => false
-    | Option.some byte => ((lowerLetter (prim to_nat byte : Nat)) || (upperLetter (prim to_nat byte : Nat)))),
+    | Option.some byte => (Studio.Doc::either (lowerLetter (Studio.Doc::byteValue byte)) (upperLetter (Studio.Doc::byteValue byte)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -430,7 +525,7 @@ definition{
   result: Bytes,
   body: (match fuel
     | Nat.zero => out
-    | Nat.succ rest => (if ((number =? 0) && (width =? 0)) then out else (hexFrom rest (prim quotient number 16 0 : Nat) (prim subtract width 1 : Nat) (prim append (upperHex (prim remainder number 16 0 : Nat)) out : Bytes)))),
+    | Nat.succ rest => (if (Studio.Doc::both (number =? 0) (width =? 0)) then out else (hexFrom rest (prim quotient number 16 0 : Nat) (prim subtract width 1 : Nat) (prim append (upperHex (prim remainder number 16 0 : Nat)) out : Bytes)))),
   recursive_argument: fuel,
   executable: true
 }
@@ -449,7 +544,7 @@ definition{
   result: (Option Nat),
   body: (match (prim index text offset : (Option UInt8))
     | Option.none => (ctor Option.none [Nat])
-    | Option.some byte => (let value : Nat := (prim to_nat byte : Nat); (if ((128 <=? value) && (value <=? 191)) then (ctor Option.some [Nat] (prim subtract value 128 : Nat)) else (ctor Option.none [Nat])))),
+    | Option.some byte => (let value : Nat := (Studio.Doc::byteValue byte); (if (Studio.Doc::both (128 <=? value) (value <=? 191)) then (ctor Option.some [Nat] (prim subtract value 128 : Nat)) else (ctor Option.none [Nat])))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -458,7 +553,7 @@ definition{
   name: scalarWithin,
   parameters: [point : Nat, low : Nat, high : Nat, width : Nat],
   result: (Option (Nat * Nat)),
-  body: (if ((low <=? point) && ((point <=? high) && ((point <? 55296) || (57343 <? point)))) then (ctor Option.some [(Nat * Nat)] (point, width)) else (ctor Option.none [(Nat * Nat)])),
+  body: (if (Studio.Doc::both (low <=? point) (Studio.Doc::both (point <=? high) (Studio.Doc::either (point <? 55296) (57343 <? point)))) then (ctor Option.some [(Nat * Nat)] (point, width)) else (ctor Option.none [(Nat * Nat)])),
   executable: true
 }
 
@@ -468,13 +563,13 @@ definition{
   result: (Option (Nat * Nat)),
   body: (match (prim index text offset : (Option UInt8))
     | Option.none => (ctor Option.none [(Nat * Nat)])
-    | Option.some byte => (let lead : Nat := (prim to_nat byte : Nat); (if (lead <? 128) then (ctor Option.some [(Nat * Nat)] (lead, 1)) else (if ((194 <=? lead) && (lead <=? 223)) then (match (continuation text (offset + 1))
+    | Option.some byte => (let lead : Nat := (Studio.Doc::byteValue byte); (if (lead <? 128) then (ctor Option.some [(Nat * Nat)] (lead, 1)) else (if (Studio.Doc::both (194 <=? lead) (lead <=? 223)) then (match (continuation text (offset + 1))
       | Option.none => (ctor Option.none [(Nat * Nat)])
-      | Option.some second1 => (scalarWithin ((prim multiply (prim subtract lead 192 : Nat) 64 : Nat) + second1) 128 2047 2)) else (if ((224 <=? lead) && (lead <=? 239)) then (match (continuation text (offset + 1))
+      | Option.some second1 => (scalarWithin ((prim multiply (prim subtract lead 192 : Nat) 64 : Nat) + second1) 128 2047 2)) else (if (Studio.Doc::both (224 <=? lead) (lead <=? 239)) then (match (continuation text (offset + 1))
       | Option.none => (ctor Option.none [(Nat * Nat)])
       | Option.some second1 => (match (continuation text (offset + 2))
         | Option.none => (ctor Option.none [(Nat * Nat)])
-        | Option.some third1 => (scalarWithin ((prim multiply (prim subtract lead 224 : Nat) 4096 : Nat) + ((prim multiply second1 64 : Nat) + third1)) 2048 65535 3))) else (if ((240 <=? lead) && (lead <=? 244)) then (match (continuation text (offset + 1))
+        | Option.some third1 => (scalarWithin ((prim multiply (prim subtract lead 224 : Nat) 4096 : Nat) + ((prim multiply second1 64 : Nat) + third1)) 2048 65535 3))) else (if (Studio.Doc::both (240 <=? lead) (lead <=? 244)) then (match (continuation text (offset + 1))
       | Option.none => (ctor Option.none [(Nat * Nat)])
       | Option.some second1 => (match (continuation text (offset + 2))
         | Option.none => (ctor Option.none [(Nat * Nat)])
@@ -503,7 +598,7 @@ definition{
   name: escapedPiece,
   parameters: [text : Bytes, offset : Nat, point : Nat],
   result: Bytes,
-  body: (if ((((lowerLetter point) || (upperLetter point)) && ((if (point =? 117) then false else true) && (if (point =? 85) then false else true))) || ((digit point) && (0 <? offset))) then (LexLeanStd.Text::sliceOr text offset 1) else (if (point <? 65536) then (prim append (Studio.Doc::lit "u") (hexFrom 8 point 4 0x) : Bytes) else (prim append (Studio.Doc::lit "U") (hexFrom 8 point 8 0x) : Bytes))),
+  body: (if (Studio.Doc::either (Studio.Doc::both (Studio.Doc::either (lowerLetter point) (upperLetter point)) (Studio.Doc::both (if (point =? 117) then false else true) (if (point =? 85) then false else true))) (Studio.Doc::both (digit point) (0 <? offset))) then (LexLeanStd.Text::sliceOr text offset 1) else (if (point <? 65536) then (prim append (Studio.Doc::lit "u") (hexFrom 8 point 4 0x) : Bytes) else (prim append (Studio.Doc::lit "U") (hexFrom 8 point 8 0x) : Bytes))),
   executable: true
 }
 
@@ -540,7 +635,7 @@ definition{
     | Nat.zero => true
     | Nat.succ rest => (match (prim index text offset : (Option UInt8))
       | Option.none => true
-      | Option.some byte => (if ((prim to_nat byte : Nat) <? 128) then (asciiOnly rest text (offset + 1)) else false))),
+      | Option.some byte => (if ((Studio.Doc::byteValue byte) <? 128) then (asciiOnly rest text (offset + 1)) else false))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
@@ -552,7 +647,7 @@ definition{
   result: (Option Bytes),
   body: (if (asciiOnly (prim length text : Nat) text 0) then (let name : Bytes := (camel text); (if (nameable name) then (ctor Option.some [Bytes] name) else (match (prim index name 0 : (Option UInt8))
     | Option.none => (ctor Option.none [Bytes])
-    | Option.some byte => (if (digit (prim to_nat byte : Nat)) then (ctor Option.some [Bytes] (prim append (Studio.Doc::lit "n") name : Bytes)) else (ctor Option.none [Bytes]))))) else (codePointsFrom (prim length text : Nat) text 0 0x)),
+    | Option.some byte => (if (digit (Studio.Doc::byteValue byte)) then (ctor Option.some [Bytes] (prim append (Studio.Doc::lit "n") name : Bytes)) else (ctor Option.none [Bytes]))))) else (codePointsFrom (prim length text : Nat) text 0 0x)),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -641,16 +736,16 @@ definition{
 definition{
   name: refused,
   parameters: [reason : Bytes, at : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
-  body: (ctor Result.error [(Bytes * (List Job)), Bytes] (Studio.Doc::cat (cons reason (cons (Studio.Doc::lit " at ") (cons at (nil Bytes)))))),
+  result: (Result Typed Bytes),
+  body: (ctor Result.error [Typed, Bytes] (Studio.Doc::cat (cons reason (cons (Studio.Doc::lit " at ") (cons at (nil Bytes)))))),
   executable: true
 }
 
 definition{
   name: typed,
   parameters: [text : Bytes, jobs : (List Job)],
-  result: (Result (Bytes * (List Job)) Bytes),
-  body: (ctor Result.ok [(Bytes * (List Job)), Bytes] (text, jobs)),
+  result: (Result Typed Bytes),
+  body: (ctor Result.ok [Typed, Bytes] (ctor Typed.mk text jobs)),
   executable: true
 }
 
@@ -682,8 +777,8 @@ definition{
 definition{
   name: anyValue,
   parameters: [],
-  result: (Result (Bytes * (List Job)) Bytes),
-  body: (ctor Result.ok [(Bytes * (List Job)), Bytes] ((jsonValueName), (cons (ctor Job.json) (nil Job)))),
+  result: (Result Typed Bytes),
+  body: (ctor Result.ok [Typed, Bytes] (ctor Typed.mk (jsonValueName) (cons (ctor Job.json) (nil Job)))),
   executable: true
 }
 
@@ -757,21 +852,21 @@ definition{
 
 definition{
   name: wrapped,
-  parameters: [prefix : Bytes, result : (Result (Bytes * (List Job)) Bytes)],
-  result: (Result (Bytes * (List Job)) Bytes),
+  parameters: [prefix : Bytes, result : (Result Typed Bytes)],
+  result: (Result Typed Bytes),
   body: (match result
-    | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
-    | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons prefix (cons (Studio.Doc::lit " ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes))))))) (second found))),
+    | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
+    | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons prefix (cons (Studio.Doc::lit " ") (cons (typedText found) (cons (Studio.Doc::lit ")") (nil Bytes))))))) (typedJobs found))),
   executable: true
 }
 
 definition{
   name: pairedWith,
-  parameters: [result : (Result (Bytes * (List Job)) Bytes)],
-  result: (Result (Bytes * (List Job)) Bytes),
+  parameters: [result : (Result Typed Bytes)],
+  result: (Result Typed Bytes),
   body: (match result
-    | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
-    | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "(Bytes * ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes))))) (second found))),
+    | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
+    | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "(Bytes * ") (cons (typedText found) (cons (Studio.Doc::lit ")") (nil Bytes))))) (typedJobs found))),
   executable: true
 }
 
@@ -792,7 +887,7 @@ definition{
 definition{
   name: mapValueAt,
   parameters: [fuel : Nat, extra : Value, context : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (match fuel
     | Nat.zero => (refused (Studio.Doc::lit "additionalProperties nests deeper than the translator's bound") context)
     | Nat.succ deeper => (match extra
@@ -821,7 +916,7 @@ definition{
 definition{
   name: mapValue,
   parameters: [extra : Value, context : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (mapValueAt 16 extra context),
   axioms: [Quot.sound, propext],
   executable: true
@@ -994,7 +1089,7 @@ definition{
 definition{
   name: baseTypeOf,
   parameters: [schema : Value, context : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (match schema
     | Value.VBool accepts => (if accepts then (anyValue) else (refused (Studio.Doc::lit "the false schema admits no instance") context))
     | Value.VDec negative mantissa scale => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
@@ -1040,7 +1135,7 @@ definition{
 definition{
   name: baseType,
   parameters: [schema : Value, context : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (baseTypeOf (withoutPresence schema) context),
   axioms: [Quot.sound, propext],
   executable: true
@@ -1071,7 +1166,7 @@ definition{
 definition{
   name: innerType,
   parameters: [schema : Value, context : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (match (nullable schema)
     | Option.some inner => (wrapped (Studio.Doc::lit "Option") (baseType inner context))
     | Option.none => (if (Studio.Doc::same (str schema (Studio.Doc::lit "type")) (Studio.Doc::lit "array")) then (match (field schema (Studio.Doc::lit "items"))
@@ -1084,7 +1179,7 @@ definition{
 definition{
   name: fieldType,
   parameters: [schema : Value, context : Bytes],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (match (nullable schema)
     | Option.some inner => (wrapped (Studio.Doc::lit "Option") (innerType inner context))
     | Option.none => (if (Studio.Doc::same (str schema (Studio.Doc::lit "type")) (Studio.Doc::lit "array")) then (match (field schema (Studio.Doc::lit "items"))
@@ -1108,16 +1203,16 @@ definition{
 definition{
   name: fieldsWith,
   parameters: [escaped : Bool, owner : Bytes, properties : (List (Bytes * Value)), required : (List Bytes), positional : Bool],
-  result: (Result ((List Bytes) * (List Job)) Bytes),
+  result: (Result Pieces Bytes),
   body: (match properties
-    | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
+    | List.nil => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (nil Bytes) (nil Job)))
     | List.cons head rest => (match (nameAs escaped (first head))
-      | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable property ") (cons (first head) (nil Bytes)))))
-      | Option.some name => (if (Studio.Doc::memberBytes name (namesOf escaped (keysOf rest))) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two properties derive the field name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n, any other by its code points as uXXXX; when those names are not distinct, every name in the set keeps its letters and digits and writes each other character, a leading digit, u and U as a C11 universal character name, uXXXX or UXXXXXXXX)") (nil Bytes)))))) else (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
-      | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
-      | Result.ok found => (let typeText : Bytes := (if (Studio.Doc::memberBytes (first head) required) then (first found) else (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (first found) (cons (Studio.Doc::lit ")") (nil Bytes)))))); (match (fieldsWith escaped owner rest required positional)
-        | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
-        | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (if positional then typeText else (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", type: ") (cons typeText (cons (Studio.Doc::lit "}") (nil Bytes)))))))) (first others)), (appendJobs (second found) (second others)))))))))),
+      | Option.none => (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable property ") (cons (first head) (nil Bytes)))))
+      | Option.some name => (if (Studio.Doc::memberBytes name (namesOf escaped (keysOf rest))) then (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two properties derive the field name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n, any other by its code points as uXXXX; when those names are not distinct, every name in the set keeps its letters and digits and writes each other character, a leading digit, u and U as a C11 universal character name, uXXXX or UXXXXXXXX)") (nil Bytes)))))) else (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
+      | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
+      | Result.ok found => (let typeText : Bytes := (if (Studio.Doc::memberBytes (first head) required) then (typedText found) else (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (typedText found) (cons (Studio.Doc::lit ")") (nil Bytes)))))); (match (fieldsWith escaped owner rest required positional)
+        | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
+        | Result.ok others => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (cons (if positional then typeText else (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", type: ") (cons typeText (cons (Studio.Doc::lit "}") (nil Bytes)))))))) (piecesText others)) (appendJobs (typedJobs found) (piecesJobs others)))))))))),
   recursive_argument: properties,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1126,7 +1221,7 @@ definition{
 definition{
   name: fieldsOf,
   parameters: [owner : Bytes, properties : (List (Bytes * Value)), required : (List Bytes), positional : Bool],
-  result: (Result ((List Bytes) * (List Job)) Bytes),
+  result: (Result Pieces Bytes),
   body: (fieldsWith (collides (keysOf properties)) owner properties required positional),
   axioms: [Quot.sound, propext],
   executable: true
@@ -1154,7 +1249,7 @@ definition{
     | Value.VDec negative mantissa scale => (match (escapedName (prim append (Studio.Doc::lit "n") (decimalText false mantissa scale) : Bytes))
       | Option.none => (ctor Option.none [Bytes])
       | Option.some spelled => (ctor Option.some [Bytes] (if negative then (prim append (Studio.Doc::lit "nMinus") (LexLeanStd.Text::sliceOr spelled 1 (prim subtract (prim length spelled : Nat) 1 : Nat)) : Bytes) else spelled)))
-    | Value.VInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (negative && (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
+    | Value.VInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (Studio.Doc::both negative (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
     | Value.VBool flag => (ctor Option.none [Bytes])
     | Value.VArr items => (ctor Option.none [Bytes])
     | Value.VObj members => (ctor Option.none [Bytes])
@@ -1204,18 +1299,18 @@ definition{
 definition{
   name: branchesWith,
   parameters: [escaped : Bool, owner : Bytes, branches : (List Value), key : Bytes, named : (List Bytes)],
-  result: (Result ((List Bytes) * (List Job)) Bytes),
+  result: (Result Pieces Bytes),
   body: (match branches
-    | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
+    | List.nil => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (nil Bytes) (nil Job)))
     | List.cons head rest => (match (tagIn head key)
-      | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::lit "a oneOf branch has no tag"))
+      | Option.none => (ctor Result.error [Pieces, Bytes] (Studio.Doc::lit "a oneOf branch has no tag"))
       | Option.some tag => (match (nameAs escaped tag)
-        | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable oneOf tag ") (cons tag (nil Bytes)))))
-        | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two oneOf branches derive the constructor name ") (cons name (cons (Studio.Doc::lit ", so the oneOf is ambiguous") (nil Bytes)))))) else (match (fieldsOf (prim append owner (pascal tag) : Bytes) (withoutKey (membersOf (field head (Studio.Doc::lit "properties"))) key) (strings (itemsOf (field head (Studio.Doc::lit "required")))) true)
-          | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
+        | Option.none => (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable oneOf tag ") (cons tag (nil Bytes)))))
+        | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two oneOf branches derive the constructor name ") (cons name (cons (Studio.Doc::lit ", so the oneOf is ambiguous") (nil Bytes)))))) else (match (fieldsOf (prim append owner (pascal tag) : Bytes) (withoutKey (membersOf (field head (Studio.Doc::lit "properties"))) key) (strings (itemsOf (field head (Studio.Doc::lit "required")))) true)
+          | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
           | Result.ok found => (match (branchesWith escaped owner rest key (cons name named))
-            | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
-            | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: [") (cons (joinWith (first found) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (first others)), (appendJobs (second found) (second others)))))))))),
+            | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
+            | Result.ok others => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: [") (cons (joinWith (piecesText found) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (piecesText others)) (appendJobs (piecesJobs found) (piecesJobs others)))))))))),
   recursive_argument: branches,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1237,7 +1332,7 @@ definition{
 definition{
   name: branchConstructors,
   parameters: [owner : Bytes, branches : (List Value), key : Bytes, named : (List Bytes)],
-  result: (Result ((List Bytes) * (List Job)) Bytes),
+  result: (Result Pieces Bytes),
   body: (branchesWith (collides (tagsOf branches key)) owner branches key named),
   axioms: [Quot.sound, propext],
   executable: true
@@ -1279,18 +1374,18 @@ definition{
 definition{
   name: unionWith,
   parameters: [escaped : Bool, owner : Bytes, branches : (List Value), named : (List Bytes)],
-  result: (Result ((List Bytes) * (List Job)) Bytes),
+  result: (Result Pieces Bytes),
   body: (match branches
-    | List.nil => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((nil Bytes), (nil Job)))
+    | List.nil => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (nil Bytes) (nil Job)))
     | List.cons head rest => (match (branchLabel head)
-      | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::lit "untagged oneOf: a branch has neither a $ref nor a title, so its constructor has no name"))
+      | Option.none => (ctor Result.error [Pieces, Bytes] (Studio.Doc::lit "untagged oneOf: a branch has neither a $ref nor a title, so its constructor has no name"))
       | Option.some label => (match (nameAs escaped label)
-        | Option.none => (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable oneOf branch ") (cons label (nil Bytes)))))
-        | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [((List Bytes) * (List Job)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two oneOf branches derive the constructor name ") (cons name (cons (Studio.Doc::lit ", so the oneOf is ambiguous") (nil Bytes)))))) else (match (baseType head (prim append owner (pascal label) : Bytes))
-          | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
+        | Option.none => (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable oneOf branch ") (cons label (nil Bytes)))))
+        | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two oneOf branches derive the constructor name ") (cons name (cons (Studio.Doc::lit ", so the oneOf is ambiguous") (nil Bytes)))))) else (match (baseType head (prim append owner (pascal label) : Bytes))
+          | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
           | Result.ok found => (match (unionWith escaped owner rest (cons name named))
-            | Result.error reason => (ctor Result.error [((List Bytes) * (List Job)), Bytes] reason)
-            | Result.ok others => (ctor Result.ok [((List Bytes) * (List Job)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: [") (cons (first found) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (first others)), (appendJobs (second found) (second others)))))))))),
+            | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
+            | Result.ok others => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons name (cons (Studio.Doc::lit ", fields: [") (cons (typedText found) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (piecesText others)) (appendJobs (typedJobs found) (piecesJobs others)))))))))),
   recursive_argument: branches,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1299,16 +1394,16 @@ definition{
 definition{
   name: taggedDeclaration,
   parameters: [name : Bytes, branches : (List Value)],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (match branches
     | List.nil => (refused (Studio.Doc::lit "an empty oneOf admits no instance") name)
     | List.cons first1 others1 => (match (discriminators (membersOf (field first1 (Studio.Doc::lit "properties"))) branches)
       | List.nil => (match (unionWith (collides (labelsOf branches)) name branches (nil Bytes))
         | Result.error reason => (refused reason name)
-        | Result.ok found => (typed (inductiveText name (first found)) (second found)))
+        | Result.ok found => (typed (inductiveText name (piecesText found)) (piecesJobs found)))
       | List.cons key more => (match (branchConstructors name branches key (nil Bytes))
         | Result.error reason => (refused reason name)
-        | Result.ok found => (typed (inductiveText name (first found)) (second found))))),
+        | Result.ok found => (typed (inductiveText name (piecesText found)) (piecesJobs found))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1316,7 +1411,7 @@ definition{
 definition{
   name: declarationOf,
   parameters: [name : Bytes, schema : Value],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (match (field schema (Studio.Doc::lit "enum"))
     | Option.some values => (match (constructorsOf (spineItems values) (nil Bytes))
       | Result.error reason => (refused reason name)
@@ -1324,16 +1419,16 @@ definition{
     | Option.none => (match (field schema (Studio.Doc::lit "oneOf"))
     | Option.some branches => (taggedDeclaration name (spineItems branches))
     | Option.none => (if (refersTo schema name) then (match (fieldsOf name (membersOf (field schema (Studio.Doc::lit "properties"))) (strings (itemsOf (field schema (Studio.Doc::lit "required")))) true)
-      | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
-      | Result.ok found => (typed (inductiveText name (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: mk, fields: [") (cons (joinWith (first found) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))) (nil Bytes))) (second found))) else (match (membersOf (field schema (Studio.Doc::lit "properties")))
+      | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
+      | Result.ok found => (typed (inductiveText name (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: mk, fields: [") (cons (joinWith (piecesText found) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))) (nil Bytes))) (piecesJobs found))) else (match (membersOf (field schema (Studio.Doc::lit "properties")))
     | List.nil => (match (fieldType schema (prim append name (Studio.Doc::lit "Value") : Bytes))
-      | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
-      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n    {name: value, type: ") (cons (first found) (cons (Studio.Doc::lit "}\n  ]\n}\n") (nil Bytes))))))) (second found)))
+      | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
+      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n    {name: value, type: ") (cons (typedText found) (cons (Studio.Doc::lit "}\n  ]\n}\n") (nil Bytes))))))) (typedJobs found)))
     | List.cons property others => (match (fieldsOf name (membersOf (field schema (Studio.Doc::lit "properties"))) (strings (itemsOf (field schema (Studio.Doc::lit "required")))) false)
-      | Result.error reason => (ctor Result.error [(Bytes * (List Job)), Bytes] reason)
-      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [") (cons (match (first found)
+      | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
+      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [") (cons (match (piecesText found)
         | List.nil => 0x
-        | List.cons head rest => (Studio.Doc::cat (cons (Studio.Doc::lit "\n") (cons (joinWith (first found) (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ") (nil Bytes)))))) (cons (Studio.Doc::lit "]\n}\n") (nil Bytes))))))) (second found))))))),
+        | List.cons head rest => (Studio.Doc::cat (cons (Studio.Doc::lit "\n") (cons (joinWith (piecesText found) (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ") (nil Bytes)))))) (cons (Studio.Doc::lit "]\n}\n") (nil Bytes))))))) (piecesJobs found))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1341,7 +1436,7 @@ definition{
 definition{
   name: declaration,
   parameters: [name : Bytes, schema : Value],
-  result: (Result (Bytes * (List Job)) Bytes),
+  result: (Result Typed Bytes),
   body: (declarationOf name (withoutPresence schema)),
   axioms: [Quot.sound, propext],
   executable: true
@@ -1360,7 +1455,7 @@ definition{
         | Job.json => (if (Studio.Doc::memberBytes (jsonValueName) done) then (expand rest tail done out) else (expand rest tail (cons (jsonValueName) done) (cons (jsonValueDeclaration) out)))
         | Job.translate name schema => (if (Studio.Doc::same name (jsonValueName)) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::lit "the type name JsonValue is reserved for schemas that admit any value")) else (if (Studio.Doc::memberBytes name done) then (expand rest tail done out) else (match (declaration name schema)
           | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
-          | Result.ok found => (expand rest (appendJobs (second found) (cons (ctor Job.emit (first found)) tail)) (cons name done) out))))))),
+          | Result.ok found => (expand rest (appendJobs (typedJobs found) (cons (ctor Job.emit (typedText found)) tail)) (cons name done) out))))))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true

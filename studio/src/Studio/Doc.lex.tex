@@ -15,10 +15,19 @@ definition{
 }
 
 definition{
+  name: byteValue,
+  parameters: [byte : UInt8],
+  result: Nat,
+  body: (prim to_nat byte : Nat),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: asciiPiece,
   parameters: [raw : UInt8],
   result: String,
-  body: (match (prim index (asciiTable) (prim to_nat raw : Nat) : (Option String))
+  body: (match (prim index (asciiTable) (byteValue raw) : (Option String))
     | Option.none => "?"
     | Option.some piece => piece),
   axioms: [Quot.sound, propext],
@@ -53,6 +62,22 @@ definition{
   parameters: [value : String],
   result: Bytes,
   body: (prim utf8_encode value : Bytes),
+  executable: true
+}
+
+definition{
+  name: either,
+  parameters: [left : Bool, right : Bool],
+  result: Bool,
+  body: (left || right),
+  executable: true
+}
+
+definition{
+  name: both,
+  parameters: [left : Bool, right : Bool],
+  result: Bool,
+  body: (left && right),
   executable: true
 }
 
@@ -280,7 +305,7 @@ definition{
     | Nat.zero => out
     | Nat.succ rest => (match (prim index source offset : (Option UInt8))
       | Option.none => out
-      | Option.some raw => (let byte : Nat := (prim to_nat raw : Nat); (let one : Bytes := (LexLeanStd.Text::sliceOr source offset 1); (if quoted then (compactFrom source (offset + 1) rest (if escaped then true else (if (byte =? 34) then false else true)) (if escaped then false else (byte =? 92)) (prim append out one : Bytes)) else (if ((((byte =? 32) || (byte =? 9)) || (byte =? 10)) || (byte =? 13)) then (compactFrom source (offset + 1) rest false false out) else (if (same (LexLeanStd.Text::sliceOr source offset 4) (lit "null")) then (compactFrom source (offset + 4) rest false false (prim append out (lit "[]") : Bytes)) else (compactFrom source (offset + 1) rest (byte =? 34) false (prim append out one : Bytes))))))))),
+      | Option.some raw => (let byte : Nat := (byteValue raw); (let one : Bytes := (LexLeanStd.Text::sliceOr source offset 1); (if quoted then (compactFrom source (offset + 1) rest (if escaped then true else (if (byte =? 34) then false else true)) (if escaped then false else (byte =? 92)) (prim append out one : Bytes)) else (if ((((byte =? 32) || (byte =? 9)) || (byte =? 10)) || (byte =? 13)) then (compactFrom source (offset + 1) rest false false out) else (if (same (LexLeanStd.Text::sliceOr source offset 4) (lit "null")) then (compactFrom source (offset + 4) rest false false (prim append out (lit "[]") : Bytes)) else (compactFrom source (offset + 1) rest (byte =? 34) false (prim append out one : Bytes))))))))),
   recursive_argument: remaining,
   axioms: [Quot.sound, propext],
   executable: true
@@ -342,69 +367,5 @@ definition{
   executable: true
 }
 
-definition{
-  name: integralDigits,
-  parameters: [whole : Bytes, fraction : Bytes, exponentNegative : Bool, exponent : Nat],
-  result: (Option Bytes),
-  body: (let kept : Bytes := (LexLeanStd.Text::sliceOr fraction 0 (prim subtract (prim length fraction : Nat) (trailingZeros fraction) : Nat)); (let joined : Bytes := (prim append whole kept : Bytes); (let skip : Nat := (leadingZeros joined); (let mantissa : Bytes := (LexLeanStd.Text::sliceOr joined skip (prim subtract (prim length joined : Nat) skip : Nat)); (let places : Nat := (prim length kept : Nat); (let size : Nat := (prim length mantissa : Nat); (if (size =? 0) then (ctor Option.some [Bytes] (lit "0")) else (if (exponentNegative || (exponent <? places)) then (let drop : Nat := (if exponentNegative then (exponent + places) else (prim subtract places exponent : Nat)); (if (drop <=? (trailingZeros mantissa)) then (ctor Option.some [Bytes] (LexLeanStd.Text::sliceOr mantissa 0 (prim subtract size drop : Nat))) else (ctor Option.none [Bytes]))) else (let shift : Nat := (prim subtract exponent places : Nat); (if ((size + shift) <=? 19) then (ctor Option.some [Bytes] (prim append mantissa (zeroDigits shift) : Bytes)) else (ctor Option.none [Bytes]))))))))))),
-  axioms: [Quot.sound, propext],
-  executable: true
-}
-
-definition{
-  name: readNumber,
-  parameters: [source : Bytes, position : Nat],
-  result: (Option (Nat * LexLeanStd.Json::Json)),
-  body: (let negative : Bool := ((LexLeanStd.JsonRead::byteOf source position) =? 45); (let start : Nat := (if negative then (position + 1) else position); (let wholeEnd : Nat := (LexLeanStd.JsonRead::digitsEnd source start); (let wholeCount : Nat := (prim subtract wholeEnd start : Nat); (let dotted : Bool := ((LexLeanStd.JsonRead::byteOf source wholeEnd) =? 46); (let fractionStart : Nat := (if dotted then (wholeEnd + 1) else wholeEnd); (let fractionEnd : Nat := (if dotted then (LexLeanStd.JsonRead::digitsEnd source fractionStart) else wholeEnd); (let marker : Nat := (LexLeanStd.JsonRead::byteOf source fractionEnd); (let marked : Bool := ((marker =? 101) || (marker =? 69)); (let signByte : Nat := (LexLeanStd.JsonRead::byteOf source (fractionEnd + 1)); (let signed : Bool := (marked && ((signByte =? 43) || (signByte =? 45))); (let exponentStart : Nat := (if marked then (if signed then (fractionEnd + 2) else (fractionEnd + 1)) else fractionEnd); (let exponentEnd : Nat := (if marked then (LexLeanStd.JsonRead::digitsEnd source exponentStart) else fractionEnd); (let exponentRaw : Bytes := (LexLeanStd.Text::sliceOr source exponentStart (prim subtract exponentEnd exponentStart : Nat)); (let exponentSkip : Nat := (leadingZeros exponentRaw); (let exponentDigits : Bytes := (LexLeanStd.Text::sliceOr exponentRaw exponentSkip (prim subtract (prim length exponentRaw : Nat) exponentSkip : Nat)); (if ((wholeCount =? 0) || (((1 <? wholeCount) && ((LexLeanStd.JsonRead::byteOf source start) =? 48)) || ((dotted && (fractionEnd =? fractionStart)) || ((marked && (exponentEnd =? exponentStart)) || (18 <? (prim length exponentDigits : Nat)))))) then (ctor Option.none [(Nat * LexLeanStd.Json::Json)]) else (match (if ((prim length exponentDigits : Nat) =? 0) then (ctor Option.some [Nat] 0) else (LexLeanStd.Numeral::parseDecimal exponentDigits))
-    | Option.none => (ctor Option.none [(Nat * LexLeanStd.Json::Json)])
-    | Option.some exponent => (match (integralDigits (LexLeanStd.Text::sliceOr source start wholeCount) (LexLeanStd.Text::sliceOr source fractionStart (prim subtract fractionEnd fractionStart : Nat)) (signed && (signByte =? 45)) exponent)
-      | Option.none => (ctor Option.none [(Nat * LexLeanStd.Json::Json)])
-      | Option.some digits => (if (19 <? (prim length digits : Nat)) then (ctor Option.none [(Nat * LexLeanStd.Json::Json)]) else (match (LexLeanStd.Numeral::parseDecimal digits)
-        | Option.none => (ctor Option.none [(Nat * LexLeanStd.Json::Json)])
-        | Option.some magnitude => (let sign : Bool := (negative && (0 <? magnitude)); (if (LexLeanStd.JsonRead::inRange sign magnitude) then (ctor Option.some [(Nat * LexLeanStd.Json::Json)] (exponentEnd, (ctor LexLeanStd.Json::Json.JInt sign magnitude))) else (ctor Option.none [(Nat * LexLeanStd.Json::Json)])))))))))))))))))))))))),
-  axioms: [Quot.sound, propext],
-  executable: true
-}
-
-definition{
-  name: parseAt,
-  parameters: [source : Bytes, position : Nat, fuel : Nat, mode : Nat],
-  result: (Option (LexLeanStd.Json::Json * Nat)),
-  body: (match fuel
-    | Nat.zero => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-    | Nat.succ rest => (let byte : Nat := (LexLeanStd.JsonRead::byteOf source position); (if (mode =? 1) then (match (parseAt source position rest 0)
-      | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-      | Option.some item => (let after : Nat := (LexLeanStd.JsonRead::byteOf source (second item)); (if (after =? 44) then (match (parseAt source ((second item) + 1) rest 1)
-        | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-        | Option.some spine => (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JItem (first item) (first spine)), (second spine)))) else (if (after =? 93) then (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JItem (first item) (ctor LexLeanStd.Json::Json.JNil)), ((second item) + 1))) else (ctor Option.none [(LexLeanStd.Json::Json * Nat)]))))) else (if (mode =? 2) then (match (LexLeanStd.JsonRead::scanString source (position + 1))
-      | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-      | Option.some key => (if ((byte =? 34) && ((LexLeanStd.JsonRead::byteOf source (first key)) =? 58)) then (match (parseAt source ((first key) + 1) rest 0)
-        | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-        | Option.some value => (let after : Nat := (LexLeanStd.JsonRead::byteOf source (second value)); (if (after =? 44) then (match (parseAt source ((second value) + 1) rest 2)
-          | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-          | Option.some spine => (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JMember (second key) (first value) (first spine)), (second spine)))) else (if (after =? 125) then (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JMember (second key) (first value) (ctor LexLeanStd.Json::Json.JNil)), ((second value) + 1))) else (ctor Option.none [(LexLeanStd.Json::Json * Nat)]))))) else (ctor Option.none [(LexLeanStd.Json::Json * Nat)]))) else (if (byte =? 34) then (match (LexLeanStd.JsonRead::scanString source (position + 1))
-      | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-      | Option.some scanned => (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JStr (second scanned)), (first scanned)))) else (if (same (LexLeanStd.Text::sliceOr source position 4) (lit "true")) then (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JBool true), (position + 4))) else (if (same (LexLeanStd.Text::sliceOr source position 5) (lit "false")) then (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JBool false), (position + 5))) else (if (byte =? 91) then (if ((LexLeanStd.JsonRead::byteOf source (position + 1)) =? 93) then (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JArr (ctor LexLeanStd.Json::Json.JNil)), (position + 2))) else (match (parseAt source (position + 1) rest 1)
-      | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-      | Option.some spine => (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JArr (first spine)), (second spine))))) else (if (byte =? 123) then (if ((LexLeanStd.JsonRead::byteOf source (position + 1)) =? 125) then (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JNil)), (position + 2))) else (match (parseAt source (position + 1) rest 2)
-      | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-      | Option.some spine => (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((ctor LexLeanStd.Json::Json.JObj (first spine)), (second spine))))) else (match (readNumber source position)
-      | Option.none => (ctor Option.none [(LexLeanStd.Json::Json * Nat)])
-      | Option.some read => (ctor Option.some [(LexLeanStd.Json::Json * Nat)] ((second read), (first read))))))))))))),
-  recursive_argument: fuel,
-  axioms: [Quot.sound, propext],
-  executable: true
-}
-
-definition{
-  name: readAny,
-  parameters: [raw : Bytes],
-  result: (Option LexLeanStd.Json::Json),
-  body: (let source : Bytes := (compact raw); (match (parseAt source 0 ((prim length source : Nat) + 2) 0)
-    | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
-    | Option.some parsed => (if ((second parsed) =? (prim length source : Nat)) then (ctor Option.some [LexLeanStd.Json::Json] (first parsed)) else (ctor Option.none [LexLeanStd.Json::Json])))),
-  axioms: [Quot.sound, propext],
-  executable: true
-}
 \end{semanticmodule}
 \end{lexlean}
