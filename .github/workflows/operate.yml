@@ -84,14 +84,12 @@ jobs:
           test -d "$HOME/.elan/toolchains/leanprover--lean4---v4.32.2" || elan toolchain install leanprover/lean4:v4.32.2
           test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
           ll="$PWD/target/lexlean/bin/lexlean"
-          if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
+          # The one export, shared with refresh and run end to end by the studio check.
+          if ! bash .github/scripts/export.sh "$ll" target/export.log; then
             grep -m 20 'error' target/export.log | sed 's/^/::error::/' || echo "::error::the Lean export failed without an error line; its last lines follow"
             tail -n 40 target/export.log
             exit 1
           fi
-          rm -rf certified
-          cp -r studio/.lexlean/production/*/ certified
-          rm -f certified/packages/rust-std/verdant_studio/Cargo.lock
           # The owner reviews this pull request, so its body leads with the proposer's own
           # account (the prose before the first diff), then the definitions it changes.
           awk 'index($0, "diff --git") == 1 { exit } { print }' target/input/change.patch > target/summary.md
@@ -212,6 +210,17 @@ jobs:
               echo "waiting owner review: #${pr} changes the API, and only the owner merges it" >> target/waiting.txt
             done
             if [ -s target/waiting.txt ]; then tee -a target/operation.txt < target/waiting.txt >> "$GITHUB_STEP_SUMMARY"; fi
+          elif [ "${ARGS#revert-merge }" != "$ARGS" ]; then
+            # The repair of a merge that broke the API's own path. Dispatched from a branch at the last
+            # good main commit, it reverts the merge on main as the App, for the owner's review.
+            merge=${ARGS#revert-merge }
+            case "$merge" in *[!0-9a-f]*|'') echo "::error::revert-merge takes the full hex id of a merge commit on main"; exit 1;; esac
+            git fetch -q origin main
+            git checkout -q -B revert origin/main
+            if ! git merge-base --is-ancestor "$merge" origin/main; then echo "::error::$merge is not on main"; exit 1; fi
+            git revert -m 1 --no-commit "$merge"
+            cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
+            { echo "Revert $merge, a merge that broke the API's own path"; echo; echo "**What changes and why.** This reverts the merge $merge on main $(git rev-parse --short origin/main), made by the App from the last good main commit, so the repair needs no bypass."; echo; echo '```'; git diff --cached --stat -- studio/src app/src model features README.md .github; echo '```'; } > target/operation.txt
           else
             target/release/verdant_studio $ARGS | tee target/operation.txt
           fi
@@ -243,9 +252,10 @@ jobs:
           fi
           title="verdant_studio $ARGS"
           if [ "$ARGS" = propose-command ]; then title="verdant_studio propose-command: $(grep -m 1 '[[:alnum:]]' target/summary.md | awk '{ sub("^[# ]*", ""); print }')"; fi
+          if [ "${ARGS#revert-merge }" != "$ARGS" ]; then title="verdant_studio propose-command: Revert ${ARGS#revert-merge }, a merge that broke the API's own path"; fi
           gh pr create --head "$branch" --base main --title "$title" --body-file target/operation.txt
           gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
-          if [ "$ARGS" = propose-command ]; then
+          if [ "$ARGS" = propose-command ] || [ "${ARGS#revert-merge }" != "$ARGS" ]; then
             echo "::notice::a change to the API itself waits for the owner's review"
             # main may have moved while this ran, so refresh checks the new pull request at once.
             gh workflow run refresh.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning::refresh could not be started; it runs on the next push to main"

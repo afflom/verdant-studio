@@ -150,7 +150,7 @@ jobs:
                 continue
               fi
             fi
-            if ! (cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > target/export.log 2>&1; then
+            if ! bash .github/scripts/export.sh "$ll" target/export.log; then
               grep -m 20 'error' target/export.log | sed 's/^/::error::#'"$pr"': /' || echo "::error::#${pr}: the Lean export failed without an error line; its last lines follow"
               tail -n 40 target/export.log
               git reset -q --hard origin/main
@@ -159,11 +159,7 @@ jobs:
               gh pr comment "$pr" --body-file target/comment.md || true
               continue
             fi
-            rm -rf certified
-            cp -r studio/.lexlean/production/*/ certified
-            rm -f certified/packages/rust-std/verdant_studio/Cargo.lock
             rm -rf studio/.lexlean/production
-            "$ll" production verify-artifact certified
             cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
             target/release/verdant_studio check
             target/release/verdant_studio build
