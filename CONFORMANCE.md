@@ -510,6 +510,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-WEBREF-IDL-WEBGPU-A0114B8` | The Web IDL fragments of the WebGPU, extracted by Reffy into W3C webref (Source: WebGPU (https://www.w3.org/TR/webgpu/)). Read by read-webidl for index rows G05. |  |
 | `W3C-WEBREF-IDL-WEBIDL-A0114B8` | The Web IDL fragments of the Web IDL Standard, extracted by Reffy into W3C webref (Source: Web IDL Standard (https://webidl.spec.whatwg.org/)). Read by read-webidl for index rows G05, G14 and H15. |  |
 | `W3C-WEBREF-IDL-WEBXR-A0114B8` | The Web IDL fragments of the WebXR Device API, extracted by Reffy into W3C webref (Source: WebXR Device API (https://www.w3.org/TR/webxr/)). Read by read-webidl for index rows G14. |  |
+| `LOC-METS-XLINK-2` | The XLink attribute declarations and attribute groups (simpleLink, extendedLink, locatorLink, arcLink, resourceLink) that the METS 1.12.1 schema imports from its schemaLocation. Index row Y02. |  |
 
 ## Claims that are not conformance IDs
 
