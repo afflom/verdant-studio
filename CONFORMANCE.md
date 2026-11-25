@@ -502,6 +502,14 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `VALVE-BOOTH-L4D-AI-SYSTEMS-2009` | Valve's own publication of the Left 4 Dead AI Director, including the Adaptive Dramatic Pacing algorithm and its population modes. Index row J09. |  |
 | `YAML-1.2.2` | The YAML 1.2 character set, block and flow syntax, scalar styles and the JSON and core schemas that a Verdant Studio YAML reader implements production by production, so YAML registries (index row D16) take the JSON Schema path. |  |
 | `WHATWG-WEBIDL-RD-2026-09` | The Web IDL language and its LL(1) grammar, in which WebGPU, WebXR and the Gamepad API define their interfaces. Index rows G05, G14 and H15. |  |
+| `W3C-WEBREF-IDL-DOM-A0114B8` | The Web IDL fragments of the DOM Standard, extracted by Reffy into W3C webref (Source: DOM Standard (https://dom.spec.whatwg.org/)). Read by read-webidl for index rows G05, G14 and H15. |  |
+| `W3C-WEBREF-IDL-GAMEPAD-A0114B8` | The Web IDL fragments of the Gamepad, extracted by Reffy into W3C webref (Source: Gamepad (https://www.w3.org/TR/gamepad/)). Read by read-webidl for index rows H15. |  |
+| `W3C-WEBREF-IDL-GEOMETRY-A0114B8` | The Web IDL fragments of the Geometry Interfaces Module Level 1, extracted by Reffy into W3C webref (Source: Geometry Interfaces Module Level 1 (https://www.w3.org/TR/geometry-1/)). Read by read-webidl for index rows G14. |  |
+| `W3C-WEBREF-IDL-HR-TIME-A0114B8` | The Web IDL fragments of the High Resolution Time, extracted by Reffy into W3C webref (Source: High Resolution Time (https://www.w3.org/TR/hr-time-3/)). Read by read-webidl for index rows H15. |  |
+| `W3C-WEBREF-IDL-HTML-A0114B8` | The Web IDL fragments of the HTML Standard, extracted by Reffy into W3C webref (Source: HTML Standard (https://html.spec.whatwg.org/multipage/)). Read by read-webidl for index rows G05, G14 and H15. |  |
+| `W3C-WEBREF-IDL-WEBGPU-A0114B8` | The Web IDL fragments of the WebGPU, extracted by Reffy into W3C webref (Source: WebGPU (https://www.w3.org/TR/webgpu/)). Read by read-webidl for index rows G05. |  |
+| `W3C-WEBREF-IDL-WEBIDL-A0114B8` | The Web IDL fragments of the Web IDL Standard, extracted by Reffy into W3C webref (Source: Web IDL Standard (https://webidl.spec.whatwg.org/)). Read by read-webidl for index rows G05, G14 and H15. |  |
+| `W3C-WEBREF-IDL-WEBXR-A0114B8` | The Web IDL fragments of the WebXR Device API, extracted by Reffy into W3C webref (Source: WebXR Device API (https://www.w3.org/TR/webxr/)). Read by read-webidl for index rows G14. |  |
 
 ## Claims that are not conformance IDs
 
