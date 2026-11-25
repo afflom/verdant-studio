@@ -1,0 +1,412 @@
+\begin{lexlean}{Catalog.CvssV4}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AttackComplexityType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: hIGH, fields: []},
+    {name: lOW, fields: []}
+  ]
+}
+
+inductive{
+  name: AttackRequirementsType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: pRESENT, fields: []}
+  ]
+}
+
+inductive{
+  name: AttackVectorType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nETWORK, fields: []},
+    {name: aDJACENT, fields: []},
+    {name: lOCAL, fields: []},
+    {name: pHYSICAL, fields: []}
+  ]
+}
+
+inductive{
+  name: AutomatableType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nO, fields: []},
+    {name: yES, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: CiaRequirementType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: lOW, fields: []},
+    {name: mEDIUM, fields: []},
+    {name: hIGH, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+structure{
+  name: CriticalScoreType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: CriticalSeverityType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes}
+  ]
+}
+
+inductive{
+  name: ExploitMaturityType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: uNREPORTED, fields: []},
+    {name: pROOFOFCONCEPT, fields: []},
+    {name: aTTACKED, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+structure{
+  name: HighScoreType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: HighSeverityType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes}
+  ]
+}
+
+structure{
+  name: LowScoreType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: LowSeverityType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes}
+  ]
+}
+
+structure{
+  name: MediumScoreType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: MediumSeverityType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes}
+  ]
+}
+
+inductive{
+  name: ModifiedAttackComplexityType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: hIGH, fields: []},
+    {name: lOW, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedAttackRequirementsType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: pRESENT, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedAttackVectorType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nETWORK, fields: []},
+    {name: aDJACENT, fields: []},
+    {name: lOCAL, fields: []},
+    {name: pHYSICAL, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedPrivilegesRequiredType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: hIGH, fields: []},
+    {name: lOW, fields: []},
+    {name: nONE, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedSubCType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nEGLIGIBLE, fields: []},
+    {name: lOW, fields: []},
+    {name: hIGH, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedSubIaType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nEGLIGIBLE, fields: []},
+    {name: lOW, fields: []},
+    {name: hIGH, fields: []},
+    {name: sAFETY, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedUserInteractionType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: pASSIVE, fields: []},
+    {name: aCTIVE, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: ModifiedVulnCiaType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: lOW, fields: []},
+    {name: hIGH, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+structure{
+  name: NoneScoreType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: NoneSeverityType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes}
+  ]
+}
+
+inductive{
+  name: PrivilegesRequiredType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: hIGH, fields: []},
+    {name: lOW, fields: []},
+    {name: nONE, fields: []}
+  ]
+}
+
+inductive{
+  name: ProviderUrgencyType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cLEAR, fields: []},
+    {name: gREEN, fields: []},
+    {name: aMBER, fields: []},
+    {name: rED, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: RecoveryType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: aUTOMATIC, fields: []},
+    {name: uSER, fields: []},
+    {name: iRRECOVERABLE, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: SafetyType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nEGLIGIBLE, fields: []},
+    {name: pRESENT, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: SubCiaType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: lOW, fields: []},
+    {name: hIGH, fields: []}
+  ]
+}
+
+inductive{
+  name: UserInteractionType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: pASSIVE, fields: []},
+    {name: aCTIVE, fields: []}
+  ]
+}
+
+inductive{
+  name: ValueDensityType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: dIFFUSE, fields: []},
+    {name: cONCENTRATED, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: VulnCiaType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nONE, fields: []},
+    {name: lOW, fields: []},
+    {name: hIGH, fields: []}
+  ]
+}
+
+inductive{
+  name: VulnerabilityResponseEffortType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: lOW, fields: []},
+    {name: mODERATE, fields: []},
+    {name: hIGH, fields: []},
+    {name: nOTDEFINED, fields: []}
+  ]
+}
+
+inductive{
+  name: CvssV4Version,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n40, fields: []}
+  ]
+}
+
+structure{
+  name: CvssV4,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: automatable, type: (Option AutomatableType)},
+    {name: recovery, type: (Option RecoveryType)},
+    {name: safety, type: (Option SafetyType)},
+    {name: attackComplexity, type: (Option AttackComplexityType)},
+    {name: attackRequirements, type: (Option AttackRequirementsType)},
+    {name: attackVector, type: (Option AttackVectorType)},
+    {name: availabilityRequirement, type: (Option CiaRequirementType)},
+    {name: confidentialityRequirement, type: (Option CiaRequirementType)},
+    {name: exploitMaturity, type: (Option ExploitMaturityType)},
+    {name: integrityRequirement, type: (Option CiaRequirementType)},
+    {name: modifiedAttackComplexity, type: (Option ModifiedAttackComplexityType)},
+    {name: modifiedAttackRequirements, type: (Option ModifiedAttackRequirementsType)},
+    {name: modifiedAttackVector, type: (Option ModifiedAttackVectorType)},
+    {name: modifiedPrivilegesRequired, type: (Option ModifiedPrivilegesRequiredType)},
+    {name: modifiedSubAvailabilityImpact, type: (Option ModifiedSubIaType)},
+    {name: modifiedSubConfidentialityImpact, type: (Option ModifiedSubCType)},
+    {name: modifiedSubIntegrityImpact, type: (Option ModifiedSubIaType)},
+    {name: modifiedUserInteraction, type: (Option ModifiedUserInteractionType)},
+    {name: modifiedVulnAvailabilityImpact, type: (Option ModifiedVulnCiaType)},
+    {name: modifiedVulnConfidentialityImpact, type: (Option ModifiedVulnCiaType)},
+    {name: modifiedVulnIntegrityImpact, type: (Option ModifiedVulnCiaType)},
+    {name: privilegesRequired, type: (Option PrivilegesRequiredType)},
+    {name: providerUrgency, type: (Option ProviderUrgencyType)},
+    {name: subAvailabilityImpact, type: (Option SubCiaType)},
+    {name: subConfidentialityImpact, type: (Option SubCiaType)},
+    {name: subIntegrityImpact, type: (Option SubCiaType)},
+    {name: userInteraction, type: (Option UserInteractionType)},
+    {name: valueDensity, type: (Option ValueDensityType)},
+    {name: vectorString, type: Bytes},
+    {name: version, type: CvssV4Version},
+    {name: vulnAvailabilityImpact, type: (Option VulnCiaType)},
+    {name: vulnConfidentialityImpact, type: (Option VulnCiaType)},
+    {name: vulnIntegrityImpact, type: (Option VulnCiaType)},
+    {name: vulnerabilityResponseEffort, type: (Option VulnerabilityResponseEffortType)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
