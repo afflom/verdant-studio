@@ -298,14 +298,22 @@ definition{
 }
 
 definition{
+  name: flushed,
+  parameters: [source : Bytes, start : Nat, offset : Nat, out : Bytes],
+  result: Bytes,
+  body: (prim append out (LexLeanStd.Text::sliceOr source start (prim subtract offset start : Nat)) : Bytes),
+  executable: true
+}
+
+definition{
   name: compactFrom,
-  parameters: [source : Bytes, offset : Nat, remaining : Nat, quoted : Bool, escaped : Bool, out : Bytes],
+  parameters: [source : Bytes, offset : Nat, remaining : Nat, quoted : Bool, escaped : Bool, start : Nat, out : Bytes],
   result: Bytes,
   body: (match remaining
-    | Nat.zero => out
+    | Nat.zero => (flushed source start offset out)
     | Nat.succ rest => (match (prim index source offset : (Option UInt8))
-      | Option.none => out
-      | Option.some raw => (let byte : Nat := (byteValue raw); (let one : Bytes := (LexLeanStd.Text::sliceOr source offset 1); (if quoted then (compactFrom source (offset + 1) rest (if escaped then true else (if (byte =? 34) then false else true)) (if escaped then false else (byte =? 92)) (prim append out one : Bytes)) else (if ((((byte =? 32) || (byte =? 9)) || (byte =? 10)) || (byte =? 13)) then (compactFrom source (offset + 1) rest false false out) else (if (same (LexLeanStd.Text::sliceOr source offset 4) (lit "null")) then (compactFrom source (offset + 4) rest false false (prim append out (lit "[]") : Bytes)) else (compactFrom source (offset + 1) rest (byte =? 34) false (prim append out one : Bytes))))))))),
+      | Option.none => (flushed source start offset out)
+      | Option.some raw => (let byte : Nat := (byteValue raw); (if quoted then (compactFrom source (offset + 1) rest (if escaped then true else (if (byte =? 34) then false else true)) (if escaped then false else (byte =? 92)) start out) else (if ((((byte =? 32) || (byte =? 9)) || (byte =? 10)) || (byte =? 13)) then (compactFrom source (offset + 1) rest false false (offset + 1) (flushed source start offset out)) else (if (if (byte =? 110) then (same (LexLeanStd.Text::sliceOr source offset 4) (lit "null")) else false) then (compactFrom source (offset + 4) rest false false (offset + 4) (prim append (flushed source start offset out) (lit "[]") : Bytes)) else (compactFrom source (offset + 1) rest (byte =? 34) false start out))))))),
   recursive_argument: remaining,
   axioms: [Quot.sound, propext],
   executable: true
@@ -315,7 +323,7 @@ definition{
   name: compact,
   parameters: [source : Bytes],
   result: Bytes,
-  body: (compactFrom source 0 (prim length source : Nat) false false 0x),
+  body: (compactFrom source 0 (prim length source : Nat) false false 0 0x),
   axioms: [Quot.sound, propext],
   executable: true
 }
