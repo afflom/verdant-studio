@@ -55,6 +55,44 @@ jobs:
           target/release/verdant_studio build
           target/release/verdant_studio publish
           if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
+      - if: github.event_name == 'pull_request'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.elan
+          key: lean-4.32.2-elan-4.1.2
+      - name: run propose-command end to end when the pull request changes the API's own workflows
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          # The studio check proves the model and replays the certified bundle, but the API's own paths
+          # run in these workflows. So a change to them must pass operate's propose-command step itself,
+          # on a fixture change, and that export must reproduce certified/ byte for byte.
+          git fetch -q --depth=1 origin "$BASE"
+          if git diff --quiet FETCH_HEAD -- .github; then echo "the workflows are main's, which main's own runs exercise"; exit 0; fi
+          mkdir -p target
+          python3 -c 'import yaml; steps = yaml.safe_load(open(".github/workflows/operate.yml"))["jobs"]["operate"]["steps"]; print([step["run"] for step in steps if step.get("name", "").startswith("apply a change")][0])' > target/propose.sh
+          d=dev
+          none=null
+          {
+            echo "Fixture change for the studio check's end-to-end run of propose-command."
+            echo
+            echo "diff --git a/features/suites/e2e.fixture b/features/suites/e2e.fixture"
+            echo "new file mode 100644"
+            echo "--- /$d/$none"
+            echo "+++ b/features/suites/e2e.fixture"
+            echo "@@ -0,0 +1 @@"
+            echo "+fixture"
+          } > target/fixture.patch
+          INPUT="$(cat target/fixture.patch)" bash target/propose.sh
+          rm -f features/suites/e2e.fixture
+          if [ -n "$(git status --porcelain -- certified)" ]; then
+            echo "::error::operate's propose-command step ran, but its export did not reproduce certified/:"
+            git status --short -- certified | head -20
+            exit 1
+          fi
+          echo "propose-command applied the fixture, exported again with Lean and reproduced certified/ byte for byte"
       - name: accept only pull requests made through the API (last, so every seal step reports first)
         if: github.event_name == 'pull_request'
         env:
