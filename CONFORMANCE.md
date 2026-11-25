@@ -516,6 +516,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `VERDANT-ENGINE-RELEASE-LEDGER-2.22.4` | The engine's verdant/release-ledger/1: its current SemVer version, release epoch and change history. |  |
 | `VERDANT-ENGINE-STANDARDS-LOCK-2.22.4` | The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them. |  |
 | `OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14` | The JSON Schema 2020-12 that TraitGen YAML packages of OpenAssetIO traits and specifications conform to; the schema of index row D16's traits.yml. |  |
+| `LEXLEAN-LEAN-TOKENS-0.4.3` | The identifier-like tokens of the pinned Lean 4.32.2 toolchain that LexLean 0.4.3 refuses as a generated declaration name (SPEC.md 17.8), which the Studio translators must never emit as a name. |  |
 
 ## Claims that are not conformance IDs
 

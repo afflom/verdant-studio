@@ -7869,3 +7869,20 @@ statement = "The JSON Schema 2020-12 that TraitGen YAML packages of OpenAssetIO 
 artifact = "authorities/OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14/schema.json"
 checksum = "10ef7e7c905287d61ba7b38a94ed40ebf03f21b02f8f4c5049bce0b1aef09a6a"
 realized_by = []
+
+[[authority]]
+id = "LEXLEAN-LEAN-TOKENS-0.4.3"
+name = "LexLean reserved Lean tokens"
+issuer = "UOR Foundation"
+edition = "0.4.3"
+canonical_id = "https://github.com/UOR-Foundation/LexLean/tree/v0.4.3/crates/lexlean/src/backend/lean_tokens.rs"
+source_role = "normative"
+retrieval_date = "2026-11-25"
+url = "https://raw.githubusercontent.com/UOR-Foundation/LexLean/fa271080652887976ae25d0aef84edc7472b0276/crates/lexlean/src/backend/lean_tokens.rs"
+media_type = "text/x-rust"
+license = "Apache-2.0 OR MIT"
+redistribution = "redistributable"
+statement = "The identifier-like tokens of the pinned Lean 4.32.2 toolchain that LexLean 0.4.3 refuses as a generated declaration name (SPEC.md 17.8), which the Studio translators must never emit as a name."
+artifact = "authorities/LEXLEAN-LEAN-TOKENS-0.4.3/lean_tokens.rs"
+checksum = "c6c4400fa73889ee50cf866d65f41287bb56270b58a774aff44401a68806a57a"
+realized_by = []
