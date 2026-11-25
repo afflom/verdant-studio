@@ -57,3 +57,11 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ##  (afflom, 2026-11-24T12:22:32Z)
 
 > right, we arent going to block or delay our work for korean game laws.
+
+## REQ-SELF-HEALING (afflom, 2026-11-25T15:04:36Z)
+
+> Let's discuss Verdant Studio error conditions and Errors. When something breaks, the API needs to use the errors and itself to reconcile to overcome the errors, so that the error condition (bug) is fixed by the Verdant Studio API itself, so that the Verdant Studio is being enhanced by itself in its normal operation.
+
+## REQ-SELF-HEALING (afflom, 2026-11-25T15:06:29Z)
+
+> Let's refine this by extrapolating from verdant-engine and Verdant Studio concepts and then refine the plan.
