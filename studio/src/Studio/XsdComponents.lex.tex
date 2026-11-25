@@ -1,0 +1,1496 @@
+\begin{lexlean}{Studio.XsdComponents}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Numeral}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
+\importmodule{Studio.Xml}
+\importmodule{Studio.Xsd}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Node,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: space, type: Bytes},
+    {name: kind, type: Bytes},
+    {name: attrs, type: Studio.Xml::Xml},
+    {name: content, type: Studio.Xml::Xml},
+    {name: scope, type: (List (Bytes * Bytes))}
+  ]
+}
+
+structure{
+  name: Component,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: kind, type: Bytes},
+    {name: space, type: Bytes},
+    {name: local, type: Bytes},
+    {name: node, type: Node}
+  ]
+}
+
+structure{
+  name: Field,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: typeText, type: Bytes},
+    {name: deps, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: Decl,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: named, type: Bytes},
+    {name: deps, type: (List Bytes)},
+    {name: text, type: Bytes},
+    {name: constructors, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: Gathered,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: fields, type: (List Field)},
+    {name: decls, type: (List Decl)},
+    {name: sequences, type: Nat},
+    {name: choices, type: Nat},
+    {name: alls, type: Nat}
+  ]
+}
+
+structure{
+  name: Context,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: components, type: (List Component)},
+    {name: targets, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: Document,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: path, type: Bytes},
+    {name: url, type: (Option Bytes)},
+    {name: target, type: Bytes},
+    {name: scope, type: (List (Bytes * Bytes))},
+    {name: content, type: Studio.Xml::Xml},
+    {name: size, type: Nat}
+  ]
+}
+
+inductive{
+  name: Outcome,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: needs, fields: [(List Bytes)]},
+    {name: refuses, fields: [Bytes]},
+    {name: translated, fields: [Nat, Bytes]}
+  ]
+}
+
+definition{
+  name: negate,
+  parameters: [flag : Bool],
+  result: Bool,
+  body: (if flag then false else true),
+  executable: true
+}
+
+definition{
+  name: empty,
+  parameters: [],
+  result: Gathered,
+  body: (record Gathered {fields := (nil Field), decls := (nil Decl), sequences := 0, choices := 0, alls := 0}),
+  executable: true
+}
+
+definition{
+  name: appendFields,
+  parameters: [left : (List Field), right : (List Field)],
+  result: (List Field),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendFields rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: appendDecls,
+  parameters: [left : (List Decl), right : (List Decl)],
+  result: (List Decl),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendDecls rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: appendNames,
+  parameters: [left : (List Bytes), right : (List Bytes)],
+  result: (List Bytes),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendNames rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: appendNodes,
+  parameters: [left : (List Node), right : (List Node)],
+  result: (List Node),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendNodes rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: appendComponents,
+  parameters: [left : (List Component), right : (List Component)],
+  result: (List Component),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendComponents rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: withField,
+  parameters: [acc : Gathered, added : Field],
+  result: Gathered,
+  body: (record Gathered {fields := (appendFields (project acc fields) (cons added (nil Field))), decls := (project acc decls), sequences := (project acc sequences), choices := (project acc choices), alls := (project acc alls)}),
+  executable: true
+}
+
+definition{
+  name: withDecls,
+  parameters: [acc : Gathered, added : (List Decl)],
+  result: Gathered,
+  body: (record Gathered {fields := (project acc fields), decls := (appendDecls (project acc decls) added), sequences := (project acc sequences), choices := (project acc choices), alls := (project acc alls)}),
+  executable: true
+}
+
+definition{
+  name: recount,
+  parameters: [acc : Gathered],
+  result: Gathered,
+  body: (record Gathered {fields := (project acc fields), decls := (project acc decls), sequences := 0, choices := 0, alls := 0}),
+  executable: true
+}
+
+definition{
+  name: counted,
+  parameters: [acc : Gathered, kind : Bytes],
+  result: Nat,
+  body: (if (Studio.Doc::same kind (Studio.Doc::lit "sequence")) then ((project acc sequences) + 1) else (if (Studio.Doc::same kind (Studio.Doc::lit "choice")) then ((project acc choices) + 1) else ((project acc alls) + 1))),
+  executable: true
+}
+
+definition{
+  name: bumped,
+  parameters: [acc : Gathered, kind : Bytes],
+  result: Gathered,
+  body: (if (Studio.Doc::same kind (Studio.Doc::lit "sequence")) then (record Gathered {fields := (project acc fields), decls := (project acc decls), sequences := ((project acc sequences) + 1), choices := (project acc choices), alls := (project acc alls)}) else (if (Studio.Doc::same kind (Studio.Doc::lit "choice")) then (record Gathered {fields := (project acc fields), decls := (project acc decls), sequences := (project acc sequences), choices := ((project acc choices) + 1), alls := (project acc alls)}) else (record Gathered {fields := (project acc fields), decls := (project acc decls), sequences := (project acc sequences), choices := (project acc choices), alls := ((project acc alls) + 1)}))),
+  executable: true
+}
+
+definition{
+  name: attr,
+  parameters: [node : Node, key : String],
+  result: (Option Bytes),
+  body: (Studio.Xsd::attrValue (project node attrs) (Studio.Doc::lit key)),
+  executable: true
+}
+
+definition{
+  name: attrIs,
+  parameters: [node : Node, key : String, value : String],
+  result: Bool,
+  body: (match (attr node key)
+    | Option.none => false
+    | Option.some found => (Studio.Doc::same found (Studio.Doc::lit value))),
+  executable: true
+}
+
+definition{
+  name: attrOr,
+  parameters: [node : Node, key : String, fallback : String],
+  result: Bytes,
+  body: (match (attr node key)
+    | Option.none => (Studio.Doc::lit fallback)
+    | Option.some found => found),
+  executable: true
+}
+
+definition{
+  name: isKind,
+  parameters: [node : Node, kind : String],
+  result: Bool,
+  body: (Studio.Doc::same (project node kind) (Studio.Doc::lit kind)),
+  executable: true
+}
+
+definition{
+  name: nodes,
+  parameters: [content : Studio.Xml::Xml, scope : (List (Bytes * Bytes))],
+  result: (Result (List Node) Bytes),
+  body: (match content
+    | Studio.Xml::Xml.XItem head rest => (match (nodes rest scope)
+      | Result.error reason => (ctor Result.error [(List Node), Bytes] reason)
+      | Result.ok later => (match head
+        | Studio.Xml::Xml.XElem label attrs inner => (match (Studio.Xsd::declarations attrs scope)
+          | Result.error reason => (ctor Result.error [(List Node), Bytes] reason)
+          | Result.ok local => (match (Studio.Xsd::expand local label)
+            | Result.error reason => (ctor Result.error [(List Node), Bytes] reason)
+            | Result.ok expanded => (if ((Studio.Doc::same (first expanded) (Studio.Xsd::xsdNamespace)) && (negate (Studio.Doc::same (second expanded) (Studio.Doc::lit "annotation")))) then (ctor Result.ok [(List Node), Bytes] (cons (record Node {space := (first expanded), kind := (second expanded), attrs := attrs, content := inner, scope := local}) later)) else (ctor Result.ok [(List Node), Bytes] later))))
+        | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(List Node), Bytes] later)
+        | Studio.Xml::Xml.XText text => (ctor Result.ok [(List Node), Bytes] later)
+        | Studio.Xml::Xml.XItem first1 more => (ctor Result.ok [(List Node), Bytes] later)
+        | Studio.Xml::Xml.XNil => (ctor Result.ok [(List Node), Bytes] later)))
+    | Studio.Xml::Xml.XElem label attrs inner => (ctor Result.ok [(List Node), Bytes] (nil Node))
+    | Studio.Xml::Xml.XAttr label value more => (ctor Result.ok [(List Node), Bytes] (nil Node))
+    | Studio.Xml::Xml.XText text => (ctor Result.ok [(List Node), Bytes] (nil Node))
+    | Studio.Xml::Xml.XNil => (ctor Result.ok [(List Node), Bytes] (nil Node))),
+  recursive_argument: content,
+  executable: true
+}
+
+definition{
+  name: children,
+  parameters: [node : Node],
+  result: (Result (List Node) Bytes),
+  body: (nodes (project node content) (project node scope)),
+  executable: true
+}
+
+definition{
+  name: firstOf,
+  parameters: [items : (List Node), kinds : (List Bytes)],
+  result: (Option Node),
+  body: (match items
+    | List.nil => (ctor Option.none [Node])
+    | List.cons head rest => (if (Studio.Doc::memberBytes (project head kind) kinds) then (ctor Option.some [Node] head) else (firstOf rest kinds))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: componentKinds,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "complexType") (cons (Studio.Doc::lit "simpleType") (cons (Studio.Doc::lit "element") (cons (Studio.Doc::lit "attribute") (cons (Studio.Doc::lit "attributeGroup") (cons (Studio.Doc::lit "group") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: componentsOf,
+  parameters: [items : (List Node), target : Bytes],
+  result: (List Component),
+  body: (match items
+    | List.nil => (nil Component)
+    | List.cons head rest => (if (Studio.Doc::memberBytes (project head kind) (componentKinds)) then (match (attr head "name")
+      | Option.none => (componentsOf rest target)
+      | Option.some named => (cons (record Component {kind := (project head kind), space := target, local := named, node := head}) (componentsOf rest target))) else (componentsOf rest target))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: findComponent,
+  parameters: [items : (List Component), kind : Bytes, space : Bytes, local : Bytes],
+  result: (Option Component),
+  body: (match items
+    | List.nil => (ctor Option.none [Component])
+    | List.cons head rest => (if ((Studio.Doc::same (project head kind) kind) && ((Studio.Doc::same (project head space) space) && (Studio.Doc::same (project head local) local))) then (ctor Option.some [Component] head) else (findComponent rest kind space local))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: declared,
+  parameters: [context : Context, kind : String, expanded : (Bytes * Bytes)],
+  result: (Option Component),
+  body: (findComponent (project context components) (Studio.Doc::lit kind) (first expanded) (second expanded)),
+  executable: true
+}
+
+definition{
+  name: xmlNodeName,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "XmlNode"),
+  executable: true
+}
+
+definition{
+  name: xmlNodeConstructors,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "    {name: element, fields: [Bytes, Bytes, (List ((Bytes * Bytes) * Bytes)), (List XmlNode)]}") (cons (Studio.Doc::lit "    {name: text, fields: [Bytes]}") (nil Bytes))),
+  executable: true
+}
+
+definition{
+  name: wildAttributes,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "(List ((Bytes * Bytes) * Bytes))"),
+  executable: true
+}
+
+definition{
+  name: wrapped,
+  parameters: [kind : String, inner : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons (Studio.Doc::lit kind) (cons (Studio.Doc::lit " ") (cons inner (cons (Studio.Doc::lit ")") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: occurrence,
+  parameters: [node : Node, inner : Bytes],
+  result: (Option Bytes),
+  body: (let most : Bytes := (attrOr node "maxOccurs" "1"); (if (Studio.Doc::same most (Studio.Doc::lit "0")) then (ctor Option.none [Bytes]) else (if (Studio.Doc::same most (Studio.Doc::lit "1")) then (if (attrIs node "minOccurs" "0") then (ctor Option.some [Bytes] (wrapped "Option" inner)) else (ctor Option.some [Bytes] inner)) else (ctor Option.some [Bytes] (wrapped "List" inner))))),
+  executable: true
+}
+
+definition{
+  name: once,
+  parameters: [node : Node],
+  result: Bool,
+  body: ((Studio.Doc::same (attrOr node "minOccurs" "1") (Studio.Doc::lit "1")) && (Studio.Doc::same (attrOr node "maxOccurs" "1") (Studio.Doc::lit "1"))),
+  executable: true
+}
+
+definition{
+  name: nillable,
+  parameters: [node : Node, inner : Bytes],
+  result: Bytes,
+  body: (if (attrIs node "nillable" "true") then (wrapped "Option" inner) else inner),
+  executable: true
+}
+
+definition{
+  name: typeRef,
+  parameters: [context : Context, node : Node, qname : Bytes],
+  result: (Result (Bytes * (List Bytes)) Bytes),
+  body: (match (Studio.Xsd::expand (project node scope) qname)
+    | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+    | Result.ok expanded => (if (Studio.Doc::same (first expanded) (Studio.Xsd::xsdNamespace)) then (if (Studio.Doc::same (second expanded) (Studio.Doc::lit "anyType")) then (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((xmlNodeName), (cons (xmlNodeName) (nil Bytes)))) else (match (Studio.Xsd::builtinType (second expanded) 16)
+      | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
+      | Result.ok found => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] (found, (nil Bytes))))) else (if (Studio.Doc::memberBytes (first expanded) (project context targets)) then (let named : Bytes := (Studio.Schema::pascal (second expanded)); (match (declared context "complexType" expanded)
+      | Option.some found => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] (named, (cons named (nil Bytes))))
+      | Option.none => (match (declared context "simpleType" expanded)
+        | Option.some found => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] (named, (cons named (nil Bytes))))
+        | Option.none => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the type ") (cons qname (cons (Studio.Doc::lit " is not defined by any schema document of this set (XSD 1.1 Part 1, section 3.17.6.2)") (nil Bytes))))))))) else (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the type ") (cons qname (cons (Studio.Doc::lit " is in the namespace ") (cons (first expanded) (cons (Studio.Doc::lit ", which no schema document of this set targets (XSD 1.1 Part 1, sections 3.17.6.2 and 4.2.6)") (nil Bytes))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: labelsOf,
+  parameters: [items : (List Field)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (project head label) (labelsOf rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: typesOf,
+  parameters: [items : (List Field)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (project head typeText) (typesOf rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: depsOf,
+  parameters: [items : (List Field)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (appendNames (project head deps) (depsOf rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: namesWith,
+  parameters: [escaped : Bool, labels : (List Bytes), named : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (match labels
+    | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
+    | List.cons head rest => (match (Studio.Schema::nameAs escaped head)
+      | Option.none => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the component name ") (cons head (cons (Studio.Doc::lit " derives no LexLean name") (nil Bytes))))))
+      | Option.some name => (if (Studio.Doc::memberBytes name named) then (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two components derive the name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n; when those names are not distinct, every name keeps its letters and digits and writes each other character as a C11 universal character name)") (nil Bytes)))))) else (match (namesWith escaped rest (cons name named))
+        | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+        | Result.ok others => (ctor Result.ok [(List Bytes), Bytes] (cons name others)))))),
+  recursive_argument: labels,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: namesFor,
+  parameters: [labels : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (namesWith (Studio.Schema::collides labels) labels (nil Bytes)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: fieldLines,
+  parameters: [names : (List Bytes), types : (List Bytes)],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match types
+      | List.nil => (nil Bytes)
+      | List.cons typed others => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons head (cons (Studio.Doc::lit ", type: ") (cons typed (cons (Studio.Doc::lit "}") (nil Bytes))))))) (fieldLines rest others)))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: constructorLines,
+  parameters: [names : (List Bytes), types : (List Bytes)],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match types
+      | List.nil => (nil Bytes)
+      | List.cons typed others => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons head (cons (Studio.Doc::lit ", fields: [") (cons typed (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (constructorLines rest others)))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: located,
+  parameters: [reason : Bytes, named : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons reason (cons (Studio.Doc::lit " at ") (cons named (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: structureDecl,
+  parameters: [name : Bytes, items : (List Field)],
+  result: (Result Decl Bytes),
+  body: (match (namesFor (labelsOf items))
+    | Result.error reason => (ctor Result.error [Decl, Bytes] (located reason name))
+    | Result.ok names => (let types : (List Bytes) := (typesOf items); (let body : Bytes := (match items
+      | List.nil => 0x
+      | List.cons head rest => (Studio.Doc::cat (cons (Studio.Doc::lit "\n") (cons (Studio.Schema::joinWith (fieldLines names types) (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ") (nil Bytes)))))); (ctor Result.ok [Decl, Bytes] (record Decl {named := name, deps := (depsOf items), text := (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [") (cons body (cons (Studio.Doc::lit "]\n}\n") (nil Bytes))))))), constructors := (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: mk, fields: [") (cons (Studio.Schema::joinWith types (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))) (nil Bytes))}))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: inductiveDecl,
+  parameters: [name : Bytes, labels : (List Bytes), types : (List Bytes), deps : (List Bytes)],
+  result: (Result Decl Bytes),
+  body: (match labels
+    | List.nil => (ctor Result.error [Decl, Bytes] (located (Studio.Doc::lit "a choice with no particle that can occur matches no element sequence, so it has no LexLean constructor (XSD 1.1 Part 1, section 3.8.4.3)") name))
+    | List.cons head rest => (match (namesFor labels)
+      | Result.error reason => (ctor Result.error [Decl, Bytes] (located reason name))
+      | Result.ok names => (let constructors : (List Bytes) := (constructorLines names types); (ctor Result.ok [Decl, Bytes] (record Decl {named := name, deps := deps, text := (Studio.Schema::inductiveText name constructors), constructors := constructors}))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: simpleDecl,
+  parameters: [name : Bytes, node : Node, space : Bytes],
+  result: (Result Decl Bytes),
+  body: (match (Studio.Xsd::simpleType name (project node content) (project node scope) space)
+    | Result.error reason => (ctor Result.error [Decl, Bytes] reason)
+    | Result.ok found => (ctor Result.ok [Decl, Bytes] (record Decl {named := (Studio.Schema::pascal name), deps := (second found), text := (first found), constructors := (nil Bytes)}))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: attrType,
+  parameters: [context : Context, space : Bytes, name : Bytes, node : Node],
+  result: (Result ((Bytes * (List Bytes)) * (List Decl)) Bytes),
+  body: (match (attr node "type")
+    | Option.some qname => (match (typeRef context node qname)
+      | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] (located reason name))
+      | Result.ok found => (ctor Result.ok [((Bytes * (List Bytes)) * (List Decl)), Bytes] (found, (nil Decl))))
+    | Option.none => (match (children node)
+      | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] reason)
+      | Result.ok inner => (match (firstOf inner (cons (Studio.Doc::lit "simpleType") (nil Bytes)))
+        | Option.none => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] (located (Studio.Doc::lit "an attribute declaration with no type has the type xs:anySimpleType, which is not translated, because it is the union of every simple value space (XSD 1.1 Part 1, section 3.2.2.1; Part 2, section 3.2.1)") name))
+        | Option.some simple => (match (simpleDecl name simple space)
+          | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] reason)
+          | Result.ok decl => (ctor Result.ok [((Bytes * (List Bytes)) * (List Decl)), Bytes] ((name, (cons name (nil Bytes))), (cons decl (nil Decl)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: withAttribute,
+  parameters: [acc : Gathered, label : Bytes, found : ((Bytes * (List Bytes)) * (List Decl)), required : Bool],
+  result: Gathered,
+  body: (withDecls (withField acc (record Field {label := label, typeText := (if required then (first (first found)) else (wrapped "Option" (first (first found)))), deps := (second (first found))})) (second found)),
+  executable: true
+}
+
+definition{
+  name: attributes,
+  parameters: [fuel : Nat, context : Context, owner : Bytes, space : Bytes, items : (List Node), acc : Gathered],
+  result: (Result Gathered Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "the attribute group references nest deeper than the schema set has components, so they refer to each other in a cycle (XSD 1.1 Part 1, section 3.6.3)") owner))
+    | Nat.succ rest => (match items
+      | List.nil => (ctor Result.ok [Gathered, Bytes] acc)
+      | List.cons node more => (if (isKind node "attribute") then (if (attrIs node "use" "prohibited") then (attributes rest context owner space more acc) else (let required : Bool := (attrIs node "use" "required"); (match (attr node "ref")
+        | Option.some qname => (match (Studio.Xsd::expand (project node scope) qname)
+          | Result.error reason => (ctor Result.error [Gathered, Bytes] (located reason owner))
+          | Result.ok expanded => (if (Studio.Doc::same (first expanded) (Studio.Xsd::xmlNamespace)) then (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the attribute ") (cons qname (cons (Studio.Doc::lit " is declared by the schema document for the XML namespace, which this schema set does not import (XSD 1.1 Part 1, sections 3.2.2.3 and 4.2.6)") (nil Bytes))))) owner)) else (match (declared context "attribute" expanded)
+            | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the attribute ") (cons qname (cons (Studio.Doc::lit " is not declared by any schema document of this set (XSD 1.1 Part 1, section 3.17.6.2)") (nil Bytes))))) owner))
+            | Option.some global => (match (attrType context (project global space) (Studio.Schema::pascal (second expanded)) (project global node))
+              | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+              | Result.ok found => (attributes rest context owner space more (withAttribute acc (second expanded) found required))))))
+        | Option.none => (match (attr node "name")
+          | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "a local attribute declaration must have a name or a ref (XSD 1.1 Part 1, section 3.2.3)") owner))
+          | Option.some named => (match (attrType context space (prim append owner (Studio.Schema::pascal named) : Bytes) node)
+            | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+            | Result.ok found => (attributes rest context owner space more (withAttribute acc named found required))))))) else (if (isKind node "attributeGroup") then (match (attr node "ref")
+        | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "an attribute group reference must have a ref (XSD 1.1 Part 1, section 3.6.2)") owner))
+        | Option.some qname => (match (Studio.Xsd::expand (project node scope) qname)
+          | Result.error reason => (ctor Result.error [Gathered, Bytes] (located reason owner))
+          | Result.ok expanded => (match (declared context "attributeGroup" expanded)
+            | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the attribute group ") (cons qname (cons (Studio.Doc::lit " is not defined by any schema document of this set (XSD 1.1 Part 1, section 3.17.6.2)") (nil Bytes))))) owner))
+            | Option.some group => (match (children (project group node))
+              | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+              | Result.ok inner => (match (attributes rest context (Studio.Schema::pascal (second expanded)) (project group space) inner acc)
+                | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+                | Result.ok spliced => (attributes rest context owner space more spliced)))))) else (if (isKind node "anyAttribute") then (attributes rest context owner space more (withField acc (record Field {label := (Studio.Doc::lit "anyAttribute"), typeText := (wildAttributes), deps := (nil Bytes)}))) else (attributes rest context owner space more acc)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: splitNames,
+  parameters: [text : Bytes],
+  result: (List Bytes),
+  body: (LexLeanStd.Text::splitOn text (32 : UInt8)),
+  executable: true
+}
+
+definition{
+  name: headsIn,
+  parameters: [scope : (List (Bytes * Bytes)), names : (List Bytes), wanted : (Bytes * Bytes)],
+  result: Bool,
+  body: (match names
+    | List.nil => false
+    | List.cons head rest => (match (Studio.Xsd::expand scope head)
+      | Result.error reason => (headsIn scope rest wanted)
+      | Result.ok expanded => (if ((Studio.Doc::same (first expanded) (first wanted)) && (Studio.Doc::same (second expanded) (second wanted))) then true else (headsIn scope rest wanted)))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: substituted,
+  parameters: [items : (List Component), wanted : (Bytes * Bytes)],
+  result: Bool,
+  body: (match items
+    | List.nil => false
+    | List.cons head rest => (if ((Studio.Doc::same (project head kind) (Studio.Doc::lit "element")) && (match (attr (project head node) "substitutionGroup")
+      | Option.none => false
+      | Option.some group => (headsIn (project (project head node) scope) (splitNames group) wanted))) then true else (substituted rest wanted))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: elementType,
+  parameters: [fuel : Nat, context : Context, owner : Bytes, space : Bytes, node : Node],
+  result: (Result (Bytes * ((Bytes * (List Bytes)) * (List Decl))) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] (located (Studio.Doc::lit "the element declarations nest deeper than the schema documents have bytes") owner))
+    | Nat.succ rest => (match (attr node "ref")
+      | Option.some qname => (match (Studio.Xsd::expand (project node scope) qname)
+        | Result.error reason => (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] (located reason owner))
+        | Result.ok expanded => (match (declared context "element" expanded)
+          | Option.none => (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the element ") (cons qname (cons (Studio.Doc::lit " is not declared by any schema document of this set (XSD 1.1 Part 1, section 3.17.6.2)") (nil Bytes))))) owner))
+          | Option.some global => (if ((attrIs (project global node) "abstract" "true") || (substituted (project context components) expanded)) then (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the element ") (cons qname (cons (Studio.Doc::lit " heads a substitution group, so its particle also admits the members of that group, which is not translated (XSD 1.1 Part 1, section 3.3.6.4)") (nil Bytes))))) owner)) else (match (declType rest context (Studio.Schema::pascal (second expanded)) (project global space) (project global node))
+            | Result.error reason => (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] reason)
+            | Result.ok found => (ctor Result.ok [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] ((second expanded), found))))))
+      | Option.none => (match (attr node "name")
+        | Option.none => (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] (located (Studio.Doc::lit "a local element declaration must have a name or a ref (XSD 1.1 Part 1, section 3.3.3)") owner))
+        | Option.some named => (match (declType rest context (prim append owner (Studio.Schema::pascal named) : Bytes) space node)
+          | Result.error reason => (ctor Result.error [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] reason)
+          | Result.ok found => (ctor Result.ok [(Bytes * ((Bytes * (List Bytes)) * (List Decl))), Bytes] (named, found)))))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: declType,
+  parameters: [fuel : Nat, context : Context, name : Bytes, space : Bytes, node : Node],
+  result: (Result ((Bytes * (List Bytes)) * (List Decl)) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] (located (Studio.Doc::lit "the element declarations nest deeper than the schema documents have bytes") name))
+    | Nat.succ rest => (match (attr node "type")
+      | Option.some qname => (match (typeRef context node qname)
+        | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] (located reason name))
+        | Result.ok found => (ctor Result.ok [((Bytes * (List Bytes)) * (List Decl)), Bytes] (((nillable node (first found)), (second found)), (nil Decl))))
+      | Option.none => (match (children node)
+        | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] reason)
+        | Result.ok inner => (match (firstOf inner (cons (Studio.Doc::lit "complexType") (cons (Studio.Doc::lit "simpleType") (nil Bytes))))
+          | Option.none => (ctor Result.ok [((Bytes * (List Bytes)) * (List Decl)), Bytes] (((nillable node (xmlNodeName)), (cons (xmlNodeName) (nil Bytes))), (nil Decl)))
+          | Option.some local => (if (isKind local "complexType") then (match (complexDecls rest context name space local)
+            | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] reason)
+            | Result.ok decls => (ctor Result.ok [((Bytes * (List Bytes)) * (List Decl)), Bytes] (((nillable node name), (cons name (nil Bytes))), decls))) else (match (simpleDecl name local space)
+            | Result.error reason => (ctor Result.error [((Bytes * (List Bytes)) * (List Decl)), Bytes] reason)
+            | Result.ok decl => (ctor Result.ok [((Bytes * (List Bytes)) * (List Decl)), Bytes] (((nillable node name), (cons name (nil Bytes))), (cons decl (nil Decl)))))))))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: particle,
+  parameters: [fuel : Nat, context : Context, owner : Bytes, space : Bytes, splice : Bool, node : Node, acc : Gathered],
+  result: (Result Gathered Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "the model groups nest deeper than the schema documents have bytes") owner))
+    | Nat.succ rest => (if (isKind node "element") then (match (elementType rest context owner space node)
+      | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+      | Result.ok found => (match (occurrence node (first (first (second found))))
+        | Option.none => (ctor Result.ok [Gathered, Bytes] acc)
+        | Option.some typed => (ctor Result.ok [Gathered, Bytes] (withDecls (withField acc (record Field {label := (first found), typeText := typed, deps := (second (first (second found)))})) (second (second found)))))) else (if (isKind node "any") then (match (occurrence node (xmlNodeName))
+      | Option.none => (ctor Result.ok [Gathered, Bytes] acc)
+      | Option.some typed => (ctor Result.ok [Gathered, Bytes] (withField acc (record Field {label := (Studio.Doc::lit "any"), typeText := typed, deps := (cons (xmlNodeName) (nil Bytes))})))) else (if (isKind node "group") then (match (attr node "ref")
+      | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "a model group reference must have a ref (XSD 1.1 Part 1, section 3.7.2)") owner))
+      | Option.some qname => (match (Studio.Xsd::expand (project node scope) qname)
+        | Result.error reason => (ctor Result.error [Gathered, Bytes] (located reason owner))
+        | Result.ok expanded => (match (declared context "group" expanded)
+          | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the model group ") (cons qname (cons (Studio.Doc::lit " is not defined by any schema document of this set (XSD 1.1 Part 1, section 3.17.6.2)") (nil Bytes))))) owner))
+          | Option.some group => (let named : Bytes := (Studio.Schema::pascal (second expanded)); (match (occurrence node named)
+            | Option.none => (ctor Result.ok [Gathered, Bytes] acc)
+            | Option.some typed => (ctor Result.ok [Gathered, Bytes] (withField acc (record Field {label := (second expanded), typeText := typed, deps := (cons named (nil Bytes))})))))))) else (if ((isKind node "sequence") || ((isKind node "choice") || (isKind node "all"))) then (if (splice && ((once node) && (negate (isKind node "choice")))) then (match (children node)
+      | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+      | Result.ok inner => (particles rest context owner space true inner acc)) else (let kind : Bytes := (project node kind); (let count : Nat := (counted acc kind); (let suffix : Bytes := (if (count =? 1) then 0x else (LexLeanStd.Numeral::decimal count)); (let named : Bytes := (Studio.Doc::cat (cons owner (cons (Studio.Schema::pascal kind) (cons suffix (nil Bytes))))); (match (groupDecls rest context named space node)
+      | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+      | Result.ok decls => (match (occurrence node named)
+        | Option.none => (ctor Result.ok [Gathered, Bytes] (bumped acc kind))
+        | Option.some typed => (ctor Result.ok [Gathered, Bytes] (withDecls (withField (bumped acc kind) (record Field {label := (prim append kind suffix : Bytes), typeText := typed, deps := (cons named (nil Bytes))})) decls))))))))) else (ctor Result.ok [Gathered, Bytes] acc)))))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: particles,
+  parameters: [fuel : Nat, context : Context, owner : Bytes, space : Bytes, splice : Bool, items : (List Node), acc : Gathered],
+  result: (Result Gathered Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "the model groups nest deeper than the schema documents have bytes") owner))
+    | Nat.succ rest => (match items
+      | List.nil => (ctor Result.ok [Gathered, Bytes] acc)
+      | List.cons node more => (match (particle rest context owner space splice node acc)
+        | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+        | Result.ok next => (particles rest context owner space splice more next)))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: groupDecls,
+  parameters: [fuel : Nat, context : Context, name : Bytes, space : Bytes, node : Node],
+  result: (Result (List Decl) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List Decl), Bytes] (located (Studio.Doc::lit "the model groups nest deeper than the schema documents have bytes") name))
+    | Nat.succ rest => (match (children node)
+      | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+      | Result.ok inner => (if (isKind node "choice") then (match (particles rest context name space false inner (empty))
+        | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+        | Result.ok gathered => (match (inductiveDecl name (labelsOf (project gathered fields)) (typesOf (project gathered fields)) (depsOf (project gathered fields)))
+          | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+          | Result.ok decl => (ctor Result.ok [(List Decl), Bytes] (appendDecls (project gathered decls) (cons decl (nil Decl)))))) else (match (particles rest context name space true inner (empty))
+        | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+        | Result.ok gathered => (match (structureDecl name (project gathered fields))
+          | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+          | Result.ok decl => (ctor Result.ok [(List Decl), Bytes] (appendDecls (project gathered decls) (cons decl (nil Decl))))))))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: contentFields,
+  parameters: [fuel : Nat, context : Context, name : Bytes, space : Bytes, node : Node, acc : Gathered],
+  result: (Result Gathered Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "the type derivations nest deeper than the schema documents have bytes, so the types derive from each other in a cycle (XSD 1.1 Part 1, section 3.4.6.1)") name))
+    | Nat.succ rest => (if (attrIs node "mixed" "true") then (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "a mixed content type interleaves character data with its elements, which a LexLean field list does not keep in order, so it is not translated (XSD 1.1 Part 1, section 3.4.2.3)") name)) else (match (children node)
+      | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+      | Result.ok inner => (match (firstOf inner (cons (Studio.Doc::lit "openContent") (cons (Studio.Doc::lit "assert") (nil Bytes))))
+        | Option.some found => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "xs:") (cons (project found kind) (cons (Studio.Doc::lit " is not translated, because an open content wildcard or an XPath assertion constrains an instance beyond its fields (XSD 1.1 Part 1, sections 3.4.2.3 and 3.13)") (nil Bytes))))) name))
+        | Option.none => (match (firstOf inner (cons (Studio.Doc::lit "simpleContent") (cons (Studio.Doc::lit "complexContent") (nil Bytes))))
+          | Option.none => (match (particles rest context name space true inner acc)
+            | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+            | Result.ok spliced => (attributes rest context name space inner spliced))
+          | Option.some derived => (if (attrIs derived "mixed" "true") then (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "a mixed content type interleaves character data with its elements, which a LexLean field list does not keep in order, so it is not translated (XSD 1.1 Part 1, section 3.4.2.3)") name)) else (match (children derived)
+            | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+            | Result.ok steps => (match (firstOf steps (cons (Studio.Doc::lit "extension") (cons (Studio.Doc::lit "restriction") (nil Bytes))))
+              | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "simpleContent and complexContent must have an extension or a restriction child (XSD 1.1 Part 1, sections 3.4.2.2 and 3.4.2.3)") name))
+              | Option.some step => (match (attr step "base")
+                | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::lit "an extension or restriction must name its base type (XSD 1.1 Part 1, section 3.4.3)") name))
+                | Option.some base => (match (Studio.Xsd::expand (project step scope) base)
+                  | Result.error reason => (ctor Result.error [Gathered, Bytes] (located reason name))
+                  | Result.ok expanded => (match (children step)
+                    | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+                    | Result.ok own => (let anyType : Bool := ((Studio.Doc::same (first expanded) (Studio.Xsd::xsdNamespace)) && (Studio.Doc::same (second expanded) (Studio.Doc::lit "anyType"))); (if ((isKind step "restriction") && (negate anyType)) then (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "a restriction of the complex type ") (cons base (cons (Studio.Doc::lit " is not translated, because the attribute uses it inherits and the content it narrows are not read yet (XSD 1.1 Part 1, sections 3.4.2.2 and 3.4.2.3)") (nil Bytes))))) name)) else (match (if (anyType || (Studio.Doc::same (project derived kind) (Studio.Doc::lit "complexContent"))) then (if anyType then (ctor Result.ok [Gathered, Bytes] acc) else (match (declared context "complexType" expanded)
+                      | Option.none => (ctor Result.error [Gathered, Bytes] (located (Studio.Doc::cat (cons (Studio.Doc::lit "the base type ") (cons base (cons (Studio.Doc::lit " of a complex content extension is not a complex type of this schema set (XSD 1.1 Part 1, section 3.4.2.3)") (nil Bytes))))) name))
+                      | Option.some parent => (match (contentFields rest context (Studio.Schema::pascal (second expanded)) (project parent space) (project parent node) acc)
+                        | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+                        | Result.ok inherited => (ctor Result.ok [Gathered, Bytes] (recount inherited))))) else (match (declared context "complexType" expanded)
+                      | Option.some parent => (match (contentFields rest context (Studio.Schema::pascal (second expanded)) (project parent space) (project parent node) acc)
+                        | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+                        | Result.ok inherited => (ctor Result.ok [Gathered, Bytes] (recount inherited)))
+                      | Option.none => (match (typeRef context step base)
+                        | Result.error reason => (ctor Result.error [Gathered, Bytes] (located reason name))
+                        | Result.ok found => (ctor Result.ok [Gathered, Bytes] (withField acc (record Field {label := (Studio.Doc::lit "value"), typeText := (first found), deps := (second found)}))))))
+                      | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+                      | Result.ok based => (match (particles rest context name space true own based)
+                        | Result.error reason => (ctor Result.error [Gathered, Bytes] reason)
+                        | Result.ok spliced => (attributes rest context name space own spliced)))))))))))))))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: complexDecls,
+  parameters: [fuel : Nat, context : Context, name : Bytes, space : Bytes, node : Node],
+  result: (Result (List Decl) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List Decl), Bytes] (located (Studio.Doc::lit "the complex types nest deeper than the schema documents have bytes") name))
+    | Nat.succ rest => (match (contentFields rest context name space node (empty))
+      | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+      | Result.ok gathered => (match (structureDecl name (project gathered fields))
+        | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+        | Result.ok decl => (ctor Result.ok [(List Decl), Bytes] (appendDecls (project gathered decls) (cons decl (nil Decl))))))),
+  recursive_argument: fuel,
+  mutual: ComponentWalk,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: derivationOf,
+  parameters: [component : Component],
+  result: (Result (Option (Node * (Bytes * Bytes))) Bytes),
+  body: (match (children (project component node))
+    | Result.error reason => (ctor Result.error [(Option (Node * (Bytes * Bytes))), Bytes] reason)
+    | Result.ok inner => (match (firstOf inner (cons (Studio.Doc::lit "simpleContent") (cons (Studio.Doc::lit "complexContent") (nil Bytes))))
+      | Option.none => (ctor Result.ok [(Option (Node * (Bytes * Bytes))), Bytes] (ctor Option.none [(Node * (Bytes * Bytes))]))
+      | Option.some derived => (match (children derived)
+        | Result.error reason => (ctor Result.error [(Option (Node * (Bytes * Bytes))), Bytes] reason)
+        | Result.ok steps => (match (firstOf steps (cons (Studio.Doc::lit "extension") (cons (Studio.Doc::lit "restriction") (nil Bytes))))
+          | Option.none => (ctor Result.ok [(Option (Node * (Bytes * Bytes))), Bytes] (ctor Option.none [(Node * (Bytes * Bytes))]))
+          | Option.some step => (match (attr step "base")
+            | Option.none => (ctor Result.ok [(Option (Node * (Bytes * Bytes))), Bytes] (ctor Option.none [(Node * (Bytes * Bytes))]))
+            | Option.some base => (match (Studio.Xsd::expand (project step scope) base)
+              | Result.error reason => (ctor Result.error [(Option (Node * (Bytes * Bytes))), Bytes] reason)
+              | Result.ok expanded => (ctor Result.ok [(Option (Node * (Bytes * Bytes))), Bytes] (ctor Option.some [(Node * (Bytes * Bytes))] (step, expanded))))))))),
+  executable: true
+}
+
+definition{
+  name: derivedFrom,
+  parameters: [items : (List Component), wanted : (Bytes * Bytes), extensionsOnly : Bool],
+  result: (Result (List Bytes) Bytes),
+  body: (match items
+    | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
+    | List.cons head rest => (match (derivedFrom rest wanted extensionsOnly)
+      | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+      | Result.ok later => (if (Studio.Doc::same (project head kind) (Studio.Doc::lit "complexType")) then (match (derivationOf head)
+        | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+        | Result.ok found => (match found
+          | Option.none => (ctor Result.ok [(List Bytes), Bytes] later)
+          | Option.some step => (if ((Studio.Doc::same (first (second step)) (first wanted)) && ((Studio.Doc::same (second (second step)) (second wanted)) && ((negate extensionsOnly) || (isKind (first step) "extension")))) then (ctor Result.ok [(List Bytes), Bytes] (cons (project head local) later)) else (ctor Result.ok [(List Bytes), Bytes] later)))) else (ctor Result.ok [(List Bytes), Bytes] later)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: pascalAll,
+  parameters: [names : (List Bytes)],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (Studio.Schema::pascal head) (pascalAll rest))),
+  recursive_argument: names,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: contentName,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (prim append name (Studio.Doc::lit "Content") : Bytes),
+  executable: true
+}
+
+definition{
+  name: complexComponent,
+  parameters: [fuel : Nat, context : Context, component : Component],
+  result: (Result (List Decl) Bytes),
+  body: (let name : Bytes := (Studio.Schema::pascal (project component local)); (let wanted : (Bytes * Bytes) := ((project component space), (project component local)); (let abstract : Bool := (attrIs (project component node) "abstract" "true"); (match (derivedFrom (project context components) wanted (negate abstract))
+    | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+    | Result.ok derived => (if abstract then (match derived
+      | List.nil => (ctor Result.error [(List Decl), Bytes] (located (Studio.Doc::lit "an abstract complex type with no type derived from it in this schema set admits no instance (XSD 1.1 Part 1, sections 3.4.1 and 3.3.4.2)") name))
+      | List.cons head rest => (match (inductiveDecl name derived (pascalAll derived) (pascalAll derived))
+        | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+        | Result.ok decl => (ctor Result.ok [(List Decl), Bytes] (cons decl (nil Decl))))) else (match derived
+      | List.nil => (complexDecls fuel context name (project component space) (project component node))
+      | List.cons head rest => (let own : Bytes := (contentName name); (match (complexDecls fuel context own (project component space) (project component node))
+        | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+        | Result.ok decls => (match (inductiveDecl name (cons (project component local) derived) (cons own (pascalAll derived)) (cons own (pascalAll derived)))
+          | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+          | Result.ok decl => (ctor Result.ok [(List Decl), Bytes] (appendDecls decls (cons decl (nil Decl))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: componentDecls,
+  parameters: [fuel : Nat, context : Context, component : Component],
+  result: (Result (List Decl) Bytes),
+  body: (let name : Bytes := (Studio.Schema::pascal (project component local)); (let node : Node := (project component node); (let space : Bytes := (project component space); (let kind : Bytes := (project component kind); (if (Studio.Doc::same kind (Studio.Doc::lit "complexType")) then (complexComponent fuel context component) else (if (Studio.Doc::same kind (Studio.Doc::lit "simpleType")) then (match (simpleDecl name node space)
+    | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+    | Result.ok decl => (ctor Result.ok [(List Decl), Bytes] (cons decl (nil Decl)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "element")) then (match (attr node "type")
+    | Option.some typed => (ctor Result.ok [(List Decl), Bytes] (nil Decl))
+    | Option.none => (match (declType fuel context name space node)
+      | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+      | Result.ok found => (ctor Result.ok [(List Decl), Bytes] (second found)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "attribute")) then (match (attr node "type")
+    | Option.some typed => (ctor Result.ok [(List Decl), Bytes] (nil Decl))
+    | Option.none => (match (attrType context space name node)
+      | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+      | Result.ok found => (ctor Result.ok [(List Decl), Bytes] (second found)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "group")) then (match (children node)
+    | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+    | Result.ok inner => (match (firstOf inner (cons (Studio.Doc::lit "sequence") (cons (Studio.Doc::lit "choice") (cons (Studio.Doc::lit "all") (nil Bytes)))))
+      | Option.none => (ctor Result.error [(List Decl), Bytes] (located (Studio.Doc::lit "a model group definition must have a sequence, choice or all child (XSD 1.1 Part 1, section 3.7.2)") name))
+      | Option.some group => (groupDecls fuel context name space group))) else (match (children node)
+    | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+    | Result.ok inner => (match (attributes fuel context name space inner (empty))
+      | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+      | Result.ok gathered => (ctor Result.ok [(List Decl), Bytes] (project gathered decls))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: allDecls,
+  parameters: [fuel : Nat, context : Context, items : (List Component)],
+  result: (Result (List Decl) Bytes),
+  body: (match items
+    | List.nil => (ctor Result.ok [(List Decl), Bytes] (nil Decl))
+    | List.cons head rest => (match (componentDecls fuel context head)
+      | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+      | Result.ok decls => (match (allDecls fuel context rest)
+        | Result.error reason => (ctor Result.error [(List Decl), Bytes] reason)
+        | Result.ok later => (ctor Result.ok [(List Decl), Bytes] (appendDecls decls later))))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: declNamed,
+  parameters: [decls : (List Decl), name : Bytes],
+  result: (Option Decl),
+  body: (match decls
+    | List.nil => (ctor Option.none [Decl])
+    | List.cons head rest => (if (Studio.Doc::same (project head named) name) then (ctor Option.some [Decl] head) else (declNamed rest name))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: reverseDecls,
+  parameters: [decls : (List Decl), done : (List Decl)],
+  result: (List Decl),
+  body: (match decls
+    | List.nil => done
+    | List.cons head rest => (reverseDecls rest (cons head done))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: distinctDecls,
+  parameters: [decls : (List Decl), kept : (List Decl)],
+  result: (Result (List Decl) Bytes),
+  body: (match decls
+    | List.nil => (ctor Result.ok [(List Decl), Bytes] (reverseDecls kept (nil Decl)))
+    | List.cons head rest => (match (declNamed kept (project head named))
+      | Option.none => (distinctDecls rest (cons head kept))
+      | Option.some earlier => (if (Studio.Doc::same (project earlier text) (project head text)) then (distinctDecls rest kept) else (ctor Result.error [(List Decl), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two components derive the type name ") (cons (project head named) (cons (Studio.Doc::lit ", so their LexLean declarations would collide") (nil Bytes))))))))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: allDeps,
+  parameters: [decls : (List Decl)],
+  result: (List Bytes),
+  body: (match decls
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (appendNames (project head deps) (allDeps rest))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: declNames,
+  parameters: [decls : (List Decl)],
+  result: (List Bytes),
+  body: (match decls
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (project head named) (declNames rest))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: undefinedIn,
+  parameters: [decls : (List Decl), defined : (List Bytes)],
+  result: (Option (Bytes * Bytes)),
+  body: (match decls
+    | List.nil => (ctor Option.none [(Bytes * Bytes)])
+    | List.cons head rest => (match (Studio.Xsd::missingName (project head deps) defined)
+      | Option.some absent => (ctor Option.some [(Bytes * Bytes)] ((project head named), absent))
+      | Option.none => (undefinedIn rest defined))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: depsNamed,
+  parameters: [decls : (List Decl), name : Bytes],
+  result: (List Bytes),
+  body: (match (declNamed decls name)
+    | Option.none => (nil Bytes)
+    | Option.some found => (project found deps)),
+  executable: true
+}
+
+definition{
+  name: reach,
+  parameters: [fuel : Nat, decls : (List Decl), frontier : (List Bytes), seen : (List Bytes)],
+  result: (List Bytes),
+  body: (match fuel
+    | Nat.zero => seen
+    | Nat.succ rest => (match frontier
+      | List.nil => seen
+      | List.cons head more => (if (Studio.Doc::memberBytes head seen) then (reach rest decls more seen) else (reach rest decls (appendNames (depsNamed decls head) more) (cons head seen))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: edgeCount,
+  parameters: [decls : (List Decl)],
+  result: Nat,
+  body: (match decls
+    | List.nil => 1
+    | List.cons head rest => (((prim length (project head deps) : Nat) + 1) + (edgeCount rest))),
+  recursive_argument: decls,
+  executable: true
+}
+
+definition{
+  name: reaches,
+  parameters: [decls : (List Decl), names : (List Bytes), fuel : Nat],
+  result: (List (Bytes * (List Bytes))),
+  body: (match names
+    | List.nil => (nil (Bytes * (List Bytes)))
+    | List.cons head rest => (cons (head, (reach fuel decls (depsNamed decls head) (nil Bytes))) (reaches decls rest fuel))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: reachOf,
+  parameters: [table : (List (Bytes * (List Bytes))), name : Bytes],
+  result: (List Bytes),
+  body: (match table
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::same (first head) name) then (second head) else (reachOf rest name))),
+  recursive_argument: table,
+  executable: true
+}
+
+definition{
+  name: strongWith,
+  parameters: [table : (List (Bytes * (List Bytes))), names : (List Bytes), name : Bytes],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if ((Studio.Doc::same head name) || ((Studio.Doc::memberBytes head (reachOf table name)) && (Studio.Doc::memberBytes name (reachOf table head)))) then (cons head (strongWith table rest name)) else (strongWith table rest name))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: unitsFrom,
+  parameters: [table : (List (Bytes * (List Bytes))), all : (List Bytes), names : (List Bytes), assigned : (List Bytes)],
+  result: (List (List Bytes)),
+  body: (match names
+    | List.nil => (nil (List Bytes))
+    | List.cons head rest => (if (Studio.Doc::memberBytes head assigned) then (unitsFrom table all rest assigned) else (let members : (List Bytes) := (strongWith table all head); (cons members (unitsFrom table all rest (appendNames members assigned)))))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: outside,
+  parameters: [names : (List Bytes), members : (List Bytes)],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::memberBytes head members) then (outside rest members) else (cons head (outside rest members)))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: unitDeps,
+  parameters: [decls : (List Decl), members : (List Bytes), all : (List Bytes)],
+  result: (List Bytes),
+  body: (match members
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (appendNames (outside (depsNamed decls head) all) (unitDeps decls rest all))),
+  recursive_argument: members,
+  executable: true
+}
+
+definition{
+  name: pendingUnits,
+  parameters: [decls : (List Decl), units : (List (List Bytes))],
+  result: (List ((List Bytes) * (List Bytes))),
+  body: (match units
+    | List.nil => (nil ((List Bytes) * (List Bytes)))
+    | List.cons head rest => (cons (head, (unitDeps decls head head)) (pendingUnits decls rest))),
+  recursive_argument: units,
+  executable: true
+}
+
+definition{
+  name: pickUnit,
+  parameters: [pending : (List ((List Bytes) * (List Bytes))), emitted : (List Bytes)],
+  result: (Option ((List Bytes) * (List ((List Bytes) * (List Bytes))))),
+  body: (match pending
+    | List.nil => (ctor Option.none [((List Bytes) * (List ((List Bytes) * (List Bytes))))])
+    | List.cons head rest => (match (Studio.Xsd::missingName (second head) emitted)
+      | Option.none => (ctor Option.some [((List Bytes) * (List ((List Bytes) * (List Bytes))))] ((first head), rest))
+      | Option.some absent => (match (pickUnit rest emitted)
+        | Option.none => (ctor Option.none [((List Bytes) * (List ((List Bytes) * (List Bytes))))])
+        | Option.some picked => (ctor Option.some [((List Bytes) * (List ((List Bytes) * (List Bytes))))] ((first picked), (cons head (second picked))))))),
+  recursive_argument: pending,
+  executable: true
+}
+
+definition{
+  name: mutualText,
+  parameters: [name : Bytes, constructors : (List Bytes), label : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "inductive{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  constructors: [\n") (cons (Studio.Schema::joinWith constructors (Studio.Doc::lit ",\n")) (cons (Studio.Doc::lit "\n  ],\n  mutual: ") (cons label (cons (Studio.Doc::lit "\n}\n") (nil Bytes))))))))),
+  executable: true
+}
+
+definition{
+  name: cycleRefusal,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (located (Studio.Doc::lit "the simple types derive from each other in a cycle (XSD 1.1 Part 2, section 4.1.5)") name),
+  executable: true
+}
+
+definition{
+  name: groupTexts,
+  parameters: [decls : (List Decl), members : (List Bytes), label : Bytes],
+  result: (Result (List Bytes) Bytes),
+  body: (match members
+    | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
+    | List.cons head rest => (match (declNamed decls head)
+      | Option.none => (ctor Result.error [(List Bytes), Bytes] (cycleRefusal head))
+      | Option.some decl => (match (project decl constructors)
+        | List.nil => (ctor Result.error [(List Bytes), Bytes] (cycleRefusal head))
+        | List.cons first1 more => (match (groupTexts decls rest label)
+          | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+          | Result.ok later => (ctor Result.ok [(List Bytes), Bytes] (cons (mutualText head (project decl constructors) label) later)))))),
+  recursive_argument: members,
+  executable: true
+}
+
+definition{
+  name: unitTexts,
+  parameters: [decls : (List Decl), members : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (match members
+    | List.nil => (ctor Result.ok [(List Bytes), Bytes] (nil Bytes))
+    | List.cons head rest => (match rest
+      | List.cons second1 more => (groupTexts decls members (prim append head (Studio.Doc::lit "Group") : Bytes))
+      | List.nil => (match (declNamed decls head)
+        | Option.none => (ctor Result.error [(List Bytes), Bytes] (cycleRefusal head))
+        | Option.some decl => (if (Studio.Doc::memberBytes head (project decl deps)) then (match (project decl constructors)
+          | List.nil => (ctor Result.error [(List Bytes), Bytes] (cycleRefusal head))
+          | List.cons first1 more => (ctor Result.ok [(List Bytes), Bytes] (cons (Studio.Schema::inductiveText head (project decl constructors)) (nil Bytes)))) else (ctor Result.ok [(List Bytes), Bytes] (cons (project decl text) (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: orderUnits,
+  parameters: [fuel : Nat, decls : (List Decl), pending : (List ((List Bytes) * (List Bytes))), emitted : (List Bytes), out : (List Bytes)],
+  result: (Result (List Bytes) Bytes),
+  body: (match fuel
+    | Nat.zero => (match pending
+      | List.nil => (ctor Result.ok [(List Bytes), Bytes] out)
+      | List.cons waiting others => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::lit "the declarations could not be ordered so that each follows the types it uses")))
+    | Nat.succ rest => (match pending
+      | List.nil => (ctor Result.ok [(List Bytes), Bytes] out)
+      | List.cons waiting others => (match (pickUnit pending emitted)
+        | Option.none => (ctor Result.error [(List Bytes), Bytes] (Studio.Doc::lit "the declarations could not be ordered so that each follows the types it uses"))
+        | Option.some picked => (match (unitTexts decls (first picked))
+          | Result.error reason => (ctor Result.error [(List Bytes), Bytes] reason)
+          | Result.ok texts => (orderUnits rest decls (second picked) (appendNames (first picked) emitted) (appendNames out texts)))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: withXmlNode,
+  parameters: [decls : (List Decl)],
+  result: (List Decl),
+  body: (if ((Studio.Doc::memberBytes (xmlNodeName) (allDeps decls)) && (match (declNamed decls (xmlNodeName))
+    | Option.none => true
+    | Option.some found => false)) then (cons (record Decl {named := (xmlNodeName), deps := (nil Bytes), text := (Studio.Schema::inductiveText (xmlNodeName) (xmlNodeConstructors)), constructors := (xmlNodeConstructors)}) decls) else decls),
+  executable: true
+}
+
+definition{
+  name: docsComponents,
+  parameters: [docs : (List Document)],
+  result: (Result (List Component) Bytes),
+  body: (match docs
+    | List.nil => (ctor Result.ok [(List Component), Bytes] (nil Component))
+    | List.cons head rest => (match (nodes (project head content) (project head scope))
+      | Result.error reason => (ctor Result.error [(List Component), Bytes] reason)
+      | Result.ok items => (match (docsComponents rest)
+        | Result.error reason => (ctor Result.error [(List Component), Bytes] reason)
+        | Result.ok later => (ctor Result.ok [(List Component), Bytes] (appendComponents (componentsOf items (project head target)) later))))),
+  recursive_argument: docs,
+  executable: true
+}
+
+definition{
+  name: docsTargets,
+  parameters: [docs : (List Document)],
+  result: (List Bytes),
+  body: (match docs
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (project head target) (docsTargets rest))),
+  recursive_argument: docs,
+  executable: true
+}
+
+definition{
+  name: docsSize,
+  parameters: [docs : (List Document)],
+  result: Nat,
+  body: (match docs
+    | List.nil => 64
+    | List.cons head rest => ((project head size) + (docsSize rest))),
+  recursive_argument: docs,
+  executable: true
+}
+
+definition{
+  name: translateSet,
+  parameters: [docs : (List Document)],
+  result: (Result (Nat * Bytes) Bytes),
+  body: (match (docsComponents docs)
+    | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+    | Result.ok components => (let context : Context := (record Context {components := components, targets := (docsTargets docs)}); (match (allDecls (docsSize docs) context components)
+      | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+      | Result.ok gathered => (match (distinctDecls (withXmlNode gathered) (nil Decl))
+        | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+        | Result.ok decls => (let names : (List Bytes) := (declNames decls); (match (undefinedIn decls names)
+          | Option.some absent => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the type ") (cons (first absent) (cons (Studio.Doc::lit " uses ") (cons (second absent) (cons (Studio.Doc::lit ", which no component of this schema set declares (XSD 1.1 Part 1, section 3.17.6.2)") (nil Bytes))))))))
+          | Option.none => (let table : (List (Bytes * (List Bytes))) := (reaches decls names (edgeCount decls)); (match (orderUnits ((prim length names : Nat) + 1) decls (pendingUnits decls (unitsFrom table names names (nil Bytes))) (nil Bytes) (nil Bytes))
+            | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
+            | Result.ok texts => (ctor Result.ok [(Nat * Bytes), Bytes] ((prim length texts : Nat), (Studio.Schema::joinWith texts (Studio.Doc::lit "\n")))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: quotedAfter,
+  parameters: [line : Bytes, prefix : Bytes],
+  result: (Option Bytes),
+  body: (if (LexLeanStd.Text::startsWith line prefix) then (match (LexLeanStd.Text::splitOn line (34 : UInt8))
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons opening rest => (match rest
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons value tail => (ctor Option.some [Bytes] value))) else (ctor Option.none [Bytes])),
+  executable: true
+}
+
+definition{
+  name: sourcesFrom,
+  parameters: [lines : (List Bytes), url : (Option Bytes)],
+  result: (List (Bytes * Bytes)),
+  body: (match lines
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (if (Studio.Doc::same head (Studio.Doc::lit "[[authority]]")) then (sourcesFrom rest (ctor Option.none [Bytes])) else (match (quotedAfter head (Studio.Doc::lit "url = "))
+      | Option.some found => (sourcesFrom rest (ctor Option.some [Bytes] found))
+      | Option.none => (match (quotedAfter head (Studio.Doc::lit "artifact = "))
+        | Option.none => (sourcesFrom rest url)
+        | Option.some artifact => (match url
+          | Option.none => (sourcesFrom rest url)
+          | Option.some address => (cons (address, artifact) (sourcesFrom rest url))))))),
+  recursive_argument: lines,
+  executable: true
+}
+
+definition{
+  name: boundSources,
+  parameters: [authorities : Bytes],
+  result: (List (Bytes * Bytes)),
+  body: (sourcesFrom (LexLeanStd.Text::lines authorities) (ctor Option.none [Bytes])),
+  executable: true
+}
+
+definition{
+  name: urlOf,
+  parameters: [sources : (List (Bytes * Bytes)), artifact : Bytes],
+  result: (Option Bytes),
+  body: (match sources
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::same (second head) artifact) then (ctor Option.some [Bytes] (first head)) else (urlOf rest artifact))),
+  recursive_argument: sources,
+  executable: true
+}
+
+definition{
+  name: artifactOf,
+  parameters: [sources : (List (Bytes * Bytes)), url : Bytes],
+  result: (Option Bytes),
+  body: (match sources
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::same (first head) url) then (ctor Option.some [Bytes] (second head)) else (artifactOf rest url))),
+  recursive_argument: sources,
+  executable: true
+}
+
+definition{
+  name: lastSlash,
+  parameters: [text : Bytes, position : Nat, remaining : Nat, found : (Option Nat)],
+  result: (Option Nat),
+  body: (match remaining
+    | Nat.zero => found
+    | Nat.succ rest => (match (prim index text position : (Option UInt8))
+      | Option.none => found
+      | Option.some byte => (lastSlash text (position + 1) rest (if ((prim to_nat byte : Nat) =? 47) then (ctor Option.some [Nat] position) else found)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: resolved,
+  parameters: [base : (Option Bytes), location : Bytes],
+  result: (Result Bytes Bytes),
+  body: (match (Studio.Xml::findFrom location (Studio.Doc::lit "://") 0)
+    | Option.some found => (ctor Result.ok [Bytes, Bytes] location)
+    | Option.none => (let refusal : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "the relative schema location ") (cons location (cons (Studio.Doc::lit " is not resolved, because only a bare file name relative to a bound document's URL is merged (RFC 3986, section 5.2.3)") (nil Bytes))))); (if ((LexLeanStd.Text::startsWith location (Studio.Doc::lit "/")) || (match (Studio.Xml::findFrom location (Studio.Doc::lit "..") 0)
+      | Option.some found => true
+      | Option.none => false)) then (ctor Result.error [Bytes, Bytes] refusal) else (match base
+      | Option.none => (ctor Result.error [Bytes, Bytes] refusal)
+      | Option.some url => (match (lastSlash url 0 (prim length url : Nat) (ctor Option.none [Nat]))
+        | Option.none => (ctor Result.error [Bytes, Bytes] refusal)
+        | Option.some slash => (ctor Result.ok [Bytes, Bytes] (prim append (LexLeanStd.Text::sliceOr url 0 (slash + 1)) location : Bytes))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: parseDocument,
+  parameters: [path : Bytes, raw : Bytes, url : (Option Bytes)],
+  result: (Result Document Bytes),
+  body: (match (Studio.Xml::readXml raw)
+    | Result.error reason => (ctor Result.error [Document, Bytes] (Studio.Doc::cat (cons path (cons (Studio.Doc::lit " is not well-formed XML: ") (cons reason (nil Bytes))))))
+    | Result.ok root => (match root
+      | Studio.Xml::Xml.XElem label attrs content => (match (Studio.Xsd::declarations attrs (nil (Bytes * Bytes)))
+        | Result.error reason => (ctor Result.error [Document, Bytes] reason)
+        | Result.ok scope => (match (Studio.Xsd::expand scope label)
+          | Result.error reason => (ctor Result.error [Document, Bytes] reason)
+          | Result.ok expanded => (if (Studio.Xsd::isXsd expanded "schema") then (ctor Result.ok [Document, Bytes] (record Document {path := path, url := url, target := (match (Studio.Xsd::attrValue attrs (Studio.Doc::lit "targetNamespace"))
+            | Option.none => 0x
+            | Option.some uri => uri), scope := scope, content := content, size := (prim length raw : Nat)})) else (ctor Result.error [Document, Bytes] (Studio.Doc::cat (cons path (cons (Studio.Doc::lit ": the root element must be xs:schema in the XML Schema namespace (XSD 1.1 Part 1, section 3.17.2)") (nil Bytes))))))))
+      | Studio.Xml::Xml.XAttr label value more => (ctor Result.error [Document, Bytes] (Studio.Doc::lit "the document has no root element"))
+      | Studio.Xml::Xml.XText text => (ctor Result.error [Document, Bytes] (Studio.Doc::lit "the document has no root element"))
+      | Studio.Xml::Xml.XItem head rest => (ctor Result.error [Document, Bytes] (Studio.Doc::lit "the document has no root element"))
+      | Studio.Xml::Xml.XNil => (ctor Result.error [Document, Bytes] (Studio.Doc::lit "the document has no root element")))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: referencesIn,
+  parameters: [items : (List Node), doc : Document, sources : (List (Bytes * Bytes))],
+  result: (Result (List (Bytes * (Bytes * Bytes))) Bytes),
+  body: (match items
+    | List.nil => (ctor Result.ok [(List (Bytes * (Bytes * Bytes))), Bytes] (nil (Bytes * (Bytes * Bytes))))
+    | List.cons head rest => (match (referencesIn rest doc sources)
+      | Result.error reason => (ctor Result.error [(List (Bytes * (Bytes * Bytes))), Bytes] reason)
+      | Result.ok later => (if ((isKind head "redefine") || ((isKind head "override") || (isKind head "defaultOpenContent"))) then (ctor Result.error [(List (Bytes * (Bytes * Bytes))), Bytes] (Studio.Doc::cat (cons (project doc path) (cons (Studio.Doc::lit ": xs:") (cons (project head kind) (cons (Studio.Doc::lit " is not translated, because it changes components that other schema documents define (XSD 1.1 Part 1, sections 4.2.4, 4.2.5 and 3.4.2.3)") (nil Bytes))))))) else (if ((isKind head "import") || (isKind head "include")) then (match (attr head "schemaLocation")
+        | Option.none => (ctor Result.error [(List (Bytes * (Bytes * Bytes))), Bytes] (Studio.Doc::cat (cons (project doc path) (cons (Studio.Doc::lit ": an xs:") (cons (project head kind) (cons (Studio.Doc::lit " with no schemaLocation names no document whose components could be read (XSD 1.1 Part 1, section 4.2.6.2)") (nil Bytes)))))))
+        | Option.some location => (match (resolved (project doc url) location)
+          | Result.error reason => (ctor Result.error [(List (Bytes * (Bytes * Bytes))), Bytes] (Studio.Doc::cat (cons (project doc path) (cons (Studio.Doc::lit ": ") (cons reason (nil Bytes))))))
+          | Result.ok url => (match (artifactOf sources url)
+            | Option.none => (ctor Result.error [(List (Bytes * (Bytes * Bytes))), Bytes] (Studio.Doc::cat (cons (project doc path) (cons (Studio.Doc::lit ": the schema document ") (cons url (cons (Studio.Doc::lit " is not a bound authority, so its components cannot be read; stage its binding first (XSD 1.1 Part 1, section 4.2.6.2)") (nil Bytes)))))))
+            | Option.some artifact => (ctor Result.ok [(List (Bytes * (Bytes * Bytes))), Bytes] (cons (artifact, ((project head kind), (if (isKind head "include") then (project doc target) else (attrOr head "namespace" "")))) later))))) else (ctor Result.ok [(List (Bytes * (Bytes * Bytes))), Bytes] later))))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: lookupFile,
+  parameters: [files : (List (Bytes * (Option Bytes))), path : Bytes],
+  result: (Option (Option Bytes)),
+  body: (match files
+    | List.nil => (ctor Option.none [(Option Bytes)])
+    | List.cons head rest => (if (Studio.Doc::same (first head) path) then (ctor Option.some [(Option Bytes)] (second head)) else (lookupFile rest path))),
+  recursive_argument: files,
+  executable: true
+}
+
+definition{
+  name: docPaths,
+  parameters: [docs : (List Document)],
+  result: (List Bytes),
+  body: (match docs
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (project head path) (docPaths rest))),
+  recursive_argument: docs,
+  executable: true
+}
+
+definition{
+  name: reverseDocs,
+  parameters: [docs : (List Document), done : (List Document)],
+  result: (List Document),
+  body: (match docs
+    | List.nil => done
+    | List.cons head rest => (reverseDocs rest (cons head done))),
+  recursive_argument: docs,
+  executable: true
+}
+
+definition{
+  name: appendQueue,
+  parameters: [left : (List (Bytes * (Bytes * Bytes))), right : (List (Bytes * (Bytes * Bytes)))],
+  result: (List (Bytes * (Bytes * Bytes))),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendQueue rest right))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: expectation,
+  parameters: [doc : Document, kind : Bytes, space : Bytes],
+  result: (Option Bytes),
+  body: (if (Studio.Doc::same kind (Studio.Doc::lit "root")) then (ctor Option.none [Bytes]) else (if (Studio.Doc::same (project doc target) space) then (ctor Option.none [Bytes]) else (ctor Option.some [Bytes] (Studio.Doc::cat (cons (project doc path) (cons (Studio.Doc::lit " has the target namespace ") (cons (project doc target) (cons (Studio.Doc::lit ", but the xs:") (cons kind (cons (Studio.Doc::lit " that names it requires ") (cons space (cons (if (Studio.Doc::same kind (Studio.Doc::lit "include")) then (Studio.Doc::lit "; an included document without a target namespace is not adopted into the including one (XSD 1.1 Part 1, section 4.2.3)") else (Studio.Doc::lit " (XSD 1.1 Part 1, section 4.2.6.2)")) (nil Bytes))))))))))))),
+  executable: true
+}
+
+definition{
+  name: assemble,
+  parameters: [fuel : Nat, files : (List (Bytes * (Option Bytes))), sources : (List (Bytes * Bytes)), queue : (List (Bytes * (Bytes * Bytes))), docs : (List Document), needs : (List Bytes)],
+  result: Outcome,
+  body: (match fuel
+    | Nat.zero => (ctor Outcome.refuses (Studio.Doc::lit "the schema documents import and include more documents than the bound authorities hold"))
+    | Nat.succ rest => (match queue
+      | List.nil => (match needs
+        | List.nil => (match (translateSet (reverseDocs docs (nil Document)))
+          | Result.error reason => (ctor Outcome.refuses reason)
+          | Result.ok translated => (ctor Outcome.translated (first translated) (second translated)))
+        | List.cons head more => (ctor Outcome.needs needs))
+      | List.cons head more => (let path : Bytes := (first head); (if ((Studio.Doc::memberBytes path (docPaths docs)) || (Studio.Doc::memberBytes path needs)) then (assemble rest files sources more docs needs) else (match (lookupFile files path)
+        | Option.none => (assemble rest files sources more docs (cons path needs))
+        | Option.some found => (match found
+          | Option.none => (ctor Outcome.refuses (Studio.Doc::cat (cons (Studio.Doc::lit "the schema document ") (cons path (cons (Studio.Doc::lit " is not in the repository") (nil Bytes))))))
+          | Option.some raw => (match (parseDocument path raw (urlOf sources path))
+            | Result.error reason => (ctor Outcome.refuses reason)
+            | Result.ok doc => (match (expectation doc (first (second head)) (second (second head)))
+              | Option.some reason => (ctor Outcome.refuses reason)
+              | Option.none => (match (nodes (project doc content) (project doc scope))
+                | Result.error reason => (ctor Outcome.refuses reason)
+                | Result.ok items => (match (referencesIn items doc sources)
+                  | Result.error reason => (ctor Outcome.refuses reason)
+                  | Result.ok found2 => (assemble rest files sources (appendQueue more found2) (cons doc docs) needs))))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: readSchemaSet,
+  parameters: [files : (List (Bytes * (Option Bytes))), authorities : Bytes, path : Bytes],
+  result: Outcome,
+  body: (let sources : (List (Bytes * Bytes)) := (boundSources authorities); (assemble ((prim length sources : Nat) + 2) files sources (cons (path, ((Studio.Doc::lit "root"), 0x)) (nil (Bytes * (Bytes * Bytes)))) (nil Document) (nil Bytes))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}
