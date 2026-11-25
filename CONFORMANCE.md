@@ -501,6 +501,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `TECH-COALITION-TRUST-FRAMEWORK-2025` | The Tech Coalition's principles-based framework for online child sexual exploitation and abuse (CSEA) transparency reporting: five principles and three recommended report categories. Index row S05. |  |
 | `VALVE-BOOTH-L4D-AI-SYSTEMS-2009` | Valve's own publication of the Left 4 Dead AI Director, including the Adaptive Dramatic Pacing algorithm and its population modes. Index row J09. |  |
 | `YAML-1.2.2` | The YAML 1.2 character set, block and flow syntax, scalar styles and the JSON and core schemas that a Verdant Studio YAML reader implements production by production, so YAML registries (index row D16) take the JSON Schema path. |  |
+| `WHATWG-WEBIDL-RD-2026-09` | The Web IDL language and its LL(1) grammar, in which WebGPU, WebXR and the Gamepad API define their interfaces. Index rows G05, G14 and H15. |  |
 
 ## Claims that are not conformance IDs
 
