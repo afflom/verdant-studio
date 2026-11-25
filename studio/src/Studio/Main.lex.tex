@@ -4,6 +4,7 @@
 \importmodule{LexLeanStd.Text}
 \importmodule{Studio.Doc}
 \importmodule{Studio.Ops}
+\importmodule{Studio.Engine}
 \title{Natural number addition}
 \begin{semanticmodule}
 structure{
@@ -137,7 +138,7 @@ definition{
   name: advance,
   parameters: [session : Session],
   result: (Session * LexLeanStd.Host::Request),
-  body: (match (Studio.Ops::plan (project session args) (project session seen))
+  body: (match (Studio.Engine::plan (project session args) (project session seen))
     | Studio.Ops::Plan.reads paths => (match paths
       | List.nil => (quit session (1 : UInt8) 0x (Studio.Doc::lit "internal: an empty read plan\n"))
       | List.cons head rest => ((withPending (withPhase session 1 head) rest), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text head))))

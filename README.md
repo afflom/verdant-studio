@@ -10,6 +10,7 @@ template below.
 | --- | --- |
 | `next` | Prints the next operation the model derives (today: each staged binding whose authority is not pinned yet) |
 | `stage-bindings JSONL` | Stages one PrismPM binding per line in `model/bindings/`; on merge, `operate` runs `advance`, which runs every operation `next` derives, in one pull request |
+| `stage-engine` | REQ-ENGINE-TRACKING: reads verdant-engine's latest release and, when it is new, stages its four registers (authorities, IDs, release ledger, standards lock) at the release commit with their sha256, for `advance` to ingest; once they are ingested, re-cites the admissions of the older ones. The generated `track` workflow runs it every hour |
 | `admit JSONL` | Admits requirements (`id`, `statement`, `stakeholder`, `evidence`) and constructs (`construct` with one `req`, `std` or `der` citation), one per line; refuses names already in the model |
 | `record-decision JSONL` | Records the owner's decisions verbatim (`agent`, `at`, `quote`, `requirements`) in `model/owner-decisions.json`; `publish` generates `docs/owner-decisions.md` from it |
 | `stage-encodings JSONL` | Stages one encoding per line (`name`, `schema`, `citation`) in `model/encodings/`; on merge, `advance` admits each through `admit-encoding` |

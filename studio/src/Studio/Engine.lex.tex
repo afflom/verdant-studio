@@ -1,0 +1,444 @@
+\begin{lexlean}{Studio.Engine}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Json}
+\importmodule{LexLeanStd.Text}
+\importmodule{LexLeanStd.Sha256}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Check}
+\importmodule{Studio.Ops}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Register,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: authorities, fields: []},
+    {name: ids, fields: []},
+    {name: ledger, fields: []},
+    {name: standardsLock, fields: []}
+  ]
+}
+
+definition{
+  name: registers,
+  parameters: [],
+  result: (List Register),
+  body: (cons (ctor Register.authorities) (cons (ctor Register.ids) (cons (ctor Register.ledger) (cons (ctor Register.standardsLock) (nil Register))))),
+  executable: true
+}
+
+definition{
+  name: prefixOf,
+  parameters: [register : Register],
+  result: Bytes,
+  body: (match register
+    | Register.authorities => (Studio.Doc::lit "VERDANT-ENGINE-AUTHORITIES-")
+    | Register.ids => (Studio.Doc::lit "VERDANT-ENGINE-IDS-")
+    | Register.ledger => (Studio.Doc::lit "VERDANT-ENGINE-RELEASE-LEDGER-")
+    | Register.standardsLock => (Studio.Doc::lit "VERDANT-ENGINE-STANDARDS-LOCK-")),
+  executable: true
+}
+
+definition{
+  name: pathOf,
+  parameters: [register : Register],
+  result: Bytes,
+  body: (match register
+    | Register.authorities => (Studio.Doc::lit "model/authorities.toml")
+    | Register.ids => (Studio.Doc::lit "model/ids.toml")
+    | Register.ledger => (Studio.Doc::lit "site/generated/release-ledger.json")
+    | Register.standardsLock => (Studio.Doc::lit "standards.lock")),
+  executable: true
+}
+
+definition{
+  name: nameOf,
+  parameters: [register : Register],
+  result: Bytes,
+  body: (match register
+    | Register.authorities => (Studio.Doc::lit "Verdant Engine authority register")
+    | Register.ids => (Studio.Doc::lit "Verdant Engine conformance ID register")
+    | Register.ledger => (Studio.Doc::lit "Verdant Engine release ledger")
+    | Register.standardsLock => (Studio.Doc::lit "Verdant Engine standards lock")),
+  executable: true
+}
+
+definition{
+  name: mediaOf,
+  parameters: [register : Register],
+  result: Bytes,
+  body: (match register
+    | Register.authorities => (Studio.Doc::lit "application/toml")
+    | Register.ids => (Studio.Doc::lit "application/toml")
+    | Register.ledger => (Studio.Doc::lit "application/json")
+    | Register.standardsLock => (Studio.Doc::lit "application/json")),
+  executable: true
+}
+
+definition{
+  name: statementOf,
+  parameters: [register : Register],
+  result: Bytes,
+  body: (match register
+    | Register.authorities => (Studio.Doc::lit "The engine's imported authorities, each catalog pinned by sha256 and mapped to the IDs that realize it (realized_by).")
+    | Register.ids => (Studio.Doc::lit "The engine's conformance IDs, each with level, suite, refusal and statement. Every engine capability Verdant Studio uses is cited by one of these IDs.")
+    | Register.ledger => (Studio.Doc::lit "The engine's verdant/release-ledger/1: its current SemVer version, release epoch and change history.")
+    | Register.standardsLock => (Studio.Doc::lit "The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them.")),
+  executable: true
+}
+
+definition{
+  name: idOf,
+  parameters: [register : Register, version : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (prefixOf register) (cons version (nil Bytes)))),
+  executable: true
+}
+
+definition{
+  name: idsAt,
+  parameters: [kinds : (List Register), version : Bytes],
+  result: (List Bytes),
+  body: (match kinds
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (idOf head version) (idsAt rest version))),
+  recursive_argument: kinds,
+  executable: true
+}
+
+definition{
+  name: engineDir,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/engine"),
+  executable: true
+}
+
+definition{
+  name: releasePath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/engine/release.json"),
+  executable: true
+}
+
+definition{
+  name: refPath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/engine/ref.json"),
+  executable: true
+}
+
+definition{
+  name: tagPath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/engine/tag.json"),
+  executable: true
+}
+
+definition{
+  name: datePath,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/engine/date"),
+  executable: true
+}
+
+definition{
+  name: childOut,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/verdant_studio.child.out"),
+  executable: true
+}
+
+definition{
+  name: api,
+  parameters: [rest : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "https://api.github.com/repos/afflom/verdant-engine/") (cons rest (nil Bytes)))),
+  executable: true
+}
+
+definition{
+  name: download,
+  parameters: [path : Bytes, url : Bytes],
+  result: Studio.Ops::Plan,
+  body: (ctor Studio.Ops::Plan.run (Studio.Doc::lit "curl") (cons (Studio.Doc::lit "-fsSL") (cons (Studio.Doc::lit "--create-dirs") (cons (Studio.Doc::lit "-o") (cons path (cons url (nil Bytes)))))) path),
+  executable: true
+}
+
+definition{
+  name: artifactOf,
+  parameters: [register : Register],
+  result: Bytes,
+  body: (Studio.Ops::join (engineDir) (Studio.Ops::basename (pathOf register))),
+  executable: true
+}
+
+definition{
+  name: rawUrl,
+  parameters: [register : Register, commit : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "https://raw.githubusercontent.com/afflom/verdant-engine/") (cons commit (cons (Studio.Doc::lit "/") (cons (pathOf register) (nil Bytes)))))),
+  executable: true
+}
+
+definition{
+  name: artifactsOf,
+  parameters: [kinds : (List Register)],
+  result: (List Bytes),
+  body: (match kinds
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (artifactOf head) (artifactsOf rest))),
+  recursive_argument: kinds,
+  executable: true
+}
+
+definition{
+  name: bindingPath,
+  parameters: [entry : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "model/bindings/") (cons entry (cons (Studio.Doc::lit ".json") (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: bindingPaths,
+  parameters: [entries : (List Bytes)],
+  result: (List Bytes),
+  body: (match entries
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (bindingPath head) (bindingPaths rest))),
+  recursive_argument: entries,
+  executable: true
+}
+
+definition{
+  name: versionOf,
+  parameters: [tag : Bytes],
+  result: Bytes,
+  body: (if (LexLeanStd.Text::startsWith tag (Studio.Doc::lit "v")) then (LexLeanStd.Text::sliceOr tag 1 (prim subtract (prim length tag : Nat) 1 : Nat)) else tag),
+  executable: true
+}
+
+definition{
+  name: pair,
+  parameters: [key : Bytes, value : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (LexLeanStd.Json::quoted key) (cons (Studio.Doc::lit ":") (cons (LexLeanStd.Json::quoted value) (nil Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: bindingLine,
+  parameters: [register : Register, tag : Bytes, commit : Bytes, digest : Bytes, date : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "{\"oracle_ids\":[],\"realized_by\":[],") (cons (pair (Studio.Doc::lit "retrieval_date") date) (cons (Studio.Doc::lit ",\"schema\":\"prismpm/authority-binding/1\",\"signature_trust_root\":null,\"source_role\":\"normative\",\"supersession\":\"explicit-lock-update-only\",") (cons (pair (Studio.Doc::lit "id") (idOf register (versionOf tag))) (cons (Studio.Doc::lit ",") (cons (pair (Studio.Doc::lit "name") (nameOf register)) (cons (Studio.Doc::lit ",\"issuer\":\"afflom\",") (cons (pair (Studio.Doc::lit "edition") tag) (cons (Studio.Doc::lit ",") (cons (pair (Studio.Doc::lit "canonical_id") (Studio.Doc::cat (cons (Studio.Doc::lit "https://github.com/afflom/verdant-engine/releases/tag/") (cons tag (nil Bytes))))) (cons (Studio.Doc::lit ",") (cons (pair (Studio.Doc::lit "statement") (statementOf register)) (cons (Studio.Doc::lit ",\"source\":{\"license\":\"MIT OR Apache-2.0\",") (cons (pair (Studio.Doc::lit "media_type") (mediaOf register)) (cons (Studio.Doc::lit ",\"redistribution\":\"redistributable\",") (cons (pair (Studio.Doc::lit "revision") commit) (cons (Studio.Doc::lit ",") (cons (pair (Studio.Doc::lit "sha256") digest) (cons (Studio.Doc::lit ",\"signature\":\"none\",") (cons (pair (Studio.Doc::lit "url") (rawUrl register commit)) (cons (Studio.Doc::lit "}}\n") (nil Bytes))))))))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: bindingWrites,
+  parameters: [seen : Studio.Ops::Seen, kinds : (List Register), tag : Bytes, commit : Bytes, date : Bytes],
+  result: (List (Bytes * Bytes)),
+  body: (match kinds
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (cons ((bindingPath (idOf head (versionOf tag))), (bindingLine head tag commit (LexLeanStd.Sha256::sha256Hex (Studio.Ops::contents seen (artifactOf head))) date)) (bindingWrites seen rest tag commit date))),
+  recursive_argument: kinds,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: firstUnfetched,
+  parameters: [seen : Studio.Ops::Seen, kinds : (List Register)],
+  result: (Option Register),
+  body: (match kinds
+    | List.nil => (ctor Option.none [Register])
+    | List.cons head rest => (if (Studio.Doc::memberBytes (artifactOf head) (project seen ran)) then (firstUnfetched seen rest) else (ctor Option.some [Register] head))),
+  recursive_argument: kinds,
+  executable: true
+}
+
+definition{
+  name: retarget,
+  parameters: [kinds : (List Register), cited : Bytes, version : Bytes],
+  result: Bytes,
+  body: (match kinds
+    | List.nil => cited
+    | List.cons head rest => (if (LexLeanStd.Text::startsWith cited (prefixOf head)) then (idOf head version) else (retarget rest cited version))),
+  recursive_argument: kinds,
+  executable: true
+}
+
+definition{
+  name: reciteValue,
+  parameters: [value : LexLeanStd.Json::Json, version : Bytes],
+  result: LexLeanStd.Json::Json,
+  body: (match value
+    | LexLeanStd.Json::Json.JStr cited => (ctor LexLeanStd.Json::Json.JStr (retarget (registers) cited version))
+    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
+    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
+    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
+    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj inner)
+    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
+    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)
+    | LexLeanStd.Json::Json.JMember key inner rest => (ctor LexLeanStd.Json::Json.JMember key inner rest)),
+  executable: true
+}
+
+definition{
+  name: reciteStd,
+  parameters: [spine : LexLeanStd.Json::Json, version : Bytes],
+  result: LexLeanStd.Json::Json,
+  body: (match spine
+    | LexLeanStd.Json::Json.JMember name value rest => (if (Studio.Doc::same name (Studio.Doc::lit "authority")) then (ctor LexLeanStd.Json::Json.JMember name (reciteValue value version) (reciteStd rest version)) else (ctor LexLeanStd.Json::Json.JMember name value (reciteStd rest version)))
+    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj (reciteStd inner version))
+    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
+    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
+    | LexLeanStd.Json::Json.JStr value => (ctor LexLeanStd.Json::Json.JStr value)
+    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
+    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
+    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)),
+  recursive_argument: spine,
+  executable: true
+}
+
+definition{
+  name: reciteTop,
+  parameters: [spine : LexLeanStd.Json::Json, version : Bytes],
+  result: LexLeanStd.Json::Json,
+  body: (match spine
+    | LexLeanStd.Json::Json.JMember name value rest => (if (Studio.Doc::same name (Studio.Doc::lit "std")) then (ctor LexLeanStd.Json::Json.JMember name (reciteStd value version) (reciteTop rest version)) else (ctor LexLeanStd.Json::Json.JMember name value (reciteTop rest version)))
+    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj (reciteTop inner version))
+    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
+    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
+    | LexLeanStd.Json::Json.JStr value => (ctor LexLeanStd.Json::Json.JStr value)
+    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
+    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
+    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)),
+  recursive_argument: spine,
+  executable: true
+}
+
+definition{
+  name: reciteAll,
+  parameters: [items : (List LexLeanStd.Json::Json), version : Bytes],
+  result: (List LexLeanStd.Json::Json),
+  body: (match items
+    | List.nil => (nil LexLeanStd.Json::Json)
+    | List.cons head rest => (cons (reciteTop head version) (reciteAll rest version))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: citedOf,
+  parameters: [items : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+      | Option.none => (citedOf rest)
+      | Option.some std => (cons (Studio.Doc::str std (Studio.Doc::lit "authority")) (citedOf rest)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: planRecite,
+  parameters: [seen : Studio.Ops::Seen, tag : Bytes],
+  result: Studio.Ops::Plan,
+  body: (let items : (List LexLeanStd.Json::Json) := (Studio.Ops::arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let moved : (List LexLeanStd.Json::Json) := (reciteAll items (versionOf tag)); (if (Studio.Ops::sameList (citedOf items) (citedOf moved)) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "verdant-engine ") (cons tag (cons (Studio.Doc::lit " is pinned, and every admission of its registers cites it\n") (nil Bytes)))))) else (ctor Studio.Ops::Plan.done (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (Studio.Ops::jsonItems moved)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "re-cited the admissions of the verdant-engine registers at ") (cons tag (cons 0x0a (nil Bytes))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planFetch,
+  parameters: [seen : Studio.Ops::Seen, tag : Bytes, commit : Bytes],
+  result: Studio.Ops::Plan,
+  body: (if ((prim length commit : Nat) =? 0) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "waiting engine: the release tag ") (cons tag (cons (Studio.Doc::lit " names no commit\n") (nil Bytes)))))) else (match (firstUnfetched seen (registers))
+    | Option.some register => (download (artifactOf register) (rawUrl register commit))
+    | Option.none => (if (Studio.Ops::negate (Studio.Doc::memberBytes (datePath) (project seen ran))) then (ctor Studio.Ops::Plan.run (Studio.Doc::lit "date") (cons (Studio.Doc::lit "-u") (cons (Studio.Doc::cat (cons 0x2b2546 (nil Bytes))) (nil Bytes))) (datePath)) else (match (Studio.Ops::missing seen (cons (childOut) (artifactsOf (registers))))
+      | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
+      | List.nil => (ctor Studio.Ops::Plan.done (bindingWrites seen (registers) tag commit (LexLeanStd.Text::trim (Studio.Ops::contents seen (childOut)))) (Studio.Doc::cat (cons (Studio.Doc::lit "staged the verdant-engine ") (cons tag (cons (Studio.Doc::lit " bindings at ") (cons commit (cons 0x0a (nil Bytes)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planPin,
+  parameters: [seen : Studio.Ops::Seen, tag : Bytes],
+  result: Studio.Ops::Plan,
+  body: (if (Studio.Ops::negate (Studio.Doc::memberBytes (refPath) (project seen ran))) then (download (refPath) (api (Studio.Doc::cat (cons (Studio.Doc::lit "git/ref/tags/") (cons tag (nil Bytes)))))) else (match (Studio.Ops::missing seen (cons (refPath) (nil Bytes)))
+    | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
+    | List.nil => (let object : LexLeanStd.Json::Json := (match (Studio.Doc::field (match (Studio.Ops::jsonOf seen (refPath))
+          | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+          | Option.some found => found) (Studio.Doc::lit "object"))
+        | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+        | Option.some found => found); (if (Studio.Doc::same (Studio.Doc::str object (Studio.Doc::lit "type")) (Studio.Doc::lit "tag")) then (if (Studio.Ops::negate (Studio.Doc::memberBytes (tagPath) (project seen ran))) then (download (tagPath) (api (Studio.Doc::cat (cons (Studio.Doc::lit "git/tags/") (cons (Studio.Doc::str object (Studio.Doc::lit "sha")) (nil Bytes)))))) else (match (Studio.Ops::missing seen (cons (tagPath) (nil Bytes)))
+          | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
+          | List.nil => (planFetch seen tag (match (Studio.Doc::field (match (Studio.Ops::jsonOf seen (tagPath))
+              | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+              | Option.some found => found) (Studio.Doc::lit "object"))
+            | Option.none => 0x
+            | Option.some found => (Studio.Doc::str found (Studio.Doc::lit "sha")))))) else (planFetch seen tag (Studio.Doc::str object (Studio.Doc::lit "sha"))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planStageEngine,
+  parameters: [seen : Studio.Ops::Seen],
+  result: Studio.Ops::Plan,
+  body: (if (Studio.Ops::negate (Studio.Doc::memberBytes (releasePath) (project seen ran))) then (download (releasePath) (api (Studio.Doc::lit "releases/latest"))) else (match (Studio.Ops::missing seen (cons (releasePath) (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/admissions.json") (nil Bytes)))))
+    | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
+    | List.nil => (let tag : Bytes := (match (Studio.Ops::jsonOf seen (releasePath))
+        | Option.none => 0x
+        | Option.some release => (Studio.Doc::str release (Studio.Doc::lit "tag_name"))); (if ((prim length tag : Nat) =? 0) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "waiting engine: the latest verdant-engine release names no tag\n")) else (let entries : (List Bytes) := (idsAt (registers) (versionOf tag)); (if ((prim length (Studio.Ops::absent entries (Studio.Check::tomlIds (Studio.Ops::contents seen (Studio.Doc::lit "model/authorities.toml")))) : Nat) =? 0) then (planRecite seen tag) else (match (Studio.Ops::missing seen (bindingPaths entries))
+      | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
+      | List.nil => (if (Studio.Ops::present seen (bindingPath (idOf (ctor Register.ids) (versionOf tag)))) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "waiting ingest: the verdant-engine ") (cons tag (cons (Studio.Doc::lit " bindings are staged, and advance ingests them\n") (nil Bytes)))))) else (planPin seen tag))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: trackWorkflow,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "# Generated by `verdant-studio publish` from studio/src/Studio/Engine.lex.tex. Do not edit.\n# REQ-ENGINE-TRACKING: Verdant Studio tracks Verdant Engine releases. Every hour this runs\n# operate stage-engine, which stages the latest release's four registers when they are new\n# (advance then ingests them by sha256), and re-cites their admissions once they are ingested.\nname: track\n\non:\n  schedule:\n    - cron: '17 * * * *'\n  workflow_dispatch:\n\npermissions:\n  contents: read\n  actions: write\n\njobs:\n  track:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n      - env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh workflow run operate.yml --repo \"$GITHUB_REPOSITORY\" --ref main -f args=stage-engine\n"),
+  executable: true
+}
+
+definition{
+  name: withTrack,
+  parameters: [planned : Studio.Ops::Plan],
+  result: Studio.Ops::Plan,
+  body: (match planned
+    | Studio.Ops::Plan.done writes message => (ctor Studio.Ops::Plan.done (cons ((Studio.Doc::lit ".github/workflows/track.yml"), (trackWorkflow)) writes) message)
+    | Studio.Ops::Plan.reads paths => (ctor Studio.Ops::Plan.reads paths)
+    | Studio.Ops::Plan.lists paths => (ctor Studio.Ops::Plan.lists paths)
+    | Studio.Ops::Plan.run program arguments tag => (ctor Studio.Ops::Plan.run program arguments tag)
+    | Studio.Ops::Plan.refuse reason => (ctor Studio.Ops::Plan.refuse reason)),
+  executable: true
+}
+
+definition{
+  name: plan,
+  parameters: [args : (List Bytes), seen : Studio.Ops::Seen],
+  result: Studio.Ops::Plan,
+  body: (match args
+    | List.nil => (Studio.Ops::plan args seen)
+    | List.cons op rest => (if (Studio.Doc::same op (Studio.Doc::lit "stage-engine")) then (Studio.Ops::guarded (planStageEngine seen)) else (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (withTrack (Studio.Ops::plan args seen)) else (Studio.Ops::plan args seen)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}
