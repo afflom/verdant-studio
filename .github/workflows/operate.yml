@@ -113,6 +113,12 @@ jobs:
             echo
             echo "Exported again with Lean as $(basename studio/.lexlean/production/*/). The studio check replays it, then runs check, build and publish."
             echo
+            echo "Lean phases by wall time in seconds, longest first (the export fails at 240 of the 300 s limit):"
+            echo
+            echo '```'
+            head -n 8 target/export.log.phases || true
+            echo '```'
+            echo
             echo '```'
             git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md
             echo '```'
