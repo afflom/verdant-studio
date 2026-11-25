@@ -414,3 +414,4 @@ Each construct and the citation that admits it.
 - `Catalog.VideoGameCoreMetadata`: std LEE-TENNIS-CLARKE-CARPENTER-VGMS-2013 row Y04
 - `Catalog.XboxRequirement`: std MS-XBOX-REQUIREMENTS-CERT-TESTED-16.10 row P02
 - `Catalog.CvssV4`: std FIRST-CVSS-4.0 row T10
+- `Catalog.OpenTrackIo`: std SMPTE-OPENTRACKIO-SCHEMA row F03

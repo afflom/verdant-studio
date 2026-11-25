@@ -1,0 +1,475 @@
+\begin{lexlean}{Catalog.OpenTrackIo}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: OpenTrackIoStaticDuration,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: num, type: Nat},
+    {name: denom, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticCameraCaptureFrameRate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: num, type: Nat},
+    {name: denom, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticCameraActiveSensorPhysicalDimensions,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: height, type: (Int * Int)},
+    {name: width, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticCameraActiveSensorResolution,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: height, type: Nat},
+    {name: width, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticCameraAnamorphicSqueeze,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: num, type: Nat},
+    {name: denom, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticCamera,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: captureFrameRate, type: (Option OpenTrackIoStaticCameraCaptureFrameRate)},
+    {name: activeSensorPhysicalDimensions, type: (Option OpenTrackIoStaticCameraActiveSensorPhysicalDimensions)},
+    {name: activeSensorResolution, type: (Option OpenTrackIoStaticCameraActiveSensorResolution)},
+    {name: make, type: (Option Bytes)},
+    {name: model, type: (Option Bytes)},
+    {name: serialNumber, type: (Option Bytes)},
+    {name: firmwareVersion, type: (Option Bytes)},
+    {name: label, type: (Option Bytes)},
+    {name: anamorphicSqueeze, type: (Option OpenTrackIoStaticCameraAnamorphicSqueeze)},
+    {name: isoSpeed, type: (Option Nat)},
+    {name: fdlLink, type: (Option Bytes)},
+    {name: shutterAngle, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticLens,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: distortionOverscanMax, type: (Option (Int * Int))},
+    {name: undistortionOverscanMax, type: (Option (Int * Int))},
+    {name: make, type: (Option Bytes)},
+    {name: model, type: (Option Bytes)},
+    {name: serialNumber, type: (Option Bytes)},
+    {name: firmwareVersion, type: (Option Bytes)},
+    {name: nominalFocalLength, type: (Option (Int * Int))},
+    {name: calibrationHistory, type: (Option (List Bytes))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStaticTracker,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: make, type: (Option Bytes)},
+    {name: model, type: (Option Bytes)},
+    {name: serialNumber, type: (Option Bytes)},
+    {name: firmwareVersion, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoStatic,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: duration, type: (Option OpenTrackIoStaticDuration)},
+    {name: camera, type: (Option OpenTrackIoStaticCamera)},
+    {name: lens, type: (Option OpenTrackIoStaticLens)},
+    {name: tracker, type: (Option OpenTrackIoStaticTracker)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTracker,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: notes, type: (Option Bytes)},
+    {name: recording, type: (Option Bool)},
+    {name: slate, type: (Option Bytes)},
+    {name: status, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: OpenTrackIoTimingMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: internal, fields: []},
+    {name: external, fields: []}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingRecordedTimestamp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: seconds, type: Nat},
+    {name: nanoseconds, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSampleRate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: num, type: Nat},
+    {name: denom, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSampleTimestamp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: seconds, type: Nat},
+    {name: nanoseconds, type: Nat}
+  ]
+}
+
+inductive{
+  name: OpenTrackIoTimingSynchronizationSource,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: genlock, fields: []},
+    {name: videoIn, fields: []},
+    {name: ptp, fields: []},
+    {name: ntp, fields: []}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSynchronizationFrequency,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: num, type: Nat},
+    {name: denom, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSynchronizationOffsets,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: translation, type: (Option (Int * Int))},
+    {name: rotation, type: (Option (Int * Int))},
+    {name: lensEncoders, type: (Option (Int * Int))}
+  ]
+}
+
+inductive{
+  name: OpenTrackIoTimingSynchronizationPtpProfile,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iEEEStd15882019, fields: []},
+    {name: iEEEStd8021AS2020, fields: []},
+    {name: sMPTEST205922021, fields: []}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSynchronizationPtpLeaderPriorities,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: priority1, type: Nat},
+    {name: priority2, type: Nat}
+  ]
+}
+
+inductive{
+  name: OpenTrackIoTimingSynchronizationPtpLeaderTimeSource,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gNSS, fields: []},
+    {name: atomicClock, fields: []},
+    {name: nTP, fields: []}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSynchronizationPtp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: profile, type: OpenTrackIoTimingSynchronizationPtpProfile},
+    {name: domain, type: Nat},
+    {name: leaderIdentity, type: Bytes},
+    {name: leaderPriorities, type: OpenTrackIoTimingSynchronizationPtpLeaderPriorities},
+    {name: leaderAccuracy, type: (Int * Int)},
+    {name: leaderTimeSource, type: (Option OpenTrackIoTimingSynchronizationPtpLeaderTimeSource)},
+    {name: meanPathDelay, type: (Int * Int)},
+    {name: vlan, type: (Option Nat)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingSynchronization,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: locked, type: Bool},
+    {name: source, type: OpenTrackIoTimingSynchronizationSource},
+    {name: frequency, type: (Option OpenTrackIoTimingSynchronizationFrequency)},
+    {name: offsets, type: (Option OpenTrackIoTimingSynchronizationOffsets)},
+    {name: present, type: (Option Bool)},
+    {name: ptp, type: (Option OpenTrackIoTimingSynchronizationPtp)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingTimecodeFrameRate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: num, type: Nat},
+    {name: denom, type: Nat}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTimingTimecode,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: hours, type: Nat},
+    {name: minutes, type: Nat},
+    {name: seconds, type: Nat},
+    {name: frames, type: Nat},
+    {name: frameRate, type: OpenTrackIoTimingTimecodeFrameRate},
+    {name: subFrame, type: (Option Nat)},
+    {name: dropFrame, type: (Option Bool)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTiming,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mode, type: (Option OpenTrackIoTimingMode)},
+    {name: recordedTimestamp, type: (Option OpenTrackIoTimingRecordedTimestamp)},
+    {name: sampleRate, type: (Option OpenTrackIoTimingSampleRate)},
+    {name: sampleTimestamp, type: (Option OpenTrackIoTimingSampleTimestamp)},
+    {name: sequenceNumber, type: (Option Nat)},
+    {name: synchronization, type: (Option OpenTrackIoTimingSynchronization)},
+    {name: timecode, type: (Option OpenTrackIoTimingTimecode)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLensDistortionItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: model, type: (Option Bytes)},
+    {name: radial, type: (List (Int * Int))},
+    {name: tangential, type: (Option (List (Int * Int)))},
+    {name: overscan, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLensDistortionOffset,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: (Int * Int)},
+    {name: y, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLensEncoders,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: focus, type: (Option (Int * Int))},
+    {name: iris, type: (Option (Int * Int))},
+    {name: zoom, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLensExposureFalloff,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: a1, type: (Int * Int)},
+    {name: a2, type: (Option (Int * Int))},
+    {name: a3, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLensProjectionOffset,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: (Int * Int)},
+    {name: y, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLensRawEncoders,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: focus, type: (Option Nat)},
+    {name: iris, type: (Option Nat)},
+    {name: zoom, type: (Option Nat)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoLens,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: custom, type: (Option (List (Int * Int)))},
+    {name: distortion, type: (Option (List OpenTrackIoLensDistortionItem))},
+    {name: distortionOffset, type: (Option OpenTrackIoLensDistortionOffset)},
+    {name: encoders, type: (Option OpenTrackIoLensEncoders)},
+    {name: entrancePupilOffset, type: (Option (Int * Int))},
+    {name: exposureFalloff, type: (Option OpenTrackIoLensExposureFalloff)},
+    {name: fStop, type: (Option (Int * Int))},
+    {name: pinholeFocalLength, type: (Option (Int * Int))},
+    {name: focusDistance, type: (Option (Int * Int))},
+    {name: projectionOffset, type: (Option OpenTrackIoLensProjectionOffset)},
+    {name: rawEncoders, type: (Option OpenTrackIoLensRawEncoders)},
+    {name: tStop, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoProtocol,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: version, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoGlobalStage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: e, type: (Int * Int)},
+    {name: n, type: (Int * Int)},
+    {name: u, type: (Int * Int)},
+    {name: lat0, type: (Int * Int)},
+    {name: lon0, type: (Int * Int)},
+    {name: h0, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTransformsItemTranslation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: (Option (Int * Int))},
+    {name: y, type: (Option (Int * Int))},
+    {name: z, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTransformsItemRotation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: pan, type: (Option (Int * Int))},
+    {name: tilt, type: (Option (Int * Int))},
+    {name: roll, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTransformsItemScale,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: (Option (Int * Int))},
+    {name: y, type: (Option (Int * Int))},
+    {name: z, type: (Option (Int * Int))}
+  ]
+}
+
+structure{
+  name: OpenTrackIoTransformsItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: translation, type: OpenTrackIoTransformsItemTranslation},
+    {name: rotation, type: OpenTrackIoTransformsItemRotation},
+    {name: scale, type: (Option OpenTrackIoTransformsItemScale)},
+    {name: id, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: OpenTrackIo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: static, type: (Option OpenTrackIoStatic)},
+    {name: tracker, type: (Option OpenTrackIoTracker)},
+    {name: timing, type: (Option OpenTrackIoTiming)},
+    {name: lens, type: (Option OpenTrackIoLens)},
+    {name: protocol, type: (Option OpenTrackIoProtocol)},
+    {name: sampleId, type: (Option Bytes)},
+    {name: sourceId, type: (Option Bytes)},
+    {name: sourceNumber, type: (Option Nat)},
+    {name: relatedSampleIds, type: (Option (List Bytes))},
+    {name: globalStage, type: (Option OpenTrackIoGlobalStage)},
+    {name: transforms, type: (Option (List OpenTrackIoTransformsItem))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
