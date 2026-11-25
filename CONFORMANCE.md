@@ -511,6 +511,10 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-WEBREF-IDL-WEBXR-A0114B8` | The Web IDL fragments of the WebXR Device API, extracted by Reffy into W3C webref (Source: WebXR Device API (https://www.w3.org/TR/webxr/)). Read by read-webidl for index rows G14. |  |
 | `LOC-METS-XLINK-2` | The XLink attribute declarations and attribute groups (simpleLink, extendedLink, locatorLink, arcLink, resourceLink) that the METS 1.12.1 schema imports from its schemaLocation. Index row Y02. |  |
 | `OWASP-MASVS-2.1.0` | The official MASVS 2.1.0 YAML release asset: the control groups and each control with its identifier and statement. Index row T02. |  |
+| `VERDANT-ENGINE-AUTHORITIES-2.22.4` | The engine's imported authorities, each catalog pinned by sha256 and mapped to the IDs that realize it (realized_by). |  |
+| `VERDANT-ENGINE-IDS-2.22.4` | The engine's conformance IDs, each with level, suite, refusal and statement. Every engine capability Verdant Studio uses is cited by one of these IDs. |  |
+| `VERDANT-ENGINE-RELEASE-LEDGER-2.22.4` | The engine's verdant/release-ledger/1: its current SemVer version, release epoch and change history. |  |
+| `VERDANT-ENGINE-STANDARDS-LOCK-2.22.4` | The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them. |  |
 
 ## Claims that are not conformance IDs
 

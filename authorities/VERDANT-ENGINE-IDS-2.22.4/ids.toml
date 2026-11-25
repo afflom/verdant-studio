@@ -1,0 +1,1012 @@
+# model/ids.toml --- the conformance ID register.
+#
+# Every ID this repository claims, in one place, so that nothing is referenced
+# without being defined. `CONFORMANCE.md` is generated from this file.
+
+spec = "template/1"
+
+[[id]]
+id = "VE-01"
+level = "build"
+suite = "engine"
+failure = "StreamingError"
+negative = "VE-01"
+statement = "Progressive multi-LOD UORC scene streams advance monotonically to lossless SHA-256 chain-verified resolution and refuse regressive LODs or corrupted UORC frames"
+
+[[id]]
+id = "VE-02"
+level = "build"
+suite = "engine"
+failure = "TensorComputeError"
+negative = "VE-02"
+statement = "Exact Laurent and tropical uor-matmul tensor contractions and portable 16x16 software tile PBR rasterization execute deterministically and refuse mismatched dimensions or non-finite inputs"
+
+[[id]]
+id = "VE-03"
+level = "build"
+suite = "engine"
+statement = "Archetype ECS world and surface-area-heuristic BVH execute deterministic raycasts and frustum culling across arbitrary 3D scenes"
+
+[[id]]
+id = "VE-04"
+level = "build"
+suite = "engine"
+failure = "AssetValidationError"
+negative = "VE-04"
+statement = "Procedural meshes, morph targets, and PBR scenes export to binary glTF 2.0 validated by the Khronos gltf oracle and refuse degenerate geometry"
+
+[[id]]
+id = "VE-05"
+level = "build"
+suite = "engine"
+failure = "ShaderValidationError"
+negative = "VE-05"
+statement = "PBR, terrain, fluid, and sky portable WGSL shader modules pass W3C naga validation and invalid shader sources are refused"
+
+[[id]]
+id = "VE-06"
+level = "build"
+suite = "engine"
+failure = "PhysicsStepError"
+negative = "VE-06"
+statement = "Symplectic Euler rigid bodies, capsule controllers, and arc-length kinematic spline movers step deterministically and refuse invalid substeps or non-finite timesteps"
+
+[[id]]
+id = "VE-07"
+level = "build"
+suite = "engine"
+statement = "Spatial audio listener and modal bar emitters synthesize deterministic stereo buffers with distance attenuation and Sabine RT60 reverberation"
+
+[[id]]
+id = "VE-08"
+level = "build"
+suite = "engine"
+failure = "EngineConfigError"
+negative = "VE-08"
+statement = "Browser worker job graphs and frame-budget profilers validate acyclic schedules and refuse cyclic dependencies or invalid engine configurations"
+
+[[id]]
+id = "VE-09"
+level = "build"
+suite = "engine"
+failure = "SnapshotCodecError"
+negative = "VE-09"
+statement = "Binary IEEE-754 world snapshots with SHA-256 trailers round-trip bit-identically and refuse truncated or tampered payloads"
+
+[[id]]
+id = "VE-10"
+level = "build"
+suite = "engine"
+failure = "ComputeError"
+negative = "VE-10"
+statement = "The compiled Core-Wasm engine verifier proves monotonic UORC streaming and exact tensor kernel bounds in Lean without Classical.choice and answers queries deterministically"
+
+[[id]]
+id = "VE-11"
+level = "build"
+suite = "engine"
+failure = "AnimationError"
+negative = "VE-11"
+statement = "Skeletal joint hierarchies, normalized four-joint linear-blend skinning weights, and clamped keyframe clips deform procedural meshes deterministically and refuse cyclic joints or unnormalized weights"
+
+[[id]]
+id = "VE-12"
+level = "build"
+suite = "engine"
+failure = "RenderGraphError"
+negative = "VE-12"
+statement = "Four-cascade shadow frustum splits, GGX image-based lighting mip chains, five-pass acyclic render barrier graphs, and skinned shadow WGSL shaders validate cleanly and refuse invalid frusta or cyclic pass dependencies"
+
+[[id]]
+id = "VE-13"
+level = "build"
+suite = "engine"
+failure = "CollisionError"
+negative = "VE-13"
+statement = "Bounded 3D GJK convex hull collision detection, Baumgarte contact stabilization, and Coulomb friction cones resolve rigid-body contacts deterministically and refuse degenerate hulls"
+
+[[id]]
+id = "VE-14"
+level = "build"
+suite = "engine"
+failure = "NavigationError"
+negative = "VE-14"
+statement = "Slope-filtered terrain navigation meshes and admissible A-star corridor pathfinding steer autonomous agents around obstacles and refuse unwalkable endpoints or disconnected goals"
+
+[[id]]
+id = "VE-15"
+level = "build"
+suite = "engine"
+failure = "WasmBridgeError"
+negative = "VE-15"
+statement = "The WebAssembly worker runtime bridge steps deterministic 3D physics, renders portable tensor framebuffers, encodes and restores SHA-256 VDNT world snapshots within Prism envelope bounds, and refuses invalid LOD ranks, ring overflows, or tampered payloads"
+
+[[id]]
+id = "VE-16"
+level = "build"
+suite = "engine"
+failure = "CliCommandError"
+negative = "VE-16"
+statement = "The verdant CLI packs multi-LOD 3D scenes into validated progressive UORC streams, binary glTF 2.0, and SHA-256 VDNT snapshots, verifies portable WGSL shaders and headless benchmarks, and refuses invalid commands or corrupted assets"
+
+[[id]]
+id = "VE-17"
+level = "build"
+suite = "engine"
+statement = "Unified verdant-tensor semiring contractions execute linear transforms, four-joint skinning, Delassus effective-mass operators, tropical min-plus navmesh shortest paths, and Hadamard FDN audio feedback deterministically and refuse mismatched dimensions"
+
+[[id]]
+id = "VE-18"
+level = "build"
+suite = "engine"
+statement = "Portable UORC progressive streams decode natively via uorc_decompress and uor_matmul coded_gemm contracts Grid geometry, Packed animation, and Runs IBL matrices without float expansion while refusing corrupted archives"
+
+[[id]]
+id = "VE-19"
+level = "build"
+suite = "engine"
+statement = "Khronos glTF 2.0 scene import, glb-to-UORC transcoding, XPBD articulated joints, swept capsule and four-wheel raycast vehicle controllers, and BVH acoustic occlusion execute deterministically and refuse invalid joint bodies"
+
+[[id]]
+id = "VE-20"
+level = "build"
+suite = "engine"
+statement = "SHA-256-chained deterministic input journals, bounded 64-frame rollback resimulation sessions, and stateless XOR-residual delta UORC snapshots synchronize game state bit-identically and refuse regressive or out-of-window frames"
+
+[[id]]
+id = "VE-21"
+level = "build"
+suite = "engine"
+failure = "UiComplianceError"
+negative = "VE-21"
+statement = "Formal 2D and diegetic 3D UI trees solve via tropical and linear semiring contractions with proved 48px touch targets, WCAG 2.2 AA contrast, and focus reachability while refusing non-compliant widgets"
+
+[[id]]
+id = "VE-22"
+level = "build"
+suite = "engine"
+failure = "CyberneticError"
+negative = "VE-22"
+statement = "Second-order cybernetic LIF state-space observers, embedded coded_gemm SLM intent routers, and denial-wins browser container capability gates execute deterministically and refuse denied organs or invalid prompts"
+
+[[id]]
+id = "VE-23"
+level = "build"
+suite = "engine"
+statement = "World-space SceneWorld hierarchies and imported Khronos GLB assets pack directly into zero-copy WebAssembly vertex, normal, color, and index buffers shared across WebGL2 and 16x16 software tile rasterization"
+
+[[id]]
+id = "VE-24"
+level = "build"
+suite = "engine"
+failure = "StitchCustodyError"
+negative = "VE-24"
+statement = "Prism ID signed input journal batches, 2-of-3 SHA-256 XOR Stitch erasure fragments, and survival-entropy peer trackers recover exact UORC world state and refuse tampered shards, duplicate indices, or forged signatures"
+
+[[id]]
+id = "VE-25"
+level = "build"
+suite = "engine"
+statement = "Two-level entity TLAS and triangle MeshBlas acceleration structures execute continuous swept-capsule collide-and-slide, stair auto-stepping, and acute two-plane crease projection with zero wall penetration"
+
+[[id]]
+id = "VE-26"
+level = "build"
+suite = "engine"
+failure = "CameraRigError"
+negative = "VE-26"
+statement = "Lawful spring-arm and first-person camera rigs sweep an exact near-frustum diagonal guard sphere against TwoLevelBvh and terrain so the near clip plane never slices through walls or floors and refuse invalid frusta"
+
+[[id]]
+id = "VE-27"
+level = "build"
+suite = "engine"
+statement = "High-definition vaulted Citadel halls, parabolic stone arch bridges, sculpted multi-octave terrain, and canopy clusters scale monotonically from LOD0 to LOD4, pass Khronos glTF 2.0 validation, and admit lawful portal and stair traversal"
+
+[[id]]
+id = "VE-28"
+level = "build"
+suite = "engine"
+statement = "Twenty-two-joint articulated humanoid characters deform via normalized four-joint linear-blend skinning and morph targets, adapt to stairs via analytical two-bone Foot IK, mask head geometry in first-person possession, and bind external GLB meshes"
+
+[[id]]
+id = "VE-29"
+level = "build"
+suite = "engine"
+statement = "Floating-origin UniversePosition cell coordinates wrap local offsets into [-64m, +64m)^3 with sub-millimeter camera-relative f32 precision at astronomical sector indices, traverse momentum-preserving PortalGraph arches, and pack multi-sector Stitch universes"
+
+[[id]]
+id = "VE-30"
+level = "build"
+suite = "engine"
+failure = "NarrativeLawError"
+negative = "VE-30"
+statement = "StoryAutomaton and ConservationLedger verify tropical reachability and exact integer resource conservation across NPC dialogues, SLM proposals, and CLI audits and refuse deadlocked graphs, item duplication or underflow, out-of-range guards, and invalid universe portals"
+
+[[id]]
+id = "VE-31"
+level = "build"
+suite = "engine"
+statement = "OntologicalRuntimeGovernor synthesizes constructive W5H certificates across all eight causal strata, evaluates HostEnvelope and WitnessEnvelope telos loss with non-coercive LOD0-to-LOD4 descent, and closes every Prism subsystem and Core-Wasm acceptance query"
+
+[[id]]
+id = "FR-01"
+level = "build"
+suite = "frame"
+statement = "With a working worker, the page loads and verifies the archive only in that worker before using its identities or guest"
+
+[[id]]
+id = "FR-02"
+level = "build"
+suite = "frame"
+statement = "A returning browser whose worker kept an earlier deploy serves this deploy from the navigation that brings its page"
+
+[[id]]
+id = "FR-03"
+level = "build"
+suite = "frame"
+statement = "A first visit's bytes are counted once the page has started, the frame's and the app's each within its own budget"
+
+[[id]]
+id = "FI-01"
+level = "build"
+suite = "fidelity"
+statement = "Every record of a Prism project is scored on W3C PROV-O derivation, ISO/IEC/IEEE 29148 verification, and ISO/IEC/IEEE 15939 measurement, refusing falsified digests"
+
+[[id]]
+id = "FI-02"
+level = "build"
+suite = "fidelity"
+statement = "The fidelity register only shrinks: a closed kappa never reopens, and committed fidelity.toml and Fidelity.lex.tex match the live model"
+
+[[id]]
+id = "FI-03"
+level = "build"
+suite = "fidelity"
+statement = "Verdant Engine's own model fidelity is measured by ISO/IEC/IEEE 15939 indicators checked by the Lean kernel"
+
+[[id]]
+id = "FI-04"
+level = "build"
+suite = "fidelity"
+statement = "Records are cited mechanically from the smallest verbatim span in model/provenance.toml primary sources"
+
+[[id]]
+id = "FI-05"
+level = "build"
+suite = "fidelity"
+statement = "Every quality measure listed in model/measures.toml is evaluated by the Lean kernel against its declared threshold"
+
+[[id]]
+id = "FI-06"
+level = "build"
+suite = "fidelity"
+statement = "Record-to-record W3C PROV-O derivations close only when their upstream records close and refuse unreferenced derivations"
+
+[[id]]
+id = "FI-07"
+level = "build"
+suite = "fidelity"
+statement = "Primary charter sources are attributed to their human author as a W3C PROV-O person agent"
+
+[[id]]
+id = "FI-08"
+level = "build"
+suite = "fidelity"
+statement = "The permanent zero-constants parametric ratchet enforces zero magic float or integer literals across verdant-core and constructive LexLean modules and refuses planted constants"
+
+[[id]]
+id = "VE-32"
+level = "build"
+suite = "engine"
+statement = "Verdant Studio themes, six-tab game-creation workbench, seven executable stakeholder journeys, four starter archetypes, and six live WebAssembly documentation embeds satisfy W3C DTCG token purity, Core-Wasm verification, and zero-error C-ABI export parity"
+
+[[id]]
+id = "VE-33"
+level = "build"
+suite = "engine"
+statement = "Hoisted Stratum-0 Prism constants, 256-entry CodebookProductLut contractions, 64-bit word-packed SoaSceneTable sweeps, contiguous 32-byte SAH FlatBvh traversal, epoch-split static and dynamic WebGL2 VAOs without gl.finish stalls, and hardware drawElementsInstanced batching scale deterministically to arbitrary 10k-entity and 50k-triangle workloads"
+
+[[id]]
+id = "VE-34"
+level = "build"
+suite = "engine"
+statement = "Prism algebraic monoid command canonicalization, eight-column 64-bit bit-plane archetype matrices, in-place tropical min-plus closure with next-hop paths, O(P) hash-indexed NavMesh extraction, sparse two-body XPBD Delassus solves, stride-8 rollback checkpointing, and content-addressed kappa transition memoization scale deterministically and refuse invalid coded or cyclic inputs"
+
+[[id]]
+id = "VE-35"
+level = "build"
+suite = "engine"
+statement = "Flat CSR prefix-sum software tile rasterization, spatial-grid multi-body broadphase collisions, multi-primitive Khronos GLB ingestion, WebGL2 context-loss recovery, deadlock-free worker frame-ack and RPC watchdogs, and 52-bit floating-origin horizon guards execute with zero steady-state inner heap allocations and refuse astronomical or degenerate inputs"
+
+[[id]]
+id = "VE-36"
+level = "build"
+suite = "engine"
+statement = "Every post-boot engine boundary—world snapshots, #uorc= shareable URLs, OPFS GLB transcoding, Stitch 2-of-3 parity custody, rollback checkpoints, CLI archives, and zero-decode CodedMatrix bundles—operates exclusively over SHA-256-sealed UORC archives across native Rust and WebAssembly while refusing unsealed or tampered payloads"
+
+[[id]]
+id = "VE-37"
+level = "build"
+suite = "engine"
+statement = "Every packed vertex carries an explicit surface class derived from its PBR material rather than inferred from hue, dynamic actors stream positions, normals, and colours with per-attribute GPU capacity, and shading derivatives run in uniform control flow with a continuous detail fade, so characters render with their own colours, water, metal, and emissive glass stay distinct, and no seam line crosses the terrain"
+
+[[id]]
+id = "VE-38"
+level = "build"
+suite = "engine"
+statement = "Imported Schema.org, W3C SOSA and PROV-O, Khronos glTF 2.0 HD PBR and skeletal skinning, W3C naga WebGL2 GLSL ES 3.00 transpilation, OMG DMN 1.5 model admission, and multi-domain world catalogs validate against SHA-256-locked external authority oracles while prohibiting external model runtimes outside Verdant Engine"
+failure = "OracleValidationError"
+negative = "VE-38"
+
+[[id]]
+id = "VE-39"
+level = "build"
+suite = "engine"
+statement = "The second-order Observer Prism holon composes strong kappa identities for itself, its five differentiated platform organs, its seven stakeholder Prism models, arbitrary Verdant model envelopes, native uor-matmul 16-route intent and ISO 24617-2 passage-grounded NPC dialogue with Unknown abstention, live NavMesh NPC directives, and five W3C SOSA/PROV-O observed communication channels across native Rust and WebAssembly"
+failure = "ObserverModelError"
+negative = "VE-39"
+
+[[id]]
+id = "VE-40"
+level = "build"
+suite = "engine"
+statement = "Every Verdant surface—Verdant Studio, Verdant Catalogs, Verdant Engine Demo, the browser and Rust starter template, all four Studio Scaffolder archetypes, and every crate example—instantiates differentiated SHA-256-locked catalog world packs, Schema.org JSON-LD couplings, live Wasm NPC directives and ISO 24617-2 dialogue, and zero-bypass Wasm CodedSlmDirector routing with zero magic constants"
+
+[[id]]
+id = "VE-41"
+level = "build"
+suite = "engine"
+statement = "UHD 4K-to-8K scaling, 30-bit Morton spatially-clustered 64-triangle GPU meshlet culling with zero steady-state heap reallocations, 2x2 box-filtered multi-material PBR texture atlas packing, naga-verified WGSL compute culling and PBR shaders, zero-reallocation GPU index streaming, and the 64-frame hysteresis FrameBudgetOracle execute deterministically across native Rust, WebAssembly, and arbitrary 45,000-triangle LOD4 workloads"
+
+[[id]]
+id = "VE-42"
+level = "build"
+suite = "engine"
+statement = "SHA-256-locked Stafford Beer VSM (S1-S5 + S3*) and ISO/IEC/IEEE 42010:2022 Viewpoint + ISO/IEC/IEEE 12207 ALM Managers enforce Total Ownership across every Verdant route, shipped crate, Observer part, catalog stream, and authority corpus, disallow contrived ungrounded or cross-contaminated directives, synthesize declarative Stitch App Catalog and Viewpoint contracts, and expose a signed bidirectional Operator Communications Channel across native Rust CLI and WebAssembly"
+
+[[id]]
+id = "VE-43"
+level = "build"
+suite = "engine"
+statement = "Zero-account Prism-ID Encrypt-then-MAC boundary privacy with revocation epoch rotation, k-of-n systematic Reed-Solomon GF(2^8) erasure coding and autonomous parity repair, monotonic quorum release pointers, budgeted reciprocal Stitch shard admission, and in-Verdant W3C PROV-O Merkle revision control (VerdantVcs) uphold complete CIA and STRIDE security invariants across native Rust, WebAssembly, and Verdant MCP while refusing unauthorized decryption, revoked-epoch replay, pointer rollback, and over-budget floods"
+failure = "StitchBoundaryIntegrityError"
+negative = "VE-43"
+
+[[id]]
+id = "VE-44"
+level = "build"
+suite = "engine"
+statement = "Self-contained Verdant Release .holo capsules lift all verified Viewpoints, DTCG assets, Manager manifests, and WebAssembly runtimes into 4-of-8 STCH2 Reed-Solomon shards bound by quorum-signed monotonic FramePinManifest pointers, and the immutable <= 30 KiB Composable Blank Frame recovers and mounts them via ServiceWorker Virtual FS with zero loose UI files while refusing tampered capsules, pointer rollbacks, and unsafe deep-link URIs"
+
+[[id]]
+id = "VE-45"
+level = "build"
+suite = "engine"
+statement = "Thirteen accountable VSM Managers enforce Total Ownership across every Verdant surface and every Prism stratum including Knowledge/Provenance, Change/Version, Security, Architecture, and Stakeholder Roadmap/KPI Managers, enabling the Observer to compute live ISO 15939 KPIs and Major/Minor stakeholder roadmap progress from its parts and advance SemVer Major, Minor, or Patch versions exclusively when the Ratchet is applied and all Release Gates pass"
+
+[[id]]
+id = "VE-46"
+level = "build"
+suite = "engine"
+statement = "Verdant lifts 100 percent of its shipped Rust crates, all 26 Prism LexLean strata, all governance and authority registers, and all distilled Viewpoints into a 4-of-8 STCH2 Reed-Solomon sharded VerdantVcs Source DAG with zero unlifted workspace modules, recovers the full Source DAG from 4 surviving shards, and autonomously bootstraps a chained v(N+1) release through mgr-change-release with acyclic PROV-O lineage and monotonic prev_kappa chaining"
+
+[[id]]
+id = "VE-47"
+level = "build"
+suite = "engine"
+statement = "Verdant autonomously lifts itself via verdant operator ratchet-lift and MCP verdant_ratchet_lift—synthesizing all 13 Manager manifests, lifting 100 percent of shipped Rust, Prism LexLean, and Viewpoint UI modules into VerdantVcs, packing and 4-of-8 verifying the .holo release capsule, and emitting site/generated/self-host-ratchet-manifest.toml—so the tightened prism/parametric-ratchet/2 audit enforces zero unlifted UI files, zero loose Blank Frame assets, zero external user accounts, and zero unlifted workspace modules while failing closed on any out-of-band edit"
+
+[[id]]
+id = "VE-48"
+level = "build"
+suite = "engine"
+statement = "MultiOriginRelayPlan and StitchPeerExchangeSession enforce at least two independent HTTPS Stitch shard origins with parallel failover racing and StitchBudgetLedger-governed zero-account WebRTC/BroadcastChannel reciprocal peer shard seeding, refusing single-origin downgrade, unsafe schemes, tampered peer shards, and over-budget floods"
+
+[[id]]
+id = "VE-49"
+level = "build"
+suite = "engine"
+statement = "Verdant Studio exposes zero-account in-browser VerdantVcs commits with acyclic parent-to-child revision history, one-click self-verifying portable .holo app export, and encrypted 4-of-8 ?pin=stitch:// deep-link sharing across WebAssembly and Blank Frame without requiring any external user account or CLI"
+
+[[id]]
+id = "VE-50"
+level = "build"
+suite = "engine"
+statement = "Live browser 4K and 8K UHD rendering, multi-MB Khronos glTF 2.0 scenes, and quantized .uorc CodedMatrix AI workloads execute through PagedTensorArena and DynamicWorkloadGovernor in WebAssembly with bounded RAM ceilings, live telemetry in Studio, and zero main-thread lockups verified by an automated headless Chromium UHD workload gate"
+
+[[id]]
+id = "VE-51"
+level = "build"
+suite = "engine"
+statement = "Verdant publishes a live RFC 2789 Cargo Sparse Registry endpoint for verdant-tensor, verdant-core, verdant-wasm, and verdant-cli, cites permanent Zenodo DOI archival provenance (https://zenodo.org/records/24383968), promotes Blank-Frame-first entry while preserving byte-locked frame.lock invariants, and tracks Milestones M6 through M8 across ten live ISO 15939 Observer KPIs"
+
+[[id]]
+id = "VE-52"
+level = "build"
+suite = "engine"
+statement = "Constructive Lean 4 modules Cadence.lex.tex and Release.lex.tex prove Verdant's autonomous release cadence and 6-channel distribution matrix with zero Classical.choice, verdant operator ratchet-lift keeps Cargo.toml workspace versions synchronized with release-ledger.json, and scripts/release/qualify-tag.mjs plus release-tag.yml enforce green-bootstrap autonomous tagging"
+
+[[id]]
+id = "VE-53"
+level = "build"
+suite = "engine"
+statement = "Verdant commits its uorust MIR proof frontier register (frontier.toml) and enforces a shrink-only hand-written Rust surface ratchet inside prism-fidelity alongside prism/parametric-ratchet/2 that fails closed on any lifted-function regression or uncertified-function growth"
+
+[[id]]
+id = "VE-54"
+level = "build"
+suite = "engine"
+statement = "Verdant pins three CORS-verified independent Stitch shard origins (GitHub Pages, jsDelivr, and raw.githubusercontent via orphan stitch-mirror), verifies live RFC 2789 Cargo Sparse Registry client fetches and standalone .crate packaging via scripts/verify-sparse-registry.mjs, and delivers zero-account cross-browser ?pin=stitch://<kappa>/studio#holo=... sharing plus live VerdantVcs checkout"
+
+[[id]]
+id = "VE-55"
+level = "build"
+suite = "engine"
+statement = "Verdant's ratchet operates autonomously via npm run ratchet and verdant operator ratchet-lift --tighten: binding frontier.toml to live shipped Rust source SHA-256 (frontier_rust_tree_sha256), enforcing monotonic [surface_ratchet] ceilings on Wasm size, .holo capsule weight, and max hand-written Rust/JS file lines, one-way auto-tightening watermarks in model/parametric-ratchet.toml while refusing regressions, and providing lifted wrapping scalar primitives in verdant-tensor::scalars"
+
+[[id]]
+id = "VE-56"
+level = "build"
+suite = "engine"
+statement = "Verdant cuts site/verdant-uorc.wasm and release .holo capsule transfer weight by more than 1.5 MiB via size-optimized UORC profile tuning, expands FR-03 cold-boot headroom cleanly beneath 122880 bytes, lifts additional constructive Rust arithmetic helpers into frontier.toml, and auto-tightens [surface_ratchet] and [frontier_ratchet] watermarks monotonically"
+
+[[id]]
+id = "VE-57"
+level = "build"
+suite = "engine"
+statement = "Portable zero-account .holo user applications exported from Verdant Studio embed a self-contained interactive WebGL2 3D Canvas Player (crates/verdant-core/src/portable_player.rs) that renders the creator's exact authored objects, transforms, domain sky/ground palette, and orbit controls offline with zero external accounts or CDN fetches, verified end-to-end across isolated Chromium browser contexts"
+
+[[id]]
+id = "VE-58"
+level = "build"
+suite = "engine"
+statement = "Verdant decomposes its three largest monoliths (verdant-wasm/src/lib.rs, verdant-core/src/operator.rs, and site/studio/studio-page.mjs) into focused submodules that auto-tighten max_handwritten_rust_file_lines to <= 3525 and max_js_file_lines to <= 1980, gates naga behind the native wgsl-oracle Cargo feature so wasm32 builds exclude shader transpiler dependencies, syncs site/app.holo 1:1 with CI for widened FR-03 cold-boot headroom, and upgrades portable_player.rs to render all 5 Studio primitive geometries (Box, Platform, Pillar, Ramp, Beacon Orb) with ground grid and WASD/orbit controls offline"
+
+[[id]]
+id = "VE-59"
+level = "build"
+suite = "engine"
+statement = "Verdant expands its shrink-only uorust MIR proof frontier past 200 lifted constructive Rust functions (auto-tightening min_lifted_functions >= 200 while shrinking arithmetic and total residue) and closes all Cadence, Release, and self-hosted Stitch Security theorem verification records across app/src/{Cadence,Release,Security}.lex.tex and fidelity.toml"
+
+[[id]]
+id = "VE-60"
+level = "build"
+suite = "engine"
+statement = "VerdantReleaseCapsule supports transparent RFC 1952 gzip body compression (native capsule-gzip feature + zero-dependency browser CompressionStream/DecompressionStream in Studio and Blank Frame) cutting release .holo capsule weight below 1800000 bytes with full SHA-256 and zero-trailing-byte enforcement, consolidates duplicate SHA-256/hex helpers into crates/verdant-core/src/digest.rs, and exposes deterministic VerdantVcs structural commit diffs (diff_commits) and branch ref management (create_branch, list_refs)"
+
+[[id]]
+id = "VE-61"
+level = "build"
+suite = "engine"
+statement = "Verdant achieves 100% zero-residue formal model fidelity across all 28 canonical LexLean modules (705/705 derived, 705/705 meant, 9/9 measured, 0 open fidelity residue) with version-parametric Release.lex.tex distribution endpoints, and decomposes observer.rs, operator.rs, and conformance integration tests so max_handwritten_rust_file_lines tightens monotonically to <= 2200"
+
+[[id]]
+id = "VE-62"
+level = "build"
+suite = "engine"
+statement = "Verdant's Observer Executive includes a generative self-refinement engine (crates/verdant-core/src/observer_refine.rs, CLI verdant operator refine-plan, MCP verdant_observer_refine_plan, and sealed site/generated/observer-refinement-agenda.json surfaced in Studio's Observer panel) that diagnoses all 13 VSM Managers, owned source file modularity, frontier.toml proof blockers, fidelity closure, and Wasm/capsule/Blank Frame budgets while expanding the shrink-only uorust MIR proof frontier to >= 219 lifted constructive functions"
+
+[[id]]
+id = "VE-63"
+level = "build"
+suite = "engine"
+statement = "Verdant lifts its entire validation, test-execution, and release-qualification lifecycle directly into Verdant (crates/verdant-core/src/lifecycle.rs, CLI verdant operator lifecycle-gate, MCP verdant_lifecycle_gate, sealed site/generated/lifecycle-gate-report.json, and qualify-tag.mjs delegation), lifts all 6 lifecycle categories (rust, verification-test, lexlean, feature-suite, model-governance, viewpoint) into VerdantVcs and self-host-ratchet-manifest.toml, and decomposes site/studio.mjs and site/studio/studio-page.mjs to auto-tighten max_js_file_lines <= 1680 with live Studio VCS commit diffs"
+
+[[id]]
+id = "VE-64"
+suite = "engine"
+level = "build"
+statement = "Verdant lifts its entire end-to-end ratchet orchestrator directly into Verdant (execute_ratchet_cycle in crates/verdant-core/src/lifecycle.rs, CLI verdant operator ratchet-cycle, MCP verdant_ratchet_cycle, and thin scripts/verdant-ratchet.mjs delegate) and lifts all 7 lifecycle artifact categories including automation-script (scripts/**/*.mjs -> >= 150 total lifted modules) into VerdantVcs and site/generated/self-host-ratchet-manifest.toml"
+
+[[id]]
+id = "VE-65"
+suite = "engine"
+level = "build"
+statement = "Verdant executes its Observer-generated self-refinement agenda by expanding the shrink-only uorust MIR proof frontier to >= 246 lifted constructive Rust functions (shrinking residue <= 1179 and uncertified <= 1334) and decomposing site/engine-worker.mjs, site/studio/studio-page.mjs, and site/studio.mjs into owned submodules (engine-worker-codec.mjs, studio/stage-assets.mjs, studio-gameplay-panel.mjs) to auto-tighten max_js_file_lines <= 1525"
+
+[[id]]
+id = "VE-66"
+suite = "engine"
+level = "build"
+statement = "Verdant lifts its full self-automation pipeline directly into Verdant (execute_automate_pipeline in crates/verdant-core/src/lifecycle.rs, CLI verdant operator automate, MCP verdant_automate, and thin scripts/verdant-automate.mjs delegate), diagnoses owned crate source files accurately inside ObserverRefinementAgenda, and expands the shrink-only uorust MIR proof frontier to >= 267 lifted constructive functions (shrinking residue <= 1178)"
+
+[[id]]
+id = "VE-67"
+suite = "engine"
+level = "build"
+statement = "Verdant breaks every hand-written Rust file strictly below 2000 lines (max_handwritten_rust_file_lines <= 1985 via 7 focused submodules hd_world_templates.rs, standards_registry.rs, observer_types.rs, uhd_shaders.rs, bridge_sim.rs, exports_cold_stage.rs, exports_uorc_studio.rs lifting >= 163 lifecycle modules) and breaks every shipped JS module strictly below 1400 lines (max_js_file_lines <= 1400 via catalog-streams-stitch.mjs, engine-worker-codec.mjs, and studio/stage-assets.mjs)"
+
+[[id]]
+id = "VE-68"
+suite = "engine"
+level = "build"
+statement = "Verdant lifts Wasm synthesis/verification (sync-wasm), deterministic RFC 2789 Cargo sparse crate packaging (package-crates), and live loopback HTTP Cargo sparse registry verification (verify-registry) natively into crates/verdant-core/src/build_ops.rs (CLI, MCP, in-process lifecycle.rs, and thin JS delegates), lifting >= 164 lifecycle modules and expanding the shrink-only uorust MIR proof frontier to >= 280 lifted constructive functions (residue <= 1177)"
+
+[[id]]
+id = "VE-69"
+suite = "engine"
+level = "build"
+statement = "Verdant decouples browser verdant-uorc.wasm from uorc_compress, uorc_search, and static warm-state blobs onto uorc-wasm-decode with an inline UORC-SHA256-CHAIN-v1 raw-archive verifier/encoder and certified uorc_decompress::run fallback, cutting site/verdant-uorc.wasm by > 700 KiB raw to <= 3950000 bytes (sub-1 MiB gzipped) and tightening max_release_capsule_bytes <= 1550000 bytes across M1..M17"
+
+[[id]]
+id = "VE-70"
+suite = "engine"
+level = "build"
+statement = "Verdant realizes its Lean-proved GitHub-free sovereign governance Prism model (app/src/Governance.lex.tex, 838/838 fidelity, 10/10 ISO 15939 measures, 7 STRIDE threats/controls) in crates/verdant-core/src/authority.rs (CLI verdant operator authority + MCP verdant_authority_exec), enforcing Genesis Owner bootstrap, M-of-N Admin quorum with non-self-approval, monotonic prevEpochKappa chains, immediate revocation of departed Admin pending approvals and sole-attested standing grants, forward-secret boundary rekeying, anti-lockout succession, compromise quarantine, and >= 295 uorust MIR-lifted constructive functions (residue <= 1176)"
+
+[[id]]
+id = "VE-71"
+suite = "engine"
+level = "build"
+statement = "Verdant executes Milestone M19 self-refinement across its Observer agenda: decomposing uhd.rs, network.rs, lifecycle.rs, and observer.rs into cohesive submodules (uhd_workload.rs, network_custody.rs, lifecycle_automate.rs, observer_comms.rs -> max_handwritten_rust_file_lines <= 1650, >= 173 lifted lifecycle modules), decomposing site/engine-worker.mjs, site/studio/studio-page.mjs, and site/studio.mjs (via engine-worker-extended.mjs, studio-boot.mjs, studio-director-panel.mjs -> max_js_file_lines <= 1250), expanding the shrink-only uorust MIR proof frontier to >= 345 lifted constructive functions (residue <= 1169, uncertified <= 1325), and exposing zero-account Sovereign Signing Requests & Admin Quorum review/revocation inside Verdant Studio (site/studio/authority-panel.mjs) across M1..M19"
+
+[[id]]
+id = "VE-72"
+suite = "engine"
+level = "build"
+statement = "Verdant executes Milestone M20: closing the local-vs-CI release gate gap by executing repo-conformance --test engine inside lifecycle-gate --full with ratchet-aware Observer refinement targets; disabling gltf image decoding on wasm32 via browser-native createImageBitmap PBR texture decoding to cut site/verdant-uorc.wasm <= 3810000 bytes (sub-910 KiB gzipped) and max_release_capsule_bytes <= 1410000 bytes even while embedding the unified SovereignAuthorityLedger Wasm kernel; binding VerdantVcs::commit_with_authority and VerdantReleaseCapsule::pack_from_files_with_authority to finalized ApprovalCertificates with unified Wasm/CLI/MCP authority_cert.rs JSON bridge; and reducing uorust residue strictly below 1169 (<= 1168) and uncertified strictly below 1325 (<= 1324) while lifting >= 380 constructive functions across M1..M20"
+
+[[id]]
+id = "VE-73"
+suite = "engine"
+level = "build"
+statement = "Verdant executes Milestone M21 across its Observer refinement agenda: decomposing streaming.rs, ecs.rs, physics.rs, verdant-cli/src/lib.rs, and authority.rs into cohesive submodules (streaming_uorc.rs, ecs_tlas.rs, physics_controller.rs, automate_cmd.rs, authority_cert.rs -> max_handwritten_rust_file_lines <= 1495, >= 178 lifted lifecycle modules), decomposing catalog-streams.mjs, studio/studio-page.mjs, and engine-worker.mjs (via catalog-streams-local.mjs, studio-viewport.mjs, and engine-worker-extended.mjs -> max_js_file_lines <= 1125), lifting existing residue functions directly in place (PagedTensorArena, ContainerGrantMatrix, KnowledgeProvenanceManager, FrameBudgetProfiler, tropical_inf_sentinel), and expanding the shrink-only uorust MIR proof frontier to >= 420 lifted constructive functions with residue <= 1164 and uncertified <= 1321 across M1..M21"
+
+[[id]]
+id = "VE-74"
+suite = "engine"
+level = "build"
+statement = "Verdant breaks the 2.0 MiB browser Wasm wall in Milestone M22: splitting uorc_decompress behind native-default uorc-ncm-decode while retaining constant-time UORC-SHA256-CHAIN-v1 raw-archive verification and encoding under uorc-wasm-decode on wasm32, slashing site/verdant-uorc.wasm strictly below 2,097,152 bytes (< 570 KiB gzipped; > 70% reduction from 6.56 MB) and tightening max_release_capsule_bytes <= 1,100,000 bytes; wiring --authority-ledger and --approval-cert sovereign ApprovalCertificate custody verification directly into verdant release pack and verdant operator lifecycle-gate with fail-closed tamper/revocation refusal; and expanding the shrink-only uorust MIR proof frontier to >= 450 lifted constructive functions with residue <= 1164 and uncertified <= 1321 across M1..M22"
+
+
+[[id]]
+id = "VE-75"
+suite = "engine"
+level = "build"
+statement = "Verdant breaks the 1.00 MiB .holo release capsule barrier in Milestone M23 (gating native-only VSM/Operator repo governance exports out of wasm32 so site/verdant-uorc.wasm <= 1850000 B / < 540 KiB gz and max_release_capsule_bytes < 1048576 B), breaks every hand-written Rust file <= 1365 lines (max_handwritten_rust_file_lines <= 1365 via collision_blas.rs, vcs_studio.rs, and companion module consolidation across standards.rs, authority.rs, gltf_io.rs, operator.rs, runtime.rs -> >= 180 lifted lifecycle modules), breaks every shipped JS file <= 1024 lines (max_js_file_lines <= 1024 via zero-extra-request companion extraction across studio.mjs, engine-worker.mjs, studio-page.mjs, catalog-streams.mjs), and expands the shrink-only uorust MIR proof frontier to >= 480 lifted constructive functions with residue <= 1162 and uncertified <= 1319 across M1..M23"
+
+
+[[id]]
+id = "VE-76"
+suite = "engine"
+level = "build"
+statement = "Verdant executes Milestone M24 across its Observer refinement agenda: hardening .github/workflows/release-stitch.yml stitch-mirror publication with 3-attempt ls-remote and push retries that never mask transient remote errors as missing branches; breaking every hand-written Rust file <= 1250 lines with zero added residue/foreign functions (character_types.rs, render_shaders.rs, and companion consolidation across verdant-wasm/src/lib.rs, hd_world.rs, operator.rs, operator_mcp.rs, network.rs -> >= 183 lifted lifecycle modules); breaking every shipped JS file <= 930 lines with zero extra JS requests; holding the .holo release capsule strictly below 1.00 MiB (< 1048576 B); and expanding the shrink-only uorust MIR proof frontier to >= 515 lifted constructive functions with residue <= 1161 and uncertified <= 1318 across M1..M24"
+
+[[id]]
+id = "VE-77"
+suite = "engine"
+level = "build"
+statement = "Verdant delivers Public-Benefit Multi-Gateway Stitch Hosting & Serving in Milestone M25 (crates/verdant-core/src/gateway.rs, crates/verdant-tensor/src/scalars_gateway.rs, CLI verdant gateway pack|serve|verify, MCP verdant_gateway, Blank Frame ?gateway=/same-origin/OPFS resilience, and GitHub Pages + release-stitch.yml multi-gateway bundle publication), hosting Verdant and all 6 canonical stakeholder parts (studio, catalogs, demo, docs, starter, card) simultaneously on GitHub and independent zero-registration public-benefit carriers (Stitch Layer-5 peer swarm, IPFS/IPNS HTTP gateways, Zenodo permanent DOI, volunteer OCI/Docker, and self-hosted Stitch HTTP nodes) while refusing GitHub-only single-provider plans, proving live dual-gateway failover under primary 503 outage plus 4-of-8 shard withholding, and expanding frontier.toml to >= 545 lifted functions with residue <= 1161 and uncertified <= 1318 across M1..M25"
+
+[[id]]
+id = "VE-78"
+suite = "engine"
+level = "build"
+statement = "Verdant removes 100% of commercial cloud PaaS provider scaffolding outside GitHub (failing closed on commercial PaaS hostnames and manifests in gateway.rs, CI workflows, and governance catalogs) and formally models public-benefit Stitch self-hosting and self-serving in Prism across all strata (pure {0, 1} app/src/StitchHosting.lex.tex with zero Classical.choice, 10 stakeholders, 13 concerns, 17 components, 26 edges, 14 viewpoints/views, OPM/UML design views, 6 complete STRIDE threats and evidenced controls in Security.lex.tex, 8 zero-account Release channels, 11/11 kernel-measured ISO 15939 Fidelity indicators with 0 open derived/meant/measured questions, and W3C PROV-O primary-source spans in model/charter.md) while holding every one-way parametric ratchet ceiling across M1..M26"
+
+[[id]]
+id = "VE-79"
+suite = "engine"
+level = "build"
+statement = "Verdant realizes all three M26 Prism-modeled public-benefit Stitch self-hosting components in runtime in Milestone M27: lazy-loaded site/stitch-swarm.mjs (wired into site/stitch-mesh.mjs) enforcing stitch/1 Layer-5 framing (4096 B wire / 2700 B chunk / 512 KiB msg / 60s signal TTL), ResourceAdmission seeder ceilings, explicit opt-in FK-07 consent, opaque release-kappa topics, and OPFS 4-of-8 STCH2 shard verification; offline single-file portable HTML envelope emission (verdant-portable-v<ver>.html) inside gateway_swarm.rs with inline WebCrypto SHA-256 verification and DecompressionStream gzip unpacking; volunteer gateway /swarm and /portable HTTP/CORS endpoints with --swarm-relay CLI support; and >= 575 MIR-lifted functions in frontier.toml while strictly shrinking residue and holding all surface ceilings across M1..M27"
+
+[[id]]
+id = "VTK-01"
+level = "build"
+suite = "engine"
+statement = "Verdant exposes arbitrary row-major F32 matrix products through uor-matmul with exact operand extents and typed shape refusals for GGML integration"
+
+[[id]]
+id = "VTK-02"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates F32 addition, subtraction, multiplication, division, square root, square, negation and absolute value through a Prism-defined integer encoding with nearest-even rounding and explicit exceptional-value behavior"
+
+[[id]]
+id = "VTK-03"
+level = "build"
+suite = "engine"
+statement = "Verdant moves opaque storage blocks under Prism transfer-length admission and preserves encoded bytes against the imported GGML vector copy reference"
+
+[[id]]
+id = "VTK-04"
+level = "build"
+suite = "engine"
+statement = "Verdant converts F32 F16 and BF16 storage encodings through a certified Prism bit model and matches the imported GGML conversion oracle including all sixteen-bit words and rounding boundaries"
+
+[[id]]
+id = "VTK-05"
+level = "build"
+suite = "engine"
+statement = "Verdant composes certified float storage and F32 arithmetic to execute scale bias clamp and leaky ReLU for F32 F16 and BF16 with explicit NaN signed-zero and typed refusal semantics"
+
+[[id]]
+id = "VTK-06"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates thirteen typed unary float operations including integer rounding through certified Prism composition and matches every supported GGML CPU source destination pair"
+
+[[id]]
+id = "VTK-07"
+level = "build"
+suite = "engine"
+statement = "Verdant models nearest-even F64 addition F32 F64 conversion and unsigned count conversion through certified Prism bit arithmetic validated against imported Berkeley SoftFloat"
+
+[[id]]
+id = "VTK-08"
+level = "build"
+suite = "engine"
+statement = "Verdant classifies F32 comparison and unordered operands against imported SoftFloat and provides certified bounded integer equality addition and identity words for row graphs"
+
+[[id]]
+id = "VTK-11"
+level = "build"
+suite = "engine"
+statement = "Verdant decodes packed E8M0 UE4M3 E4M3 and E2M1 scales and encodes F8 and unsigned E4M3 through certified Prism bit arithmetic checked against imported GGML"
+
+[[id]]
+id = "VTK-12"
+level = "build"
+suite = "engine"
+statement = "Verdant extracts scaled packed fields and encodes bounded biased integer coefficients through certified Prism arithmetic checked against imported GGML quantized row decoders"
+
+[[id]]
+id = "VTK-13"
+level = "build"
+suite = "engine"
+statement = "Verdant imports every GGML CPU quantized codebook as immutable source bound data and verifies compiled bytes and table spans against the pinned external declarations"
+
+[[id]]
+id = "VTK-14"
+level = "build"
+suite = "engine"
+statement = "Verdant decodes complete GGML CPU storage blocks through Prism instruction plans and imported codebooks and preserves strided output padding with typed atomic layout refusals"
+
+[[id]]
+id = "VTK-15"
+level = "build"
+suite = "engine"
+statement = "Verdant performs nearest even F64 division and unsigned count to F64 conversion through certified Prism arithmetic checked against imported Berkeley SoftFloat including gradual underflow overflow and exceptional operands"
+
+[[id]]
+id = "VTK-16"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes symmetric 32-lane signed eight-bit storage blocks with a binary16 scale and matches the pinned external reference quantizer on its defined inputs"
+
+[[id]]
+id = "VTK-17"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts symmetric signed-byte weight and activation blocks with ordered F32 reduction checked against the imported GGML CPU dot product"
+
+[[id]]
+id = "VTK-18"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts packed symmetric four-bit weights with signed-byte activation rows and matches the imported CPU dot product in block order"
+
+[[id]]
+id = "VTK-19"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates the binary32 natural exponential within one representable step of the imported GGML scalar oracle with gradual underflow and matching overflow and exceptional classes"
+
+[[id]]
+id = "VTK-20"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates the binary32 SwiGLU product with single precision activation and multiplication checked against the imported scalar CPU function"
+
+[[id]]
+id = "VTK-21"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates binary32 sine and cosine across the finite exponent range and exceptional inputs against the imported GGML CPU scalar functions"
+
+[[id]]
+id = "VTK-22"
+level = "build"
+suite = "engine"
+statement = "Verdant computes binary32 natural logarithms and reciprocal root frequency ratios against the imported GGML CPU logarithm and rotary evaluator"
+
+[[id]]
+id = "VTK-23"
+level = "build"
+suite = "engine"
+statement = "Verdant computes scaled rotary frequency coefficients and binary32 plane rotations against the imported GGML rotary kernel"
+
+[[id]]
+id = "VTK-24"
+level = "build"
+suite = "engine"
+statement = "Verdant accumulates a streaming softmax weighted mean of binary32 rows against the imported GGML CPU attention evaluator"
+
+[[id]]
+id = "VTK-25"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates binary32 sigmoid and SiLU across finite and exceptional words against the imported CPU scalar functions"
+
+[[id]]
+id = "VTK-26"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes 256 binary32 lanes as Q8_K signed coefficients with a binary32 scale and sixteen group sums against the imported GGML reference"
+
+[[id]]
+id = "VTK-27"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts packed affine Q2_K weight rows with grouped Q8_K activations against the pinned GGML CPU vector product"
+
+[[id]]
+id = "VTK-28"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates binary32 hyperbolic tangent against the imported GGML CPU function across signed zeros, subnormals, saturation and rounding boundaries"
+
+[[id]]
+id = "VTK-29"
+level = "build"
+suite = "engine"
+statement = "Binary32 Gaussian error linear unit tangent and logistic approximations match the imported numerical reference"
+
+[[id]]
+id = "VTK-30"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates binary32 linear attention bias slopes for power-of-two and non-power-of-two head groups against the imported GGML CPU kernel"
+
+[[id]]
+id = "VTK-31"
+level = "build"
+suite = "engine"
+statement = "Verdant selects deterministic binary32 row indices in ascending or descending value order and agrees with the imported CPU ranking kernels"
+
+[[id]]
+id = "VTK-32"
+level = "build"
+suite = "engine"
+statement = "Verdant normalizes binary32 score rows with an optional unreturned score and matches the imported CPU probabilities"
+
+[[id]]
+id = "VTK-33"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts grouped four- and five-bit affine weight rows with signed eight-bit activation blocks and matches the imported CPU"
+
+[[id]]
+id = "VTK-34"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates binary32 softplus across finite, subnormal and exceptional scores against the imported CPU unary kernel"
+
+[[id]]
+id = "VTK-35"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts one-bit sign and two-bit weight rows against symmetric signed-byte blocks with the imported row precision"
+
+[[id]]
+id = "VTK-36"
+level = "build"
+suite = "engine"
+statement = "Signed five-bit and nonlinear four-bit coefficient rows contract with symmetric signed-byte activations against the pinned CPU"
+
+[[id]]
+id = "VTK-37"
+level = "build"
+suite = "engine"
+statement = "Affine four-bit and five-bit rows contract with signed-byte activations carrying an independently rounded scaled sum"
+
+[[id]]
+id = "VTK-38"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts E2M1 weight rows with exponent-only or grouped E4M3 scales and signed-byte activation blocks against the imported CPU"
+
+[[id]]
+id = "VTK-39"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts signed two-bit codebook rows with grouped byte activations against the imported GGML vector products"
+
+[[id]]
+id = "VTK-40"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes centered and affine four- and five-bit weight blocks against the imported reference encoders"
+
+[[id]]
+id = "VTK-41"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes packed sign and centered two-bit weight blocks byte for byte against the imported reference encoders"
+
+[[id]]
+id = "VTK-42"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts grouped signed three-bit and six-bit weights with prepared signed-byte activations in the reference accumulator order"
+
+[[id]]
+id = "VTK-43"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts grouped four-bit codebook weights with prepared signed-byte activations in reference group order"
+
+[[id]]
+id = "VTK-44"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes 256-lane ternary blocks in packed-trit and two-bit-plane layouts with a trailing binary16 scale"
+
+[[id]]
+id = "VTK-45"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts packed trit and two-bit ternary rows with prepared grouped signed-byte activations"
+
+[[id]]
+id = "VTK-46"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts three-bit four-lane codebooks using indexed and explicit signs"
+
+[[id]]
+id = "VTK-47"
+level = "build"
+suite = "engine"
+statement = "Verdant contracts signed one-bit codebooks with shared and distributed block scales"
+
+[[id]]
+id = "VTK-48"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes exponent-only and grouped unsigned-scale four-bit floating weight blocks"
+
+[[id]]
+id = "VTK-49"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes grouped signed six-bit weight blocks with per-group scale selection and separate low and high bit planes"
+
+[[id]]
+id = "VTK-50"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes grouped affine two-, four- and five-bit weights with weighted scale and minimum selection"
+
+[[id]]
+id = "VTK-51"
+level = "build"
+suite = "engine"
+statement = "Verdant converts finite binary32 values to signed 32-bit storage words by truncating toward zero within the representable range"
+
+[[id]]
+id = "VE-80"
+level = "build"
+suite = "engine"
+statement = "Verdant modernizes onto LexLean 0.4.5, prism-code 0.11.1, template contract v2, unified three-scope tensor proofs, and offline-verifiable Holo v6 self-carrying proof records in Stitch shards and portable HTML envelopes"
+
+[[id]]
+id = "VTK-52"
+level = "build"
+suite = "engine"
+statement = "Verdant fits grouped signed three-bit blocks by refining individual coefficients and emits the packed coefficients and scales"
+
+[[id]]
+id = "VTK-53"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes nonlinear four-bit codebook blocks with single or grouped scales against the imported GGML reference"
+
+[[id]]
+id = "VTK-54"
+level = "build"
+suite = "engine"
+statement = "Verdant evaluates the binary32 error function and its Gaussian activation against the imported GGML CPU"
+
+[[id]]
+id = "VTK-55"
+level = "build"
+suite = "engine"
+statement = "A certified binary32 exponential increment preserves tiny signed operands and agrees with the C and GGML oracles"
+
+[[id]]
+id = "VTK-56"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes four-lane three-bit importance grids into packed weight blocks matching the imported CPU quantizers"
+
+[[id]]
+id = "VTK-57"
+level = "build"
+suite = "engine"
+statement = "A certified gated delta rule updates binary32 projection state and scores against the imported GGML CPU"
+
+[[id]]
+id = "VTK-58"
+level = "build"
+suite = "engine"
+statement = "A diagonal state recurrence with scalar or per-coordinate transition matches GGML CPU across repeated inputs"
+
+[[id]]
+id = "VTK-59"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes eight-lane two-bit importance grids into signed blocks with optional weights against the imported CPU quantizer"
+
+[[id]]
+id = "VTK-60"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes parity-constrained two-bit IQ2_XS blocks with explicit importance weights against the pinned GGML quantizer"
+
+[[id]]
+id = "VTK-61"
+level = "build"
+suite = "engine"
+statement = "Verdant encodes parity-constrained octets with a shared 32-lane fitted scale against the imported IQ2_XXS quantizer"
+
+[[id]]
+id = "VTK-62"
+level = "build"
+suite = "engine"
+statement = "Verdant fits shifted ternary grids and packs single-scale and distributed-scale blocks against the original GGML quantizers"
+
+[[id]]
+id = "VTK-63"
+level = "build"
+suite = "engine"
+statement = "Verdant converts signed 64-bit words directly to binary32 and binary64 and truncates representable binary64 values to signed 64-bit words"
+
+[[id]]
+id = "VTK-64"
+level = "build"
+suite = "engine"
+statement = "Verdant rounds binary64 and signed I64 directly to binary32 at round-to-odd and truncates representable binary64 values to signed I32"
+
+[[id]]
+id = "VE-81"
+level = "build"
+suite = "engine"
+statement = "Verdant enforces sub-1145-line hand-written Rust modularity, sub-850-line shipped JS modularity, sub-1400-line Observatory contract scripts, 984-permille Observer self-refinement health, and at least 615 uorust MIR-lifted functions"
+
+[[id]]
+id = "VTK-65"
+level = "build"
+suite = "engine"
+statement = "Verdant decodes affine and grouped signed activation blocks into strided binary32 lanes"
+
+[[id]]
+id = "VTK-66"
+level = "build"
+suite = "engine"
+statement = "Verdant multiplies binary64 words with a single nearest-even rounding"
+
+[[id]]
+id = "VTK-67"
+level = "build"
+suite = "engine"
+statement = "Verdant adds subtracts and multiplies raw words modulo two to the sixty-fourth power"
+
+[[id]]
+id = "VTK-68"
+level = "build"
+suite = "engine"
+statement = "Verdant reproduces the Arm scalar binary32 table-reduced natural logarithm under nearest-even rounding"
+
+[[id]]
+id = "VTK-69"
+level = "build"
+suite = "engine"
+statement = "Verdant compares signed 64-bit integers and IEEE binary64 values exactly across both representations"
+
+[[id]]
+id = "VTK-70"
+level = "build"
+suite = "engine"
+statement = "Verdant reproduces the Arm portable scalar sine on binary32 words with certified range reduction and ordered binary64 operations"
