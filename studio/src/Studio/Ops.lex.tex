@@ -927,6 +927,22 @@ definition{
 }
 
 definition{
+  name: unnamedArtifact,
+  parameters: [lines : (List Bytes)],
+  result: (Option Bytes),
+  body: (match lines
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (match (Studio.Doc::readAny (LexLeanStd.Text::trim head))
+      | Option.none => (unnamedArtifact rest)
+      | Option.some binding => (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
+        | Option.none => (unnamedArtifact rest)
+        | Option.some source => (if ((Studio.Doc::same (Studio.Doc::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable")) && ((prim length (basename (Studio.Doc::str source (Studio.Doc::lit "url"))) : Nat) =? 0)) then (ctor Option.some [Bytes] (Studio.Doc::str binding (Studio.Doc::lit "id"))) else (unnamedArtifact rest))))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: planStage,
   parameters: [seen : Seen, path : Bytes],
   result: Plan,
@@ -934,7 +950,9 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (stageLines (LexLeanStd.Text::lines (contents seen path)))
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "every line must be one prismpm/authority-binding/1 binding with an id\n"))
-      | Option.some staged => (ctor Plan.done staged (Studio.Doc::cat (cons (Studio.Doc::lit "staged ") (cons (LexLeanStd.Text::joinWith (firstsOf staged) (Studio.Doc::lit " ")) (cons 0x0a (nil Bytes)))))))),
+      | Option.some staged => (match (unnamedArtifact (LexLeanStd.Text::lines (contents seen path)))
+        | Option.some entry => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "binding ") (cons entry (cons (Studio.Doc::lit ": a redistributable source.url must name a file, because ingest-authority saves the download under the last segment of its path, and this URL ends in /\n") (nil Bytes))))))
+        | Option.none => (ctor Plan.done staged (Studio.Doc::cat (cons (Studio.Doc::lit "staged ") (cons (LexLeanStd.Text::joinWith (firstsOf staged) (Studio.Doc::lit " ")) (cons 0x0a (nil Bytes))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
