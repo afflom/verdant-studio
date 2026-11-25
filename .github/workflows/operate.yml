@@ -253,14 +253,27 @@ jobs:
           title="verdant_studio $ARGS"
           if [ "$ARGS" = propose-command ]; then title="verdant_studio propose-command: $(grep -m 1 '[[:alnum:]]' target/summary.md | awk '{ sub("^[# ]*", ""); print }')"; fi
           if [ "${ARGS#revert-merge }" != "$ARGS" ]; then title="verdant_studio propose-command: Revert ${ARGS#revert-merge }, a merge that broke the API's own path"; fi
-          gh pr create --head "$branch" --base main --title "$title" --body-file target/operation.txt
+          # REST, not GraphQL: run 45646779790 lost its pull request to four GraphQL errors.
+          # Opening is idempotent: run 45649684941 opened #263 although its call reported an error, and the retry then failed on "already exists".
+          # So each try first looks for an open pull request from this branch, and an existing one counts as opened.
+          pr=""
+          for try in 1 2 3 4; do
+            pr=$(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&head=${GITHUB_REPOSITORY_OWNER}:${branch}" --jq '.[0].number // empty')
+            if [ -n "$pr" ]; then break; fi
+            if pr=$(command gh api "repos/${GITHUB_REPOSITORY}/pulls" -f head="$branch" -f base=main -f title="$title" -F body=@target/operation.txt --jq .number) && [ -n "$pr" ]; then break; fi
+            pr=""
+            echo "::warning::opening the pull request failed (try $try of 4)"
+            sleep $((2 ** try))
+          done
+          if [ -z "$pr" ]; then echo "::error::no pull request could be opened for $branch"; exit 1; fi
+          echo "opened #${pr}"
           gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
           if [ "$ARGS" = propose-command ] || [ "${ARGS#revert-merge }" != "$ARGS" ]; then
             echo "::notice::a change to the API itself waits for the owner's review"
             # main may have moved while this ran, so refresh checks the new pull request at once.
             gh workflow run refresh.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning::refresh could not be started; it runs on the next push to main"
           elif [ "$(target/release/verdant_studio merge-gate target/rules.json)" = merge ]; then
-            gh pr merge "$branch" --auto --squash --delete-branch
+            gh pr merge "$pr" --auto --squash --delete-branch
           else
             echo "::notice::main does not require the studio check, so this pull request waits for the owner's merge"
           fi
