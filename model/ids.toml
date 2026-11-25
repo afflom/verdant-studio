@@ -43,7 +43,7 @@ theorems = ["Contract.conformant_decides"]
 id = "TC-02"
 level = "build"
 suite = "contract"
-statement = "The checker answers invalid request to a request that is neither exactly one locked and one observed label for each universal policy file nor a Studio guard request shorter than 192 bytes, and no request is read as both"
+statement = "The checker answers invalid request to a request that is neither exactly one locked and one observed label for each universal policy file nor a Studio guard or stage-bindings request shorter than 192 bytes, and no request is read as both"
 theorems = ["Contract.accepts_exactly_a_request", "Contract.forms_are_disjoint"]
 failure = "invalid request"
 negative = "TC-02"
@@ -105,3 +105,21 @@ statement = "The host-request guard accepts a byte exactly when its code is at m
 theorems = ["Studio.Guard.guard_refuses_exactly_non_ascii"]
 failure = "refused: a host request is ASCII text, so it is never decoded by assumption, and café.jsonl is not\n"
 negative = "VS-08"
+
+[[id]]
+id = "VS-09"
+level = "build"
+suite = "stage"
+statement = "stage-bindings refuses a line that is not one prismpm/authority-binding/1 binding with an id, and accepts one that is, through one definition that the CLI and the app both run"
+theorems = ["Studio.Stage.stage_refuses_a_line_that_is_no_binding", "Studio.Stage.stage_accepts_a_named_binding"]
+failure = "every line must be one prismpm/authority-binding/1 binding with an id\n"
+negative = "VS-09"
+
+[[id]]
+id = "VS-10"
+level = "build"
+suite = "stage"
+statement = "stage-bindings refuses a redistributable binding whose source.url ends in /, naming the binding, because ingest-authority saves the download under the last segment of the URL's path"
+theorems = ["Studio.Stage.stage_refuses_an_unnamed_artifact"]
+failure = "binding W3C-XML-1.0-5E: a redistributable source.url must name a file, because ingest-authority saves the download under the last segment of its path, and this URL ends in /\n"
+negative = "VS-10"
