@@ -1143,6 +1143,17 @@ definition{
 }
 
 definition{
+  name: documentCount,
+  parameters: [items : (List Studio.Schema::Value)],
+  result: Nat,
+  body: (match items
+    | List.nil => 0
+    | List.cons head rest => ((documentCount rest) + 1)),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
   name: streamText,
   parameters: [items : (List Studio.Schema::Value)],
   result: (Result Bytes Bytes),
