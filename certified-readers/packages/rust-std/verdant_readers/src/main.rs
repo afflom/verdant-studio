@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-use verdant_readers::{Adt9 as Request, Adt2 as Event, Adt0 as Session, Adt4 as Failure, Adt5 as Kind, Adt3 as Start, Bytes, List};
+use verdant_readers::{Adt10 as Request, Adt3 as Event, Adt0 as Session, Adt5 as Failure, Adt6 as Kind, Adt4 as Start, Bytes, List};
 
 use std::env;
 
@@ -39,7 +39,7 @@ use verdant_readers::{R, run as entry};
 
 pub fn next(state: Option<Session>, event: Event) -> R<(Session, Request)> { entry(state, event) }
 
-use verdant_readers::{Str, Adt6 as Entry, Adt7 as Shape};
+use verdant_readers::{Str, Adt7 as Entry, Adt8 as Shape};
 
 use std::fs;
 
@@ -80,7 +80,7 @@ pub fn files_canonical(path: &Str) -> Event { match fs::canonicalize(path.text()
 
 pub fn files_lock(files: &mut Files, path: &Str) -> Event { match File::create(path.text()) { Ok(file) => match file.lock() { Ok(_) => { files.locks.push(file); Event::C2(Ok(())) }, Err(error) => Event::C2(Err(failure(error))), }, Err(error) => Event::C2(Err(failure(error))), } }
 
-use verdant_readers::{Adt10 as Spec, Adt8 as Waited};
+use verdant_readers::{Adt11 as Spec, Adt9 as Waited};
 
 use std::mem;
 

@@ -38,9 +38,10 @@ structure{
   type_parameters: [],
   parameters: [],
   fields: [
-    {name: files, type: (List (Bytes * (Option Bytes)))},
+    {name: files, type: (List (List (Bytes * (Option Bytes))))},
     {name: listed, type: (List (Bytes * (List Bytes)))},
-    {name: ran, type: (List Bytes)}
+    {name: ran, type: (List Bytes)},
+    {name: values, type: (List (List (Bytes * (Option Studio.Schema::Value))))}
   ]
 }
 
@@ -66,12 +67,116 @@ definition{
 
 
 definition{
+  name: pathSlot,
+  parameters: [path : Bytes],
+  result: Nat,
+  body: (prim remainder (prim length path : Nat) 64 0 : Nat),
+  executable: true
+}
+
+definition{
+  name: emptyFiles,
+  parameters: [count : Nat],
+  result: (List (List (Bytes * (Option Bytes)))),
+  body: (match count
+    | Nat.zero => (nil (List (Bytes * (Option Bytes))))
+    | Nat.succ rest => (cons (nil (Bytes * (Option Bytes))) (emptyFiles rest))),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: emptyValues,
+  parameters: [count : Nat],
+  result: (List (List (Bytes * (Option Studio.Schema::Value)))),
+  body: (match count
+    | Nat.zero => (nil (List (Bytes * (Option Studio.Schema::Value))))
+    | Nat.succ rest => (cons (nil (Bytes * (Option Studio.Schema::Value))) (emptyValues rest))),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: fileInto,
+  parameters: [buckets : (List (List (Bytes * (Option Bytes)))), slot : Nat, entry : (Bytes * (Option Bytes))],
+  result: (List (List (Bytes * (Option Bytes)))),
+  body: (match buckets
+    | List.nil => (nil (List (Bytes * (Option Bytes))))
+    | List.cons head rest => (if (slot =? 0) then (cons (cons entry head) rest) else (cons head (fileInto rest (prim subtract slot 1 : Nat) entry)))),
+  recursive_argument: buckets,
+  executable: true
+}
+
+definition{
+  name: valueInto,
+  parameters: [buckets : (List (List (Bytes * (Option Studio.Schema::Value)))), slot : Nat, entry : (Bytes * (Option Studio.Schema::Value))],
+  result: (List (List (Bytes * (Option Studio.Schema::Value)))),
+  body: (match buckets
+    | List.nil => (nil (List (Bytes * (Option Studio.Schema::Value))))
+    | List.cons head rest => (if (slot =? 0) then (cons (cons entry head) rest) else (cons head (valueInto rest (prim subtract slot 1 : Nat) entry)))),
+  recursive_argument: buckets,
+  executable: true
+}
+
+definition{
+  name: fileBucket,
+  parameters: [seen : Seen, path : Bytes],
+  result: (List (Bytes * (Option Bytes))),
+  body: (match (prim index (project seen files) (pathSlot path) : (Option (List (Bytes * (Option Bytes)))))
+    | Option.none => (nil (Bytes * (Option Bytes)))
+    | Option.some bucket => bucket),
+  executable: true
+}
+
+definition{
+  name: valueBucket,
+  parameters: [seen : Seen, path : Bytes],
+  result: (List (Bytes * (Option Studio.Schema::Value))),
+  body: (match (prim index (project seen values) (pathSlot path) : (Option (List (Bytes * (Option Studio.Schema::Value)))))
+    | Option.none => (nil (Bytes * (Option Studio.Schema::Value)))
+    | Option.some bucket => bucket),
+  executable: true
+}
+
+
+definition{
+  name: joinFiles,
+  parameters: [bucket : (List (Bytes * (Option Bytes))), rest : (List (Bytes * (Option Bytes)))],
+  result: (List (Bytes * (Option Bytes))),
+  body: (match bucket
+    | List.nil => rest
+    | List.cons head more => (cons head (joinFiles more rest))),
+  recursive_argument: bucket,
+  executable: true
+}
+
+definition{
+  name: flatFiles,
+  parameters: [buckets : (List (List (Bytes * (Option Bytes))))],
+  result: (List (Bytes * (Option Bytes))),
+  body: (match buckets
+    | List.nil => (nil (Bytes * (Option Bytes)))
+    | List.cons head rest => (joinFiles head (flatFiles rest))),
+  recursive_argument: buckets,
+  executable: true
+}
+
+definition{
+  name: allFiles,
+  parameters: [seen : Seen],
+  result: (List (Bytes * (Option Bytes))),
+  body: (flatFiles (project seen files)),
+  executable: true
+}
+
+
+definition{
   name: missing,
   parameters: [seen : Seen, paths : (List Bytes)],
   result: (List Bytes),
   body: (match paths
     | List.nil => (nil Bytes)
-    | List.cons head rest => (match (lookup (project seen files) head)
+    | List.cons head rest => (match (lookup (fileBucket seen head) head)
       | Option.none => (cons head (missing seen rest))
       | Option.some found => (missing seen rest))),
   recursive_argument: paths,
@@ -83,7 +188,7 @@ definition{
   name: contents,
   parameters: [seen : Seen, path : Bytes],
   result: Bytes,
-  body: (match (lookup (project seen files) path)
+  body: (match (lookup (fileBucket seen path) path)
     | Option.none => 0x
     | Option.some found => (match found
       | Option.none => 0x
@@ -96,7 +201,7 @@ definition{
   name: present,
   parameters: [seen : Seen, path : Bytes],
   result: Bool,
-  body: (match (lookup (project seen files) path)
+  body: (match (lookup (fileBucket seen path) path)
     | Option.none => false
     | Option.some found => (match found
       | Option.none => false
@@ -106,11 +211,13 @@ definition{
 
 
 definition{
-  name: jsonOf,
-  parameters: [seen : Seen, path : Bytes],
-  result: (Option LexLeanStd.Json::Json),
-  body: (Studio.Schema::readJson (contents seen path)),
-  axioms: [Quot.sound, propext],
+  name: parsedIn,
+  parameters: [values : (List (Bytes * (Option Studio.Schema::Value))), path : Bytes],
+  result: (Option (Option Studio.Schema::Value)),
+  body: (match values
+    | List.nil => (ctor Option.none [(Option Studio.Schema::Value)])
+    | List.cons head rest => (if (Studio.Doc::same (first head) path) then (ctor Option.some [(Option Studio.Schema::Value)] (second head)) else (parsedIn rest path))),
+  recursive_argument: values,
   executable: true
 }
 
@@ -118,10 +225,59 @@ definition{
   name: valueOf,
   parameters: [seen : Seen, path : Bytes],
   result: (Option Studio.Schema::Value),
-  body: (Studio.Schema::readAny (contents seen path)),
+  body: (match (parsedIn (valueBucket seen path) path)
+    | Option.none => (Studio.Schema::readAny (contents seen path))
+    | Option.some parsed => parsed),
   axioms: [Quot.sound, propext],
   executable: true
 }
+
+definition{
+  name: emptySeen,
+  parameters: [],
+  result: Seen,
+  body: (record Seen {files := (emptyFiles 64), listed := (nil (Bytes * (List Bytes))), ran := (nil Bytes), values := (emptyValues 64)}),
+  executable: true
+}
+
+definition{
+  name: readInto,
+  parameters: [seen : Seen, path : Bytes, found : (Option Bytes)],
+  result: Seen,
+  body: (record Seen {files := (fileInto (project seen files) (pathSlot path) (path, found)), listed := (project seen listed), ran := (project seen ran), values := (if (LexLeanStd.Text::endsWith path (Studio.Doc::lit ".json")) then (valueInto (project seen values) (pathSlot path) (path, (Studio.Schema::readAny (match found
+      | Option.none => 0x
+      | Option.some bytes => bytes)))) else (project seen values))}),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: listedInto,
+  parameters: [seen : Seen, path : Bytes, names : (List Bytes)],
+  result: Seen,
+  body: (record Seen {files := (project seen files), listed := (cons (path, names) (project seen listed)), ran := (project seen ran), values := (project seen values)}),
+  executable: true
+}
+
+definition{
+  name: ranInto,
+  parameters: [seen : Seen, tag : Bytes],
+  result: Seen,
+  body: (record Seen {files := (project seen files), listed := (project seen listed), ran := (cons tag (project seen ran)), values := (project seen values)}),
+  executable: true
+}
+
+definition{
+  name: jsonOf,
+  parameters: [seen : Seen, path : Bytes],
+  result: (Option LexLeanStd.Json::Json),
+  body: (match (valueOf seen path)
+    | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
+    | Option.some value => (Studio.Schema::jsonOf value)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
 
 
 definition{
@@ -723,7 +879,7 @@ definition{
   result: Plan,
   body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/authorities.toml") (nil Bytes))))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (match (Studio.XsdComponents::readSchemaSet (project seen files) (contents seen (Studio.Doc::lit "model/authorities.toml")) path)
+    | List.nil => (match (Studio.XsdComponents::readSchemaSet (allFiles seen) (contents seen (Studio.Doc::lit "model/authorities.toml")) path)
       | Studio.XsdComponents::Outcome.needs paths => (ctor Plan.reads paths)
       | Studio.XsdComponents::Outcome.refuses reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "XSD not translated: ") (cons reason (cons 0x0a (nil Bytes))))))
       | Studio.XsdComponents::Outcome.translated count text => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "-- ") (cons (LexLeanStd.Numeral::decimal count) (cons (Studio.Doc::lit " declarations\n") (cons text (nil Bytes))))))))),
@@ -872,7 +1028,7 @@ definition{
   name: workflow,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::lit "# Generated by `verdant-studio publish` from studio/src/Studio/Ops.lex.tex. Do not edit.\nname: pages\n\non:\n  pull_request:\n  push:\n    branches: [main]\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: pages-${{ github.ref }}\n  cancel-in-progress: true\n\njobs:\n  studio:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    permissions:\n      contents: read\n      pull-requests: read\n    steps:\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2\n        with:\n          persist-credentials: false\n      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38\n        with:\n          node-version: '24'\n      - id: command\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: |\n            target/release/verdant_studio\n            target/release/verdant_readers\n          key: verdant-studio-${{ hashFiles('certified/**', 'certified-readers/**') }}\n      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.npm\n          key: npm-prism-code-0.11.1\n      - if: steps.command.outputs.cache-hit != 'true'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/lexlean\n          key: lexlean-0.4.3\n      - name: replay the certified bundle, then build its command (only when certified/ changed)\n        if: steps.command.outputs.cache-hit != 'true'\n        run: |\n          set -euo pipefail\n          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean\n          target/lexlean/bin/lexlean production verify-artifact certified\n          cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target\n          # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.\n          if [ -d certified-readers ]; then\n            target/lexlean/bin/lexlean production verify-artifact certified-readers\n            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock\n          fi\n          # Building may write only target/: a stray file in a bundle fails verify-artifact on the next run (LLV7102).\n          if [ -n \"$(git status --porcelain -- certified certified-readers)\" ]; then\n            echo \"::error::building the certified commands left files in certified/ or certified-readers/:\"\n            git status --short -- certified certified-readers | head -20\n            exit 1\n          fi\n      - name: check, build and publish through the API\n        run: |\n          set -euo pipefail\n          target/release/verdant_studio check\n          target/release/verdant_studio build\n          target/release/verdant_studio publish\n          if ! git diff --quiet; then echo \"::error::publish changed $(git diff --name-only | tr '\\n' ' '): run every operation through operate, which ends with check, build and publish\"; exit 1; fi\n      - if: github.event_name == 'pull_request'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.elan\n          key: lean-4.32.2-elan-4.1.2\n      - name: run propose-command end to end when the pull request changes the API's own workflows\n        if: github.event_name == 'pull_request'\n        env:\n          BASE: ${{ github.base_ref }}\n        run: |\n          set -euo pipefail\n          # The studio check proves the model and replays the certified bundle, but the API's own paths\n          # run in these workflows. So a change to them must pass operate's propose-command step itself,\n          # on a fixture change, and that export must reproduce certified/ byte for byte.\n          git fetch -q --depth=1 origin \"$BASE\"\n          if git diff --quiet FETCH_HEAD -- .github; then echo \"the workflows are main's, which main's own runs exercise\"; exit 0; fi\n          mkdir -p target\n          python3 -c 'import yaml; steps = yaml.safe_load(open(\".github/workflows/operate.yml\"))[\"jobs\"][\"operate\"][\"steps\"]; print([step[\"run\"] for step in steps if step.get(\"name\", \"\").startswith(\"apply a change\")][0])' > target/propose.sh\n          d=dev\n          none=null\n          {\n            echo \"Fixture change for the studio check's end-to-end run of propose-command.\"\n            echo\n            echo \"diff --git a/features/suites/e2e.fixture b/features/suites/e2e.fixture\"\n            echo \"new file mode 100644\"\n            echo \"--- /$d/$none\"\n            echo \"+++ b/features/suites/e2e.fixture\"\n            echo \"@@ -0,0 +1 @@\"\n            echo \"+fixture\"\n          } > target/fixture.patch\n          INPUT=\"$(cat target/fixture.patch)\" bash target/propose.sh\n          rm -f features/suites/e2e.fixture\n          if [ -n \"$(git status --porcelain -- certified certified-readers)\" ]; then\n            echo \"::error::operate's propose-command step ran, but its export did not reproduce certified/:\"\n            git status --short -- certified certified-readers | head -20\n            exit 1\n          fi\n          echo \"propose-command applied the fixture, exported again with Lean and reproduced certified/ byte for byte\"\n      - name: accept only pull requests made through the API (last, so every seal step reports first)\n        if: github.event_name == 'pull_request'\n        env:\n          GH_TOKEN: ${{ github.token }}\n          PR: ${{ github.event.pull_request.number }}\n          AUTHOR: ${{ github.event.pull_request.user.login }}\n        run: |\n          set -euo pipefail\n          app='afflom-verdant-studio[bot]'\n          if [ \"$AUTHOR\" != \"$app\" ]; then\n            echo \"::error title=provenance::$AUTHOR opened this pull request, not $app through operate. Every seal step above passed; only the provenance gate refuses it.\"\n            exit 1\n          fi\n          others=$(gh api \"repos/${GITHUB_REPOSITORY}/pulls/${PR}/commits\" --paginate --jq \".[] | select(.author.login != \\\"$app\\\") | .sha\")\n          if [ -n \"$others\" ]; then\n            echo \"::error::these commits were not made by $app: $others\"\n            exit 1\n          fi\n      - if: github.event_name == 'push'\n        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1\n        with:\n          path: app/.prism/site\n\n  pages:\n    if: github.event_name == 'push'\n    needs: studio\n    runs-on: ubuntu-24.04\n    permissions:\n      pages: write\n      id-token: write\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    steps:\n      - id: deployment\n        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5\n"),
+  body: (Studio.Doc::lit "# Generated by `verdant-studio publish` from studio/src/Studio/Ops.lex.tex. Do not edit.\nname: pages\n\non:\n  pull_request:\n  push:\n    branches: [main]\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: pages-${{ github.ref }}\n  cancel-in-progress: true\n\njobs:\n  studio:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    permissions:\n      contents: read\n      pull-requests: read\n    steps:\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2\n        with:\n          persist-credentials: false\n      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38\n        with:\n          node-version: '24'\n      - id: command\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: |\n            target/release/verdant_studio\n            target/release/verdant_readers\n          key: verdant-studio-${{ hashFiles('certified/**', 'certified-readers/**') }}\n      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.npm\n          key: npm-prism-code-0.11.1\n      - if: steps.command.outputs.cache-hit != 'true'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: target/lexlean\n          key: lexlean-0.4.3\n      - name: replay the certified bundle, then build its command (only when certified/ changed)\n        if: steps.command.outputs.cache-hit != 'true'\n        run: |\n          set -euo pipefail\n          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean\n          target/lexlean/bin/lexlean production verify-artifact certified\n          cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target\n          # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.\n          if [ -d certified-readers ]; then\n            target/lexlean/bin/lexlean production verify-artifact certified-readers\n            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock\n          fi\n          # Building may write only target/: a stray file in a bundle fails verify-artifact on the next run (LLV7102).\n          if [ -n \"$(git status --porcelain -- certified certified-readers)\" ]; then\n            echo \"::error::building the certified commands left files in certified/ or certified-readers/:\"\n            git status --short -- certified certified-readers | head -20\n            exit 1\n          fi\n      - name: check, build and publish through the API\n        run: |\n          set -euo pipefail\n          target/release/verdant_studio check\n          target/release/verdant_studio build\n          target/release/verdant_studio publish\n          if ! git diff --quiet; then echo \"::error::publish changed $(git diff --name-only | tr '\\n' ' '): run every operation through operate, which ends with check, build and publish\"; exit 1; fi\n      - name: next answers within a second, because operate's advance runs it on every push to main\n        run: |\n          set -euo pipefail\n          best=999999\n          for attempt in 1 2 3; do\n            start=$EPOCHREALTIME\n            target/release/verdant_studio next > target/next.txt || true\n            end=$EPOCHREALTIME\n            took=$(( (${end/./} - ${start/./}) / 1000 ))\n            if [ \"$took\" -lt \"$best\" ]; then best=$took; fi\n          done\n          echo \"next took ${best} ms, the best of 3 runs\"\n          if [ \"$best\" -gt 1000 ]; then echo \"::error::next took ${best} ms, over its 1 s budget: make the reads it repeats cheaper before adding more\"; exit 1; fi\n      - if: github.event_name == 'pull_request'\n        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3\n        with:\n          path: ~/.elan\n          key: lean-4.32.2-elan-4.1.2\n      - name: run propose-command end to end when the pull request changes the API's own workflows\n        if: github.event_name == 'pull_request'\n        env:\n          BASE: ${{ github.base_ref }}\n        run: |\n          set -euo pipefail\n          # The studio check proves the model and replays the certified bundle, but the API's own paths\n          # run in these workflows. So a change to them must pass operate's propose-command step itself,\n          # on a fixture change, and that export must reproduce certified/ byte for byte.\n          git fetch -q --depth=1 origin \"$BASE\"\n          if git diff --quiet FETCH_HEAD -- .github; then echo \"the workflows are main's, which main's own runs exercise\"; exit 0; fi\n          mkdir -p target\n          python3 -c 'import yaml; steps = yaml.safe_load(open(\".github/workflows/operate.yml\"))[\"jobs\"][\"operate\"][\"steps\"]; print([step[\"run\"] for step in steps if step.get(\"name\", \"\").startswith(\"apply a change\")][0])' > target/propose.sh\n          d=dev\n          none=null\n          {\n            echo \"Fixture change for the studio check's end-to-end run of propose-command.\"\n            echo\n            echo \"diff --git a/features/suites/e2e.fixture b/features/suites/e2e.fixture\"\n            echo \"new file mode 100644\"\n            echo \"--- /$d/$none\"\n            echo \"+++ b/features/suites/e2e.fixture\"\n            echo \"@@ -0,0 +1 @@\"\n            echo \"+fixture\"\n          } > target/fixture.patch\n          INPUT=\"$(cat target/fixture.patch)\" bash target/propose.sh\n          rm -f features/suites/e2e.fixture\n          if [ -n \"$(git status --porcelain -- certified certified-readers)\" ]; then\n            echo \"::error::operate's propose-command step ran, but its export did not reproduce certified/:\"\n            git status --short -- certified certified-readers | head -20\n            exit 1\n          fi\n          echo \"propose-command applied the fixture, exported again with Lean and reproduced certified/ byte for byte\"\n      - name: accept only pull requests made through the API (last, so every seal step reports first)\n        if: github.event_name == 'pull_request'\n        env:\n          GH_TOKEN: ${{ github.token }}\n          PR: ${{ github.event.pull_request.number }}\n          AUTHOR: ${{ github.event.pull_request.user.login }}\n        run: |\n          set -euo pipefail\n          app='afflom-verdant-studio[bot]'\n          if [ \"$AUTHOR\" != \"$app\" ]; then\n            echo \"::error title=provenance::$AUTHOR opened this pull request, not $app through operate. Every seal step above passed; only the provenance gate refuses it.\"\n            exit 1\n          fi\n          others=$(gh api \"repos/${GITHUB_REPOSITORY}/pulls/${PR}/commits\" --paginate --jq \".[] | select(.author.login != \\\"$app\\\") | .sha\")\n          if [ -n \"$others\" ]; then\n            echo \"::error::these commits were not made by $app: $others\"\n            exit 1\n          fi\n      - if: github.event_name == 'push'\n        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1\n        with:\n          path: app/.prism/site\n\n  pages:\n    if: github.event_name == 'push'\n    needs: studio\n    runs-on: ubuntu-24.04\n    permissions:\n      pages: write\n      id-token: write\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    steps:\n      - id: deployment\n        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5\n"),
   executable: true
 }
 
@@ -1138,35 +1294,50 @@ definition{
 }
 
 definition{
-  name: anyStarts,
-  parameters: [lines : (List Bytes), key : Bytes],
-  result: Bool,
+  name: lineIds,
+  parameters: [lines : (List Bytes)],
+  result: (List Bytes),
   body: (match lines
-    | List.nil => false
-    | List.cons head rest => (if (startsFrom head key 0 (prim length key : Nat)) then true else (anyStarts rest key))),
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (startsFrom head (Studio.Doc::lit "id = \"") 0 6) then (match (LexLeanStd.Text::splitOn (LexLeanStd.Text::sliceOr head 6 (prim subtract (prim length head : Nat) 6 : Nat)) (34 : UInt8))
+      | List.nil => (lineIds rest)
+      | List.cons leading more => (match more
+        | List.nil => (lineIds rest)
+        | List.cons second others => (cons leading (lineIds rest)))) else (lineIds rest))),
   recursive_argument: lines,
   executable: true
 }
 
 definition{
-  name: blockStarting,
-  parameters: [blocks : (List (List Bytes)), key : Bytes],
+  name: indexBlocks,
+  parameters: [blocks : (List (List Bytes))],
+  result: (List ((List Bytes) * (List Bytes))),
+  body: (match blocks
+    | List.nil => (nil ((List Bytes) * (List Bytes)))
+    | List.cons head rest => (cons ((lineIds head), head) (indexBlocks rest))),
+  recursive_argument: blocks,
+  executable: true
+}
+
+definition{
+  name: blockWithId,
+  parameters: [blocks : (List ((List Bytes) * (List Bytes))), entry : Bytes],
   result: (List Bytes),
   body: (match blocks
     | List.nil => (nil Bytes)
-    | List.cons head rest => (if (anyStarts head key) then head else (blockStarting rest key))),
+    | List.cons head rest => (if (Studio.Doc::memberBytes entry (first head)) then (second head) else (blockWithId rest entry))),
   recursive_argument: blocks,
   executable: true
 }
 
 definition{
   name: blockFor,
-  parameters: [blocks : (List (List Bytes)), entry : Bytes],
+  parameters: [blocks : (List ((List Bytes) * (List Bytes))), entry : Bytes],
   result: (List Bytes),
   body: (match (LexLeanStd.Text::splitOn entry (34 : UInt8))
     | List.nil => (nil Bytes)
     | List.cons whole rest => (match rest
-      | List.nil => (blockStarting blocks (Studio.Doc::cat (cons (Studio.Doc::lit "id = \"") (cons whole (cons (Studio.Doc::lit "\"") (nil Bytes))))))
+      | List.nil => (blockWithId blocks whole)
       | List.cons second others => (nil Bytes))),
   executable: true
 }
@@ -1181,7 +1352,7 @@ definition{
 
 definition{
   name: needsIngest,
-  parameters: [seen : Seen, blocks : (List (List Bytes)), path : Bytes],
+  parameters: [seen : Seen, blocks : (List ((List Bytes) * (List Bytes))), path : Bytes],
   result: Bool,
   body: (match (jsonOf seen path)
     | Option.none => false
@@ -1198,7 +1369,7 @@ definition{
 
 definition{
   name: firstNeeding,
-  parameters: [seen : Seen, blocks : (List (List Bytes)), paths : (List Bytes)],
+  parameters: [seen : Seen, blocks : (List ((List Bytes) * (List Bytes))), paths : (List Bytes)],
   result: (Option Bytes),
   body: (match paths
     | List.nil => (ctor Option.none [Bytes])
@@ -2317,7 +2488,7 @@ definition{
   result: Plan,
   body: (if (negate (isListed (project seen listed) (bindingsDir))) then (ctor Plan.lists (cons (bindingsDir) (nil Bytes))) else (let paths : (List Bytes) := (LexLeanStd.Order::sortedSet (jsonFiles (bindingsDir) (listingOf (project seen listed) (bindingsDir)))); (match (missing seen (cons (Studio.Doc::lit "model/authorities.toml") paths))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (match (firstNeeding seen (blocksFrom (LexLeanStd.Text::lines (contents seen (Studio.Doc::lit "model/authorities.toml"))) (nil Bytes) (nil (List Bytes))) (unskipped paths skipped))
+    | List.nil => (match (firstNeeding seen (indexBlocks (blocksFrom (LexLeanStd.Text::lines (contents seen (Studio.Doc::lit "model/authorities.toml"))) (nil Bytes) (nil (List Bytes)))) (unskipped paths skipped))
       | Option.none => (planNextEncoding seen skipped)
       | Option.some path => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "ingest-authority ") (cons path (cons (Studio.Doc::lit "\n") (nil Bytes)))))))))),
   axioms: [Quot.sound, propext],

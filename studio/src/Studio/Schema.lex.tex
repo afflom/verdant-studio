@@ -4,6 +4,7 @@
 \importmodule{LexLeanStd.JsonRead}
 \importmodule{LexLeanStd.Numeral}
 \importmodule{LexLeanStd.Text}
+\importmodule{LexLeanStd.Order}
 \importmodule{Studio.Doc}
 \title{Natural number addition}
 \begin{semanticmodule}
@@ -208,10 +209,24 @@ definition{
 }
 
 definition{
+  name: scanRuns,
+  parameters: [source : Bytes, position : Nat, fuel : Nat, out : Bytes],
+  result: (Option (Nat * Bytes)),
+  body: (match fuel
+    | Nat.zero => (ctor Option.none [(Nat * Bytes)])
+    | Nat.succ rest => (let stop : Nat := (plainEnd source position ((prim subtract (prim length source : Nat) position : Nat) + 1)); (let kept : Bytes := (prim append out (LexLeanStd.Text::sliceOr source position (prim subtract stop position : Nat)) : Bytes); (let byte : Nat := (LexLeanStd.JsonRead::byteOf source stop); (if (byte =? 34) then (ctor Option.some [(Nat * Bytes)] ((stop + 1), kept)) else (if (byte =? 92) then (match (LexLeanStd.JsonRead::escapeStep source stop kept)
+      | Option.none => (ctor Option.none [(Nat * Bytes)])
+      | Option.some stepped => (if ((second (second stepped)) =? 0) then (scanRuns source (first stepped) rest (first (second stepped))) else (ctor Option.none [(Nat * Bytes)]))) else (ctor Option.none [(Nat * Bytes)]))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: scanText,
   parameters: [source : Bytes, start : Nat],
   result: (Option (Nat * Bytes)),
-  body: (let stop : Nat := (plainEnd source start ((prim length source : Nat) + 1)); (if ((LexLeanStd.JsonRead::byteOf source stop) =? 34) then (ctor Option.some [(Nat * Bytes)] ((stop + 1), (LexLeanStd.Text::sliceOr source start (prim subtract stop start : Nat)))) else (LexLeanStd.JsonRead::scanString source start))),
+  body: (let stop : Nat := (plainEnd source start ((prim length source : Nat) + 1)); (if ((LexLeanStd.JsonRead::byteOf source stop) =? 34) then (ctor Option.some [(Nat * Bytes)] ((stop + 1), (LexLeanStd.Text::sliceOr source start (prim subtract stop start : Nat)))) else (scanRuns source start ((prim length source : Nat) + 1) 0x))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -309,10 +324,42 @@ definition{
 }
 
 definition{
+  name: escapeRuns,
+  parameters: [source : Bytes, position : Nat, fuel : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (let stop : Nat := (plainEnd source position ((prim subtract (prim length source : Nat) position : Nat) + 1)); (let kept : Bytes := (prim append out (LexLeanStd.Text::sliceOr source position (prim subtract stop position : Nat)) : Bytes); (match (prim index source stop : (Option UInt8))
+      | Option.none => kept
+      | Option.some raw => (escapeRuns source (stop + 1) rest (prim append kept (LexLeanStd.Json::escapedPiece source stop raw) : Bytes)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: quotedText,
   parameters: [text : Bytes],
   result: Bytes,
-  body: (if ((plainEnd text 0 ((prim length text : Nat) + 1)) =? (prim length text : Nat)) then (Studio.Doc::cat (cons (Studio.Doc::lit "\"") (cons text (cons (Studio.Doc::lit "\"") (nil Bytes))))) else (LexLeanStd.Json::quoted text)),
+  body: (if ((plainEnd text 0 ((prim length text : Nat) + 1)) =? (prim length text : Nat)) then (Studio.Doc::cat (cons (Studio.Doc::lit "\"") (cons text (cons (Studio.Doc::lit "\"") (nil Bytes))))) else (prim append (prim append 0x22 (escapeRuns text 0 ((prim length text : Nat) + 1) 0x) : Bytes) 0x22 : Bytes)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: memberTextOf,
+  parameters: [entry : (Bytes * Bytes)],
+  result: Bytes,
+  body: (prim append (prim append (quotedText (first entry)) 0x3a : Bytes) (second entry) : Bytes),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: objectTextOf,
+  parameters: [entries : (List (Bytes * Bytes))],
+  result: Bytes,
+  body: (let unique : (List (Bytes * Bytes)) := (prim list_fold (fun (kept : (List (Bytes * Bytes))) (entry : (Bytes * Bytes)) => (LexLeanStd.Json::keepLast kept entry)) (nil (Bytes * Bytes)) (LexLeanStd.Order::sortEntries entries) : (List (Bytes * Bytes))); (let texts : (List Bytes) := (prim list_fold (fun (texts : (List Bytes)) (entry : (Bytes * Bytes)) => (cons (memberTextOf entry) texts)) (nil Bytes) unique : (List Bytes)); (prim append (prim append 0x7b (LexLeanStd.Text::joinWith texts 0x2c) : Bytes) 0x7d : Bytes))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -329,7 +376,7 @@ definition{
     | Value.VDec negative mantissa scale => (decimalText negative mantissa scale)
     | Value.VStr text => (quotedText text)
     | Value.VArr items => (LexLeanStd.Json::arrayText (renderItems items))
-    | Value.VObj members => (LexLeanStd.Json::objectText (renderMembers members))
+    | Value.VObj members => (objectTextOf (renderMembers members))
     | Value.VNil => 0x
     | Value.VItem element rest => 0x
     | Value.VMember key inner rest => 0x),
