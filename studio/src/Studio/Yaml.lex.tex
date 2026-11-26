@@ -47,6 +47,17 @@ inductive{
   ]
 }
 
+inductive{
+  name: Tag,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: Core, fields: [Nat]},
+    {name: Name, fields: [Bytes]},
+    {name: Fail, fields: [Bytes]}
+  ]
+}
+
 definition{
   name: no,
   parameters: [flag : Bool],
@@ -451,6 +462,83 @@ definition{
 }
 
 definition{
+  name: tagStep,
+  parameters: [source : Bytes, verbatim : Bool, position : Nat],
+  result: (Option Nat),
+  body: (let value : Nat := (at source position); (if (((blank value) || (brk value)) || (if verbatim then (value =? 62) else (flowIndicator value))) then (ctor Option.none [Nat]) else (ctor Option.some [Nat] (position + 1)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: tagStop,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (let verbatim : Bool := ((at source (position + 1)) =? 60); (first (prim iterate_until (fun [source, verbatim] (cursor : Nat) => (tagStep source verbatim cursor)) ((prim length source : Nat) + 1) (if verbatim then (position + 2) else (position + 1)) : (Nat * Bool)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: tagEnd,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (let stop : Nat := (tagStop source position); (if (((at source (position + 1)) =? 60) && ((at source stop) =? 62)) then (stop + 1) else stop)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: coreCode,
+  parameters: [name : Bytes, words : (List Bytes), code : Nat],
+  result: Nat,
+  body: (match words
+    | List.nil => 0
+    | List.cons head rest => (if (Studio.Doc::same head name) then code else (coreCode name rest (code + 1)))),
+  recursive_argument: words,
+  executable: true
+}
+
+definition{
+  name: coreTag,
+  parameters: [name : Bytes, position : Nat],
+  result: Tag,
+  body: (let code : Nat := (coreCode name (cons (Studio.Doc::lit "str") (cons (Studio.Doc::lit "int") (cons (Studio.Doc::lit "float") (cons (Studio.Doc::lit "bool") (cons (Studio.Doc::lit "null") (cons (Studio.Doc::lit "seq") (cons (Studio.Doc::lit "map") (nil Bytes)))))))) 1); (if (code =? 0) then (ctor Tag.Fail (Studio.Xml::failure "a tag outside the YAML 1.2.2 core schema is not read (YAML 1.2.2 section 10.3)" position)) else (ctor Tag.Core code))),
+  executable: true
+}
+
+definition{
+  name: tagOf,
+  parameters: [source : Bytes, position : Nat],
+  result: Tag,
+  body: (let stop : Nat := (tagStop source position); (if ((at source (position + 1)) =? 60) then (if ((at source stop) =? 62) then (let written : Bytes := (slice source (position + 2) stop); (if (Studio.Xml::startsAt written 0 "tag:yaml.org,2002:") then (coreTag (slice written 18 (prim length written : Nat)) position) else (ctor Tag.Name written))) else (ctor Tag.Fail (Studio.Xml::failure "a verbatim tag must end with > (YAML 1.2.2 [98])" position))) else (if (stop =? (position + 1)) then (ctor Tag.Core 8) else (if ((at source (position + 1)) =? 33) then (coreTag (slice source (position + 2) stop) position) else (if ((indexIn (slice source (position + 1) stop) 33) <? (prim subtract stop (position + 1) : Nat)) then (ctor Tag.Fail (Studio.Xml::failure "a named tag handle is not read: it needs a TAG directive (YAML 1.2.2 [92], [82])" position)) else (ctor Tag.Name (slice source position stop))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: failOf,
+  parameters: [tag : Tag],
+  result: (Option Bytes),
+  body: (match tag
+    | Tag.Fail reason => (ctor Option.some [Bytes] reason)
+    | Tag.Core code => (ctor Option.none [Bytes])
+    | Tag.Name name => (ctor Option.none [Bytes])),
+  executable: true
+}
+
+definition{
+  name: tagged,
+  parameters: [tag : Tag],
+  result: Bool,
+  body: (match tag
+    | Tag.Fail reason => true
+    | Tag.Core code => (0 <? code)
+    | Tag.Name name => true),
+  executable: true
+}
+
+definition{
   name: colonAt,
   parameters: [source : Bytes, position : Nat],
   result: Bool,
@@ -461,11 +549,11 @@ definition{
 
 definition{
   name: keyAt,
-  parameters: [source : Bytes, position : Nat],
+  parameters: [source : Bytes, origin : Nat],
   result: (Option Nat),
-  body: (let value : Nat := (at source position); (if ((value =? 34) || (value =? 39)) then (match (quoted source position 0 true)
+  body: (let position : Nat := (if ((at source origin) =? 33) then (whiteEnd source (tagEnd source origin)) else origin); (let value : Nat := (at source position); (if ((value =? 34) || (value =? 39)) then (match (quoted source position 0 true)
     | Span.Fail reason => (ctor Option.none [Nat])
-    | Span.Read readText readEnd => (let stop : Nat := (whiteEnd source readEnd); (if (colonAt source stop) then (ctor Option.some [Nat] stop) else (ctor Option.none [Nat])))) else (if (plainFirst source position false) then (let stop : Nat := (whiteEnd source (plainEnd source position false)); (if (colonAt source stop) then (ctor Option.some [Nat] stop) else (ctor Option.none [Nat]))) else (ctor Option.none [Nat])))),
+    | Span.Read readText readEnd => (let stop : Nat := (whiteEnd source readEnd); (if (colonAt source stop) then (ctor Option.some [Nat] stop) else (ctor Option.none [Nat])))) else (if (plainFirst source position false) then (let stop : Nat := (whiteEnd source (plainEnd source position false)); (if (colonAt source stop) then (ctor Option.some [Nat] stop) else (ctor Option.none [Nat]))) else (ctor Option.none [Nat]))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -528,14 +616,100 @@ definition{
 }
 
 definition{
+  name: nullWord,
+  parameters: [text : Bytes],
+  result: Bool,
+  body: (((prim length text : Nat) =? 0) || (Studio.Xml::member text (cons (Studio.Doc::lit "~") (cons (Studio.Doc::lit "null") (cons (Studio.Doc::lit "Null") (cons (Studio.Doc::lit "NULL") (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: trueWord,
+  parameters: [text : Bytes],
+  result: Bool,
+  body: (Studio.Xml::member text (cons (Studio.Doc::lit "true") (cons (Studio.Doc::lit "True") (cons (Studio.Doc::lit "TRUE") (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: falseWord,
+  parameters: [text : Bytes],
+  result: Bool,
+  body: (Studio.Xml::member text (cons (Studio.Doc::lit "false") (cons (Studio.Doc::lit "False") (cons (Studio.Doc::lit "FALSE") (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: nanWord,
+  parameters: [text : Bytes],
+  result: Bool,
+  body: (Studio.Xml::member text (cons (Studio.Doc::lit ".inf") (cons (Studio.Doc::lit ".Inf") (cons (Studio.Doc::lit ".INF") (cons (Studio.Doc::lit "+.inf") (cons (Studio.Doc::lit "+.Inf") (cons (Studio.Doc::lit "+.INF") (cons (Studio.Doc::lit "-.inf") (cons (Studio.Doc::lit "-.Inf") (cons (Studio.Doc::lit "-.INF") (cons (Studio.Doc::lit ".nan") (cons (Studio.Doc::lit ".NaN") (cons (Studio.Doc::lit ".NAN") (nil Bytes)))))))))))))),
+  executable: true
+}
+
+definition{
   name: resolve,
   parameters: [text : Bytes, position : Nat, stop : Nat],
   result: Got,
-  body: (if (((prim length text : Nat) =? 0) || (Studio.Xml::member text (cons (Studio.Doc::lit "~") (cons (Studio.Doc::lit "null") (cons (Studio.Doc::lit "Null") (cons (Studio.Doc::lit "NULL") (nil Bytes))))))) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) stop) else (if (Studio.Xml::member text (cons (Studio.Doc::lit "true") (cons (Studio.Doc::lit "True") (cons (Studio.Doc::lit "TRUE") (nil Bytes))))) then (ctor Got.Node (ctor Studio.Schema::Value.VBool true) stop) else (if (Studio.Xml::member text (cons (Studio.Doc::lit "false") (cons (Studio.Doc::lit "False") (cons (Studio.Doc::lit "FALSE") (nil Bytes))))) then (ctor Got.Node (ctor Studio.Schema::Value.VBool false) stop) else (if (Studio.Xml::member text (cons (Studio.Doc::lit ".inf") (cons (Studio.Doc::lit ".Inf") (cons (Studio.Doc::lit ".INF") (cons (Studio.Doc::lit "+.inf") (cons (Studio.Doc::lit "+.Inf") (cons (Studio.Doc::lit "+.INF") (cons (Studio.Doc::lit "-.inf") (cons (Studio.Doc::lit "-.Inf") (cons (Studio.Doc::lit "-.INF") (cons (Studio.Doc::lit ".nan") (cons (Studio.Doc::lit ".NaN") (cons (Studio.Doc::lit ".NAN") (nil Bytes)))))))))))))) then (ctor Got.Fail (Studio.Xml::failure "an infinite or not-a-number float is not read: Studio.Value has none (YAML 1.2.2 section 10.3.2)" position)) else (if ((Studio.Xml::startsAt text 0 "0o") && (2 <? (prim length text : Nat))) then (radixValue text 8 position stop) else (if ((Studio.Xml::startsAt text 0 "0x") && (2 <? (prim length text : Nat))) then (radixValue text 16 position stop) else (match (numberText text)
+  body: (if (nullWord text) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) stop) else (if (trueWord text) then (ctor Got.Node (ctor Studio.Schema::Value.VBool true) stop) else (if (falseWord text) then (ctor Got.Node (ctor Studio.Schema::Value.VBool false) stop) else (if (nanWord text) then (ctor Got.Fail (Studio.Xml::failure "an infinite or not-a-number float is not read: Studio.Value has none (YAML 1.2.2 section 10.3.2)" position)) else (if ((Studio.Xml::startsAt text 0 "0o") && (2 <? (prim length text : Nat))) then (radixValue text 8 position stop) else (if ((Studio.Xml::startsAt text 0 "0x") && (2 <? (prim length text : Nat))) then (radixValue text 16 position stop) else (match (numberText text)
     | Option.none => (ctor Got.Node (ctor Studio.Schema::Value.VStr text) stop)
     | Option.some json => (match (Studio.Schema::readNumber json 0)
       | Option.none => (ctor Got.Fail (rangeReason position))
       | Option.some read => (if ((first read) =? (prim length json : Nat)) then (ctor Got.Node (second read) stop) else (ctor Got.Fail (rangeReason position))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: intText,
+  parameters: [text : Bytes],
+  result: Bool,
+  body: (let total : Nat := (prim length text : Nat); (let lead : Nat := (at text 0); (let start : Nat := (if ((lead =? 43) || (lead =? 45)) then 1 else 0); (if ((start <? total) && ((LexLeanStd.JsonRead::digitsEnd text start) =? total)) then true else ((2 <? total) && (((Studio.Xml::startsAt text 0 "0o") && ((first (radix text 8 2)) =? total)) || ((Studio.Xml::startsAt text 0 "0x") && ((first (radix text 16 2)) =? total)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: conflictReason,
+  parameters: [position : Nat],
+  result: Bytes,
+  body: (Studio.Xml::failure "a node's content does not match its tag (YAML 1.2.2 section 10.3.2)" position),
+  executable: true
+}
+
+definition{
+  name: scalarTag,
+  parameters: [tag : Tag, text : Bytes, literal : Bool, position : Nat, stop : Nat],
+  result: Got,
+  body: (match tag
+    | Tag.Fail reason => (ctor Got.Fail reason)
+    | Tag.Name name => (ctor Got.Node (ctor Studio.Schema::Value.VTag name (ctor Studio.Schema::Value.VStr text)) stop)
+    | Tag.Core code => (if (((code =? 1) || (code =? 8)) || ((code =? 0) && literal)) then (ctor Got.Node (ctor Studio.Schema::Value.VStr text) stop) else (if (code =? 0) then (resolve text position stop) else (if (code =? 5) then (if (nullWord text) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) stop) else (ctor Got.Fail (conflictReason position))) else (if (if (code =? 2) then (intText text) else (if (code =? 3) then (match (numberText text)
+      | Option.some json => true
+      | Option.none => (nanWord text)) else (if (code =? 4) then ((trueWord text) || (falseWord text)) else false))) then (resolve text position stop) else (ctor Got.Fail (conflictReason position))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: emptyTag,
+  parameters: [tag : Tag, position : Nat, stop : Nat],
+  result: Got,
+  body: (match tag
+    | Tag.Fail reason => (ctor Got.Fail reason)
+    | Tag.Name name => (ctor Got.Node (ctor Studio.Schema::Value.VTag name (ctor Studio.Schema::Value.VNull)) stop)
+    | Tag.Core code => (if (code =? 1) then (ctor Got.Node (ctor Studio.Schema::Value.VStr 0x) stop) else (if (code =? 8) then (ctor Got.Fail (Studio.Xml::failure "an empty node with the non-specific tag ! is not read (YAML 1.2.2 [100])" position)) else (if ((code =? 0) || (code =? 5)) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) stop) else (ctor Got.Fail (conflictReason position)))))),
+  executable: true
+}
+
+definition{
+  name: keySkip,
+  parameters: [source : Bytes, position : Nat],
+  result: (Result Nat Bytes),
+  body: (if ((at source position) =? 33) then (match (tagOf source position)
+    | Tag.Fail reason => (ctor Result.error [Nat, Bytes] reason)
+    | Tag.Name name => (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a mapping key tagged other than !!str is not read: Studio.Value keys are strings (YAML 1.2.2 section 10.3.2)" position))
+    | Tag.Core code => (if ((code =? 1) || (code =? 8)) then (ctor Result.ok [Nat, Bytes] (whiteEnd source (tagEnd source position))) else (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a mapping key tagged other than !!str is not read: Studio.Value keys are strings (YAML 1.2.2 section 10.3.2)" position)))) else (ctor Result.ok [Nat, Bytes] position)),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -708,7 +882,7 @@ definition{
   name: property,
   parameters: [source : Bytes, position : Nat],
   result: (Option Bytes),
-  body: (let value : Nat := (at source position); (let loose : Bool := (no (plainSafe (at source (position + 1)) true)); (if ((value =? 58) && loose) then (ctor Option.some [Bytes] (Studio.Xml::failure "a null key is not read: Studio.Value has no null (YAML 1.2.2 section 10.3.2)" position)) else (if (value =? 38) then (ctor Option.some [Bytes] (Studio.Xml::failure "an anchor is not read (YAML 1.2.2 [101])" position)) else (if (value =? 42) then (ctor Option.some [Bytes] (Studio.Xml::failure "an alias is not read (YAML 1.2.2 [104])" position)) else (if (value =? 33) then (ctor Option.some [Bytes] (Studio.Xml::failure "a tag is not read (YAML 1.2.2 [97])" position)) else (if ((value =? 63) && loose) then (ctor Option.some [Bytes] (Studio.Xml::failure "an explicit key is not read (YAML 1.2.2 [143], [189])" position)) else (ctor Option.none [Bytes])))))))),
+  body: (let value : Nat := (at source position); (let loose : Bool := (no (plainSafe (at source (position + 1)) true)); (if ((value =? 58) && loose) then (ctor Option.some [Bytes] (Studio.Xml::failure "a null key is not read: Studio.Value keys are strings (YAML 1.2.2 section 10.3.2)" position)) else (if (value =? 38) then (ctor Option.some [Bytes] (Studio.Xml::failure "an anchor is not read (YAML 1.2.2 [101])" position)) else (if (value =? 42) then (ctor Option.some [Bytes] (Studio.Xml::failure "an alias is not read (YAML 1.2.2 [104])" position)) else (if (value =? 33) then (ctor Option.some [Bytes] (Studio.Xml::failure "a tag is not read (YAML 1.2.2 [97])" position)) else (if ((value =? 63) && loose) then (ctor Option.some [Bytes] (Studio.Xml::failure "an explicit key is not read (YAML 1.2.2 [143], [189])" position)) else (ctor Option.none [Bytes])))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -732,7 +906,20 @@ definition{
 }
 
 definition{
-  name: flowKey,
+  name: wrap,
+  parameters: [tag : Tag, sequence : Bool, position : Nat, read : Got],
+  result: Got,
+  body: (match read
+    | Got.Fail reason => (ctor Got.Fail reason)
+    | Got.Node spineValue spineEnd => (let collection : Studio.Schema::Value := (if sequence then (ctor Studio.Schema::Value.VArr spineValue) else (ctor Studio.Schema::Value.VObj spineValue)); (match tag
+      | Tag.Fail reason => (ctor Got.Fail reason)
+      | Tag.Name name => (ctor Got.Node (ctor Studio.Schema::Value.VTag name collection) spineEnd)
+      | Tag.Core code => (if (((code =? 0) || (code =? 8)) || (code =? (if sequence then 6 else 7))) then (ctor Got.Node collection spineEnd) else (ctor Got.Fail (conflictReason position)))))),
+  executable: true
+}
+
+definition{
+  name: flowKeyBody,
   parameters: [source : Bytes, position : Nat, limit : Nat],
   result: Span,
   body: (let value : Nat := (at source position); (if ((value =? 34) || (value =? 39)) then (quoted source position limit false) else (match (property source position)
@@ -745,18 +932,31 @@ definition{
 }
 
 definition{
+  name: flowKey,
+  parameters: [source : Bytes, position : Nat, limit : Nat],
+  result: Span,
+  body: (if ((at source position) =? 33) then (match (keySkip source position)
+    | Result.error reason => (ctor Span.Fail reason)
+    | Result.ok skipped => (match (flowSpace source skipped limit)
+      | Result.error reason => (ctor Span.Fail reason)
+      | Result.ok next => (if ((at source next) =? 58) then (if ((tagEnd source position) =? (position + 1)) then (ctor Span.Fail (Studio.Xml::failure "an empty node with the non-specific tag ! is not read (YAML 1.2.2 [100])" position)) else (ctor Span.Read 0x next)) else (flowKeyBody source next limit)))) else (flowKeyBody source position limit)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: flowNode,
-  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, mode : Nat, seen : (List Bytes)],
+  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, mode : Nat, seen : (List Bytes), tag : Tag],
   result: Got,
   body: (match fuel
     | Nat.zero => (ctor Got.Fail (Studio.Xml::failure "the document nests deeper than it is long" position))
-    | Nat.succ rest => (if (mode =? 1) then (match (flowNode source position limit rest 0 (nil Bytes))
+    | Nat.succ rest => (if (mode =? 1) then (match (flowNode source position limit rest 0 (nil Bytes) (ctor Tag.Core 0))
       | Got.Fail reason => (ctor Got.Fail reason)
       | Got.Node itemValue itemEnd => (match (flowSpace source itemEnd limit)
         | Result.error reason => (ctor Got.Fail reason)
         | Result.ok after => (let value : Nat := (at source after); (if (value =? 58) then (ctor Got.Fail (Studio.Xml::failure "a single-pair mapping inside a flow sequence is not read (YAML 1.2.2 [150])" after)) else (if (value =? 93) then (ctor Got.Node (ctor Studio.Schema::Value.VItem itemValue (ctor Studio.Schema::Value.VNil)) (after + 1)) else (if (value =? 44) then (match (flowSpace source (after + 1) limit)
           | Result.error reason => (ctor Got.Fail reason)
-          | Result.ok next => (if ((at source next) =? 93) then (ctor Got.Node (ctor Studio.Schema::Value.VItem itemValue (ctor Studio.Schema::Value.VNil)) (next + 1)) else (match (flowNode source next limit rest 1 (nil Bytes))
+          | Result.ok next => (if ((at source next) =? 93) then (ctor Got.Node (ctor Studio.Schema::Value.VItem itemValue (ctor Studio.Schema::Value.VNil)) (next + 1)) else (match (flowNode source next limit rest 1 (nil Bytes) (ctor Tag.Core 0))
             | Got.Fail reason => (ctor Got.Fail reason)
             | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VItem itemValue moreValue) moreEnd)))) else (ctor Got.Fail (Studio.Xml::failure "a flow sequence entry must be followed by , or ] (YAML 1.2.2 [137])" after)))))))) else (if (mode =? 2) then (match (flowKey source position limit)
       | Span.Fail reason => (ctor Got.Fail reason)
@@ -764,25 +964,27 @@ definition{
         | Result.error reason => (ctor Got.Fail reason)
         | Result.ok colon => (match (if (((at source colon) =? 44) || ((at source colon) =? 125)) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) colon) else (if (no ((at source colon) =? 58)) then (ctor Got.Fail (Studio.Xml::failure "a flow mapping entry must be a key, then : and its value, or a key alone (YAML 1.2.2 [142], [146])" colon)) else (match (flowSpace source (colon + 1) limit)
           | Result.error reason => (ctor Got.Fail reason)
-          | Result.ok start => (if (((at source start) =? 44) || ((at source start) =? 125)) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) start) else (flowNode source start limit rest 0 (nil Bytes))))))
+          | Result.ok start => (if (((at source start) =? 44) || ((at source start) =? 125)) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) start) else (flowNode source start limit rest 0 (nil Bytes) (ctor Tag.Core 0))))))
             | Got.Fail reason => (ctor Got.Fail reason)
             | Got.Node itemValue itemEnd => (if (Studio.Xml::member keyText1 seen) then (ctor Got.Fail (Studio.Xml::failure "a mapping key appears twice (YAML 1.2.2 section 3.2.1.1)" position)) else (match (flowSpace source itemEnd limit)
               | Result.error reason => (ctor Got.Fail reason)
               | Result.ok after => (let value : Nat := (at source after); (if (value =? 125) then (ctor Got.Node (ctor Studio.Schema::Value.VMember keyText1 itemValue (ctor Studio.Schema::Value.VNil)) (after + 1)) else (if (value =? 44) then (match (flowSpace source (after + 1) limit)
                 | Result.error reason => (ctor Got.Fail reason)
-                | Result.ok next => (if ((at source next) =? 125) then (ctor Got.Node (ctor Studio.Schema::Value.VMember keyText1 itemValue (ctor Studio.Schema::Value.VNil)) (next + 1)) else (match (flowNode source next limit rest 2 (cons keyText1 seen))
+                | Result.ok next => (if ((at source next) =? 125) then (ctor Got.Node (ctor Studio.Schema::Value.VMember keyText1 itemValue (ctor Studio.Schema::Value.VNil)) (next + 1)) else (match (flowNode source next limit rest 2 (cons keyText1 seen) (ctor Tag.Core 0))
                   | Got.Fail reason => (ctor Got.Fail reason)
-                  | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VMember keyText1 itemValue moreValue) moreEnd)))) else (ctor Got.Fail (Studio.Xml::failure "a flow mapping entry must be followed by , or } (YAML 1.2.2 [140])" after)))))))))) else (let value : Nat := (at source position); (if ((value =? 91) || (value =? 123)) then (match (flowSpace source (position + 1) limit)
+                  | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VMember keyText1 itemValue moreValue) moreEnd)))) else (ctor Got.Fail (Studio.Xml::failure "a flow mapping entry must be followed by , or } (YAML 1.2.2 [140])" after)))))))))) else (let value : Nat := (at source position); (if (value =? 33) then (if (tagged tag) then (ctor Got.Fail (Studio.Xml::failure "a node holds at most one tag (YAML 1.2.2 [96])" position)) else (let read : Tag := (tagOf source position); (match (failOf read)
+      | Option.some reason => (ctor Got.Fail reason)
+      | Option.none => (match (flowSpace source (tagEnd source position) limit)
+        | Result.error reason => (ctor Got.Fail reason)
+        | Result.ok next => (if ((indexIn (Studio.Doc::lit ",]}:") (at source next)) <? 4) then (emptyTag read next next) else (flowNode source next limit rest 0 (nil Bytes) read)))))) else (if ((value =? 91) || (value =? 123)) then (match (flowSpace source (position + 1) limit)
       | Result.error reason => (ctor Got.Fail reason)
-      | Result.ok start => (if ((at source start) =? (value + 2)) then (ctor Got.Node (if (value =? 91) then (ctor Studio.Schema::Value.VArr (ctor Studio.Schema::Value.VNil)) else (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VNil))) (start + 1)) else (match (flowNode source start limit rest (if (value =? 91) then 1 else 2) (nil Bytes))
-        | Got.Fail reason => (ctor Got.Fail reason)
-        | Got.Node spineValue spineEnd => (ctor Got.Node (if (value =? 91) then (ctor Studio.Schema::Value.VArr spineValue) else (ctor Studio.Schema::Value.VObj spineValue)) spineEnd)))) else (if ((value =? 34) || (value =? 39)) then (match (quoted source position limit false)
+      | Result.ok start => (wrap tag (value =? 91) position (if ((at source start) =? (value + 2)) then (ctor Got.Node (ctor Studio.Schema::Value.VNil) (start + 1)) else (flowNode source start limit rest (if (value =? 91) then 1 else 2) (nil Bytes) (ctor Tag.Core 0))))) else (if ((value =? 34) || (value =? 39)) then (match (quoted source position limit false)
       | Span.Fail reason => (ctor Got.Fail reason)
-      | Span.Read readText readEnd => (ctor Got.Node (ctor Studio.Schema::Value.VStr readText) readEnd)) else (match (property source position)
+      | Span.Read readText readEnd => (scalarTag tag readText true position readEnd)) else (match (property source position)
       | Option.some reason => (ctor Got.Fail reason)
       | Option.none => (if (no (plainFirst source position true)) then (ctor Got.Fail (Studio.Xml::failure "a plain scalar cannot start with an indicator (YAML 1.2.2 [126])" position)) else (let stop : Nat := (plainEnd source position true); (let white : Nat := (whiteEnd source stop); (match (if ((at source white) =? 10) then (flowSpace source white limit) else (ctor Result.ok [Nat, Bytes] white))
         | Result.error reason => (ctor Got.Fail reason)
-        | Result.ok next => (if ((((at source white) =? 10) && (no (flowIndicator (at source next)))) && (no ((at source next) =? 58))) then (ctor Got.Fail (Studio.Xml::failure "a multi-line plain scalar inside a flow collection is not read (YAML 1.2.2 [135])" white)) else (resolve (slice source position stop) position stop))))))))))))),
+        | Result.ok next => (if ((((at source white) =? 10) && (no (flowIndicator (at source next)))) && (no ((at source next) =? 58))) then (ctor Got.Fail (Studio.Xml::failure "a multi-line plain scalar inside a flow collection is not read (YAML 1.2.2 [135])" white)) else (scalarTag tag (slice source position stop) false position stop)))))))))))))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
@@ -790,13 +992,17 @@ definition{
 
 definition{
   name: scalarOrFlow,
-  parameters: [source : Bytes, position : Nat, limit : Nat],
+  parameters: [source : Bytes, position : Nat, limit : Nat, tag : Tag],
   result: Got,
-  body: (let value : Nat := (at source position); (if ((value =? 124) || (value =? 62)) then (blockScalar source position limit) else (if ((value =? 34) || (value =? 39)) then (match (quoted source position limit false)
+  body: (let value : Nat := (at source position); (if ((value =? 124) || (value =? 62)) then (match (blockScalar source position limit)
+    | Got.Fail reason => (ctor Got.Fail reason)
+    | Got.Node scalarValue scalarEnd => (match (Studio.Schema::strOf (ctor Option.some [Studio.Schema::Value] scalarValue))
+      | Option.none => (ctor Got.Node scalarValue scalarEnd)
+      | Option.some text => (scalarTag tag text true position scalarEnd))) else (if ((value =? 34) || (value =? 39)) then (match (quoted source position limit false)
     | Span.Fail reason => (ctor Got.Fail reason)
     | Span.Read readText readEnd => (match (tail source readEnd)
       | Result.error reason => (ctor Got.Fail reason)
-      | Result.ok next => (ctor Got.Node (ctor Studio.Schema::Value.VStr readText) next))) else (if ((value =? 91) || (value =? 123)) then (match (flowNode source position limit ((prim length source : Nat) + 2) 0 (nil Bytes))
+      | Result.ok next => (scalarTag tag readText true position next))) else (if ((value =? 91) || (value =? 123)) then (match (flowNode source position limit ((prim length source : Nat) + 2) 0 (nil Bytes) tag)
     | Got.Fail reason => (ctor Got.Fail reason)
     | Got.Node nodeValue nodeEnd => (if ((at source (whiteEnd source nodeEnd)) =? 58) then (ctor Got.Fail (Studio.Xml::failure "a collection as a mapping key is not read: Studio.Value keys are strings (YAML 1.2.2 [154])" position)) else (match (tail source nodeEnd)
       | Result.error reason => (ctor Got.Fail reason)
@@ -804,7 +1010,7 @@ definition{
     | Option.some reason => (ctor Got.Fail reason)
     | Option.none => (if (no (plainFirst source position false)) then (ctor Got.Fail (Studio.Xml::failure "a plain scalar cannot start with an indicator (YAML 1.2.2 [126])" position)) else (let stop : Nat := (plainEnd source position false); (match (plainLines source stop limit ((prim length source : Nat) + 2) (slice source position stop))
       | Span.Fail reason => (ctor Got.Fail reason)
-      | Span.Read readText readEnd => (resolve readText position readEnd))))))))),
+      | Span.Read readText readEnd => (scalarTag tag readText false position readEnd))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -830,40 +1036,36 @@ definition{
 }
 
 definition{
-  name: wrap,
-  parameters: [sequence : Bool, read : Got],
-  result: Got,
-  body: (match read
-    | Got.Fail reason => (ctor Got.Fail reason)
-    | Got.Node spineValue spineEnd => (ctor Got.Node (if sequence then (ctor Studio.Schema::Value.VArr spineValue) else (ctor Studio.Schema::Value.VObj spineValue)) spineEnd)),
-  executable: true
-}
-
-definition{
   name: block,
-  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, mode : Nat, compact : Bool, outer : Nat, seen : (List Bytes)],
+  parameters: [source : Bytes, position : Nat, limit : Nat, fuel : Nat, mode : Nat, compact : Bool, outer : Nat, seen : (List Bytes), tag : Tag],
   result: Got,
   body: (match fuel
     | Nat.zero => (ctor Got.Fail (Studio.Xml::failure "the document nests deeper than it is long" position))
     | Nat.succ rest => (if (mode =? 0) then (let content : Nat := (spacesEnd source position); (let indent : Nat := (prim subtract content position : Nat); (if ((at source content) =? 9) then (let start : Nat := (whiteEnd source content); (if ((isEntry source start) || (hasKey source start)) then (ctor Got.Fail (Studio.Xml::failure "a tab cannot indent a block node (YAML 1.2.2 [63])" start)) else (match (property source start)
       | Option.some reason => (ctor Got.Fail reason)
-      | Option.none => (scalarOrFlow source start limit)))) else (if (isEntry source content) then (wrap true (block source content limit rest 2 false indent (nil Bytes))) else (match (property source content)
+      | Option.none => (scalarOrFlow source start limit tag)))) else (if (((at source content) =? 33) && (no (hasKey source content))) then (if (tagged tag) then (ctor Got.Fail (Studio.Xml::failure "a node holds at most one tag (YAML 1.2.2 [96])" content)) else (let read : Tag := (tagOf source content); (match (failOf read)
       | Option.some reason => (ctor Got.Fail reason)
-      | Option.none => (if (hasKey source content) then (wrap false (block source content limit rest 3 false indent (nil Bytes))) else (scalarOrFlow source content limit))))))) else (if (mode =? 1) then (let start : Nat := (whiteEnd source position); (let value : Nat := (at source start); (if ((brk value) || ((value =? 35) && (position <? start))) then (let line : Nat := (skipLines source (nextLine source start)); (if (((prim length source : Nat) <=? line) || (marker source line)) then (ctor Got.Node (ctor Studio.Schema::Value.VNull) line) else (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if (limit <=? indent) then (block source line limit rest 0 false 0 (nil Bytes)) else (if (((no compact) && (indent =? outer)) && (isEntry source (line + indent))) then (wrap true (block source (line + indent) limit rest 2 false indent (nil Bytes))) else (ctor Got.Node (ctor Studio.Schema::Value.VNull) line)))))) else (if (compact && (isEntry source start)) then (if ((indexIn (slice source position start) 9) <? (prim subtract start position : Nat)) then (ctor Got.Fail (Studio.Xml::failure "a tab cannot indent a block node (YAML 1.2.2 [63])" start)) else (wrap true (block source start limit rest 2 false (column source start) (nil Bytes)))) else (match (property source start)
+      | Option.none => (block source (tagEnd source content) limit rest 1 false ((prim length source : Nat) + 1) (nil Bytes) read)))) else (if (isEntry source content) then (wrap tag true content (block source content limit rest 2 false indent (nil Bytes) (ctor Tag.Core 0))) else (match (if ((at source content) =? 33) then (ctor Option.none [Bytes]) else (property source content))
       | Option.some reason => (ctor Got.Fail reason)
-      | Option.none => (if (compact && (hasKey source start)) then (wrap false (block source start limit rest 3 false (column source start) (nil Bytes))) else (scalarOrFlow source start limit))))))) else (if (mode =? 2) then (match (block source (position + 1) (outer + 1) rest 1 true outer (nil Bytes))
+      | Option.none => (if (hasKey source content) then (wrap tag false content (block source content limit rest 3 false indent (nil Bytes) (ctor Tag.Core 0))) else (scalarOrFlow source content limit tag)))))))) else (if (mode =? 1) then (let start : Nat := (whiteEnd source position); (let value : Nat := (at source start); (if ((brk value) || ((value =? 35) && (position <? start))) then (let line : Nat := (skipLines source (nextLine source start)); (if (((prim length source : Nat) <=? line) || (marker source line)) then (emptyTag tag start line) else (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if (limit <=? indent) then (block source line limit rest 0 false 0 (nil Bytes) tag) else (if (((no compact) && (indent =? outer)) && (isEntry source (line + indent))) then (wrap tag true start (block source (line + indent) limit rest 2 false indent (nil Bytes) (ctor Tag.Core 0))) else (emptyTag tag start line)))))) else (if ((value =? 33) && (tagged tag)) then (ctor Got.Fail (Studio.Xml::failure "a node holds at most one tag (YAML 1.2.2 [96])" start)) else (if ((value =? 33) && (no (compact && (hasKey source start)))) then (let read : Tag := (tagOf source start); (match (failOf read)
+      | Option.some reason => (ctor Got.Fail reason)
+      | Option.none => (block source (tagEnd source start) limit rest 1 compact outer (nil Bytes) read))) else (if (compact && (isEntry source start)) then (if ((indexIn (slice source position start) 9) <? (prim subtract start position : Nat)) then (ctor Got.Fail (Studio.Xml::failure "a tab cannot indent a block node (YAML 1.2.2 [63])" start)) else (wrap tag true start (block source start limit rest 2 false (column source start) (nil Bytes) (ctor Tag.Core 0)))) else (match (if (value =? 33) then (ctor Option.none [Bytes]) else (property source start))
+      | Option.some reason => (ctor Got.Fail reason)
+      | Option.none => (if (compact && (hasKey source start)) then (wrap tag false start (block source start limit rest 3 false (column source start) (nil Bytes) (ctor Tag.Core 0))) else (scalarOrFlow source start limit tag))))))))) else (if (mode =? 2) then (match (block source (position + 1) (outer + 1) rest 1 true outer (nil Bytes) (ctor Tag.Core 0))
       | Got.Fail reason => (ctor Got.Fail reason)
-      | Got.Node entryValue entryEnd => (let line : Nat := (skipLines source entryEnd); (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if ((prim length source : Nat) <=? line) then (ctor Got.Node (ctor Studio.Schema::Value.VItem entryValue (ctor Studio.Schema::Value.VNil)) line) else (if ((indent =? outer) && (isEntry source (line + indent))) then (match (block source (line + indent) limit rest 2 false outer (nil Bytes))
+      | Got.Node entryValue entryEnd => (let line : Nat := (skipLines source entryEnd); (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if ((prim length source : Nat) <=? line) then (ctor Got.Node (ctor Studio.Schema::Value.VItem entryValue (ctor Studio.Schema::Value.VNil)) line) else (if ((indent =? outer) && (isEntry source (line + indent))) then (match (block source (line + indent) limit rest 2 false outer (nil Bytes) (ctor Tag.Core 0))
         | Got.Fail reason => (ctor Got.Fail reason)
-        | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VItem entryValue moreValue) moreEnd)) else (if (outer <? indent) then (ctor Got.Fail (Studio.Xml::failure "a line is indented more than its block sequence entry allows (YAML 1.2.2 [183])" (line + indent))) else (ctor Got.Node (ctor Studio.Schema::Value.VItem entryValue (ctor Studio.Schema::Value.VNil)) line))))))) else (match (property source position)
+        | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VItem entryValue moreValue) moreEnd)) else (if (outer <? indent) then (ctor Got.Fail (Studio.Xml::failure "a line is indented more than its block sequence entry allows (YAML 1.2.2 [183])" (line + indent))) else (ctor Got.Node (ctor Studio.Schema::Value.VItem entryValue (ctor Studio.Schema::Value.VNil)) line))))))) else (match (keySkip source position)
+      | Result.error reason => (ctor Got.Fail reason)
+      | Result.ok keyStart => (match (property source keyStart)
       | Option.some reason => (ctor Got.Fail reason)
-      | Option.none => (match (keyAt source position)
-        | Option.none => (ctor Got.Fail (Studio.Xml::failure "a block mapping entry must be an implicit key and : (YAML 1.2.2 [188])" position))
-        | Option.some colon => (let key : Bytes := (keyText source position); (if (Studio.Xml::member key seen) then (ctor Got.Fail (Studio.Xml::failure "a mapping key appears twice (YAML 1.2.2 section 3.2.1.1)" position)) else (match (block source (colon + 1) (outer + 1) rest 1 false outer (nil Bytes))
+      | Option.none => (match (keyAt source keyStart)
+        | Option.none => (ctor Got.Fail (Studio.Xml::failure "a block mapping entry must be an implicit key and : (YAML 1.2.2 [188])" keyStart))
+        | Option.some colon => (let key : Bytes := (keyText source keyStart); (if (Studio.Xml::member key seen) then (ctor Got.Fail (Studio.Xml::failure "a mapping key appears twice (YAML 1.2.2 section 3.2.1.1)" position)) else (match (block source (colon + 1) (outer + 1) rest 1 false outer (nil Bytes) (ctor Tag.Core 0))
           | Got.Fail reason => (ctor Got.Fail reason)
-          | Got.Node entryValue entryEnd => (let line : Nat := (skipLines source entryEnd); (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if ((prim length source : Nat) <=? line) then (ctor Got.Node (ctor Studio.Schema::Value.VMember key entryValue (ctor Studio.Schema::Value.VNil)) line) else (if (((indent =? outer) && (no (isEntry source (line + indent)))) && (no (marker source line))) then (match (block source (line + indent) limit rest 3 false outer (cons key seen))
+          | Got.Node entryValue entryEnd => (let line : Nat := (skipLines source entryEnd); (let indent : Nat := (prim subtract (spacesEnd source line) line : Nat); (if ((prim length source : Nat) <=? line) then (ctor Got.Node (ctor Studio.Schema::Value.VMember key entryValue (ctor Studio.Schema::Value.VNil)) line) else (if (((indent =? outer) && (no (isEntry source (line + indent)))) && (no (marker source line))) then (match (block source (line + indent) limit rest 3 false outer (cons key seen) (ctor Tag.Core 0))
             | Got.Fail reason => (ctor Got.Fail reason)
-            | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VMember key entryValue moreValue) moreEnd)) else (if (outer <? indent) then (ctor Got.Fail (Studio.Xml::failure "a line is indented more than its block mapping entry allows (YAML 1.2.2 [187])" (line + indent))) else (ctor Got.Node (ctor Studio.Schema::Value.VMember key entryValue (ctor Studio.Schema::Value.VNil)) line))))))))))))))),
+            | Got.Node moreValue moreEnd => (ctor Got.Node (ctor Studio.Schema::Value.VMember key entryValue moreValue) moreEnd)) else (if (outer <? indent) then (ctor Got.Fail (Studio.Xml::failure "a line is indented more than its block mapping entry allows (YAML 1.2.2 [187])" (line + indent))) else (ctor Got.Node (ctor Studio.Schema::Value.VMember key entryValue (ctor Studio.Schema::Value.VNil)) line)))))))))))))))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
@@ -917,7 +1119,7 @@ definition{
   result: (Result (List Studio.Schema::Value) Bytes),
   body: (match fuel
     | Nat.zero => (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "the stream holds more documents than it is long" position))
-    | Nat.succ rest => (let total : Nat := (prim length source : Nat); (if ((at source position) =? 37) then (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "a directive is not read (YAML 1.2.2 [82])" position)) else (match (if ((Studio.Xml::startsAt source position "---") && (marker source position)) then (block source (position + 3) 0 (total + 2) 1 false 0 (nil Bytes)) else (if bare then (block source position 0 (total + 2) 0 false 0 (nil Bytes)) else (ctor Got.Fail (Studio.Xml::failure "only comments, a document end marker or a document start marker may follow a document (YAML 1.2.2 [207], [211])" position))))
+    | Nat.succ rest => (let total : Nat := (prim length source : Nat); (if ((at source position) =? 37) then (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "a directive is not read (YAML 1.2.2 [82])" position)) else (match (if ((Studio.Xml::startsAt source position "---") && (marker source position)) then (block source (position + 3) 0 (total + 2) 1 false 0 (nil Bytes) (ctor Tag.Core 0)) else (if bare then (block source position 0 (total + 2) 0 false 0 (nil Bytes) (ctor Tag.Core 0)) else (ctor Got.Fail (Studio.Xml::failure "only comments, a document end marker or a document start marker may follow a document (YAML 1.2.2 [207], [211])" position))))
       | Got.Fail reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
       | Got.Node value stop => (let line : Nat := (skipLines source stop); (match (suffixes source line (total + 1))
         | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
@@ -943,10 +1145,14 @@ definition{
 definition{
   name: streamText,
   parameters: [items : (List Studio.Schema::Value)],
-  result: Bytes,
+  result: (Result Bytes Bytes),
   body: (match items
-    | List.nil => 0x
-    | List.cons head rest => (Studio.Doc::cat (cons (Studio.Schema::writeText head) (cons (Studio.Doc::lit "\n") (cons (streamText rest) (nil Bytes)))))),
+    | List.nil => (ctor Result.ok [Bytes, Bytes] 0x)
+    | List.cons head rest => (match (Studio.Schema::jsonText head)
+      | Result.error reason => (ctor Result.error [Bytes, Bytes] reason)
+      | Result.ok text => (match (streamText rest)
+        | Result.error reason => (ctor Result.error [Bytes, Bytes] reason)
+        | Result.ok more => (ctor Result.ok [Bytes, Bytes] (Studio.Doc::cat (cons text (cons (Studio.Doc::lit "\n") (cons more (nil Bytes))))))))),
   recursive_argument: items,
   axioms: [Quot.sound, propext],
   executable: true
