@@ -1,0 +1,11 @@
+[application]
+name = "verdant-studio"
+version = "0.1.0"
+description = "Admits a video game's requirements and constructs, each with one citation, and checks every citation resolves."
+
+[model]
+source = "src"
+watch = ["src/**/*.lex.tex", "lexlean.toml"]
+
+# Deny by default: an empty set grants the holo nothing.
+[capabilities]
