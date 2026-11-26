@@ -53,7 +53,13 @@ jobs:
           # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.
           if [ -d certified-readers ]; then
             target/lexlean/bin/lexlean production verify-artifact certified-readers
-            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target
+            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock
+          fi
+          # Building may write only target/: a stray file in a bundle fails verify-artifact on the next run (LLV7102).
+          if [ -n "$(git status --porcelain -- certified certified-readers)" ]; then
+            echo "::error::building the certified commands left files in certified/ or certified-readers/:"
+            git status --short -- certified certified-readers | head -20
+            exit 1
           fi
       - name: check, build and publish through the API
         run: |

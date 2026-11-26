@@ -151,7 +151,7 @@ jobs:
           # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.
           if [ -d certified-readers ]; then
             target/lexlean/bin/lexlean production verify-artifact certified-readers
-            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target
+            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock
           fi
       - name: run the operation, then check, build and publish through the API, as the studio check does
         env:
@@ -235,7 +235,7 @@ jobs:
             if ! git merge-base --is-ancestor "$merge" origin/main; then echo "::error::$merge is not on main"; exit 1; fi
             git revert -m 1 --no-commit "$merge"
             cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
-            if [ -d certified-readers ]; then cargo build -q --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target; fi
+            if [ -d certified-readers ]; then cargo build -q --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock; fi
             { echo "Revert $merge, a merge that broke the API's own path"; echo; echo "**What changes and why.** This reverts the merge $merge on main $(git rev-parse --short origin/main), made by the App from the last good main commit, so the repair needs no bypass."; echo; echo '```'; git diff --cached --stat -- studio/src app/src model features README.md .github; echo '```'; } > target/operation.txt
           else
             vs $ARGS | tee target/operation.txt
