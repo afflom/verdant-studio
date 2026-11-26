@@ -647,12 +647,57 @@ definition{
 }
 
 definition{
+  name: memberReserved,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "axiom") (cons (Studio.Doc::lit "opaque") (cons (Studio.Doc::lit "partial") (cons (Studio.Doc::lit "unsafe") (cons (Studio.Doc::lit "noncomputable") (cons (Studio.Doc::lit "termination_by") (cons (Studio.Doc::lit "sorry") (cons (Studio.Doc::lit "admit") (cons (Studio.Doc::lit "below") (cons (Studio.Doc::lit "brecOn") (cons (Studio.Doc::lit "casesOn") (cons (Studio.Doc::lit "ctorElim") (cons (Studio.Doc::lit "ctorElimType") (cons (Studio.Doc::lit "ctorIdx") (cons (Studio.Doc::lit "noConfusion") (cons (Studio.Doc::lit "noConfusionType") (cons (Studio.Doc::lit "rec") (cons (Studio.Doc::lit "recOn") (cons (Studio.Doc::lit "toCtorIdx") (nil Bytes)))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: typeReserved,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "Bool") (cons (Studio.Doc::lit "ContractViolation") (cons (Studio.Doc::lit "List") (cons (Studio.Doc::lit "Nat") (cons (Studio.Doc::lit "Option") (cons (Studio.Doc::lit "Prod") (cons (Studio.Doc::lit "ReasoningFailure") (cons (Studio.Doc::lit "Result") (nil Bytes))))))))),
+  executable: true
+}
+
+definition{
+  name: escapedFirst,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (match (prim index name 0 : (Option UInt8))
+    | Option.none => name
+    | Option.some byte => (prim append (prim append (Studio.Doc::lit "u") (hexFrom 8 (Studio.Doc::byteValue byte) 4 0x) : Bytes) (LexLeanStd.Text::sliceOr name 1 (prim subtract (prim length name : Nat) 1 : Nat)) : Bytes)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: unreserved,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (if (Studio.Doc::memberBytes name (memberReserved)) then (escapedFirst name) else name),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: typeName,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (let name : Bytes := (pascal text); (if (Studio.Doc::memberBytes name (typeReserved)) then (escapedFirst name) else name)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: escapedName,
   parameters: [text : Bytes],
   result: (Option Bytes),
   body: (match (escapedFrom (prim length text : Nat) text 0 0x)
     | Option.none => (ctor Option.none [Bytes])
-    | Option.some name => (if ((prim length name : Nat) =? 0) then (ctor Option.none [Bytes]) else (ctor Option.some [Bytes] name))),
+    | Option.some name => (if ((prim length name : Nat) =? 0) then (if ((prim length text : Nat) =? 0) then (ctor Option.some [Bytes] (Studio.Doc::lit "u")) else (ctor Option.none [Bytes])) else (ctor Option.some [Bytes] (unreserved name)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -672,12 +717,23 @@ definition{
 }
 
 definition{
-  name: stringName,
+  name: spelledName,
   parameters: [text : Bytes],
   result: (Option Bytes),
   body: (if (asciiOnly (prim length text : Nat) text 0) then (let name : Bytes := (camel text); (if (nameable name) then (ctor Option.some [Bytes] name) else (match (prim index name 0 : (Option UInt8))
     | Option.none => (ctor Option.none [Bytes])
     | Option.some byte => (if (digit (Studio.Doc::byteValue byte)) then (ctor Option.some [Bytes] (prim append (Studio.Doc::lit "n") name : Bytes)) else (ctor Option.none [Bytes]))))) else (codePointsFrom (prim length text : Nat) text 0 0x)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: stringName,
+  parameters: [text : Bytes],
+  result: (Option Bytes),
+  body: (match (spelledName text)
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some name => (ctor Option.some [Bytes] (unreserved name))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -700,6 +756,31 @@ definition{
     | List.cons head rest => (match (nameAs escaped head)
       | Option.none => (namesOf escaped rest)
       | Option.some name => (cons name (namesOf escaped rest)))),
+  recursive_argument: texts,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: fieldNameAs,
+  parameters: [escaped : Bool, text : Bytes],
+  result: (Option Bytes),
+  body: (match (nameAs escaped text)
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some name => (ctor Option.some [Bytes] (if (Studio.Doc::same name (Studio.Doc::lit "mk")) then (escapedFirst name) else name))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: fieldNamesOf,
+  parameters: [escaped : Bool, texts : (List Bytes)],
+  result: (List Bytes),
+  body: (match texts
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (match (fieldNameAs escaped head)
+      | Option.none => (fieldNamesOf escaped rest)
+      | Option.some name => (cons name (fieldNamesOf escaped rest)))),
   recursive_argument: texts,
   axioms: [Quot.sound, propext],
   executable: true
@@ -783,7 +864,7 @@ definition{
   name: refName,
   parameters: [reference : Bytes],
   result: (Option Bytes),
-  body: (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/$defs/")) then (ctor Option.some [Bytes] (pascal (LexLeanStd.Text::sliceOr reference 8 (prim subtract (prim length reference : Nat) 8 : Nat)))) else (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/definitions/")) then (ctor Option.some [Bytes] (pascal (LexLeanStd.Text::sliceOr reference 14 (prim subtract (prim length reference : Nat) 14 : Nat)))) else (ctor Option.none [Bytes]))),
+  body: (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/$defs/")) then (ctor Option.some [Bytes] (typeName (LexLeanStd.Text::sliceOr reference 8 (prim subtract (prim length reference : Nat) 8 : Nat)))) else (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/definitions/")) then (ctor Option.some [Bytes] (typeName (LexLeanStd.Text::sliceOr reference 14 (prim subtract (prim length reference : Nat) 14 : Nat)))) else (ctor Option.none [Bytes]))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -901,16 +982,63 @@ definition{
 }
 
 definition{
+  name: falseSchema,
+  parameters: [schema : Value],
+  result: Bool,
+  body: (match schema
+    | Value.VBool accepts => (if accepts then false else true)
+    | Value.VInt negative magnitude => false
+    | Value.VDec negative mantissa scale => false
+    | Value.VStr text => false
+    | Value.VArr items => false
+    | Value.VObj members => false
+    | Value.VNil => false
+    | Value.VItem head rest => false
+    | Value.VMember key item rest => false),
+  executable: true
+}
+
+definition{
+  name: patternEntry,
+  parameters: [schema : Value],
+  result: (Option Value),
+  body: (match (membersOf (field schema (Studio.Doc::lit "patternProperties")))
+    | List.nil => (ctor Option.none [Value])
+    | List.cons only rest => (match rest
+      | List.nil => (ctor Option.some [Value] (second only))
+      | List.cons another more => (ctor Option.none [Value]))),
+  executable: true
+}
+
+definition{
   name: entrySchema,
   parameters: [schema : Value],
   result: (Option Value),
   body: (match (field schema (Studio.Doc::lit "additionalProperties"))
-    | Option.some extra => (ctor Option.some [Value] extra)
-    | Option.none => (match (membersOf (field schema (Studio.Doc::lit "patternProperties")))
-      | List.nil => (ctor Option.none [Value])
-      | List.cons only rest => (match rest
-        | List.nil => (ctor Option.some [Value] (second only))
-        | List.cons another more => (ctor Option.none [Value])))),
+    | Option.some extra => (if (falseSchema extra) then (match (patternEntry schema)
+      | Option.none => (ctor Option.some [Value] extra)
+      | Option.some pattern => (ctor Option.some [Value] pattern)) else (ctor Option.some [Value] extra))
+    | Option.none => (patternEntry schema)),
+  executable: true
+}
+
+definition{
+  name: closedEmpty,
+  parameters: [schema : Value],
+  result: Bool,
+  body: (match (membersOf (field schema (Studio.Doc::lit "properties")))
+    | List.cons property others => false
+    | List.nil => (match (entrySchema schema)
+      | Option.none => false
+      | Option.some extra => (falseSchema extra))),
+  executable: true
+}
+
+definition{
+  name: unitDeclaration,
+  parameters: [name : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "inductive{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  constructors: [\n    {name: mk, fields: []}\n  ]\n}\n") (nil Bytes))))),
   executable: true
 }
 
@@ -935,9 +1063,9 @@ definition{
         | Option.some named => (typed named (nil Job)))
       | Option.none => (if ((has extra (Studio.Doc::lit "enum")) || ((has extra (Studio.Doc::lit "oneOf")) || (has extra (Studio.Doc::lit "properties")))) then (typed context (cons (ctor Job.translate context extra) (nil Job))) else (let kind : Bytes := (str extra (Studio.Doc::lit "type")); (if ((Studio.Doc::same kind 0x) && (if (structural extra) then false else true)) then (anyValue) else (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType extra) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "number")) then (typed (numberType) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "array")) then (match (field extra (Studio.Doc::lit "items"))
         | Option.none => (wrapped (Studio.Doc::lit "List") (anyValue))
-        | Option.some items => (wrapped (Studio.Doc::lit "List") (mapValueAt deeper items (prim append context (Studio.Doc::lit "Item") : Bytes)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (match (entrySchema extra)
+        | Option.some items => (wrapped (Studio.Doc::lit "List") (mapValueAt deeper items (prim append context (Studio.Doc::lit "Item") : Bytes)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (if (closedEmpty extra) then (typed context (cons (ctor Job.translate context extra) (nil Job))) else (match (entrySchema extra)
         | Option.none => (wrapped (Studio.Doc::lit "List") (pairedWith (anyValue)))
-        | Option.some inner => (wrapped (Studio.Doc::lit "List") (pairedWith (mapValueAt deeper inner (prim append context (Studio.Doc::lit "Value") : Bytes))))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))))),
+        | Option.some inner => (wrapped (Studio.Doc::lit "List") (pairedWith (mapValueAt deeper inner (prim append context (Studio.Doc::lit "Value") : Bytes)))))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1155,9 +1283,9 @@ definition{
             | Option.some branches => (typed context (cons (ctor Job.translate context schema) (nil Job)))
             | Option.none => (let kind : Bytes := (str schema (Studio.Doc::lit "type")); (if ((Studio.Doc::same kind 0x) && (if (structural schema) then false else true)) then (anyValue) else (if (Studio.Doc::same kind (Studio.Doc::lit "string")) then (typed (Studio.Doc::lit "Bytes") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "integer")) then (typed (integerType schema) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "number")) then (typed (numberType) (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "boolean")) then (typed (Studio.Doc::lit "Bool") (nil Job)) else (if (Studio.Doc::same kind (Studio.Doc::lit "object")) then (match (membersOf (field schema (Studio.Doc::lit "properties")))
               | List.cons property others => (typed context (cons (ctor Job.translate context schema) (nil Job)))
-              | List.nil => (match (entrySchema schema)
+              | List.nil => (if (closedEmpty schema) then (typed context (cons (ctor Job.translate context schema) (nil Job))) else (match (entrySchema schema)
                 | Option.none => (wrapped (Studio.Doc::lit "List") (pairedWith (anyValue)))
-                | Option.some extra => (wrapped (Studio.Doc::lit "List") (pairedWith (mapValue extra context))))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))))))),
+                | Option.some extra => (wrapped (Studio.Doc::lit "List") (pairedWith (mapValue extra context)))))) else (refused (Studio.Doc::cat (cons (Studio.Doc::lit "unsupported type ") (cons kind (nil Bytes)))) context))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1236,9 +1364,9 @@ definition{
   result: (Result Pieces Bytes),
   body: (match properties
     | List.nil => (ctor Result.ok [Pieces, Bytes] (ctor Pieces.mk (nil Bytes) (nil Job)))
-    | List.cons head rest => (match (nameAs escaped (first head))
+    | List.cons head rest => (match (fieldNameAs escaped (first head))
       | Option.none => (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "unnameable property ") (cons (first head) (nil Bytes)))))
-      | Option.some name => (if (Studio.Doc::memberBytes name (namesOf escaped (keysOf rest))) then (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two properties derive the field name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n, any other by its code points as uXXXX; when those names are not distinct, every name in the set keeps its letters and digits and writes each other character, a leading digit, u and U as a C11 universal character name, uXXXX or UXXXXXXXX)") (nil Bytes)))))) else (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
+      | Option.some name => (if (Studio.Doc::memberBytes name (fieldNamesOf escaped (keysOf rest))) then (ctor Result.error [Pieces, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two properties derive the field name ") (cons name (cons (Studio.Doc::lit " (an ASCII name is camel case, one that starts with a digit gets the prefix n, any other by its code points as uXXXX; when those names are not distinct, every name in the set keeps its letters and digits and writes each other character, a leading digit, u and U as a C11 universal character name, uXXXX or UXXXXXXXX)") (nil Bytes)))))) else (match (fieldType (second head) (prim append owner (pascal (first head)) : Bytes))
       | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
       | Result.ok found => (let typeText : Bytes := (if (Studio.Doc::memberBytes (first head) required) then (typedText found) else (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (typedText found) (cons (Studio.Doc::lit ")") (nil Bytes)))))); (match (fieldsWith escaped owner rest required positional)
         | Result.error reason => (ctor Result.error [Pieces, Bytes] reason)
@@ -1451,9 +1579,9 @@ definition{
     | Option.none => (if (refersTo schema name) then (match (fieldsOf name (membersOf (field schema (Studio.Doc::lit "properties"))) (strings (itemsOf (field schema (Studio.Doc::lit "required")))) true)
       | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
       | Result.ok found => (typed (inductiveText name (cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: mk, fields: [") (cons (joinWith (piecesText found) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit "]}") (nil Bytes))))) (nil Bytes))) (piecesJobs found))) else (match (membersOf (field schema (Studio.Doc::lit "properties")))
-    | List.nil => (match (fieldType schema (prim append name (Studio.Doc::lit "Value") : Bytes))
+    | List.nil => (if (closedEmpty schema) then (typed (unitDeclaration name) (nil Job)) else (match (fieldType schema (prim append name (Studio.Doc::lit "Value") : Bytes))
       | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
-      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n    {name: value, type: ") (cons (typedText found) (cons (Studio.Doc::lit "}\n  ]\n}\n") (nil Bytes))))))) (typedJobs found)))
+      | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n    {name: value, type: ") (cons (typedText found) (cons (Studio.Doc::lit "}\n  ]\n}\n") (nil Bytes))))))) (typedJobs found))))
     | List.cons property others => (match (fieldsOf name (membersOf (field schema (Studio.Doc::lit "properties"))) (strings (itemsOf (field schema (Studio.Doc::lit "required")))) false)
       | Result.error reason => (ctor Result.error [Typed, Bytes] reason)
       | Result.ok found => (typed (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons name (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [") (cons (match (piecesText found)
@@ -1497,7 +1625,7 @@ definition{
   result: (List Job),
   body: (match definitions
     | List.nil => (nil Job)
-    | List.cons head rest => (cons (ctor Job.translate (pascal (first head)) (second head)) (defJobs rest))),
+    | List.cons head rest => (cons (ctor Job.translate (typeName (first head)) (second head)) (defJobs rest))),
   recursive_argument: definitions,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1543,7 +1671,7 @@ definition{
   result: (List Bytes),
   body: (match definitions
     | List.nil => (nil Bytes)
-    | List.cons head rest => (cons (pascal (first head)) (defNames rest))),
+    | List.cons head rest => (cons (typeName (first head)) (defNames rest))),
   recursive_argument: definitions,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1566,7 +1694,7 @@ definition{
   result: (Option (Bytes * Value)),
   body: (match pending
     | List.nil => (ctor Option.none [(Bytes * Value)])
-    | List.cons head rest => (if (refsReady (refsInto (second head) (nil Bytes)) (pascal (first head)) placed names) then (ctor Option.some [(Bytes * Value)] head) else (firstReady rest placed names))),
+    | List.cons head rest => (if (refsReady (refsInto (second head) (nil Bytes)) (typeName (first head)) placed names) then (ctor Option.some [(Bytes * Value)] head) else (firstReady rest placed names))),
   recursive_argument: pending,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1584,7 +1712,7 @@ definition{
       | List.nil => (ctor Result.ok [(List (Bytes * Value)), Bytes] (nil (Bytes * Value)))
       | List.cons any others => (match (firstReady pending placed names)
         | Option.none => (ctor Result.error [(List (Bytes * Value)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "these definitions refer to each other in a cycle, which no declaration order can satisfy: ") (cons (joinWith (defNames pending) (Studio.Doc::lit ", ")) (nil Bytes)))))
-        | Option.some next => (match (orderedDefs rest (withoutKey pending (first next)) (cons (pascal (first next)) placed) names)
+        | Option.some next => (match (orderedDefs rest (withoutKey pending (first next)) (cons (typeName (first next)) placed) names)
           | Result.error reason => (ctor Result.error [(List (Bytes * Value)), Bytes] reason)
           | Result.ok later => (ctor Result.ok [(List (Bytes * Value)), Bytes] (cons next later)))))),
   recursive_argument: fuel,
