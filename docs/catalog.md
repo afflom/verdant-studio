@@ -80,7 +80,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **D13** OpenEXR (Visual art, 3D content, materials, and asset interchange): exactMatch ASWF-OPENEXR-FILE-LAYOUT-3.5.5 (staged)
 - **D14** UDIM and Ptex texture layout (Visual art, 3D content, materials, and asset interchange): narrowMatch WDAS-PTEX-IO-2.5.4 (staged)
 - **D15** COLLADA (ISO/PAS 17506) and Wavefront OBJ (Visual art, 3D content, materials, and asset interchange), not reached from any origin: narrowMatch KHRONOS-COLLADA-1.5.0 (staged)
-- **D16** OpenAssetIO (Visual art, 3D content, materials, and asset interchange), not reached from any origin: exactMatch OPENASSETIO-MEDIACREATION-TRAITS (staged)
+- **D16** OpenAssetIO (Visual art, 3D content, materials, and asset interchange): narrowMatch OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14 (derived from its citation); exactMatch OPENASSETIO-MEDIACREATION-TRAITS (staged)
 - **D17** Metaverse Standards Forum and OMI Group (glTF extensions for interoperable worlds) (Visual art, 3D content, materials, and asset interchange), not reached from any origin: narrowMatch OMI-GLTF-EXTENSIONS (staged)
 - **D18** Visual design principles: Gestalt, value structure, shape language, color theory (Munsell, Itten) (Visual art, 3D content, materials, and asset interchange): narrowMatch ARNHEIM-ART-VISUAL-PERCEPTION-1974 (staged)
 - **D19** Uncanny valley (Visual art, 3D content, materials, and asset interchange): exactMatch MORI-UNCANNY-VALLEY-2012 (staged)

@@ -1,0 +1,143 @@
+\begin{lexlean}{Catalog.TraitGenPackage}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: TraitGenPackageSpecificationsMembersVersionsTraitSetItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: namespace, type: Bytes},
+    {name: package, type: (Option Bytes)},
+    {name: version, type: Bytes}
+  ]
+}
+
+inductive{
+  name: TraitGenPackageSpecificationsMembersVersionsUsageItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: entity, fields: []},
+    {name: relationship, fields: []},
+    {name: locale, fields: []},
+    {name: managementPolicy, fields: []},
+    {name: ui, fields: []},
+    {name: uiPolicy, fields: []}
+  ]
+}
+
+structure{
+  name: TraitGenPackageSpecificationsMembersVersions,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: Bytes},
+    {name: traitSet, type: (List TraitGenPackageSpecificationsMembersVersionsTraitSetItem)},
+    {name: usage, type: (Option (List TraitGenPackageSpecificationsMembersVersionsUsageItem))}
+  ]
+}
+
+structure{
+  name: TraitGenPackageSpecificationsMembers,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: deprecated, type: (Option Bool)},
+    {name: versions, type: (List (Bytes * TraitGenPackageSpecificationsMembersVersions))}
+  ]
+}
+
+structure{
+  name: TraitGenPackageSpecifications,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: Bytes},
+    {name: members, type: (List (Bytes * TraitGenPackageSpecificationsMembers))}
+  ]
+}
+
+inductive{
+  name: TraitGenPackageTraitsMembersVersionsPropertiesType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: string, fields: []},
+    {name: integer, fields: []},
+    {name: float, fields: []},
+    {name: boolean, fields: []},
+    {name: dictionary, fields: []}
+  ]
+}
+
+structure{
+  name: TraitGenPackageTraitsMembersVersionsProperties,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: Bytes},
+    {name: type, type: TraitGenPackageTraitsMembersVersionsPropertiesType}
+  ]
+}
+
+inductive{
+  name: TraitGenPackageTraitsMembersVersionsUsageItem,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: entity, fields: []},
+    {name: relationship, fields: []},
+    {name: locale, fields: []},
+    {name: managementPolicy, fields: []},
+    {name: ui, fields: []},
+    {name: uiPolicy, fields: []}
+  ]
+}
+
+structure{
+  name: TraitGenPackageTraitsMembersVersions,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: Bytes},
+    {name: properties, type: (Option (List (Bytes * TraitGenPackageTraitsMembersVersionsProperties)))},
+    {name: usage, type: (Option (List TraitGenPackageTraitsMembersVersionsUsageItem))}
+  ]
+}
+
+structure{
+  name: TraitGenPackageTraitsMembers,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: deprecated, type: (Option Bool)},
+    {name: versions, type: (List (Bytes * TraitGenPackageTraitsMembersVersions))}
+  ]
+}
+
+structure{
+  name: TraitGenPackageTraits,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: description, type: Bytes},
+    {name: members, type: (List (Bytes * TraitGenPackageTraitsMembers))}
+  ]
+}
+
+structure{
+  name: TraitGenPackage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: schema, type: (Option Bytes)},
+    {name: description, type: (Option Bytes)},
+    {name: package, type: Bytes},
+    {name: specifications, type: (Option (List (Bytes * TraitGenPackageSpecifications)))},
+    {name: traits, type: (Option (List (Bytes * TraitGenPackageTraits)))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

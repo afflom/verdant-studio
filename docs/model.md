@@ -425,3 +425,4 @@ Each construct and the citation that admits it.
 - `Studio.Error.Regression`: der pattern from Studio.Error.Problem, P5, P10, P12
 - `Studio.Error.Repair`: der pattern from Studio.SelfHealing, Studio.Error.Agenda, Studio.Error.Regression, Studio.Ops, AgentIdentity, D8
 - `Studio.Error.Recovery`: std DORA-SOFTWARE-DELIVERY-METRICS row H14
+- `Catalog.TraitGenPackage`: std OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14 row D16
