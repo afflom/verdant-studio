@@ -426,3 +426,5 @@ Each construct and the citation that admits it.
 - `Studio.Error.Repair`: der pattern from Studio.SelfHealing, Studio.Error.Agenda, Studio.Error.Regression, Studio.Ops, AgentIdentity, D8
 - `Studio.Error.Recovery`: std DORA-SOFTWARE-DELIVERY-METRICS row H14
 - `Catalog.TraitGenPackage`: std OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14 row D16
+- `model/registries/OPENASSETIO-MEDIACREATION-TRAITS.jsonl`: std OPENASSETIO-MEDIACREATION-TRAITS row D16
+- `model/registries/OWASP-MASVS-2.1.0.jsonl`: std OWASP-MASVS-2.1.0 row T02
