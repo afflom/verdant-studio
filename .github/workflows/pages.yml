@@ -68,6 +68,19 @@ jobs:
           target/release/verdant_studio build
           target/release/verdant_studio publish
           if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
+      - name: next answers within a second, because operate's advance runs it on every push to main
+        run: |
+          set -euo pipefail
+          best=999999
+          for attempt in 1 2 3; do
+            start=$EPOCHREALTIME
+            target/release/verdant_studio next > target/next.txt || true
+            end=$EPOCHREALTIME
+            took=$(( (${end/./} - ${start/./}) / 1000 ))
+            if [ "$took" -lt "$best" ]; then best=$took; fi
+          done
+          echo "next took ${best} ms, the best of 3 runs"
+          if [ "$best" -gt 1000 ]; then echo "::error::next took ${best} ms, over its 1 s budget: make the reads it repeats cheaper before adding more"; exit 1; fi
       - if: github.event_name == 'pull_request'
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
