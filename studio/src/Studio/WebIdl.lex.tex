@@ -367,92 +367,6 @@ definition{
 }
 
 definition{
-  name: reservedRow0,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "Prop") (cons (Studio.Doc::lit "Sort") (cons (Studio.Doc::lit "StateRefT") (cons (Studio.Doc::lit "Type") (cons (Studio.Doc::lit "abbrev") (cons (Studio.Doc::lit "at") (cons (Studio.Doc::lit "attribute") (cons (Studio.Doc::lit "axiom") (cons (Studio.Doc::lit "bif") (cons (Studio.Doc::lit "break") (cons (Studio.Doc::lit "by") (cons (Studio.Doc::lit "calc") (cons (Studio.Doc::lit "catch") (cons (Studio.Doc::lit "class") (cons (Studio.Doc::lit "coinductive") (cons (Studio.Doc::lit "continue") (nil Bytes))))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedRow1,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "def") (cons (Studio.Doc::lit "deriving") (cons (Studio.Doc::lit "do") (cons (Studio.Doc::lit "dsimproc") (cons (Studio.Doc::lit "elab") (cons (Studio.Doc::lit "else") (cons (Studio.Doc::lit "end") (cons (Studio.Doc::lit "example") (cons (Studio.Doc::lit "exists") (cons (Studio.Doc::lit "export") (cons (Studio.Doc::lit "extends") (cons (Studio.Doc::lit "finally") (cons (Studio.Doc::lit "for") (cons (Studio.Doc::lit "forall") (cons (Studio.Doc::lit "from") (cons (Studio.Doc::lit "fun") (nil Bytes))))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedRow2,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "generalizing") (cons (Studio.Doc::lit "have") (cons (Studio.Doc::lit "haveI") (cons (Studio.Doc::lit "hiding") (cons (Studio.Doc::lit "idbg") (cons (Studio.Doc::lit "if") (cons (Studio.Doc::lit "import") (cons (Studio.Doc::lit "in") (cons (Studio.Doc::lit "include") (cons (Studio.Doc::lit "inductive") (cons (Studio.Doc::lit "inferInstanceAs") (cons (Studio.Doc::lit "infix") (cons (Studio.Doc::lit "infixl") (cons (Studio.Doc::lit "infixr") (cons (Studio.Doc::lit "initialize") (cons (Studio.Doc::lit "instance") (nil Bytes))))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedRow3,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "let") (cons (Studio.Doc::lit "letI") (cons (Studio.Doc::lit "local") (cons (Studio.Doc::lit "logNamedError") (cons (Studio.Doc::lit "logNamedErrorAt") (cons (Studio.Doc::lit "logNamedWarning") (cons (Studio.Doc::lit "logNamedWarningAt") (cons (Studio.Doc::lit "macro") (cons (Studio.Doc::lit "match") (cons (Studio.Doc::lit "matches") (cons (Studio.Doc::lit "meta") (cons (Studio.Doc::lit "mut") (cons (Studio.Doc::lit "mutual") (cons (Studio.Doc::lit "namespace") (cons (Studio.Doc::lit "nofun") (cons (Studio.Doc::lit "nomatch") (nil Bytes))))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedRow4,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "noncomputable") (cons (Studio.Doc::lit "nonrec") (cons (Studio.Doc::lit "notation") (cons (Studio.Doc::lit "omit") (cons (Studio.Doc::lit "opaque") (cons (Studio.Doc::lit "open") (cons (Studio.Doc::lit "partial") (cons (Studio.Doc::lit "postfix") (cons (Studio.Doc::lit "prefix") (cons (Studio.Doc::lit "private") (cons (Studio.Doc::lit "protected") (cons (Studio.Doc::lit "public") (cons (Studio.Doc::lit "renaming") (cons (Studio.Doc::lit "repeat") (cons (Studio.Doc::lit "reprove") (cons (Studio.Doc::lit "return") (nil Bytes))))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedRow5,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "scoped") (cons (Studio.Doc::lit "seal") (cons (Studio.Doc::lit "section") (cons (Studio.Doc::lit "show") (cons (Studio.Doc::lit "simproc") (cons (Studio.Doc::lit "sorry") (cons (Studio.Doc::lit "structure") (cons (Studio.Doc::lit "suffices") (cons (Studio.Doc::lit "syntax") (cons (Studio.Doc::lit "then") (cons (Studio.Doc::lit "theorem") (cons (Studio.Doc::lit "throwError") (cons (Studio.Doc::lit "throwErrorAt") (cons (Studio.Doc::lit "throwNamedError") (cons (Studio.Doc::lit "throwNamedErrorAt") (cons (Studio.Doc::lit "try") (nil Bytes))))))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedRow6,
-  parameters: [],
-  result: (List Bytes),
-  body: (cons (Studio.Doc::lit "universe") (cons (Studio.Doc::lit "unless") (cons (Studio.Doc::lit "unsafe") (cons (Studio.Doc::lit "unseal") (cons (Studio.Doc::lit "until") (cons (Studio.Doc::lit "using") (cons (Studio.Doc::lit "variable") (cons (Studio.Doc::lit "where") (cons (Studio.Doc::lit "while") (cons (Studio.Doc::lit "with") (cons (Studio.Doc::lit "reprove") (cons (Studio.Doc::lit "throwError") (cons (Studio.Doc::lit "throwErrorAt") (nil Bytes)))))))))))))),
-  executable: true
-}
-
-definition{
-  name: reservedName,
-  parameters: [name : Bytes],
-  result: Bool,
-  body: ((Studio.Doc::memberBytes name (reservedRow0)) || ((Studio.Doc::memberBytes name (reservedRow1)) || ((Studio.Doc::memberBytes name (reservedRow2)) || ((Studio.Doc::memberBytes name (reservedRow3)) || ((Studio.Doc::memberBytes name (reservedRow4)) || ((Studio.Doc::memberBytes name (reservedRow5)) || (Studio.Doc::memberBytes name (reservedRow6)))))))),
-  executable: true
-}
-
-definition{
-  name: reservedReason,
-  parameters: [name : Bytes],
-  result: Bytes,
-  body: (Studio.Doc::cat (cons (Studio.Doc::lit "the derived name ") (cons name (cons (Studio.Doc::lit " is a reserved token of Lean 4.32.2, which LexLean 0.4.3 refuses as a name (lexlean 0.4.3 src/backend/lean_tokens.rs, SPEC.md 17.8)") (nil Bytes))))),
-  executable: true
-}
-
-definition{
-  name: reservedValue,
-  parameters: [escaped : Bool, values : (List Bytes)],
-  result: (Option Bytes),
-  body: (match values
-    | List.nil => (ctor Option.none [Bytes])
-    | List.cons head rest => (match (Studio.Schema::nameAs escaped head)
-    | Option.none => (reservedValue escaped rest)
-    | Option.some spelled => (if (reservedName spelled) then (ctor Option.some [Bytes] spelled) else (reservedValue escaped rest)))),
-  recursive_argument: values,
-  axioms: [Quot.sound, propext],
-  executable: true
-}
-
-definition{
   name: isType,
   parameters: [kind : Nat],
   result: Bool,
@@ -715,12 +629,12 @@ definition{
     | Result.ok close => (match (keywordType (tokText keyToken))
     | Option.none => (ctor Result.error [IdlTyped, Bytes] (expected "a string type" open))
     | Option.some keyType => (let value : IdlType := (asField (typedType inner)); (nullable (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(List (") (cons (tyText keyType) (cons (Studio.Doc::lit " * ") (cons (tyText value) (cons (Studio.Doc::lit "))") (nil Bytes))))))) (tyRefs value) (tyProblem value) 0x) close)))))) else (ctor Result.error [IdlTyped, Bytes] (expected "DOMString, USVString or ByteString" open))))) else (if (Studio.Doc::same word (Studio.Doc::lit "unsigned")) then (if (headIs others "short") then (nullable (plain (Studio.Doc::lit "Nat")) (after others)) else (if (headIs others "long") then (let tail : (List IdlToken) := (after others); (nullable (plain (Studio.Doc::lit "Nat")) (if (headIs tail "long") then (after tail) else tail))) else (ctor Result.error [IdlTyped, Bytes] (expected "short or long" others)))) else (if (Studio.Doc::same word (Studio.Doc::lit "short")) then (nullable (plain (Studio.Doc::lit "Int")) others) else (if (Studio.Doc::same word (Studio.Doc::lit "long")) then (nullable (plain (Studio.Doc::lit "Int")) (if (headIs others "long") then (after others) else others)) else (if (Studio.Doc::same word (Studio.Doc::lit "unrestricted")) then (if ((headIs others "float") || (headIs others "double")) then (nullable (untranslated (Studio.Doc::lit "unrestricted float and unrestricted double are not translated, because its value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.13 and 2.13.15)")) (after others)) else (ctor Result.error [IdlTyped, Bytes] (expected "float or double" others))) else (match (keywordType word)
-    | Option.none => (let named : Bytes := (identifierValue word); (nullable (ctor IdlType.T 0 (Studio.Schema::pascal named) (cons named (nil Bytes)) 0x named) others))
+    | Option.none => (let named : Bytes := (identifierValue word); (nullable (ctor IdlType.T 0 (Studio.Schema::typeName named) (cons named (nil Bytes)) 0x named) others))
     | Option.some known => (nullable known others))))))))))))))) else (match (typeAt rest toks 0)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok parsed => (let member : IdlType := (typedType parsed); (let piece : IdlType := (if ((tyKind member) =? 0) then (if (Studio.Doc::same (tyProblem member) 0x) then (if (Studio.Doc::same (tyLabel member) 0x) then (ctor IdlType.T 1 0x (tyRefs member) (Studio.Doc::lit "a union member type that is not a named definition gives its constructor no name, so the union is not translated yet (Web IDL 2.13.32)") 0x) else (match (Studio.Schema::nameAs false (tyLabel member))
     | Option.none => (ctor IdlType.T 1 0x (tyRefs member) (Studio.Doc::cat (cons (Studio.Doc::lit "the union member ") (cons (tyLabel member) (cons (Studio.Doc::lit " has no constructor name") (nil Bytes))))) 0x)
-    | Option.some spelled => (if (reservedName spelled) then (ctor IdlType.T 1 0x (tyRefs member) (reservedReason spelled) 0x) else (ctor IdlType.T 1 (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", fields: [") (cons (tyText member) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (tyRefs member) 0x 0x)))) else (ctor IdlType.T 1 0x (tyRefs member) (tyProblem member) 0x)) else member); (if (headIs (typedRest parsed) "or") then (match (typeAt rest (after (typedRest parsed)) 2)
+    | Option.some spelled => (ctor IdlType.T 1 (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", fields: [") (cons (tyText member) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (tyRefs member) 0x 0x))) else (ctor IdlType.T 1 0x (tyRefs member) (tyProblem member) 0x)) else member); (if (headIs (typedRest parsed) "or") then (match (typeAt rest (after (typedRest parsed)) 2)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok more => (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (ctor IdlType.T 1 (if (Studio.Doc::same (tyText piece) 0x) then (tyText (typedType more)) else (if (Studio.Doc::same (tyText (typedType more)) 0x) then (tyText piece) else (Studio.Doc::cat (cons (tyText piece) (cons (Studio.Doc::lit ",\n") (cons (tyText (typedType more)) (nil Bytes))))))) (appendBytes (tyRefs piece) (tyRefs (typedType more))) (if (Studio.Doc::same (tyProblem piece) 0x) then (tyProblem (typedType more)) else (tyProblem piece)) 0x) (typedRest more)))) else (if ((mode =? 2) && (headIs (typedRest parsed) ")")) then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P piece (after (typedRest parsed)))) else (ctor Result.error [IdlTyped, Bytes] (if (mode =? 1) then (expected "or" (typedRest parsed)) else (expected "or or )" (typedRest parsed))))))))))),
   recursive_argument: fuel,
@@ -1103,9 +1017,9 @@ definition{
     | List.nil => (ctor Result.ok [((List Bytes) * (List Bytes)), Bytes] ((nil Bytes), (nil Bytes)))
     | List.cons head rest => (let typed : IdlType := (memType head); (if (if (Studio.Doc::same (tyProblem typed) 0x) then false else true) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "its member ") (cons (memName head) (cons (Studio.Doc::lit ": ") (cons (tyProblem typed) (nil Bytes))))))) else (match (Studio.Schema::nameAs escaped (memName head))
     | Option.none => (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "its member ") (cons (memName head) (cons (Studio.Doc::lit " has no field name") (nil Bytes))))))
-    | Option.some spelled => (if (reservedName spelled) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (reservedReason spelled)) else (if (Studio.Doc::memberBytes spelled (Studio.Schema::namesOf escaped (memberNames rest))) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two of its members derive the field name ") (cons spelled (cons (Studio.Doc::lit " (Web IDL 2.2 and 2.7: the members of one definition have distinct identifiers)") (nil Bytes)))))) else (match (fieldsOf escaped rest)
+    | Option.some spelled => (if (Studio.Doc::memberBytes spelled (Studio.Schema::namesOf escaped (memberNames rest))) then (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "two of its members derive the field name ") (cons spelled (cons (Studio.Doc::lit " (Web IDL 2.2 and 2.7: the members of one definition have distinct identifiers)") (nil Bytes)))))) else (match (fieldsOf escaped rest)
     | Result.error reason => (ctor Result.error [((List Bytes) * (List Bytes)), Bytes] reason)
-    | Result.ok others => (ctor Result.ok [((List Bytes) * (List Bytes)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", type: ") (cons (if ((memOptional head) =? 1) then (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (tyText typed) (cons (Studio.Doc::lit ")") (nil Bytes))))) else (tyText typed)) (cons (Studio.Doc::lit "}") (nil Bytes))))))) (first others)), (appendBytes (tyRefs typed) (second others))))))))))),
+    | Result.ok others => (ctor Result.ok [((List Bytes) * (List Bytes)), Bytes] ((cons (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", type: ") (cons (if ((memOptional head) =? 1) then (Studio.Doc::cat (cons (Studio.Doc::lit "(Option ") (cons (tyText typed) (cons (Studio.Doc::lit ")") (nil Bytes))))) else (tyText typed)) (cons (Studio.Doc::lit "}") (nil Bytes))))))) (first others)), (appendBytes (tyRefs typed) (second others)))))))))),
   recursive_argument: items,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1134,19 +1048,17 @@ definition{
   name: declarationOf,
   parameters: [all : (List IdlDef), item : IdlDef],
   result: (Result (Bytes * (List Bytes)) Bytes),
-  body: (let kind : Nat := (defKind item); (let name : Bytes := (Studio.Schema::pascal (defName item)); (if ((reservedName name) && (isType kind)) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (reservedReason name)) else (if ((kind =? 0) || (kind =? 2)) then (match (missingMixin all all (defName item))
+  body: (let kind : Nat := (defKind item); (let name : Bytes := (Studio.Schema::typeName (defName item)); (if ((kind =? 0) || (kind =? 2)) then (match (missingMixin all all (defName item))
     | Option.none => (match (fullMembers ((prim length all : Nat) + 1) all item)
     | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
-    | Result.ok members => (if ((prim length members : Nat) =? 0) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::lit "it has no data members, and LexLean refuses a structure with no fields")) else (match (fieldsOf (Studio.Schema::collides (memberNames members)) members)
+    | Result.ok members => (if ((prim length members : Nat) =? 0) then (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::unitDeclaration name), (nil Bytes))) else (match (fieldsOf (Studio.Schema::collides (memberNames members)) members)
     | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
     | Result.ok fields => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((structureText name (first fields)), (second fields))))))
     | Option.some mixin => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "includes ") (cons mixin (cons (Studio.Doc::lit ", which no input defines as an interface mixin (Web IDL 2.3)") (nil Bytes))))))) else (if (kind =? 3) then (match (Studio.Xsd::duplicateName (defValues item))
-    | Option.none => (match (reservedValue (Studio.Schema::collides (defValues item)) (defValues item))
     | Option.none => (match (Studio.Schema::constructorsWith (Studio.Schema::collides (defValues item)) (strValues (defValues item)) (nil Bytes))
     | Result.error reason => (ctor Result.error [(Bytes * (List Bytes)), Bytes] reason)
     | Result.ok constructors => (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::inductiveText name constructors), (nil Bytes))))
-    | Option.some spelled => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (reservedReason spelled)))
-    | Option.some twice => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the enumeration value \"") (cons twice (cons (Studio.Doc::lit "\" appears twice (Web IDL 2.9: the values must be distinct)") (nil Bytes))))))) else (if (kind =? 4) then (let typedBody : IdlType := (defBody item); (if (if (Studio.Doc::same (tyProblem typedBody) 0x) then false else true) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (tyProblem typedBody)) else (if ((tyKind typedBody) =? 1) then (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::inductiveText name (cons (tyText typedBody) (nil Bytes))), (tyRefs typedBody))) else (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Xsd::valueStructure name (tyText typedBody)), (tyRefs typedBody)))))) else (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (defValues item))))))))),
+    | Option.some twice => (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the enumeration value \"") (cons twice (cons (Studio.Doc::lit "\" appears twice (Web IDL 2.9: the values must be distinct)") (nil Bytes))))))) else (if (kind =? 4) then (let typedBody : IdlType := (defBody item); (if (if (Studio.Doc::same (tyProblem typedBody) 0x) then false else true) then (ctor Result.error [(Bytes * (List Bytes)), Bytes] (tyProblem typedBody)) else (if ((tyKind typedBody) =? 1) then (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Schema::inductiveText name (cons (tyText typedBody) (nil Bytes))), (tyRefs typedBody))) else (ctor Result.ok [(Bytes * (List Bytes)), Bytes] ((Studio.Xsd::valueStructure name (tyText typedBody)), (tyRefs typedBody)))))) else (ctor Result.error [(Bytes * (List Bytes)), Bytes] (Studio.Doc::cat (defValues item)))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
