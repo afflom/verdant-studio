@@ -1,0 +1,6 @@
+name = "VerdantReadersCli"
+version = "0.1.0"
+defaultTargets = ["VerdantReadersCli"]
+
+[[lean_lib]]
+name = "VerdantReadersCli"
