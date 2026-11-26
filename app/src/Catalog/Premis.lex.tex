@@ -1,0 +1,972 @@
+\begin{lexlean}{Catalog.Premis}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: XmlNode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: element, fields: [Bytes, Bytes, (List ((Bytes * Bytes) * Bytes)), (List XmlNode)]},
+    {name: text, fields: [Bytes]}
+  ]
+}
+
+inductive{
+  name: CompositionLevelComplexTypeUnknown,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: yes, fields: []}
+  ]
+}
+
+structure{
+  name: CompositionLevelComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat},
+    {name: unknown, type: (Option CompositionLevelComplexTypeUnknown)}
+  ]
+}
+
+structure{
+  name: OriginalNameComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: CountryCode,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes},
+    {name: authority, type: (Option Bytes)},
+    {name: authorityURI, type: (Option Bytes)},
+    {name: valueURI, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: Version3,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n30, fields: []}
+  ]
+}
+
+structure{
+  name: ExtensionComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: any, type: (List XmlNode)}
+  ]
+}
+
+structure{
+  name: EventDetailInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: eventDetail, type: (Option Bytes)},
+    {name: eventDetailExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+structure{
+  name: EventOutcomeDetailComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: eventOutcomeDetailNote, type: Bytes},
+    {name: eventOutcomeDetailExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+inductive{
+  name: EventOutcomeDetailComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [EventOutcomeDetailComplexTypeChoiceSequence]},
+    {name: eventOutcomeDetailExtension, fields: [(List ExtensionComplexType)]}
+  ]
+}
+
+structure{
+  name: EventOutcomeDetailComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: EventOutcomeDetailComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: SignificantPropertiesComplexTypeChoiceSequence2,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: significantPropertiesValue, type: Bytes},
+    {name: significantPropertiesExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+structure{
+  name: EdtfSimpleType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes}
+  ]
+}
+
+structure{
+  name: CreatingApplicationComplexTypeChoiceSequence2,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: creatingApplicationVersion, type: Bytes},
+    {name: dateCreatedByApplication, type: (Option EdtfSimpleType)},
+    {name: creatingApplicationExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+structure{
+  name: CreatingApplicationComplexTypeChoiceSequence3,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dateCreatedByApplication, type: EdtfSimpleType},
+    {name: creatingApplicationExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+structure{
+  name: StartAndEndDateComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: startDate, type: EdtfSimpleType},
+    {name: endDate, type: (Option EdtfSimpleType)}
+  ]
+}
+
+structure{
+  name: LicenseInformationComplexTypeChoiceSequence2,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: licenseTerms, type: Bytes},
+    {name: licenseNote, type: (List Bytes)},
+    {name: licenseApplicableDates, type: (Option StartAndEndDateComplexType)}
+  ]
+}
+
+structure{
+  name: LicenseInformationComplexTypeChoiceSequence3,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: licenseNote, type: (List Bytes)},
+    {name: licenseApplicableDates, type: (Option StartAndEndDateComplexType)}
+  ]
+}
+
+structure{
+  name: StringPlusAuthorityContent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes},
+    {name: authority, type: (Option Bytes)},
+    {name: authorityURI, type: (Option Bytes)},
+    {name: valueURI, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: StringPlusAuthority,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: stringPlusAuthority, fields: [StringPlusAuthorityContent]},
+    {name: countryCode, fields: [CountryCode]}
+  ]
+}
+
+structure{
+  name: AgentIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: agentIdentifierType, type: StringPlusAuthority},
+    {name: agentIdentifierValue, type: Bytes},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: ContentLocationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: contentLocationType, type: StringPlusAuthority},
+    {name: contentLocationValue, type: Bytes},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: CopyrightDocumentationIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: copyrightDocumentationIdentifierType, type: StringPlusAuthority},
+    {name: copyrightDocumentationIdentifierValue, type: Bytes},
+    {name: copyrightDocumentationRole, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: CopyrightInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: copyrightStatus, type: StringPlusAuthority},
+    {name: copyrightJurisdiction, type: CountryCode},
+    {name: copyrightStatusDeterminationDate, type: (Option EdtfSimpleType)},
+    {name: copyrightNote, type: (List Bytes)},
+    {name: copyrightDocumentationIdentifier, type: (List CopyrightDocumentationIdentifierComplexType)},
+    {name: copyrightApplicableDates, type: (Option StartAndEndDateComplexType)}
+  ]
+}
+
+structure{
+  name: CreatingApplicationComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: creatingApplicationName, type: StringPlusAuthority},
+    {name: creatingApplicationVersion, type: (Option Bytes)},
+    {name: dateCreatedByApplication, type: (Option EdtfSimpleType)},
+    {name: creatingApplicationExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+inductive{
+  name: CreatingApplicationComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [CreatingApplicationComplexTypeChoiceSequence]},
+    {name: sequence2, fields: [CreatingApplicationComplexTypeChoiceSequence2]},
+    {name: sequence3, fields: [CreatingApplicationComplexTypeChoiceSequence3]},
+    {name: creatingApplicationExtension, fields: [(List ExtensionComplexType)]}
+  ]
+}
+
+structure{
+  name: CreatingApplicationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: CreatingApplicationComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: EnvironmentFunctionComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: environmentFunctionType, type: StringPlusAuthority},
+    {name: environmentFunctionLevel, type: Bytes}
+  ]
+}
+
+structure{
+  name: EnvironmentDesignationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: environmentName, type: StringPlusAuthority},
+    {name: environmentVersion, type: (Option Bytes)},
+    {name: environmentOrigin, type: (Option Bytes)},
+    {name: environmentDesignationNote, type: (List Bytes)},
+    {name: environmentDesignationExtension, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: EnvironmentRegistryComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: environmentRegistryName, type: Bytes},
+    {name: environmentRegistryKey, type: Bytes},
+    {name: environmentRegistryRole, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: EventIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: eventIdentifierType, type: StringPlusAuthority},
+    {name: eventIdentifierValue, type: Bytes},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: EventOutcomeInformationComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: eventOutcome, type: StringPlusAuthority},
+    {name: eventOutcomeDetail, type: (List EventOutcomeDetailComplexType)}
+  ]
+}
+
+inductive{
+  name: EventOutcomeInformationComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [EventOutcomeInformationComplexTypeChoiceSequence]},
+    {name: eventOutcomeDetail, fields: [(List EventOutcomeDetailComplexType)]}
+  ]
+}
+
+structure{
+  name: EventOutcomeInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: EventOutcomeInformationComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: FixityComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: messageDigestAlgorithm, type: StringPlusAuthority},
+    {name: messageDigest, type: Bytes},
+    {name: messageDigestOriginator, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: FormatDesignationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: formatName, type: StringPlusAuthority},
+    {name: formatVersion, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: FormatRegistryComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: formatRegistryName, type: StringPlusAuthority},
+    {name: formatRegistryKey, type: StringPlusAuthority},
+    {name: formatRegistryRole, type: (Option StringPlusAuthority)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: FormatComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: formatDesignation, type: FormatDesignationComplexType},
+    {name: formatRegistry, type: (Option FormatRegistryComplexType)}
+  ]
+}
+
+inductive{
+  name: FormatComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [FormatComplexTypeChoiceSequence]},
+    {name: formatRegistry, fields: [FormatRegistryComplexType]}
+  ]
+}
+
+structure{
+  name: FormatComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: FormatComplexTypeChoice},
+    {name: formatNote, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: InhibitorsComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: inhibitorType, type: StringPlusAuthority},
+    {name: inhibitorTarget, type: (List StringPlusAuthority)},
+    {name: inhibitorKey, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: LicenseDocumentationIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: licenseDocumentationIdentifierType, type: StringPlusAuthority},
+    {name: licenseDocumentationIdentifierValue, type: Bytes},
+    {name: licenseDocumentationRole, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: LicenseInformationComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: licenseDocumentationIdentifier, type: (List LicenseDocumentationIdentifierComplexType)},
+    {name: licenseTerms, type: (Option Bytes)},
+    {name: licenseNote, type: (List Bytes)},
+    {name: licenseApplicableDates, type: (Option StartAndEndDateComplexType)}
+  ]
+}
+
+inductive{
+  name: LicenseInformationComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [LicenseInformationComplexTypeChoiceSequence]},
+    {name: sequence2, fields: [LicenseInformationComplexTypeChoiceSequence2]},
+    {name: sequence3, fields: [LicenseInformationComplexTypeChoiceSequence3]},
+    {name: licenseApplicableDates, fields: [StartAndEndDateComplexType]}
+  ]
+}
+
+structure{
+  name: LicenseInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: LicenseInformationComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: LinkingAgentIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: linkingAgentIdentifierType, type: StringPlusAuthority},
+    {name: linkingAgentIdentifierValue, type: Bytes},
+    {name: linkingAgentRole, type: (List StringPlusAuthority)},
+    {name: linkAgentXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: LinkingEnvironmentIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: linkingEnvironmentIdentifierType, type: Bytes},
+    {name: linkingEnvironmentIdentifierValue, type: Bytes},
+    {name: linkingEnvironmentRole, type: (List StringPlusAuthority)},
+    {name: linkEventXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: LinkingEventIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: linkingEventIdentifierType, type: StringPlusAuthority},
+    {name: linkingEventIdentifierValue, type: Bytes},
+    {name: linkEventXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: LinkingObjectIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: linkingObjectIdentifierType, type: StringPlusAuthority},
+    {name: linkingObjectIdentifierValue, type: Bytes},
+    {name: linkingObjectRole, type: (List StringPlusAuthority)},
+    {name: linkObjectXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: EventComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: eventIdentifier, type: EventIdentifierComplexType},
+    {name: eventType, type: StringPlusAuthority},
+    {name: eventDateTime, type: Bytes},
+    {name: eventDetailInformation, type: (List EventDetailInformationComplexType)},
+    {name: eventOutcomeInformation, type: (List EventOutcomeInformationComplexType)},
+    {name: linkingAgentIdentifier, type: (List LinkingAgentIdentifierComplexType)},
+    {name: linkingObjectIdentifier, type: (List LinkingObjectIdentifierComplexType)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+structure{
+  name: LinkingRightsStatementIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: linkingRightsStatementIdentifierType, type: StringPlusAuthority},
+    {name: linkingRightsStatementIdentifierValue, type: Bytes},
+    {name: linkPermissionStatementXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: AgentComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: agentIdentifier, type: (List AgentIdentifierComplexType)},
+    {name: agentName, type: (List StringPlusAuthority)},
+    {name: agentType, type: (Option StringPlusAuthority)},
+    {name: agentVersion, type: (Option Bytes)},
+    {name: agentNote, type: (List Bytes)},
+    {name: agentExtension, type: (List ExtensionComplexType)},
+    {name: linkingEventIdentifier, type: (List LinkingEventIdentifierComplexType)},
+    {name: linkingRightsStatementIdentifier, type: (List LinkingRightsStatementIdentifierComplexType)},
+    {name: linkingEnvironmentIdentifier, type: (List LinkingEnvironmentIdentifierComplexType)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+structure{
+  name: ObjectCharacteristicsComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: compositionLevel, type: (Option CompositionLevelComplexType)},
+    {name: fixity, type: (List FixityComplexType)},
+    {name: size, type: (Option Int)},
+    {name: format, type: (List FormatComplexType)},
+    {name: creatingApplication, type: (List CreatingApplicationComplexType)},
+    {name: inhibitors, type: (List InhibitorsComplexType)},
+    {name: objectCharacteristicsExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+structure{
+  name: ObjectIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: objectIdentifierType, type: StringPlusAuthority},
+    {name: objectIdentifierValue, type: Bytes},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: OtherRightsDocumentationIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: otherRightsDocumentationIdentifierType, type: StringPlusAuthority},
+    {name: otherRightsDocumentationIdentifierValue, type: Bytes},
+    {name: otherRightsDocumentationRole, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: OtherRightsInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: otherRightsDocumentationIdentifier, type: (List OtherRightsDocumentationIdentifierComplexType)},
+    {name: otherRightsBasis, type: StringPlusAuthority},
+    {name: otherRightsApplicableDates, type: (Option StartAndEndDateComplexType)},
+    {name: otherRightsNote, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: PreservationLevelComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: preservationLevelType, type: (Option StringPlusAuthority)},
+    {name: preservationLevelValue, type: StringPlusAuthority},
+    {name: preservationLevelRole, type: (Option StringPlusAuthority)},
+    {name: preservationLevelRationale, type: (List Bytes)},
+    {name: preservationLevelDateAssigned, type: (Option EdtfSimpleType)}
+  ]
+}
+
+structure{
+  name: RelatedEventIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: relatedEventIdentifierType, type: StringPlusAuthority},
+    {name: relatedEventIdentifierValue, type: Bytes},
+    {name: relatedEventSequence, type: (Option Nat)},
+    {name: relEventXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: RelatedObjectIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: relatedObjectIdentifierType, type: StringPlusAuthority},
+    {name: relatedObjectIdentifierValue, type: Bytes},
+    {name: relatedObjectSequence, type: (Option Nat)},
+    {name: relObjectXmlID, type: (Option Bytes)},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: RelationshipComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: relationshipType, type: StringPlusAuthority},
+    {name: relationshipSubType, type: StringPlusAuthority},
+    {name: relatedObjectIdentifier, type: (List RelatedObjectIdentifierComplexType)},
+    {name: relatedEventIdentifier, type: (List RelatedEventIdentifierComplexType)},
+    {name: relatedEnvironmentPurpose, type: (List StringPlusAuthority)},
+    {name: relatedEnvironmentCharacteristic, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: RightsGrantedComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: act, type: StringPlusAuthority},
+    {name: restriction, type: (List StringPlusAuthority)},
+    {name: termOfGrant, type: (Option StartAndEndDateComplexType)},
+    {name: termOfRestriction, type: (Option StartAndEndDateComplexType)},
+    {name: rightsGrantedNote, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: RightsStatementIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: rightsStatementIdentifierType, type: StringPlusAuthority},
+    {name: rightsStatementIdentifierValue, type: Bytes},
+    {name: simpleLink, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: SignatureComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: signatureEncoding, type: StringPlusAuthority},
+    {name: signer, type: (Option StringPlusAuthority)},
+    {name: signatureMethod, type: StringPlusAuthority},
+    {name: signatureValue, type: Bytes},
+    {name: signatureValidationRules, type: StringPlusAuthority},
+    {name: signatureProperties, type: (List Bytes)},
+    {name: keyInformation, type: (List ExtensionComplexType)}
+  ]
+}
+
+structure{
+  name: SignatureInformationComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: signature, type: SignatureComplexType},
+    {name: signatureInformationExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+inductive{
+  name: SignatureInformationComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [SignatureInformationComplexTypeChoiceSequence]},
+    {name: signatureInformationExtension, fields: [(List ExtensionComplexType)]}
+  ]
+}
+
+structure{
+  name: SignatureInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: SignatureInformationComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: SignificantPropertiesComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: significantPropertiesType, type: StringPlusAuthority},
+    {name: significantPropertiesValue, type: (Option Bytes)},
+    {name: significantPropertiesExtension, type: (List ExtensionComplexType)}
+  ]
+}
+
+inductive{
+  name: SignificantPropertiesComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [SignificantPropertiesComplexTypeChoiceSequence]},
+    {name: sequence2, fields: [SignificantPropertiesComplexTypeChoiceSequence2]},
+    {name: significantPropertiesExtension, fields: [(List ExtensionComplexType)]}
+  ]
+}
+
+structure{
+  name: SignificantPropertiesComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: SignificantPropertiesComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: IntellectualEntity,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: objectIdentifier, type: (List ObjectIdentifierComplexType)},
+    {name: preservationLevel, type: (List PreservationLevelComplexType)},
+    {name: significantProperties, type: (List SignificantPropertiesComplexType)},
+    {name: originalName, type: (Option OriginalNameComplexType)},
+    {name: environmentFunction, type: (List EnvironmentFunctionComplexType)},
+    {name: environmentDesignation, type: (List EnvironmentDesignationComplexType)},
+    {name: environmentRegistry, type: (List EnvironmentRegistryComplexType)},
+    {name: environmentExtension, type: (List ExtensionComplexType)},
+    {name: relationship, type: (List RelationshipComplexType)},
+    {name: linkingEventIdentifier, type: (List LinkingEventIdentifierComplexType)},
+    {name: linkingRightsStatementIdentifier, type: (List LinkingRightsStatementIdentifierComplexType)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+structure{
+  name: StatuteDocumentationIdentifierComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: statuteDocumentationIdentifierType, type: StringPlusAuthority},
+    {name: statuteDocumentationIdentifierValue, type: Bytes},
+    {name: statuteDocumentationRole, type: (Option StringPlusAuthority)}
+  ]
+}
+
+structure{
+  name: StatuteInformationComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: statuteJurisdiction, type: CountryCode},
+    {name: statuteCitation, type: StringPlusAuthority},
+    {name: statuteInformationDeterminationDate, type: (Option EdtfSimpleType)},
+    {name: statuteNote, type: (List Bytes)},
+    {name: statuteDocumentationIdentifier, type: (List StatuteDocumentationIdentifierComplexType)},
+    {name: statuteApplicableDates, type: (Option StartAndEndDateComplexType)}
+  ]
+}
+
+structure{
+  name: RightsStatementComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: rightsStatementIdentifier, type: RightsStatementIdentifierComplexType},
+    {name: rightsBasis, type: StringPlusAuthority},
+    {name: copyrightInformation, type: (Option CopyrightInformationComplexType)},
+    {name: licenseInformation, type: (Option LicenseInformationComplexType)},
+    {name: statuteInformation, type: (List StatuteInformationComplexType)},
+    {name: otherRightsInformation, type: (Option OtherRightsInformationComplexType)},
+    {name: rightsGranted, type: (List RightsGrantedComplexType)},
+    {name: linkingObjectIdentifier, type: (List LinkingObjectIdentifierComplexType)},
+    {name: linkingAgentIdentifier, type: (List LinkingAgentIdentifierComplexType)}
+  ]
+}
+
+inductive{
+  name: RightsComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: rightsStatement, fields: [RightsStatementComplexType]},
+    {name: rightsExtension, fields: [ExtensionComplexType]}
+  ]
+}
+
+structure{
+  name: RightsComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: (List RightsComplexTypeChoice)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+structure{
+  name: StorageComplexTypeChoiceSequence,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: contentLocation, type: ContentLocationComplexType},
+    {name: storageMedium, type: (Option StringPlusAuthority)}
+  ]
+}
+
+inductive{
+  name: StorageComplexTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sequence, fields: [StorageComplexTypeChoiceSequence]},
+    {name: storageMedium, fields: [StringPlusAuthority]}
+  ]
+}
+
+structure{
+  name: StorageComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: StorageComplexTypeChoice}
+  ]
+}
+
+structure{
+  name: File,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: objectIdentifier, type: (List ObjectIdentifierComplexType)},
+    {name: preservationLevel, type: (List PreservationLevelComplexType)},
+    {name: significantProperties, type: (List SignificantPropertiesComplexType)},
+    {name: objectCharacteristics, type: (List ObjectCharacteristicsComplexType)},
+    {name: originalName, type: (Option OriginalNameComplexType)},
+    {name: storage, type: (List StorageComplexType)},
+    {name: signatureInformation, type: (List SignatureInformationComplexType)},
+    {name: relationship, type: (List RelationshipComplexType)},
+    {name: linkingEventIdentifier, type: (List LinkingEventIdentifierComplexType)},
+    {name: linkingRightsStatementIdentifier, type: (List LinkingRightsStatementIdentifierComplexType)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+structure{
+  name: Representation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: objectIdentifier, type: (List ObjectIdentifierComplexType)},
+    {name: preservationLevel, type: (List PreservationLevelComplexType)},
+    {name: significantProperties, type: (List SignificantPropertiesComplexType)},
+    {name: originalName, type: (Option OriginalNameComplexType)},
+    {name: storage, type: (List StorageComplexType)},
+    {name: relationship, type: (List RelationshipComplexType)},
+    {name: linkingEventIdentifier, type: (List LinkingEventIdentifierComplexType)},
+    {name: linkingRightsStatementIdentifier, type: (List LinkingRightsStatementIdentifierComplexType)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+structure{
+  name: Bitstream,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: objectIdentifier, type: (List ObjectIdentifierComplexType)},
+    {name: significantProperties, type: (List SignificantPropertiesComplexType)},
+    {name: objectCharacteristics, type: (List ObjectCharacteristicsComplexType)},
+    {name: storage, type: (List StorageComplexType)},
+    {name: signatureInformation, type: (List SignatureInformationComplexType)},
+    {name: relationship, type: (List RelationshipComplexType)},
+    {name: linkingEventIdentifier, type: (List LinkingEventIdentifierComplexType)},
+    {name: linkingRightsStatementIdentifier, type: (List LinkingRightsStatementIdentifierComplexType)},
+    {name: xmlID, type: (Option Bytes)},
+    {name: version, type: (Option Version3)}
+  ]
+}
+
+inductive{
+  name: ObjectComplexType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: file, fields: [File]},
+    {name: representation, fields: [Representation]},
+    {name: bitstream, fields: [Bitstream]},
+    {name: intellectualEntity, fields: [IntellectualEntity]}
+  ]
+}
+
+structure{
+  name: PremisComplexType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: object, type: (List ObjectComplexType)},
+    {name: event, type: (List EventComplexType)},
+    {name: agent, type: (List AgentComplexType)},
+    {name: rights, type: (List RightsComplexType)},
+    {name: version, type: Version3}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
