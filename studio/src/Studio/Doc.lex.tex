@@ -7,10 +7,74 @@
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
-  name: asciiTable,
+  name: asciiRow0,
   parameters: [],
   result: (List String),
-  body: (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "\t" (cons "\n" (cons "" (cons "" (cons "\r" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons " " (cons "!" (cons "\"" (cons "#" (cons "$" (cons "\u0025" (cons "&" (cons "'" (cons "(" (cons ")" (cons "*" (cons "+" (cons "," (cons "-" (cons "." (cons "/" (cons "0" (cons "1" (cons "2" (cons "3" (cons "4" (cons "5" (cons "6" (cons "7" (cons "8" (cons "9" (cons ":" (cons ";" (cons "<" (cons "=" (cons ">" (cons "?" (cons "@" (cons "A" (cons "B" (cons "C" (cons "D" (cons "E" (cons "F" (cons "G" (cons "H" (cons "I" (cons "J" (cons "K" (cons "L" (cons "M" (cons "N" (cons "O" (cons "P" (cons "Q" (cons "R" (cons "S" (cons "T" (cons "U" (cons "V" (cons "W" (cons "X" (cons "Y" (cons "Z" (cons "[" (cons "\\" (cons "]" (cons "^" (cons "_" (cons "`" (cons "a" (cons "b" (cons "c" (cons "d" (cons "e" (cons "f" (cons "g" (cons "h" (cons "i" (cons "j" (cons "k" (cons "l" (cons "m" (cons "n" (cons "o" (cons "p" (cons "q" (cons "r" (cons "s" (cons "t" (cons "u" (cons "v" (cons "w" (cons "x" (cons "y" (cons "z" (cons "{" (cons "|" (cons "}" (cons "~" (cons "" (nil String))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+  body: (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "\t" (cons "\n" (cons "" (cons "" (cons "\r" (cons "" (cons "" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow1,
+  parameters: [],
+  result: (List String),
+  body: (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (cons "" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow2,
+  parameters: [],
+  result: (List String),
+  body: (cons " " (cons "!" (cons "\"" (cons "#" (cons "$" (cons "\u0025" (cons "&" (cons "'" (cons "(" (cons ")" (cons "*" (cons "+" (cons "," (cons "-" (cons "." (cons "/" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow3,
+  parameters: [],
+  result: (List String),
+  body: (cons "0" (cons "1" (cons "2" (cons "3" (cons "4" (cons "5" (cons "6" (cons "7" (cons "8" (cons "9" (cons ":" (cons ";" (cons "<" (cons "=" (cons ">" (cons "?" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow4,
+  parameters: [],
+  result: (List String),
+  body: (cons "@" (cons "A" (cons "B" (cons "C" (cons "D" (cons "E" (cons "F" (cons "G" (cons "H" (cons "I" (cons "J" (cons "K" (cons "L" (cons "M" (cons "N" (cons "O" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow5,
+  parameters: [],
+  result: (List String),
+  body: (cons "P" (cons "Q" (cons "R" (cons "S" (cons "T" (cons "U" (cons "V" (cons "W" (cons "X" (cons "Y" (cons "Z" (cons "[" (cons "\\" (cons "]" (cons "^" (cons "_" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow6,
+  parameters: [],
+  result: (List String),
+  body: (cons "`" (cons "a" (cons "b" (cons "c" (cons "d" (cons "e" (cons "f" (cons "g" (cons "h" (cons "i" (cons "j" (cons "k" (cons "l" (cons "m" (cons "n" (cons "o" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow7,
+  parameters: [],
+  result: (List String),
+  body: (cons "p" (cons "q" (cons "r" (cons "s" (cons "t" (cons "u" (cons "v" (cons "w" (cons "x" (cons "y" (cons "z" (cons "{" (cons "|" (cons "}" (cons "~" (cons "" (nil String))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: asciiRow,
+  parameters: [row : Nat],
+  result: (List String),
+  body: (if (row =? 0) then (asciiRow0) else (if (row =? 1) then (asciiRow1) else (if (row =? 2) then (asciiRow2) else (if (row =? 3) then (asciiRow3) else (if (row =? 4) then (asciiRow4) else (if (row =? 5) then (asciiRow5) else (if (row =? 6) then (asciiRow6) else (if (row =? 7) then (asciiRow7) else (nil String))))))))),
   executable: true
 }
 
@@ -27,9 +91,9 @@ definition{
   name: asciiPiece,
   parameters: [raw : UInt8],
   result: String,
-  body: (match (prim index (asciiTable) (byteValue raw) : (Option String))
+  body: (let value : Nat := (byteValue raw); (match (prim index (asciiRow (prim quotient value 16 0 : Nat)) (prim remainder value 16 0 : Nat) : (Option String))
     | Option.none => "?"
-    | Option.some piece => piece),
+    | Option.some piece => piece)),
   axioms: [Quot.sound, propext],
   executable: true
 }

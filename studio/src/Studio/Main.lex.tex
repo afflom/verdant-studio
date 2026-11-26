@@ -30,7 +30,7 @@ definition{
   name: emptySeen,
   parameters: [],
   result: Studio.Ops::Seen,
-  body: (record Studio.Ops::Seen {files := (nil (Bytes * (Option Bytes))), listed := (nil (Bytes * (List Bytes))), ran := (nil Bytes)}),
+  body: (Studio.Ops::emptySeen),
   executable: true
 }
 
@@ -156,7 +156,7 @@ definition{
   name: recordRead,
   parameters: [session : Session, found : (Option Bytes)],
   result: (Session * LexLeanStd.Host::Request),
-  body: (let seen : Studio.Ops::Seen := (project session seen); (let updated : Session := (withSeen session (record Studio.Ops::Seen {files := (cons ((project session current), found) (project seen files)), listed := (project seen listed), ran := (project seen ran)})); (match (project session pending)
+  body: (let seen : Studio.Ops::Seen := (project session seen); (let updated : Session := (withSeen session (Studio.Ops::readInto seen (project session current) found)); (match (project session pending)
     | List.nil => (advance updated)
     | List.cons head rest => ((withPending (withPhase updated 1 head) rest), (ctor LexLeanStd.Host::Request.read (Studio.Doc::text head)))))),
   axioms: [Quot.sound, propext],
@@ -167,7 +167,7 @@ definition{
   name: recordListing,
   parameters: [session : Session, names : (List Bytes)],
   result: (Session * LexLeanStd.Host::Request),
-  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (project seen files), listed := (cons ((project session current), names) (project seen listed)), ran := (project seen ran)})))),
+  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (Studio.Ops::listedInto seen (project session current) names)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -176,7 +176,7 @@ definition{
   name: recordRan,
   parameters: [session : Session],
   result: (Session * LexLeanStd.Host::Request),
-  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (record Studio.Ops::Seen {files := (project seen files), listed := (project seen listed), ran := (cons (project session current) (project seen ran))})))),
+  body: (let seen : Studio.Ops::Seen := (project session seen); (advance (withSeen session (Studio.Ops::ranInto seen (project session current))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
