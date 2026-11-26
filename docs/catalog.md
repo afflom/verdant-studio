@@ -133,7 +133,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **H12** Version control: Perforce Helix Core, Git + Git LFS, Unity Version Control (Engine, runtime, languages, and software engineering): narrowMatch GIT-LFS-SPEC-3.8.1 (staged)
 - **H13** Semantic Versioning 2.0.0 (Engine, runtime, languages, and software engineering): exactMatch SEMVER-2.0.0 (staged)
 - **H14** DORA metrics / Accelerate (Engine, runtime, languages, and software engineering): exactMatch DORA-SOFTWARE-DELIVERY-METRICS (derived from its citation)
-- **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering), not reached from any origin: exactMatch W3C-GAMEPAD-20261119 (staged)
+- **H15** W3C Gamepad API (Engine, runtime, languages, and software engineering): narrowMatch W3C-WEBREF-IDL-GAMEPAD-A0114B8 (derived from its citation); exactMatch W3C-GAMEPAD-20261119 (staged)
 - **H16** Platform SDK minimums: Google Play target API level; Apple minimum SDK/Xcode requirements (Engine, runtime, languages, and software engineering), not reached from any origin: narrowMatch APPLE-UPCOMING-REQUIREMENTS (staged); narrowMatch GOOGLE-PLAY-TARGET-API-LEVEL (staged)
 - **I01** ITU-R BS.1770 loudness measurement (LUFS/LKFS) (Audio, music, and voice): exactMatch ITU-R-BS-1770-5 (derived from its citation)
 - **I02** EBU R 128 (Audio, music, and voice): exactMatch EBU-R128-2023 (derived from its citation)

@@ -428,3 +428,4 @@ Each construct and the citation that admits it.
 - `Catalog.TraitGenPackage`: std OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14 row D16
 - `model/registries/OPENASSETIO-MEDIACREATION-TRAITS.jsonl`: std OPENASSETIO-MEDIACREATION-TRAITS row D16
 - `model/registries/OWASP-MASVS-2.1.0.jsonl`: std OWASP-MASVS-2.1.0 row T02
+- `Catalog.Gamepad`: std W3C-WEBREF-IDL-GAMEPAD-A0114B8 row H15
