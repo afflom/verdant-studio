@@ -867,7 +867,9 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (Studio.Yaml::readYaml (contents seen path))
       | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "not read as YAML 1.2.2: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
-      | Result.ok items => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Yaml::streamText items)))),
+      | Result.ok items => (match (Studio.Yaml::streamText items)
+        | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "not written as JSON: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
+        | Result.ok text => (ctor Plan.done (nil (Bytes * Bytes)) text)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
