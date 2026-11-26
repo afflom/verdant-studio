@@ -107,7 +107,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G02** Direct3D 12 / DirectX (incl. DXR, HLSL, Agility SDK) (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch MICROSOFT-D3D12-IDL-1.721.2 (staged)
 - **G03** Metal (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch APPLE-MSL-4.1 (staged)
 - **G04** OpenGL / OpenGL ES / WebGL (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch KHRONOS-OPENGL-REGISTRY-GLXML (staged); narrowMatch KHRONOS-WEBGL-1.0-IDL (staged); narrowMatch KHRONOS-WEBGL-2.0-IDL (staged)
-- **G05** WebGPU and WGSL (Rendering, graphics APIs, color, and display), not reached from any origin: narrowMatch W3C-WEBGPU-20261116 (staged); narrowMatch W3C-WGSL-20261106 (staged)
+- **G05** WebGPU and WGSL (Rendering, graphics APIs, color, and display): narrowMatch W3C-WEBREF-IDL-WEBGPU-A0114B8 (derived from its citation); narrowMatch W3C-WEBGPU-20261116 (staged); narrowMatch W3C-WGSL-20261106 (staged)
 - **G06** Console graphics APIs (GNM/AGC, NVN) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
 - **G07** sRGB (IEC 61966-2-1) (Rendering, graphics APIs, color, and display): exactMatch IEC-61966-2-1-1999 (staged)
 - **G08** ITU-R BT.709, BT.2020, BT.2100 (PQ/HLG) (Rendering, graphics APIs, color, and display): narrowMatch ITU-R-BT-2100-3 (staged)
