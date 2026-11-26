@@ -1108,13 +1108,51 @@ definition{
 }
 
 definition{
-  name: blockFor,
-  parameters: [blocks : (List (List Bytes)), entry : Bytes],
+  name: startsFrom,
+  parameters: [line : Bytes, key : Bytes, position : Nat, fuel : Nat],
+  result: Bool,
+  body: (match fuel
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index key position : (Option UInt8))
+      | Option.none => true
+      | Option.some wanted => (match (prim index line position : (Option UInt8))
+        | Option.none => false
+        | Option.some found => (if (prim equal wanted found : Bool) then (startsFrom line key (position + 1) rest) else false)))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: anyStarts,
+  parameters: [lines : (List Bytes), key : Bytes],
+  result: Bool,
+  body: (match lines
+    | List.nil => false
+    | List.cons head rest => (if (startsFrom head key 0 (prim length key : Nat)) then true else (anyStarts rest key))),
+  recursive_argument: lines,
+  executable: true
+}
+
+definition{
+  name: blockStarting,
+  parameters: [blocks : (List (List Bytes)), key : Bytes],
   result: (List Bytes),
   body: (match blocks
     | List.nil => (nil Bytes)
-    | List.cons head rest => (if (blockNamed head entry) then head else (blockFor rest entry))),
+    | List.cons head rest => (if (anyStarts head key) then head else (blockStarting rest key))),
   recursive_argument: blocks,
+  executable: true
+}
+
+definition{
+  name: blockFor,
+  parameters: [blocks : (List (List Bytes)), entry : Bytes],
+  result: (List Bytes),
+  body: (match (LexLeanStd.Text::splitOn entry (34 : UInt8))
+    | List.nil => (nil Bytes)
+    | List.cons whole rest => (match rest
+      | List.nil => (blockStarting blocks (Studio.Doc::cat (cons (Studio.Doc::lit "id = \"") (cons whole (cons (Studio.Doc::lit "\"") (nil Bytes))))))
+      | List.cons second others => (nil Bytes))),
   executable: true
 }
 
