@@ -7886,3 +7886,88 @@ statement = "The identifier-like tokens of the pinned Lean 4.32.2 toolchain that
 artifact = "authorities/LEXLEAN-LEAN-TOKENS-0.4.3/lean_tokens.rs"
 checksum = "c6c4400fa73889ee50cf866d65f41287bb56270b58a774aff44401a68806a57a"
 realized_by = []
+
+[[authority]]
+id = "ECMA-262-16"
+name = "ECMAScript 2025 Language Specification"
+issuer = "Ecma International TC39"
+edition = "ECMA-262 16th edition (June 2025)"
+canonical_id = "https://ecma-international.org/publications-and-standards/standards/ecma-262/"
+source_role = "normative"
+retrieval_date = "2026-11-26"
+url = "https://ecma-international.org/wp-content/uploads/ECMA-262_16th_edition_june_2025.pdf"
+media_type = "application/pdf"
+license = "Ecma International copyright notice (may be copied and distributed unmodified with the notice; software parts BSD)"
+redistribution = "redistributable"
+statement = "The ECMAScript language, including the regular expression pattern grammar (section 22.2.1) that JSON Schema 2020-12 Core section 6.4 names for pattern. The current edition, since JSON Schema names no edition."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "IETF-RFC-3629"
+name = "UTF-8, a transformation format of ISO 10646"
+issuer = "IETF"
+edition = "RFC 3629"
+canonical_id = "https://www.rfc-editor.org/rfc/rfc3629"
+source_role = "normative"
+retrieval_date = "2026-11-26"
+url = "https://www.rfc-editor.org/rfc/rfc3629.txt"
+media_type = "text/plain"
+license = "IETF Trust Legal Provisions"
+redistribution = "redistributable"
+statement = "The UTF-8 encoding and its octet sequences (section 4), in the RFC's official plain-text form. Cited by the API's text handling."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "IETF-RFC-6901"
+name = "JavaScript Object Notation (JSON) Pointer"
+issuer = "IETF"
+edition = "RFC 6901"
+canonical_id = "https://www.rfc-editor.org/rfc/rfc6901"
+source_role = "normative"
+retrieval_date = "2026-11-26"
+url = "https://www.rfc-editor.org/rfc/rfc6901.txt"
+media_type = "text/plain"
+license = "IETF Trust Legal Provisions"
+redistribution = "redistributable"
+statement = "The JSON Pointer syntax and its evaluation against a JSON document (section 4), in the RFC's official plain-text form. Cited by the API's refusal texts."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "IETF-RFC-8259"
+name = "The JavaScript Object Notation (JSON) Data Interchange Format"
+issuer = "IETF"
+edition = "RFC 8259"
+canonical_id = "https://www.rfc-editor.org/rfc/rfc8259"
+source_role = "normative"
+retrieval_date = "2026-11-26"
+url = "https://www.rfc-editor.org/rfc/rfc8259.txt"
+media_type = "text/plain"
+license = "IETF Trust Legal Provisions"
+redistribution = "redistributable"
+statement = "The JSON grammar (section 2) and its values, including null (section 3), in the RFC's official plain-text form. Cited by the API's JSON reader and writer."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "NIST-FIPS-180-4"
+name = "Secure Hash Standard (SHS)"
+issuer = "NIST"
+edition = "FIPS PUB 180-4 (August 2015)"
+canonical_id = "https://doi.org/10.6028/NIST.FIPS.180-4"
+source_role = "normative"
+retrieval_date = "2026-11-26"
+url = "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf"
+media_type = "application/pdf"
+license = "Public domain (US Government work)"
+redistribution = "redistributable"
+statement = "The SHA-1 and SHA-2 hash algorithms, including SHA-256 (section 6.2). Cited by the API's checksums."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
