@@ -1,0 +1,834 @@
+\begin{lexlean}{Catalog.Mets}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: XmlNode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: element, fields: [Bytes, Bytes, (List ((Bytes * Bytes) * Bytes)), (List XmlNode)]},
+    {name: text, fields: [Bytes]}
+  ]
+}
+
+structure{
+  name: MetsTypeMetsHdrAgentNote,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+inductive{
+  name: MetsTypeMetsHdrAgentROLE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cREATOR, fields: []},
+    {name: eDITOR, fields: []},
+    {name: aRCHIVIST, fields: []},
+    {name: pRESERVATION, fields: []},
+    {name: dISSEMINATOR, fields: []},
+    {name: cUSTODIAN, fields: []},
+    {name: iPOWNER, fields: []},
+    {name: oTHER, fields: []}
+  ]
+}
+
+inductive{
+  name: MetsTypeMetsHdrAgentTYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iNDIVIDUAL, fields: []},
+    {name: oRGANIZATION, fields: []},
+    {name: oTHER, fields: []}
+  ]
+}
+
+structure{
+  name: MetsTypeMetsHdrAgent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: Bytes},
+    {name: note, type: (List MetsTypeMetsHdrAgentNote)},
+    {name: iD, type: (Option Bytes)},
+    {name: rOLE, type: MetsTypeMetsHdrAgentROLE},
+    {name: oTHERROLE, type: (Option Bytes)},
+    {name: tYPE, type: (Option MetsTypeMetsHdrAgentTYPE)},
+    {name: oTHERTYPE, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: MetsTypeMetsHdrAltRecordID,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes},
+    {name: iD, type: (Option Bytes)},
+    {name: tYPE, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: MetsTypeMetsHdrMetsDocumentID,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Bytes},
+    {name: iD, type: (Option Bytes)},
+    {name: tYPE, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: MetsTypeMetsHdr,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: agent, type: (List MetsTypeMetsHdrAgent)},
+    {name: altRecordID, type: (List MetsTypeMetsHdrAltRecordID)},
+    {name: metsDocumentID, type: (Option MetsTypeMetsHdrMetsDocumentID)},
+    {name: iD, type: (Option Bytes)},
+    {name: aDMID, type: (Option (List Bytes))},
+    {name: cREATEDATE, type: (Option Bytes)},
+    {name: lASTMODDATE, type: (Option Bytes)},
+    {name: rECORDSTATUS, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+inductive{
+  name: Show,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: new, fields: []},
+    {name: replace, fields: []},
+    {name: embed, fields: []},
+    {name: other, fields: []},
+    {name: none, fields: []}
+  ]
+}
+
+inductive{
+  name: Actuate,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: onLoad, fields: []},
+    {name: onRequest, fields: []},
+    {name: other, fields: []},
+    {name: none, fields: []}
+  ]
+}
+
+structure{
+  name: StructLinkTypeChoiceSmLink,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: arcrole, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: show, type: (Option Show)},
+    {name: actuate, type: (Option Actuate)},
+    {name: to, type: Bytes},
+    {name: from, type: Bytes}
+  ]
+}
+
+structure{
+  name: StructLinkTypeChoiceSmLinkGrpSmLocatorLink,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: href, type: Bytes},
+    {name: role, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: label, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: StructLinkTypeChoiceSmLinkGrpSmArcLink,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: arcrole, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: show, type: (Option Show)},
+    {name: actuate, type: (Option Actuate)},
+    {name: from, type: (Option Bytes)},
+    {name: to, type: (Option Bytes)},
+    {name: aRCTYPE, type: (Option Bytes)},
+    {name: aDMID, type: (Option (List Bytes))}
+  ]
+}
+
+inductive{
+  name: StructLinkTypeChoiceSmLinkGrpARCLINKORDER,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: ordered, fields: []},
+    {name: unordered, fields: []}
+  ]
+}
+
+structure{
+  name: StructLinkTypeChoiceSmLinkGrp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: smLocatorLink, type: (List StructLinkTypeChoiceSmLinkGrpSmLocatorLink)},
+    {name: smArcLink, type: (List StructLinkTypeChoiceSmLinkGrpSmArcLink)},
+    {name: iD, type: (Option Bytes)},
+    {name: aRCLINKORDER, type: (Option StructLinkTypeChoiceSmLinkGrpARCLINKORDER)},
+    {name: type, type: (Option Bytes)},
+    {name: role, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: StructLinkTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: smLink, fields: [StructLinkTypeChoiceSmLink]},
+    {name: smLinkGrp, fields: [StructLinkTypeChoiceSmLinkGrp]}
+  ]
+}
+
+structure{
+  name: MetsTypeStructLink,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: (List StructLinkTypeChoice)},
+    {name: iD, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+inductive{
+  name: LOCATIONLOCTYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: aRK, fields: []},
+    {name: uRN, fields: []},
+    {name: uRL, fields: []},
+    {name: pURL, fields: []},
+    {name: hANDLE, fields: []},
+    {name: dOI, fields: []},
+    {name: oTHER, fields: []}
+  ]
+}
+
+inductive{
+  name: AreaTypeSHAPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: rECT, fields: []},
+    {name: cIRCLE, fields: []},
+    {name: pOLY, fields: []}
+  ]
+}
+
+inductive{
+  name: AreaTypeBETYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bYTE, fields: []},
+    {name: iDREF, fields: []},
+    {name: sMIL, fields: []},
+    {name: mIDI, fields: []},
+    {name: sMPTE25, fields: []},
+    {name: sMPTE24, fields: []},
+    {name: sMPTEDF30, fields: []},
+    {name: sMPTENDF30, fields: []},
+    {name: sMPTEDF2997, fields: []},
+    {name: sMPTENDF2997, fields: []},
+    {name: tIME, fields: []},
+    {name: tCF, fields: []},
+    {name: xPTR, fields: []}
+  ]
+}
+
+inductive{
+  name: AreaTypeEXTTYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bYTE, fields: []},
+    {name: sMIL, fields: []},
+    {name: mIDI, fields: []},
+    {name: sMPTE25, fields: []},
+    {name: sMPTE24, fields: []},
+    {name: sMPTEDF30, fields: []},
+    {name: sMPTENDF30, fields: []},
+    {name: sMPTEDF2997, fields: []},
+    {name: sMPTENDF2997, fields: []},
+    {name: tIME, fields: []},
+    {name: tCF, fields: []}
+  ]
+}
+
+structure{
+  name: StructLinkType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: (List StructLinkTypeChoice)},
+    {name: iD, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: ObjectType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: lOCTYPE, type: LOCATIONLOCTYPE},
+    {name: oTHERLOCTYPE, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: href, type: (Option Bytes)},
+    {name: role, type: (Option Bytes)},
+    {name: arcrole, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: show, type: (Option Show)},
+    {name: actuate, type: (Option Actuate)}
+  ]
+}
+
+structure{
+  name: BehaviorType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: interfaceDef, type: (Option ObjectType)},
+    {name: mechanism, type: ObjectType},
+    {name: iD, type: (Option Bytes)},
+    {name: sTRUCTID, type: (Option (List Bytes))},
+    {name: bTYPE, type: (Option Bytes)},
+    {name: cREATED, type: (Option Bytes)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: gROUPID, type: (Option Bytes)},
+    {name: aDMID, type: (Option (List Bytes))}
+  ]
+}
+
+inductive{
+  name: BehaviorSecType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(List BehaviorSecType), (List BehaviorType), (Option Bytes), (Option Bytes), (Option Bytes), (List ((Bytes * Bytes) * Bytes))]}
+  ]
+}
+
+inductive{
+  name: METADATAMDTYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mARC, fields: []},
+    {name: mODS, fields: []},
+    {name: eAD, fields: []},
+    {name: dC, fields: []},
+    {name: nISOIMG, fields: []},
+    {name: lCAV, fields: []},
+    {name: vRA, fields: []},
+    {name: tEIHDR, fields: []},
+    {name: dDI, fields: []},
+    {name: fGDC, fields: []},
+    {name: lOM, fields: []},
+    {name: pREMIS, fields: []},
+    {name: pREMISOBJECT, fields: []},
+    {name: pREMISAGENT, fields: []},
+    {name: pREMISRIGHTS, fields: []},
+    {name: pREMISEVENT, fields: []},
+    {name: tEXTMD, fields: []},
+    {name: mETSRIGHTS, fields: []},
+    {name: iSO191152003NAP, fields: []},
+    {name: eACCPF, fields: []},
+    {name: lIDO, fields: []},
+    {name: oTHER, fields: []}
+  ]
+}
+
+inductive{
+  name: FILECORECHECKSUMTYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: adler32, fields: []},
+    {name: cRC32, fields: []},
+    {name: hAVAL, fields: []},
+    {name: mD5, fields: []},
+    {name: mNP, fields: []},
+    {name: sHA1, fields: []},
+    {name: sHA256, fields: []},
+    {name: sHA384, fields: []},
+    {name: sHA512, fields: []},
+    {name: tIGER, fields: []},
+    {name: wHIRLPOOL, fields: []}
+  ]
+}
+
+structure{
+  name: MdSecTypeMdRef,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: lOCTYPE, type: LOCATIONLOCTYPE},
+    {name: oTHERLOCTYPE, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: href, type: (Option Bytes)},
+    {name: role, type: (Option Bytes)},
+    {name: arcrole, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: show, type: (Option Show)},
+    {name: actuate, type: (Option Actuate)},
+    {name: mDTYPE, type: METADATAMDTYPE},
+    {name: oTHERMDTYPE, type: (Option Bytes)},
+    {name: mDTYPEVERSION, type: (Option Bytes)},
+    {name: mIMETYPE, type: (Option Bytes)},
+    {name: sIZE, type: (Option Int)},
+    {name: cREATED, type: (Option Bytes)},
+    {name: cHECKSUM, type: (Option Bytes)},
+    {name: cHECKSUMTYPE, type: (Option FILECORECHECKSUMTYPE)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: xPTR, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: MdSecTypeMdWrapChoiceXmlData,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: any, type: (List XmlNode)}
+  ]
+}
+
+inductive{
+  name: MdSecTypeMdWrapChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: binData, fields: [(Option Bytes)]},
+    {name: xmlData, fields: [(Option MdSecTypeMdWrapChoiceXmlData)]}
+  ]
+}
+
+structure{
+  name: MdSecTypeMdWrap,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: MdSecTypeMdWrapChoice},
+    {name: iD, type: (Option Bytes)},
+    {name: mDTYPE, type: METADATAMDTYPE},
+    {name: oTHERMDTYPE, type: (Option Bytes)},
+    {name: mDTYPEVERSION, type: (Option Bytes)},
+    {name: mIMETYPE, type: (Option Bytes)},
+    {name: sIZE, type: (Option Int)},
+    {name: cREATED, type: (Option Bytes)},
+    {name: cHECKSUM, type: (Option Bytes)},
+    {name: cHECKSUMTYPE, type: (Option FILECORECHECKSUMTYPE)},
+    {name: lABEL, type: (Option Bytes)}
+  ]
+}
+
+structure{
+  name: MdSecType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: mdRef, type: (Option MdSecTypeMdRef)},
+    {name: mdWrap, type: (Option MdSecTypeMdWrap)},
+    {name: iD, type: Bytes},
+    {name: gROUPID, type: (Option Bytes)},
+    {name: aDMID, type: (Option (List Bytes))},
+    {name: cREATED, type: (Option Bytes)},
+    {name: sTATUS, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: AmdSecType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: techMD, type: (List MdSecType)},
+    {name: rightsMD, type: (List MdSecType)},
+    {name: sourceMD, type: (List MdSecType)},
+    {name: digiprovMD, type: (List MdSecType)},
+    {name: iD, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: FileTypeFLocat,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: lOCTYPE, type: LOCATIONLOCTYPE},
+    {name: oTHERLOCTYPE, type: (Option Bytes)},
+    {name: uSE, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: href, type: (Option Bytes)},
+    {name: role, type: (Option Bytes)},
+    {name: arcrole, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: show, type: (Option Show)},
+    {name: actuate, type: (Option Actuate)}
+  ]
+}
+
+structure{
+  name: FileTypeFContentChoiceXmlData,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: any, type: (List XmlNode)}
+  ]
+}
+
+inductive{
+  name: FileTypeFContentChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: binData, fields: [(Option Bytes)]},
+    {name: xmlData, fields: [(Option FileTypeFContentChoiceXmlData)]}
+  ]
+}
+
+structure{
+  name: FileTypeFContent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: FileTypeFContentChoice},
+    {name: iD, type: (Option Bytes)},
+    {name: uSE, type: (Option Bytes)}
+  ]
+}
+
+inductive{
+  name: FileTypeStreamBETYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bYTE, fields: []}
+  ]
+}
+
+structure{
+  name: FileTypeStream,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: streamType, type: (Option Bytes)},
+    {name: oWNERID, type: (Option Bytes)},
+    {name: aDMID, type: (Option (List Bytes))},
+    {name: dMDID, type: (Option (List Bytes))},
+    {name: bEGIN, type: (Option Bytes)},
+    {name: eND, type: (Option Bytes)},
+    {name: bETYPE, type: (Option FileTypeStreamBETYPE)}
+  ]
+}
+
+inductive{
+  name: FileTypeTransformFileTRANSFORMTYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: decompression, fields: []},
+    {name: decryption, fields: []}
+  ]
+}
+
+structure{
+  name: FileTypeTransformFile,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: tRANSFORMTYPE, type: FileTypeTransformFileTRANSFORMTYPE},
+    {name: tRANSFORMALGORITHM, type: Bytes},
+    {name: tRANSFORMKEY, type: (Option Bytes)},
+    {name: tRANSFORMBEHAVIOR, type: (Option Bytes)},
+    {name: tRANSFORMORDER, type: Nat}
+  ]
+}
+
+inductive{
+  name: FileTypeBETYPE,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bYTE, fields: []}
+  ]
+}
+
+inductive{
+  name: FileType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(List FileTypeFLocat), (Option FileTypeFContent), (List FileTypeStream), (List FileTypeTransformFile), (List FileType), Bytes, (Option Int), (Option Bytes), (Option Int), (Option Bytes), (Option Bytes), (Option FILECORECHECKSUMTYPE), (Option Bytes), (Option (List Bytes)), (Option (List Bytes)), (Option Bytes), (Option Bytes), (Option Bytes), (Option Bytes), (Option FileTypeBETYPE), (List ((Bytes * Bytes) * Bytes))]}
+  ]
+}
+
+inductive{
+  name: FileGrpTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: fileGrp, fields: [(List FileGrpType)]},
+    {name: file, fields: [(List FileType)]}
+  ],
+  mutual: FileGrpTypeChoiceGroup
+}
+
+inductive{
+  name: FileGrpType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [FileGrpTypeChoice, (Option Bytes), (Option Bytes), (Option (List Bytes)), (Option Bytes), (List ((Bytes * Bytes) * Bytes))]}
+  ],
+  mutual: FileGrpTypeChoiceGroup
+}
+
+structure{
+  name: MetsTypeFileSecFileGrp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: FileGrpTypeChoice},
+    {name: iD, type: (Option Bytes)},
+    {name: vERSDATE, type: (Option Bytes)},
+    {name: aDMID, type: (Option (List Bytes))},
+    {name: uSE, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: MetsTypeFileSec,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: fileGrp, type: (List MetsTypeFileSecFileGrp)},
+    {name: iD, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: URIs,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: DivTypeMptr,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: lOCTYPE, type: LOCATIONLOCTYPE},
+    {name: oTHERLOCTYPE, type: (Option Bytes)},
+    {name: type, type: (Option Bytes)},
+    {name: href, type: (Option Bytes)},
+    {name: role, type: (Option Bytes)},
+    {name: arcrole, type: (Option Bytes)},
+    {name: title, type: (Option Bytes)},
+    {name: show, type: (Option Show)},
+    {name: actuate, type: (Option Actuate)},
+    {name: cONTENTIDS, type: (Option URIs)}
+  ]
+}
+
+structure{
+  name: AreaType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: iD, type: (Option Bytes)},
+    {name: fILEID, type: Bytes},
+    {name: sHAPE, type: (Option AreaTypeSHAPE)},
+    {name: cOORDS, type: (Option Bytes)},
+    {name: bEGIN, type: (Option Bytes)},
+    {name: eND, type: (Option Bytes)},
+    {name: bETYPE, type: (Option AreaTypeBETYPE)},
+    {name: eXTENT, type: (Option Bytes)},
+    {name: eXTTYPE, type: (Option AreaTypeEXTTYPE)},
+    {name: aDMID, type: (Option (List Bytes))},
+    {name: cONTENTIDS, type: (Option URIs)},
+    {name: oRDER, type: (Option Int)},
+    {name: oRDERLABEL, type: (Option Bytes)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+inductive{
+  name: ParTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: area, fields: [(Option AreaType)]},
+    {name: seq, fields: [(Option SeqType)]}
+  ],
+  mutual: ParTypeChoiceGroup
+}
+
+inductive{
+  name: ParType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(List ParTypeChoice), (Option Bytes), (Option Int), (Option Bytes), (Option Bytes), (List ((Bytes * Bytes) * Bytes))]}
+  ],
+  mutual: ParTypeChoiceGroup
+}
+
+inductive{
+  name: SeqTypeChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: area, fields: [(Option AreaType)]},
+    {name: par, fields: [(Option ParType)]}
+  ],
+  mutual: ParTypeChoiceGroup
+}
+
+inductive{
+  name: SeqType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(List SeqTypeChoice), (Option Bytes), (Option Int), (Option Bytes), (Option Bytes), (List ((Bytes * Bytes) * Bytes))]}
+  ],
+  mutual: ParTypeChoiceGroup
+}
+
+inductive{
+  name: DivTypeFptrChoice,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: par, fields: [(Option ParType)]},
+    {name: seq, fields: [(Option SeqType)]},
+    {name: area, fields: [(Option AreaType)]}
+  ]
+}
+
+structure{
+  name: DivTypeFptr,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: choice, type: DivTypeFptrChoice},
+    {name: iD, type: (Option Bytes)},
+    {name: fILEID, type: (Option Bytes)},
+    {name: cONTENTIDS, type: (Option URIs)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+inductive{
+  name: DivType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [(List DivTypeMptr), (List DivTypeFptr), (List DivType), (Option Bytes), (Option Int), (Option Bytes), (Option Bytes), (Option (List Bytes)), (Option (List Bytes)), (Option Bytes), (Option URIs), (Option Bytes)]}
+  ]
+}
+
+structure{
+  name: StructMapType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: div, type: DivType},
+    {name: iD, type: (Option Bytes)},
+    {name: tYPE, type: (Option Bytes)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: Mets,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: metsHdr, type: (Option MetsTypeMetsHdr)},
+    {name: dmdSec, type: (List MdSecType)},
+    {name: amdSec, type: (List AmdSecType)},
+    {name: fileSec, type: (Option MetsTypeFileSec)},
+    {name: structMap, type: (List StructMapType)},
+    {name: structLink, type: (Option MetsTypeStructLink)},
+    {name: behaviorSec, type: (List BehaviorSecType)},
+    {name: iD, type: (Option Bytes)},
+    {name: oBJID, type: (Option Bytes)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: tYPE, type: (Option Bytes)},
+    {name: pROFILE, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+
+structure{
+  name: MetsType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: metsHdr, type: (Option MetsTypeMetsHdr)},
+    {name: dmdSec, type: (List MdSecType)},
+    {name: amdSec, type: (List AmdSecType)},
+    {name: fileSec, type: (Option MetsTypeFileSec)},
+    {name: structMap, type: (List StructMapType)},
+    {name: structLink, type: (Option MetsTypeStructLink)},
+    {name: behaviorSec, type: (List BehaviorSecType)},
+    {name: iD, type: (Option Bytes)},
+    {name: oBJID, type: (Option Bytes)},
+    {name: lABEL, type: (Option Bytes)},
+    {name: tYPE, type: (Option Bytes)},
+    {name: pROFILE, type: (Option Bytes)},
+    {name: anyAttribute, type: (List ((Bytes * Bytes) * Bytes))}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

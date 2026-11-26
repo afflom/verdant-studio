@@ -432,3 +432,4 @@ Each construct and the citation that admits it.
 - `Catalog.WebXr`: std W3C-WEBREF-IDL-WEBXR-A0114B8 row G14
 - `Catalog.WebGpu`: std W3C-WEBREF-IDL-WEBGPU-A0114B8 row G05
 - `Catalog.Premis`: std LOC-PREMIS-3.0 row Y02
+- `Catalog.Mets`: std LOC-METS-1.12.1 row Y02
