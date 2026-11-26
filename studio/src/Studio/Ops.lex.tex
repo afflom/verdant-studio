@@ -823,6 +823,26 @@ definition{
 
 
 definition{
+  name: prependWrites,
+  parameters: [extra : (List (Bytes * Bytes)), writes : (List (Bytes * Bytes))],
+  result: (List (Bytes * Bytes)),
+  body: (match extra
+    | List.nil => writes
+    | List.cons head rest => (cons head (prependWrites rest writes))),
+  recursive_argument: extra,
+  executable: true
+}
+
+definition{
+  name: admitTranslated,
+  parameters: [seen : Seen, name : Bytes, cited : LexLeanStd.Json::Json, text : Bytes, role : Bytes, extra : (List (Bytes * Bytes))],
+  result: Plan,
+  body: (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (ctor Plan.done (prependWrites extra (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") module (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (Studio.Doc::lit "path") source (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "path") (ctor LexLeanStd.Json::Json.JStr source) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "role") (ctor LexLeanStd.Json::Json.JStr role) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "stratum") (ctor LexLeanStd.Json::Json.JInt false 0) (ctor LexLeanStd.Json::Json.JNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) (Studio.Doc::lit "\n") : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons (Studio.Doc::lit "\n") (nil Bytes)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: encodingPlan,
   parameters: [seen : Seen, schemaText : Bytes, schema : Studio.Schema::Value, name : Bytes, citation : (List Bytes), reads : (List Bytes)],
   result: Plan,
@@ -830,9 +850,9 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (citationJson citation)
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "a citation is required: req ID | std AUTHORITY [ROW] | der RULE CHECK INPUT...\n"))
-      | Option.some cited => (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (match (Studio.Schema::translateSchema schema module (Studio.Schema::pascal name))
+      | Option.some cited => (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (match (Studio.Schema::translateSchema schema module (Studio.Schema::pascal name))
           | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "the encoding does not translate: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
-          | Result.ok text => (ctor Plan.done (cons ((Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))), schemaText) (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") module (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (Studio.Doc::lit "path") source (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "path") (ctor LexLeanStd.Json::Json.JStr source) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "role") (ctor LexLeanStd.Json::Json.JStr (Studio.Doc::lit "Encoding entered through propose-encoding.")) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "stratum") (ctor LexLeanStd.Json::Json.JInt false 0) (ctor LexLeanStd.Json::Json.JNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) (Studio.Doc::lit "\n") : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))),
+          | Result.ok text => (admitTranslated seen name cited text (Studio.Doc::lit "Encoding entered through propose-encoding.") (cons ((Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))), schemaText) (nil (Bytes * Bytes)))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -865,6 +885,34 @@ definition{
   axioms: [Quot.sound, propext],
   executable: true
 }
+
+definition{
+  name: xsdModuleText,
+  parameters: [name : Bytes, declarations : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "\\begin{lexlean}{Catalog.") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit "}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\title{Natural number addition}\n\\begin{semanticmodule}\n") (cons declarations (cons (Studio.Doc::lit "\\end{semanticmodule}\n\\end{lexlean}\n") (nil Bytes))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planProposeXsdEncoding,
+  parameters: [seen : Seen, path : Bytes, name : Bytes, citation : (List Bytes)],
+  result: Plan,
+  body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/owner-decisions.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/strata.json") (cons (Studio.Doc::lit "model/register-lock.json") (cons (Studio.Doc::lit "app/lexlean.toml") (nil Bytes)))))))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (citationJson citation)
+      | Option.none => (ctor Plan.refuse (Studio.Doc::lit "a citation is required: req ID | std AUTHORITY [ROW] | der RULE CHECK INPUT...\n"))
+      | Option.some cited => (match (firstDeferred (citedRows (cons (ctor LexLeanStd.Json::Json.JObj cited) (nil LexLeanStd.Json::Json))) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
+        | Option.some row => (deferredRefusal row)
+        | Option.none => (match (Studio.XsdComponents::readSchemaSet (project seen files) (contents seen (Studio.Doc::lit "model/authorities.toml")) path)
+          | Studio.XsdComponents::Outcome.needs paths => (ctor Plan.reads paths)
+          | Studio.XsdComponents::Outcome.refuses reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "the encoding does not translate: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
+          | Studio.XsdComponents::Outcome.translated count text => (admitTranslated seen name cited (xsdModuleText name text) (Studio.Doc::cat (cons (Studio.Doc::lit "Encoding entered through propose-xsd-encoding from ") (cons path (cons (Studio.Doc::lit ".") (nil Bytes))))) (nil (Bytes * Bytes))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
 
 
 
@@ -2366,6 +2414,7 @@ definition{
     (cons (Studio.Doc::lit "merge-gate RULES")
     (cons (Studio.Doc::lit "next [SKIP...]")
     (cons (Studio.Doc::lit "propose-encoding SCHEMA NAME CITATION...")
+    (cons (Studio.Doc::lit "propose-xsd-encoding FILE NAME CITATION...")
     (cons (Studio.Doc::lit "publish")
     (cons (Studio.Doc::lit "read-webidl FILE [IMPORT...]")
     (cons (Studio.Doc::lit "read-xml FILE")
@@ -2380,7 +2429,7 @@ definition{
     (cons (Studio.Doc::lit "stage-engine")
     (cons (Studio.Doc::lit "stage-mappings JSONL")
     (cons (Studio.Doc::lit "stage-matrix JSONL")
-    (nil Bytes))))))))))))))))))))))))),
+    (nil Bytes)))))))))))))))))))))))))),
   executable: true
 }
 
@@ -2455,8 +2504,11 @@ definition{
     (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
       | List.nil => (ctor Plan.refuse (usage))
       | List.cons name citation => (planProposeEncoding seen path name citation)) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "propose-xsd-encoding")) then (match more
+      | List.nil => (ctor Plan.refuse (usage))
+      | List.cons name citation => (planProposeXsdEncoding seen path name citation)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else
-    (ctor Plan.refuse (usage))))))))),
+    (ctor Plan.refuse (usage)))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
