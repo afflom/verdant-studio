@@ -71,8 +71,8 @@ jobs:
           cat > target/input/change.patch <<< "$INPUT"
           # A patch larger than a dispatch input can carry arrives gzipped and base64-encoded.
           if head -c 4 target/input/change.patch | grep -q '^H4sI'; then base64 -d < target/input/change.patch | gunzip > target/input/change.diff; mv target/input/change.diff target/input/change.patch; fi
-          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' || true)
-          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites and README.md, not: $outside"; exit 1; fi
+          outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' -e '^readers/' -e '^lexlean-workspace.toml$' || true)
+          if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites, README.md, readers and lexlean-workspace.toml, not: $outside"; exit 1; fi
           git apply target/input/change.patch
           if [ ! -x "$HOME/.elan/bin/elan" ]; then
             curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
@@ -97,7 +97,7 @@ jobs:
             echo "::error::propose-command needs a plain-language account before the patch: what changes and why, the requirement or decision it serves, what it unblocks, and the risk and how it was verified"
             exit 1
           fi
-          git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio | awk 'index($0, "+++ b") == 1 { file = substr($0, 7) } index($0, "@@") == 1 { parts = split($3, at, ","); start = substr(at[1], 2); count = (parts > 1) ? at[2] : 1; print file " " ((count > 0) ? start + count - 1 : start) }' > target/hunks.txt
+          git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio readers/src | awk 'index($0, "+++ b") == 1 { file = substr($0, 7) } index($0, "@@") == 1 { parts = split($3, at, ","); start = substr(at[1], 2); count = (parts > 1) ? at[2] : 1; print file " " ((count > 0) ? start + count - 1 : start) }' > target/hunks.txt
           {
             cat target/summary.md
             echo
@@ -105,7 +105,7 @@ jobs:
             echo
             {
               while read -r file line; do head -n "$line" "$file" | { grep '^  name: ' || true; } | tail -n 1; done < target/hunks.txt
-              { git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio | grep '^[+]  name: ' || true; } | cut -c2-
+              { git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio readers/src | grep '^[+]  name: ' || true; } | cut -c2-
             } | awk '{ sub("^  name: ", "- `"); sub(",$", "`"); print }' | sort -u
             echo
             slash=/
@@ -120,7 +120,7 @@ jobs:
             echo '```'
             echo
             echo '```'
-            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md
+            git diff --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml
             echo '```'
             echo
             echo "<${slash}details>"
@@ -128,8 +128,10 @@ jobs:
       - id: command
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
-          path: target/release/verdant_studio
-          key: verdant-studio-${{ hashFiles('certified/**') }}
+          path: |
+            target/release/verdant_studio
+            target/release/verdant_readers
+          key: verdant-studio-${{ hashFiles('certified/**', 'certified-readers/**') }}
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.npm
@@ -146,6 +148,11 @@ jobs:
           test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
           target/lexlean/bin/lexlean production verify-artifact certified
           cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
+          # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.
+          if [ -d certified-readers ]; then
+            target/lexlean/bin/lexlean production verify-artifact certified-readers
+            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target
+          fi
       - name: run the operation, then check, build and publish through the API, as the studio check does
         env:
           ARGS: ${{ inputs.args || 'advance' }}
@@ -157,6 +164,8 @@ jobs:
           # A GitHub API call that fails (a 5xx answer or a dropped connection) is tried again,
           # at most 4 tries, 2, 4 and 8 seconds apart, so a transient error never stops the queue.
           gh() { local try out; for try in 1 2 3 4; do if out=$(command gh "$@"); then if [ -n "$out" ]; then echo "$out"; fi; return 0; fi; if [ "$try" -lt 4 ]; then echo "::warning::gh $1 failed (try $try of 4)" >&2; sleep $((2 ** try)); fi; done; return 1; }
+          # read-* operations run in the reader project's command when it is built, every other operation in the studio command.
+          vs() { case "$1" in read-*) if [ -x target/release/verdant_readers ]; then target/release/verdant_readers "$@"; return; fi;; esac; target/release/verdant_studio "$@"; }
           # An App pull request whose files already hold on main has nothing left to merge,
           # so it is closed; the propose-command ones are the owner's to review and stay open.
           for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.user.type == "Bot" and (.title | startswith("verdant_studio ")) and (.title | startswith("verdant_studio propose-command") | not)) | .number'); do
@@ -198,7 +207,7 @@ jobs:
             # queue waits: each begins with "waiting", and none is dispatched.
             while op=$(target/release/verdant_studio next $skipped) && [ -n "$op" ] && [ "${op#waiting}" = "$op" ]; do
               if [ "$op" = "$last" ]; then echo "::error::$op did not settle"; exit 1; fi
-              if target/release/verdant_studio $op | tee -a target/operation.txt; then
+              if vs $op | tee -a target/operation.txt; then
                 last=$op
               else
                 binding=${op#* }
@@ -226,9 +235,10 @@ jobs:
             if ! git merge-base --is-ancestor "$merge" origin/main; then echo "::error::$merge is not on main"; exit 1; fi
             git revert -m 1 --no-commit "$merge"
             cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
+            if [ -d certified-readers ]; then cargo build -q --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target; fi
             { echo "Revert $merge, a merge that broke the API's own path"; echo; echo "**What changes and why.** This reverts the merge $merge on main $(git rev-parse --short origin/main), made by the App from the last good main commit, so the repair needs no bypass."; echo; echo '```'; git diff --cached --stat -- studio/src app/src model features README.md .github; echo '```'; } > target/operation.txt
           else
-            target/release/verdant_studio $ARGS | tee target/operation.txt
+            vs $ARGS | tee target/operation.txt
           fi
           target/release/verdant_studio check
           target/release/verdant_studio build
@@ -276,8 +286,7 @@ jobs:
           gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
           if [ "$ARGS" = propose-command ] || [ "${ARGS#revert-merge }" != "$ARGS" ]; then
             echo "::notice::a change to the API itself waits for the owner's review"
-            # main may have moved while this ran, so refresh checks the new pull request at once.
-            gh workflow run refresh.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning::refresh could not be started; it runs on the next push to main"
+            # refresh starts when this run completes (its workflow_run trigger), and checks the new pull request then.
           elif [ "$(target/release/verdant_studio merge-gate target/rules.json)" = merge ]; then
             gh pr merge "$pr" --auto --squash --delete-branch
           else

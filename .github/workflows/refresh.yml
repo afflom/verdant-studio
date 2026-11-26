@@ -8,11 +8,15 @@
 # regenerated in its own job, in parallel, and marked ready again only once it is pushed.
 name: refresh
 
-# A pull request that opens while main moves is caught too: operate starts this workflow
-# right after it opens one, so every regeneration takes this one path.
+# A pull request that opens while main moves is caught too: this workflow also starts when an
+# operate run completes, which needs no token that may dispatch workflows, so every
+# regeneration takes this one path. A run that finds nothing to regenerate ends at once.
 on:
   push:
     branches: [main]
+  workflow_run:
+    workflows: [operate]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -128,7 +132,7 @@ jobs:
             git fetch -q origin "$branch" main
             git checkout -q -B refresh origin/main
             git clean -fdq
-            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md > target/change.patch
+            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml > target/change.patch
             # model/strata.json is one line, so two changes that each add a stratum row always
             # conflict there. Its rows are keyed by path (VS-05), so the merge is main's rows, then
             # each row the pull request adds whose path main does not have, in the pull request's order.
@@ -159,13 +163,14 @@ jobs:
               gh api --silent "repos/${GITHUB_REPOSITORY}/issues/${pr}/comments" -F body=@target/comment.md || true
               continue
             fi
-            rm -rf studio/.lexlean/production
+            rm -rf studio/.lexlean/production readers/.lexlean/production
             cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
+            if [ -d certified-readers ]; then cargo build -q --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target; fi
             target/release/verdant_studio check
             target/release/verdant_studio build
             target/release/verdant_studio publish
             git add -A
-            { echo "verdant_studio propose-command"; echo; echo "regenerated on main $(git rev-parse --short origin/main)"; git diff --cached --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md; } > target/message.txt
+            { echo "verdant_studio propose-command"; echo; echo "regenerated on main $(git rev-parse --short origin/main)"; git diff --cached --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml; } > target/message.txt
             git -c user.name="${SLUG}[bot]" -c user.email="${id}+${SLUG}[bot]@users.noreply.github.com" commit -q -F target/message.txt
             git push -q --force-with-lease="${branch}:origin/${branch}" origin "HEAD:refs/heads/${branch}"
             gh pr ready "$pr" || true
