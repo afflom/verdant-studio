@@ -1,0 +1,1685 @@
+\begin{lexlean}{Catalog.WebGpu}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: GPUObjectDescriptorBase,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUFeatureName,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: coreFeaturesAndLimits, fields: []},
+    {name: depthClipControl, fields: []},
+    {name: depth32floatStencil8, fields: []},
+    {name: textureCompressionBc, fields: []},
+    {name: textureCompressionBcSliced3d, fields: []},
+    {name: textureCompressionEtc2, fields: []},
+    {name: textureCompressionAstc, fields: []},
+    {name: textureCompressionAstcSliced3d, fields: []},
+    {name: timestampQuery, fields: []},
+    {name: indirectFirstInstance, fields: []},
+    {name: shaderF16, fields: []},
+    {name: rg11b10ufloatRenderable, fields: []},
+    {name: bgra8unormStorage, fields: []},
+    {name: float32Filterable, fields: []},
+    {name: float32Blendable, fields: []},
+    {name: clipDistances, fields: []},
+    {name: dualSourceBlending, fields: []},
+    {name: subgroups, fields: []},
+    {name: textureFormatsTier1, fields: []},
+    {name: textureFormatsTier2, fields: []},
+    {name: primitiveIndex, fields: []},
+    {name: textureComponentSwizzle, fields: []},
+    {name: subgroupSizeControl, fields: []},
+    {name: textureCompressionUnaligned, fields: []},
+    {name: atomicVec2uMinMax, fields: []}
+  ]
+}
+
+structure{
+  name: GPUSupportedLimits,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: maxTextureDimension1D, type: Nat},
+    {name: maxTextureDimension2D, type: Nat},
+    {name: maxTextureDimension3D, type: Nat},
+    {name: maxTextureArrayLayers, type: Nat},
+    {name: maxBindGroups, type: Nat},
+    {name: maxBindGroupsPlusVertexBuffers, type: Nat},
+    {name: maxImmediateSize, type: Nat},
+    {name: maxBindingsPerBindGroup, type: Nat},
+    {name: maxDynamicUniformBuffersPerPipelineLayout, type: Nat},
+    {name: maxDynamicStorageBuffersPerPipelineLayout, type: Nat},
+    {name: maxSampledTexturesPerShaderStage, type: Nat},
+    {name: maxSamplersPerShaderStage, type: Nat},
+    {name: maxStorageBuffersPerShaderStage, type: Nat},
+    {name: maxStorageBuffersInVertexStage, type: Nat},
+    {name: maxStorageBuffersInFragmentStage, type: Nat},
+    {name: maxStorageTexturesPerShaderStage, type: Nat},
+    {name: maxStorageTexturesInVertexStage, type: Nat},
+    {name: maxStorageTexturesInFragmentStage, type: Nat},
+    {name: maxUniformBuffersPerShaderStage, type: Nat},
+    {name: maxUniformBufferBindingSize, type: Nat},
+    {name: maxStorageBufferBindingSize, type: Nat},
+    {name: minUniformBufferOffsetAlignment, type: Nat},
+    {name: minStorageBufferOffsetAlignment, type: Nat},
+    {name: maxVertexBuffers, type: Nat},
+    {name: maxBufferSize, type: Nat},
+    {name: maxVertexAttributes, type: Nat},
+    {name: maxVertexBufferArrayStride, type: Nat},
+    {name: maxInterStageShaderVariables, type: Nat},
+    {name: maxColorAttachments, type: Nat},
+    {name: maxColorAttachmentBytesPerSample, type: Nat},
+    {name: maxComputeWorkgroupStorageSize, type: Nat},
+    {name: maxComputeInvocationsPerWorkgroup, type: Nat},
+    {name: maxComputeWorkgroupSizeX, type: Nat},
+    {name: maxComputeWorkgroupSizeY, type: Nat},
+    {name: maxComputeWorkgroupSizeZ, type: Nat},
+    {name: maxComputeWorkgroupsPerDimension, type: Nat}
+  ]
+}
+
+inductive{
+  name: GPUSupportedFeatures,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+inductive{
+  name: WGSLLanguageFeatures,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+structure{
+  name: GPUAdapterInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: vendor, type: (List Nat)},
+    {name: architecture, type: (List Nat)},
+    {name: device, type: (List Nat)},
+    {name: description, type: (List Nat)},
+    {name: subgroupMinSize, type: Nat},
+    {name: subgroupMaxSize, type: Nat},
+    {name: isFallbackAdapter, type: Bool}
+  ]
+}
+
+structure{
+  name: GPU,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: wgslLanguageFeatures, type: WGSLLanguageFeatures}
+  ]
+}
+
+inductive{
+  name: GPUPowerPreference,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: lowPower, fields: []},
+    {name: highPerformance, fields: []}
+  ]
+}
+
+structure{
+  name: GPURequestAdapterOptions,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: featureLevel, type: (List Nat)},
+    {name: forceFallbackAdapter, type: Bool},
+    {name: powerPreference, type: (Option GPUPowerPreference)},
+    {name: xrCompatible, type: Bool}
+  ]
+}
+
+structure{
+  name: GPUAdapter,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: features, type: GPUSupportedFeatures},
+    {name: limits, type: GPUSupportedLimits},
+    {name: info, type: GPUAdapterInfo}
+  ]
+}
+
+inductive{
+  name: GPUBufferMapState,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: unmapped, fields: []},
+    {name: pending, fields: []},
+    {name: mapped, fields: []}
+  ]
+}
+
+structure{
+  name: GPUBufferUsageFlags,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUMapModeFlags,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+inductive{
+  name: GPUTextureDimension,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1d, fields: []},
+    {name: n2d, fields: []},
+    {name: n3d, fields: []}
+  ]
+}
+
+structure{
+  name: GPUTextureUsageFlags,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUTextureView,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUTextureViewDimension,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1d, fields: []},
+    {name: n2d, fields: []},
+    {name: n2dArray, fields: []},
+    {name: cube, fields: []},
+    {name: cubeArray, fields: []},
+    {name: n3d, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUTextureAspect,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: all, fields: []},
+    {name: stencilOnly, fields: []},
+    {name: depthOnly, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUTextureFormat,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: r8unorm, fields: []},
+    {name: r8snorm, fields: []},
+    {name: r8uint, fields: []},
+    {name: r8sint, fields: []},
+    {name: r16unorm, fields: []},
+    {name: r16snorm, fields: []},
+    {name: r16uint, fields: []},
+    {name: r16sint, fields: []},
+    {name: r16float, fields: []},
+    {name: rg8unorm, fields: []},
+    {name: rg8snorm, fields: []},
+    {name: rg8uint, fields: []},
+    {name: rg8sint, fields: []},
+    {name: r32uint, fields: []},
+    {name: r32sint, fields: []},
+    {name: r32float, fields: []},
+    {name: rg16unorm, fields: []},
+    {name: rg16snorm, fields: []},
+    {name: rg16uint, fields: []},
+    {name: rg16sint, fields: []},
+    {name: rg16float, fields: []},
+    {name: rgba8unorm, fields: []},
+    {name: rgba8unormSrgb, fields: []},
+    {name: rgba8snorm, fields: []},
+    {name: rgba8uint, fields: []},
+    {name: rgba8sint, fields: []},
+    {name: bgra8unorm, fields: []},
+    {name: bgra8unormSrgb, fields: []},
+    {name: rgb9e5ufloat, fields: []},
+    {name: rgb10a2uint, fields: []},
+    {name: rgb10a2unorm, fields: []},
+    {name: rg11b10ufloat, fields: []},
+    {name: rg32uint, fields: []},
+    {name: rg32sint, fields: []},
+    {name: rg32float, fields: []},
+    {name: rgba16unorm, fields: []},
+    {name: rgba16snorm, fields: []},
+    {name: rgba16uint, fields: []},
+    {name: rgba16sint, fields: []},
+    {name: rgba16float, fields: []},
+    {name: rgba32uint, fields: []},
+    {name: rgba32sint, fields: []},
+    {name: rgba32float, fields: []},
+    {name: stencil8, fields: []},
+    {name: depth16unorm, fields: []},
+    {name: depth24plus, fields: []},
+    {name: depth24plusStencil8, fields: []},
+    {name: depth32float, fields: []},
+    {name: depth32floatStencil8, fields: []},
+    {name: bc1RgbaUnorm, fields: []},
+    {name: bc1RgbaUnormSrgb, fields: []},
+    {name: bc2RgbaUnorm, fields: []},
+    {name: bc2RgbaUnormSrgb, fields: []},
+    {name: bc3RgbaUnorm, fields: []},
+    {name: bc3RgbaUnormSrgb, fields: []},
+    {name: bc4RUnorm, fields: []},
+    {name: bc4RSnorm, fields: []},
+    {name: bc5RgUnorm, fields: []},
+    {name: bc5RgSnorm, fields: []},
+    {name: bc6hRgbUfloat, fields: []},
+    {name: bc6hRgbFloat, fields: []},
+    {name: bc7RgbaUnorm, fields: []},
+    {name: bc7RgbaUnormSrgb, fields: []},
+    {name: etc2Rgb8unorm, fields: []},
+    {name: etc2Rgb8unormSrgb, fields: []},
+    {name: etc2Rgb8a1unorm, fields: []},
+    {name: etc2Rgb8a1unormSrgb, fields: []},
+    {name: etc2Rgba8unorm, fields: []},
+    {name: etc2Rgba8unormSrgb, fields: []},
+    {name: eacR11unorm, fields: []},
+    {name: eacR11snorm, fields: []},
+    {name: eacRg11unorm, fields: []},
+    {name: eacRg11snorm, fields: []},
+    {name: astc4x4Unorm, fields: []},
+    {name: astc4x4UnormSrgb, fields: []},
+    {name: astc5x4Unorm, fields: []},
+    {name: astc5x4UnormSrgb, fields: []},
+    {name: astc5x5Unorm, fields: []},
+    {name: astc5x5UnormSrgb, fields: []},
+    {name: astc6x5Unorm, fields: []},
+    {name: astc6x5UnormSrgb, fields: []},
+    {name: astc6x6Unorm, fields: []},
+    {name: astc6x6UnormSrgb, fields: []},
+    {name: astc8x5Unorm, fields: []},
+    {name: astc8x5UnormSrgb, fields: []},
+    {name: astc8x6Unorm, fields: []},
+    {name: astc8x6UnormSrgb, fields: []},
+    {name: astc8x8Unorm, fields: []},
+    {name: astc8x8UnormSrgb, fields: []},
+    {name: astc10x5Unorm, fields: []},
+    {name: astc10x5UnormSrgb, fields: []},
+    {name: astc10x6Unorm, fields: []},
+    {name: astc10x6UnormSrgb, fields: []},
+    {name: astc10x8Unorm, fields: []},
+    {name: astc10x8UnormSrgb, fields: []},
+    {name: astc10x10Unorm, fields: []},
+    {name: astc10x10UnormSrgb, fields: []},
+    {name: astc12x10Unorm, fields: []},
+    {name: astc12x10UnormSrgb, fields: []},
+    {name: astc12x12Unorm, fields: []},
+    {name: astc12x12UnormSrgb, fields: []}
+  ]
+}
+
+structure{
+  name: GPUExternalTexture,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUSampler,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUAddressMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: clampToEdge, fields: []},
+    {name: repeat, fields: []},
+    {name: mirrorRepeat, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUFilterMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nearest, fields: []},
+    {name: linear, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUMipmapFilterMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nearest, fields: []},
+    {name: linear, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUCompareFunction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: never, fields: []},
+    {name: less, fields: []},
+    {name: equal, fields: []},
+    {name: lessEqual, fields: []},
+    {name: greater, fields: []},
+    {name: notEqual, fields: []},
+    {name: greaterEqual, fields: []},
+    {name: always, fields: []}
+  ]
+}
+
+structure{
+  name: GPUSamplerDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: addressModeU, type: GPUAddressMode},
+    {name: addressModeV, type: GPUAddressMode},
+    {name: addressModeW, type: GPUAddressMode},
+    {name: compare, type: (Option GPUCompareFunction)},
+    {name: lodMaxClamp, type: (Int * Int)},
+    {name: lodMinClamp, type: (Int * Int)},
+    {name: magFilter, type: GPUFilterMode},
+    {name: maxAnisotropy, type: Nat},
+    {name: minFilter, type: GPUFilterMode},
+    {name: mipmapFilter, type: GPUMipmapFilterMode}
+  ]
+}
+
+structure{
+  name: GPUBindGroupLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUShaderStageFlags,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+inductive{
+  name: GPUBufferBindingType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: uniform, fields: []},
+    {name: storage, fields: []},
+    {name: readOnlyStorage, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUSamplerBindingType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: filtering, fields: []},
+    {name: nonFiltering, fields: []},
+    {name: comparison, fields: []}
+  ]
+}
+
+structure{
+  name: GPUSamplerBindingLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: GPUSamplerBindingType}
+  ]
+}
+
+inductive{
+  name: GPUTextureSampleType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: float, fields: []},
+    {name: unfilterableFloat, fields: []},
+    {name: depth, fields: []},
+    {name: sint, fields: []},
+    {name: uint, fields: []}
+  ]
+}
+
+structure{
+  name: GPUTextureBindingLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: multisampled, type: Bool},
+    {name: sampleType, type: GPUTextureSampleType},
+    {name: viewDimension, type: GPUTextureViewDimension}
+  ]
+}
+
+inductive{
+  name: GPUStorageTextureAccess,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: writeOnly, fields: []},
+    {name: readOnly, fields: []},
+    {name: readWrite, fields: []}
+  ]
+}
+
+structure{
+  name: GPUStorageTextureBindingLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: access, type: GPUStorageTextureAccess},
+    {name: format, type: GPUTextureFormat},
+    {name: viewDimension, type: GPUTextureViewDimension}
+  ]
+}
+
+inductive{
+  name: GPUExternalTextureBindingLayout,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+structure{
+  name: GPUBindGroup,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUPipelineLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUShaderModule,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUCompilationMessageType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: error, fields: []},
+    {name: warning, fields: []},
+    {name: info, fields: []}
+  ]
+}
+
+structure{
+  name: GPUCompilationMessage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: message, type: (List Nat)},
+    {name: type, type: GPUCompilationMessageType},
+    {name: lineNum, type: Nat},
+    {name: linePos, type: Nat},
+    {name: offset, type: Nat},
+    {name: length, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUCompilationInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: messages, type: (List GPUCompilationMessage)}
+  ]
+}
+
+inductive{
+  name: GPUPipelineErrorReason,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: validation, fields: []},
+    {name: internal, fields: []}
+  ]
+}
+
+structure{
+  name: GPUPipelineError,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: (List Nat)},
+    {name: message, type: (List Nat)},
+    {name: code, type: Nat},
+    {name: reason, type: GPUPipelineErrorReason}
+  ]
+}
+
+structure{
+  name: GPUPipelineErrorInit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: reason, type: GPUPipelineErrorReason}
+  ]
+}
+
+inductive{
+  name: GPUAutoLayoutMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: auto, fields: []}
+  ]
+}
+
+structure{
+  name: GPUPipelineConstantValue,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: GPUProgrammableStage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: constants, type: (List (Bytes * GPUPipelineConstantValue))},
+    {name: entryPoint, type: (Option Bytes)},
+    {name: module, type: GPUShaderModule}
+  ]
+}
+
+structure{
+  name: GPUComputePipeline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPURenderPipeline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUPrimitiveTopology,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: pointList, fields: []},
+    {name: lineList, fields: []},
+    {name: lineStrip, fields: []},
+    {name: triangleList, fields: []},
+    {name: triangleStrip, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUFrontFace,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: ccw, fields: []},
+    {name: cw, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUCullMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: none, fields: []},
+    {name: front, fields: []},
+    {name: back, fields: []}
+  ]
+}
+
+structure{
+  name: GPUColorWriteFlags,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+inductive{
+  name: GPUBlendFactor,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: zero, fields: []},
+    {name: one, fields: []},
+    {name: src, fields: []},
+    {name: oneMinusSrc, fields: []},
+    {name: srcAlpha, fields: []},
+    {name: oneMinusSrcAlpha, fields: []},
+    {name: dst, fields: []},
+    {name: oneMinusDst, fields: []},
+    {name: dstAlpha, fields: []},
+    {name: oneMinusDstAlpha, fields: []},
+    {name: srcAlphaSaturated, fields: []},
+    {name: constant, fields: []},
+    {name: oneMinusConstant, fields: []},
+    {name: src1, fields: []},
+    {name: oneMinusSrc1, fields: []},
+    {name: src1Alpha, fields: []},
+    {name: oneMinusSrc1Alpha, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUBlendOperation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: add, fields: []},
+    {name: subtract, fields: []},
+    {name: reverseSubtract, fields: []},
+    {name: min, fields: []},
+    {name: max, fields: []}
+  ]
+}
+
+structure{
+  name: GPUBlendComponent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dstFactor, type: GPUBlendFactor},
+    {name: operation, type: GPUBlendOperation},
+    {name: srcFactor, type: GPUBlendFactor}
+  ]
+}
+
+structure{
+  name: GPUBlendState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: alpha, type: GPUBlendComponent},
+    {name: color, type: GPUBlendComponent}
+  ]
+}
+
+structure{
+  name: GPUColorTargetState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: blend, type: (Option GPUBlendState)},
+    {name: format, type: GPUTextureFormat},
+    {name: writeMask, type: GPUColorWriteFlags}
+  ]
+}
+
+structure{
+  name: GPUFragmentState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: constants, type: (List (Bytes * GPUPipelineConstantValue))},
+    {name: entryPoint, type: (Option Bytes)},
+    {name: module, type: GPUShaderModule},
+    {name: targets, type: (List (Option GPUColorTargetState))}
+  ]
+}
+
+inductive{
+  name: GPUStencilOperation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: keep, fields: []},
+    {name: zero, fields: []},
+    {name: replace, fields: []},
+    {name: invert, fields: []},
+    {name: incrementClamp, fields: []},
+    {name: decrementClamp, fields: []},
+    {name: incrementWrap, fields: []},
+    {name: decrementWrap, fields: []}
+  ]
+}
+
+structure{
+  name: GPUStencilFaceState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: compare, type: GPUCompareFunction},
+    {name: depthFailOp, type: GPUStencilOperation},
+    {name: failOp, type: GPUStencilOperation},
+    {name: passOp, type: GPUStencilOperation}
+  ]
+}
+
+inductive{
+  name: GPUIndexFormat,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: uint16, fields: []},
+    {name: uint32, fields: []}
+  ]
+}
+
+structure{
+  name: GPUPrimitiveState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: cullMode, type: GPUCullMode},
+    {name: frontFace, type: GPUFrontFace},
+    {name: stripIndexFormat, type: (Option GPUIndexFormat)},
+    {name: topology, type: GPUPrimitiveTopology},
+    {name: unclippedDepth, type: Bool}
+  ]
+}
+
+inductive{
+  name: GPUVertexFormat,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: uint8, fields: []},
+    {name: uint8x2, fields: []},
+    {name: uint8x4, fields: []},
+    {name: sint8, fields: []},
+    {name: sint8x2, fields: []},
+    {name: sint8x4, fields: []},
+    {name: unorm8, fields: []},
+    {name: unorm8x2, fields: []},
+    {name: unorm8x4, fields: []},
+    {name: snorm8, fields: []},
+    {name: snorm8x2, fields: []},
+    {name: snorm8x4, fields: []},
+    {name: uint16, fields: []},
+    {name: uint16x2, fields: []},
+    {name: uint16x4, fields: []},
+    {name: sint16, fields: []},
+    {name: sint16x2, fields: []},
+    {name: sint16x4, fields: []},
+    {name: unorm16, fields: []},
+    {name: unorm16x2, fields: []},
+    {name: unorm16x4, fields: []},
+    {name: snorm16, fields: []},
+    {name: snorm16x2, fields: []},
+    {name: snorm16x4, fields: []},
+    {name: float16, fields: []},
+    {name: float16x2, fields: []},
+    {name: float16x4, fields: []},
+    {name: float32, fields: []},
+    {name: float32x2, fields: []},
+    {name: float32x3, fields: []},
+    {name: float32x4, fields: []},
+    {name: uint32, fields: []},
+    {name: uint32x2, fields: []},
+    {name: uint32x3, fields: []},
+    {name: uint32x4, fields: []},
+    {name: sint32, fields: []},
+    {name: sint32x2, fields: []},
+    {name: sint32x3, fields: []},
+    {name: sint32x4, fields: []},
+    {name: unorm1010102, fields: []},
+    {name: unorm8x4Bgra, fields: []},
+    {name: snorm1010102, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUVertexStepMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: vertex, fields: []},
+    {name: instance, fields: []}
+  ]
+}
+
+structure{
+  name: GPUCommandBuffer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUCommandBufferDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUCommandEncoder,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUCommandEncoderDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUComputePassEncoder,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPURenderPassEncoder,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPULoadOp,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: load, fields: []},
+    {name: clear, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUStoreOp,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: store, fields: []},
+    {name: discard, fields: []}
+  ]
+}
+
+structure{
+  name: GPURenderBundle,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPURenderBundleDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPURenderBundleEncoder,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUQueueDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUQueue,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUQueryType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: occlusion, fields: []},
+    {name: timestamp, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUCanvasAlphaMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: u006Fpaque, fields: []},
+    {name: premultiplied, fields: []}
+  ]
+}
+
+inductive{
+  name: GPUDeviceLostReason,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: unknown, fields: []},
+    {name: destroyed, fields: []}
+  ]
+}
+
+structure{
+  name: GPUDeviceLostInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: reason, type: GPUDeviceLostReason},
+    {name: message, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: GPUError,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: message, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: GPUValidationError,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: message, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: GPUOutOfMemoryError,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: message, type: (List Nat)}
+  ]
+}
+
+structure{
+  name: GPUInternalError,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: message, type: (List Nat)}
+  ]
+}
+
+inductive{
+  name: GPUErrorFilter,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: validation, fields: []},
+    {name: outOfMemory, fields: []},
+    {name: internal, fields: []}
+  ]
+}
+
+structure{
+  name: GPUUncapturedErrorEventInit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bubbles, type: Bool},
+    {name: cancelable, type: Bool},
+    {name: composed, type: Bool},
+    {name: error, type: GPUError}
+  ]
+}
+
+structure{
+  name: GPUBufferDynamicOffset,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUStencilValue,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUSampleMask,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUDepthBias,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Int}
+  ]
+}
+
+structure{
+  name: GPUDepthStencilState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: depthBias, type: GPUDepthBias},
+    {name: depthBiasClamp, type: (Int * Int)},
+    {name: depthBiasSlopeScale, type: (Int * Int)},
+    {name: depthCompare, type: (Option GPUCompareFunction)},
+    {name: depthWriteEnabled, type: (Option Bool)},
+    {name: format, type: GPUTextureFormat},
+    {name: stencilBack, type: GPUStencilFaceState},
+    {name: stencilFront, type: GPUStencilFaceState},
+    {name: stencilReadMask, type: GPUStencilValue},
+    {name: stencilWriteMask, type: GPUStencilValue}
+  ]
+}
+
+structure{
+  name: GPUSize64,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUBufferDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: mappedAtCreation, type: Bool},
+    {name: size, type: GPUSize64},
+    {name: usage, type: GPUBufferUsageFlags}
+  ]
+}
+
+structure{
+  name: GPUBufferBindingLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: hasDynamicOffset, type: Bool},
+    {name: minBindingSize, type: GPUSize64},
+    {name: type, type: GPUBufferBindingType}
+  ]
+}
+
+structure{
+  name: GPUIntegerCoordinate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUTextureViewDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: arrayLayerCount, type: (Option GPUIntegerCoordinate)},
+    {name: aspect, type: GPUTextureAspect},
+    {name: baseArrayLayer, type: GPUIntegerCoordinate},
+    {name: baseMipLevel, type: GPUIntegerCoordinate},
+    {name: dimension, type: (Option GPUTextureViewDimension)},
+    {name: format, type: (Option GPUTextureFormat)},
+    {name: mipLevelCount, type: (Option GPUIntegerCoordinate)},
+    {name: swizzle, type: (List Nat)},
+    {name: usage, type: GPUTextureUsageFlags}
+  ]
+}
+
+structure{
+  name: GPUIndex32,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUBindGroupLayoutEntry,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: binding, type: GPUIndex32},
+    {name: buffer, type: (Option GPUBufferBindingLayout)},
+    {name: externalTexture, type: (Option GPUExternalTextureBindingLayout)},
+    {name: sampler, type: (Option GPUSamplerBindingLayout)},
+    {name: storageTexture, type: (Option GPUStorageTextureBindingLayout)},
+    {name: texture, type: (Option GPUTextureBindingLayout)},
+    {name: visibility, type: GPUShaderStageFlags}
+  ]
+}
+
+structure{
+  name: GPUBindGroupLayoutDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: entries, type: (List GPUBindGroupLayoutEntry)}
+  ]
+}
+
+structure{
+  name: GPUVertexAttribute,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: format, type: GPUVertexFormat},
+    {name: offset, type: GPUSize64},
+    {name: shaderLocation, type: GPUIndex32}
+  ]
+}
+
+structure{
+  name: GPUVertexBufferLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: arrayStride, type: GPUSize64},
+    {name: attributes, type: (List GPUVertexAttribute)},
+    {name: stepMode, type: GPUVertexStepMode}
+  ]
+}
+
+structure{
+  name: GPUVertexState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: constants, type: (List (Bytes * GPUPipelineConstantValue))},
+    {name: entryPoint, type: (Option Bytes)},
+    {name: module, type: GPUShaderModule},
+    {name: buffers, type: (List (Option GPUVertexBufferLayout))}
+  ]
+}
+
+structure{
+  name: GPUSize32,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUPipelineLayoutDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: bindGroupLayouts, type: (List (Option GPUBindGroupLayout))},
+    {name: immediateSize, type: GPUSize32}
+  ]
+}
+
+structure{
+  name: GPUMultisampleState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: alphaToCoverageEnabled, type: Bool},
+    {name: count, type: GPUSize32},
+    {name: mask, type: GPUSampleMask}
+  ]
+}
+
+structure{
+  name: GPUTexelCopyBufferLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bytesPerRow, type: (Option GPUSize32)},
+    {name: offset, type: GPUSize64},
+    {name: rowsPerImage, type: (Option GPUSize32)}
+  ]
+}
+
+structure{
+  name: GPURenderPassLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: colorFormats, type: (List (Option GPUTextureFormat))},
+    {name: depthStencilFormat, type: (Option GPUTextureFormat)},
+    {name: sampleCount, type: GPUSize32}
+  ]
+}
+
+structure{
+  name: GPURenderBundleEncoderDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: colorFormats, type: (List (Option GPUTextureFormat))},
+    {name: depthStencilFormat, type: (Option GPUTextureFormat)},
+    {name: sampleCount, type: GPUSize32},
+    {name: depthReadOnly, type: Bool},
+    {name: stencilReadOnly, type: Bool}
+  ]
+}
+
+structure{
+  name: GPUQuerySetDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: count, type: GPUSize32},
+    {name: type, type: GPUQueryType}
+  ]
+}
+
+structure{
+  name: GPUSignedOffset32,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Int}
+  ]
+}
+
+structure{
+  name: GPUSize64Out,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUIntegerCoordinateOut,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUSize32Out,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUQuerySet,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: GPUQueryType},
+    {name: count, type: GPUSize32Out},
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUComputePassTimestampWrites,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: beginningOfPassWriteIndex, type: (Option GPUSize32)},
+    {name: endOfPassWriteIndex, type: (Option GPUSize32)},
+    {name: querySet, type: GPUQuerySet}
+  ]
+}
+
+structure{
+  name: GPUComputePassDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: timestampWrites, type: (Option GPUComputePassTimestampWrites)}
+  ]
+}
+
+structure{
+  name: GPURenderPassTimestampWrites,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: beginningOfPassWriteIndex, type: (Option GPUSize32)},
+    {name: endOfPassWriteIndex, type: (Option GPUSize32)},
+    {name: querySet, type: GPUQuerySet}
+  ]
+}
+
+structure{
+  name: GPUFlagsConstant,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: Nat}
+  ]
+}
+
+structure{
+  name: GPUBuffer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: size, type: GPUSize64Out},
+    {name: usage, type: GPUFlagsConstant},
+    {name: mapState, type: GPUBufferMapState},
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: GPUBufferBinding,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: buffer, type: GPUBuffer},
+    {name: offset, type: GPUSize64},
+    {name: size, type: (Option GPUSize64)}
+  ]
+}
+
+structure{
+  name: GPUTexelCopyBufferInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bytesPerRow, type: (Option GPUSize32)},
+    {name: offset, type: GPUSize64},
+    {name: rowsPerImage, type: (Option GPUSize32)},
+    {name: buffer, type: GPUBuffer}
+  ]
+}
+
+structure{
+  name: GPUColorDict,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: a, type: (Int * Int)},
+    {name: b, type: (Int * Int)},
+    {name: g, type: (Int * Int)},
+    {name: r, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: GPUOrigin2DDict,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: GPUIntegerCoordinate},
+    {name: y, type: GPUIntegerCoordinate}
+  ]
+}
+
+structure{
+  name: GPUOrigin3DDict,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: GPUIntegerCoordinate},
+    {name: y, type: GPUIntegerCoordinate},
+    {name: z, type: GPUIntegerCoordinate}
+  ]
+}
+
+structure{
+  name: GPUExtent3DDict,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: depthOrArrayLayers, type: GPUIntegerCoordinate},
+    {name: height, type: GPUIntegerCoordinate},
+    {name: width, type: GPUIntegerCoordinate}
+  ]
+}
+
+structure{
+  name: DOMHighResTimeStamp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+inductive{
+  name: EventTarget,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+structure{
+  name: GPUUncapturedErrorEvent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: (List Nat)},
+    {name: target, type: (Option EventTarget)},
+    {name: srcElement, type: (Option EventTarget)},
+    {name: currentTarget, type: (Option EventTarget)},
+    {name: eventPhase, type: Nat},
+    {name: cancelBubble, type: Bool},
+    {name: bubbles, type: Bool},
+    {name: cancelable, type: Bool},
+    {name: returnValue, type: Bool},
+    {name: defaultPrevented, type: Bool},
+    {name: composed, type: Bool},
+    {name: isTrusted, type: Bool},
+    {name: timeStamp, type: DOMHighResTimeStamp},
+    {name: error, type: GPUError}
+  ]
+}
+
+structure{
+  name: UserActivation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: hasBeenActive, type: Bool},
+    {name: isActive, type: Bool}
+  ]
+}
+
+structure{
+  name: PluginArray,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: length, type: Nat}
+  ]
+}
+
+structure{
+  name: MimeTypeArray,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: length, type: Nat}
+  ]
+}
+
+structure{
+  name: Navigator,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: userActivation, type: UserActivation},
+    {name: gpu, type: GPU},
+    {name: appCodeName, type: (List Nat)},
+    {name: appName, type: (List Nat)},
+    {name: appVersion, type: (List Nat)},
+    {name: platform, type: (List Nat)},
+    {name: product, type: (List Nat)},
+    {name: productSub, type: (List Nat)},
+    {name: userAgent, type: (List Nat)},
+    {name: vendor, type: (List Nat)},
+    {name: vendorSub, type: (List Nat)},
+    {name: oscpu, type: (List Nat)},
+    {name: language, type: (List Nat)},
+    {name: languages, type: (List (List Nat))},
+    {name: onLine, type: Bool},
+    {name: cookieEnabled, type: Bool},
+    {name: plugins, type: PluginArray},
+    {name: mimeTypes, type: MimeTypeArray},
+    {name: pdfViewerEnabled, type: Bool},
+    {name: hardwareConcurrency, type: Nat}
+  ]
+}
+
+structure{
+  name: WorkerNavigator,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: gpu, type: GPU},
+    {name: appCodeName, type: (List Nat)},
+    {name: appName, type: (List Nat)},
+    {name: appVersion, type: (List Nat)},
+    {name: platform, type: (List Nat)},
+    {name: product, type: (List Nat)},
+    {name: productSub, type: (List Nat)},
+    {name: userAgent, type: (List Nat)},
+    {name: vendor, type: (List Nat)},
+    {name: vendorSub, type: (List Nat)},
+    {name: oscpu, type: (List Nat)},
+    {name: language, type: (List Nat)},
+    {name: languages, type: (List (List Nat))},
+    {name: onLine, type: Bool},
+    {name: hardwareConcurrency, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
