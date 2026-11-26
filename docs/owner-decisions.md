@@ -65,3 +65,31 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ## REQ-SELF-HEALING (afflom, 2026-11-25T15:06:29Z)
 
 > Let's refine this by extrapolating from verdant-engine and Verdant Studio concepts and then refine the plan.
+
+## REQ-PRISM-GENERATION (afflom, 2026-11-26T22:54:13Z)
+
+> Verdant Studio exists to generate applications and their multimedia. The pipelines of Verdant Studio are the implementation of the production process of creating production content. The thing that comes out of Verdant Studio is a Verdant Prism (or just Prism). Every part of Verdant Studio must have a generator for its multimedia. For example; given the Features of a Verdant Prism, a song for a soundtrack or the entire soundtrack of a Verdant Prism can be generated. or given the features of a Verdant Prism, the artwork of the Verdant Prism can be generated. When Verdant Studio creates a Verdant Prism, Verdant Studio specifies a given subset of a Verdant Prism, which is then used by the Verdant Prism to generate all other facets of the Verdant Prism. 
+>
+> A Verdant Prism is created from a single word or sentence. All of its features are generated from that seed, and then other features of the Verdant Prism can be tuned, until the entire Verdant Prism's features meet the intent of the Prism. 
+>
+> The user, can specify less parameters, while relying on the generators to do the heavy lifting. The output of Verdant Studio can be completely customized, by the user or minimally, so that the generators are doing the majority of the definition. 
+>
+> The key is for the output Verdant Prism to always be defined to an ultra-high precision by its generators. Verdant Studio achieves this by leveraging the coherence of all of its models, so that all parts are defined consistently to their full expression. 
+>
+> We can test this, by prompting Verdant Studio and verifying the output, so that all artifacts are the correct mediatype and always to the highest fidelity. 
+>
+> Let's discuss and extrapolate.
+
+## REQ-PRISM-GENERATION (afflom, 2026-11-26T23:17:36Z)
+
+> I think that we'll find the procedural synthesis from verdant-engine to be a helpful reference here. Let's continue to refine this plan
+
+## REQ-PRISM-GENERATION (afflom, 2026-11-26T23:21:07Z)
+
+> Right, so an output can be one media type or a collection of media types that would constitute a larger application or bundle. 
+>
+> An example of artwork as an output could be the cover art of an application or book. Another example could be a logo
+
+## REQ-PRISM-GENERATION (afflom, 2026-11-26T23:22:33Z)
+
+> Yes and including the webassembly that will be running in the browser or webassembly runtime.
