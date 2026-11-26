@@ -712,7 +712,7 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (Studio.Yaml::readYaml (contents seen path))
       | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "not read as YAML 1.2.2: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
-      | Result.ok root => (ctor Plan.done (nil (Bytes * Bytes)) (prim append (Studio.Schema::writeText root) (Studio.Doc::lit "\n") : Bytes)))),
+      | Result.ok items => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Yaml::streamText items)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
