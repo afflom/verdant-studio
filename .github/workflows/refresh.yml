@@ -186,6 +186,8 @@ jobs:
             rm -rf studio/.lexlean/production readers/.lexlean/production
             cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
             if [ -d certified-readers ]; then cargo build -q --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock; fi
+            # The regenerated change re-derives the encodings whose reader output it changes, as propose-command does.
+            if [ -x target/release/verdant_readers ]; then bash .github/scripts/readmit.sh target/release/verdant_readers; fi
             target/release/verdant_studio check
             target/release/verdant_studio build
             target/release/verdant_studio publish

@@ -222,6 +222,13 @@ jobs:
             mkdir -p target/input; cat > "target/input/$INPUT_NAME" <<< "$INPUT"
           fi
           if [ "$ARGS" = propose-command ]; then
+            # A change to a reader re-derives the encodings it printed before the studio check replays them.
+            if [ -x target/release/verdant_readers ]; then
+              readmitted=$(bash .github/scripts/readmit.sh target/release/verdant_readers)
+              if [ -n "$readmitted" ]; then
+                { echo; echo "### Encodings admitted again"; echo; echo "This change alters what a reader prints for these admitted encodings, so each was admitted again through read-admit with the command and citation its row records:"; echo; sed 's/^/- /' <<< "$readmitted"; } >> target/operation.txt
+              fi
+            fi
             cat target/operation.txt
           elif [ "$ARGS" = advance ]; then
             : > target/operation.txt
