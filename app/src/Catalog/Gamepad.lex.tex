@@ -1,0 +1,125 @@
+\begin{lexlean}{Catalog.Gamepad}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: GamepadButton,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: pressed, type: Bool},
+    {name: touched, type: Bool},
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+inductive{
+  name: GamepadMappingType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: u, fields: []},
+    {name: standard, fields: []},
+    {name: xru002Dstandard, fields: []}
+  ]
+}
+
+inductive{
+  name: GamepadHapticsResult,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: complete, fields: []},
+    {name: preempted, fields: []}
+  ]
+}
+
+inductive{
+  name: GamepadHapticEffectType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: dualRumble, fields: []},
+    {name: triggerRumble, fields: []}
+  ]
+}
+
+structure{
+  name: GamepadHapticActuator,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: effects, type: (List GamepadHapticEffectType)}
+  ]
+}
+
+structure{
+  name: GamepadEffectParameters,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: duration, type: Nat},
+    {name: leftTrigger, type: (Int * Int)},
+    {name: rightTrigger, type: (Int * Int)},
+    {name: startDelay, type: Nat},
+    {name: strongMagnitude, type: (Int * Int)},
+    {name: weakMagnitude, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: UserActivation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: hasBeenActive, type: Bool},
+    {name: isActive, type: Bool}
+  ]
+}
+
+structure{
+  name: PluginArray,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: length, type: Nat}
+  ]
+}
+
+structure{
+  name: MimeTypeArray,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: length, type: Nat}
+  ]
+}
+
+structure{
+  name: Navigator,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: userActivation, type: UserActivation},
+    {name: appCodeName, type: (List Nat)},
+    {name: appName, type: (List Nat)},
+    {name: appVersion, type: (List Nat)},
+    {name: platform, type: (List Nat)},
+    {name: product, type: (List Nat)},
+    {name: productSub, type: (List Nat)},
+    {name: userAgent, type: (List Nat)},
+    {name: vendor, type: (List Nat)},
+    {name: vendorSub, type: (List Nat)},
+    {name: oscpu, type: (List Nat)},
+    {name: language, type: (List Nat)},
+    {name: languages, type: (List (List Nat))},
+    {name: onLine, type: Bool},
+    {name: cookieEnabled, type: Bool},
+    {name: plugins, type: PluginArray},
+    {name: mimeTypes, type: MimeTypeArray},
+    {name: pdfViewerEnabled, type: Bool},
+    {name: hardwareConcurrency, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
