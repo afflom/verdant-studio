@@ -1,0 +1,151 @@
+\begin{lexlean}{Catalog.WebXr}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: XRSessionMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: inline, fields: []},
+    {name: immersiveVr, fields: []},
+    {name: immersiveAr, fields: []}
+  ]
+}
+
+structure{
+  name: XRSessionInit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: optionalFeatures, type: (Option (List (List Nat)))},
+    {name: requiredFeatures, type: (Option (List (List Nat)))}
+  ]
+}
+
+inductive{
+  name: XRVisibilityState,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: visible, fields: []},
+    {name: visibleBlurred, fields: []},
+    {name: hidden, fields: []}
+  ]
+}
+
+inductive{
+  name: XRSpace,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+inductive{
+  name: XRReferenceSpaceType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: viewer, fields: []},
+    {name: local, fields: []},
+    {name: localFloor, fields: []},
+    {name: boundedFloor, fields: []},
+    {name: unbounded, fields: []}
+  ]
+}
+
+inductive{
+  name: XREye,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: none, fields: []},
+    {name: left, fields: []},
+    {name: right, fields: []}
+  ]
+}
+
+structure{
+  name: XRViewport,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: Int},
+    {name: y, type: Int},
+    {name: width, type: Int},
+    {name: height, type: Int}
+  ]
+}
+
+inductive{
+  name: XRHandedness,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: none, fields: []},
+    {name: left, fields: []},
+    {name: right, fields: []}
+  ]
+}
+
+inductive{
+  name: XRTargetRayMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gaze, fields: []},
+    {name: trackedPointer, fields: []},
+    {name: screen, fields: []},
+    {name: transientPointer, fields: []}
+  ]
+}
+
+structure{
+  name: XRInputSource,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: handedness, type: XRHandedness},
+    {name: targetRayMode, type: XRTargetRayMode},
+    {name: targetRaySpace, type: XRSpace},
+    {name: gripSpace, type: (Option XRSpace)},
+    {name: profiles, type: (List (List Nat))},
+    {name: skipRendering, type: Bool}
+  ]
+}
+
+structure{
+  name: XRInputSourceArray,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: length, type: Nat}
+  ]
+}
+
+inductive{
+  name: XRLayer,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+structure{
+  name: XRWebGLLayerInit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: alpha, type: Bool},
+    {name: antialias, type: Bool},
+    {name: depth, type: Bool},
+    {name: framebufferScaleFactor, type: (Int * Int)},
+    {name: ignoreDepthValues, type: Bool},
+    {name: stencil, type: Bool}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
