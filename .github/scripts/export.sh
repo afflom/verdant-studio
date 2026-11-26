@@ -12,7 +12,17 @@ phases="$log.phases"
 ( while :; do ps -eo etimes=,args= | awk '$2 == "lean" && $3 == "-R" { m = $NF; sub(".*-src/", "", m); print $1, m }' >> "$phases.raw" || true; sleep 1; done ) &
 watch=$!
 status=0
-(cd studio && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > "$log" 2>&1 || status=$?
+# Each LexLean project exports in parallel under its own limits: studio, and readers when it exists.
+pids=""
+for project in studio readers; do
+  if [ -f "$project/lexlean.toml" ]; then
+    (cd "$project" && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > "$log.$project" 2>&1 &
+    pids="$pids $!"
+  fi
+done
+for pid in $pids; do wait "$pid" || status=$?; done
+cat "$log.studio" > "$log"
+if [ -f "$log.readers" ]; then cat "$log.readers" >> "$log"; fi
 kill "$watch" 2> "$phases.err" || true
 awk '{ if ($1 > t[$2]) t[$2] = $1 } END { for (m in t) print t[m], m }' "$phases.raw" | sort -rn > "$phases"
 echo "Lean phases by wall time in seconds, longest first (the limit is 300, and the export fails at 240):"
@@ -27,3 +37,9 @@ rm -rf certified
 cp -r studio/.lexlean/production/*/ certified
 rm -f certified/packages/rust-std/verdant_studio/Cargo.lock
 "$ll" production verify-artifact certified
+if [ -f readers/lexlean.toml ]; then
+  rm -rf certified-readers
+  cp -r readers/.lexlean/production/*/ certified-readers
+  rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock
+  "$ll" production verify-artifact certified-readers
+fi
