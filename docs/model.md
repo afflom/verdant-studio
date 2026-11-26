@@ -431,3 +431,4 @@ Each construct and the citation that admits it.
 - `Catalog.Gamepad`: std W3C-WEBREF-IDL-GAMEPAD-A0114B8 row H15
 - `Catalog.WebXr`: std W3C-WEBREF-IDL-WEBXR-A0114B8 row G14
 - `Catalog.WebGpu`: std W3C-WEBREF-IDL-WEBGPU-A0114B8 row G05
+- `Catalog.Premis`: std LOC-PREMIS-3.0 row Y02

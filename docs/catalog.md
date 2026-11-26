@@ -313,7 +313,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **X10** EU Product Liability Directive (Directive (EU) 2024/2853) (Business, IP, labor, and sustainability): exactMatch EU-DIR-2024-2853 (staged)
 - **X11** Chain of title and IP clearance practice (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
 - **Y01** OAIS reference model (ISO 14721) (End of life, preservation, and archiving): exactMatch CCSDS-650.0-M-3 (derived from its citation)
-- **Y02** PREMIS and METS (End of life, preservation, and archiving), not reached from any origin: narrowMatch LOC-METS-1.12.1 (staged); narrowMatch LOC-PREMIS-3.0 (staged)
+- **Y02** PREMIS and METS (End of life, preservation, and archiving): narrowMatch LOC-METS-1.12.1 (staged); narrowMatch LOC-PREMIS-3.0 (staged)
 - **Y03** Library of Congress Recommended Formats Statement: software and video games (End of life, preservation, and archiving), not reached from any origin: exactMatch LOC-RFS-2025-2026 (staged)
 - **Y04** Video Game Metadata Schema (End of life, preservation, and archiving): exactMatch LEE-TENNIS-CLARKE-CARPENTER-VGMS-2013 (derived from its citation)
 - **Y05** BagIt (RFC 8493) (End of life, preservation, and archiving): exactMatch IETF-RFC-8493 (staged)
