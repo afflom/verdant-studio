@@ -988,15 +988,17 @@ pub enum Adt18 {
 
 #[derive(Clone)]
 pub enum Adt19 {
-    C0(bool),
-    C1(bool, u64),
-    C2(bool, u64, u64),
-    C3(Bytes),
-    C4(std::rc::Rc<Adt19>),
-    C5(std::rc::Rc<Adt19>),
-    C6,
-    C7(std::rc::Rc<Adt19>, std::rc::Rc<Adt19>),
-    C8(Bytes, std::rc::Rc<Adt19>, std::rc::Rc<Adt19>),
+    C0,
+    C1(Bytes, std::rc::Rc<Adt19>),
+    C2(bool),
+    C3(bool, u64),
+    C4(bool, u64, u64),
+    C5(Bytes),
+    C6(std::rc::Rc<Adt19>),
+    C7(std::rc::Rc<Adt19>),
+    C8,
+    C9(std::rc::Rc<Adt19>, std::rc::Rc<Adt19>),
+    C10(Bytes, std::rc::Rc<Adt19>, std::rc::Rc<Adt19>),
 }
 
 #[derive(Clone)]
@@ -7041,7 +7043,7 @@ pub fn f176(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: bool, v6: u64, v7
                             };
                             let a1119 = v22;
                             if nat_le(a1118, a1119) {
-                                Ok(Adt20::C0(Adt19::C7(std::rc::Rc::new(v20), std::rc::Rc::new(Adt19::C6)), v22))
+                                Ok(Adt20::C0(Adt19::C9(std::rc::Rc::new(v20), std::rc::Rc::new(Adt19::C8)), v22))
                             } else {
                                 let a1120 = v23;
                                 let a1121 = v6;
@@ -7061,7 +7063,7 @@ pub fn f176(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: bool, v6: u64, v7
                                     }, v2, v8, 2u64, false, v6, List::<Bytes>::nil())?;
                                     match m1126 {
                                         Adt20::C0(v25, v26) => {
-                                            Ok(Adt20::C0(Adt19::C7(std::rc::Rc::new(v20), std::rc::Rc::new(v25)), v26))
+                                            Ok(Adt20::C0(Adt19::C9(std::rc::Rc::new(v20), std::rc::Rc::new(v25)), v26))
                                         }
                                         Adt20::C1(v24) => {
                                             Ok(Adt20::C1(v24))
@@ -7077,7 +7079,7 @@ pub fn f176(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: bool, v6: u64, v7
                                             nat_add(a1129, a1130)?
                                         })?))
                                     } else {
-                                        Ok(Adt20::C0(Adt19::C7(std::rc::Rc::new(v20), std::rc::Rc::new(Adt19::C6)), v22))
+                                        Ok(Adt20::C0(Adt19::C9(std::rc::Rc::new(v20), std::rc::Rc::new(Adt19::C8)), v22))
                                     }
                                 }
                             }
@@ -7123,7 +7125,7 @@ pub fn f176(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: bool, v6: u64, v7
                                                 };
                                                 let a1142 = v33;
                                                 if nat_le(a1141, a1142) {
-                                                    Ok(Adt20::C0(Adt19::C8(v29, std::rc::Rc::new(v31), std::rc::Rc::new(Adt19::C6)), v33))
+                                                    Ok(Adt20::C0(Adt19::C10(v29, std::rc::Rc::new(v31), std::rc::Rc::new(Adt19::C8)), v33))
                                                 } else {
                                                     let a1143 = v34;
                                                     let a1144 = v6;
@@ -7147,7 +7149,7 @@ pub fn f176(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: bool, v6: u64, v7
                                                         }, v2, v8, 3u64, false, v6, List::cons(v29.clone(), v7))?;
                                                         match m1149 {
                                                             Adt20::C0(v36, v37) => {
-                                                                Ok(Adt20::C0(Adt19::C8(v29, std::rc::Rc::new(v31), std::rc::Rc::new(v36)), v37))
+                                                                Ok(Adt20::C0(Adt19::C10(v29, std::rc::Rc::new(v31), std::rc::Rc::new(v36)), v37))
                                                             }
                                                             Adt20::C1(v35) => {
                                                                 Ok(Adt20::C1(v35))
@@ -7163,7 +7165,7 @@ pub fn f176(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: bool, v6: u64, v7
                                                                 nat_add(a1152, a1153)?
                                                             })?))
                                                         } else {
-                                                            Ok(Adt20::C0(Adt19::C8(v29, std::rc::Rc::new(v31), std::rc::Rc::new(Adt19::C6)), v33))
+                                                            Ok(Adt20::C0(Adt19::C10(v29, std::rc::Rc::new(v31), std::rc::Rc::new(Adt19::C8)), v33))
                                                         }
                                                     }
                                                 }
@@ -7245,37 +7247,43 @@ pub fn f178(v0: bool) -> bool {
 pub fn f179(v0: Adt19) -> R<Bytes> {
     let m1164 = v0;
     match m1164 {
-        Adt19::C0(v1) => {
-            if v1 {
+        Adt19::C0 => {
+            Ok(Bytes::lit(&[0x6e, 0x75, 0x6c, 0x6c]))
+        }
+        Adt19::C1(_, _) => {
+            Ok(Bytes::lit(&[]))
+        }
+        Adt19::C2(v3) => {
+            if v3 {
                 Ok(Bytes::lit(&[0x74, 0x72, 0x75, 0x65]))
             } else {
                 Ok(Bytes::lit(&[0x66, 0x61, 0x6c, 0x73, 0x65]))
             }
         }
-        Adt19::C1(v2, v3) => {
-            f260(v2, v3)
+        Adt19::C3(v4, v5) => {
+            f260(v4, v5)
         }
-        Adt19::C2(v4, v5, v6) => {
-            f261(v4, v5, v6)
+        Adt19::C4(v6, v7, v8) => {
+            f261(v6, v7, v8)
         }
-        Adt19::C3(v7) => {
-            f262(v7)
+        Adt19::C5(v9) => {
+            f262(v9)
         }
-        Adt19::C4(r1165) => {
-            let v8 = (*r1165).clone();
-            Ok(f263(f264(v8)?))
+        Adt19::C6(r1165) => {
+            let v10 = (*r1165).clone();
+            Ok(f263(f264(v10)?))
         }
-        Adt19::C5(r1166) => {
-            let v9 = (*r1166).clone();
-            f265(f266(v9)?)
+        Adt19::C7(r1166) => {
+            let v11 = (*r1166).clone();
+            f265(f266(v11)?)
         }
-        Adt19::C6 => {
+        Adt19::C8 => {
             Ok(Bytes::lit(&[]))
         }
-        Adt19::C7(_, _) => {
+        Adt19::C9(_, _) => {
             Ok(Bytes::lit(&[]))
         }
-        Adt19::C8(_, _, _) => {
+        Adt19::C10(_, _, _) => {
             Ok(Bytes::lit(&[]))
         }
     }
@@ -8002,7 +8010,7 @@ pub fn f196(v0: List<Bytes>) -> List<Adt19> {
             List::<Adt19>::nil()
         }
         Some((v1, v2)) => {
-            List::cons(Adt19::C3(v1), f196(v2))
+            List::cons(Adt19::C5(v1), f196(v2))
         }
     }
 }
@@ -8536,7 +8544,7 @@ pub fn f220(v0: Adt16, v1: List<(Bytes, Bytes)>) -> R<Result<List<Adt19>, Bytes>
                                                         Ok(f318(f8(Str::lit("an enumeration facet must have a value attribute (XSD 1.1 Part 2, section 4.3.5.2)"))))
                                                     }
                                                     Some(v13) => {
-                                                        Ok(Ok::<List<Adt19>, Bytes>(List::cons(Adt19::C3(v13), v5)))
+                                                        Ok(Ok::<List<Adt19>, Bytes>(List::cons(Adt19::C5(v13), v5)))
                                                     }
                                                 }
                                             } else {
@@ -9393,7 +9401,7 @@ pub fn f253(v0: Bytes, v1: u64, v2: u64) -> R<Adt20> {
                     let m1545 = f259(v0, v6)?;
                     match m1545 {
                         Ok(v8) => {
-                            Ok(Adt20::C0(Adt19::C3(v5), v8))
+                            Ok(Adt20::C0(Adt19::C5(v5), v8))
                         }
                         Err(v7) => {
                             Ok(Adt20::C1(v7))
@@ -9484,9 +9492,9 @@ pub fn f254(v0: bool, v1: Adt20) -> Adt20 {
     match m1562 {
         Adt20::C0(v3, v4) => {
             Adt20::C0(if v0 {
-                Adt19::C4(std::rc::Rc::new(v3))
+                Adt19::C6(std::rc::Rc::new(v3))
             } else {
-                Adt19::C5(std::rc::Rc::new(v3))
+                Adt19::C7(std::rc::Rc::new(v3))
             }, v4)
         }
         Adt20::C1(v2) => {
@@ -9686,33 +9694,39 @@ pub fn f263(v0: List<Bytes>) -> Bytes {
 pub fn f264(v0: Adt19) -> R<List<Bytes>> {
     let m1607 = v0;
     match m1607 {
-        Adt19::C0(_) => {
+        Adt19::C0 => {
             Ok(List::<Bytes>::nil())
         }
         Adt19::C1(_, _) => {
             Ok(List::<Bytes>::nil())
         }
-        Adt19::C2(_, _, _) => {
+        Adt19::C2(_) => {
             Ok(List::<Bytes>::nil())
         }
-        Adt19::C3(_) => {
+        Adt19::C3(_, _) => {
             Ok(List::<Bytes>::nil())
         }
-        Adt19::C4(_) => {
+        Adt19::C4(_, _, _) => {
             Ok(List::<Bytes>::nil())
         }
         Adt19::C5(_) => {
             Ok(List::<Bytes>::nil())
         }
-        Adt19::C6 => {
+        Adt19::C6(_) => {
             Ok(List::<Bytes>::nil())
         }
-        Adt19::C7(r1608, r1609) => {
-            let v10 = (*r1608).clone();
-            let v11 = (*r1609).clone();
-            Ok(List::cons(f179(v10)?, f264(v11)?))
+        Adt19::C7(_) => {
+            Ok(List::<Bytes>::nil())
         }
-        Adt19::C8(_, _, _) => {
+        Adt19::C8 => {
+            Ok(List::<Bytes>::nil())
+        }
+        Adt19::C9(r1608, r1609) => {
+            let v12 = (*r1608).clone();
+            let v13 = (*r1609).clone();
+            Ok(List::cons(f179(v12)?, f264(v13)?))
+        }
+        Adt19::C10(_, _, _) => {
             Ok(List::<Bytes>::nil())
         }
     }
@@ -9733,34 +9747,40 @@ pub fn f265(v0: List<(Bytes, Bytes)>) -> R<Bytes> {
 pub fn f266(v0: Adt19) -> R<List<(Bytes, Bytes)>> {
     let m1614 = v0;
     match m1614 {
-        Adt19::C0(_) => {
+        Adt19::C0 => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
         Adt19::C1(_, _) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
-        Adt19::C2(_, _, _) => {
+        Adt19::C2(_) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
-        Adt19::C3(_) => {
+        Adt19::C3(_, _) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
-        Adt19::C4(_) => {
+        Adt19::C4(_, _, _) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
         Adt19::C5(_) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
-        Adt19::C6 => {
+        Adt19::C6(_) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
-        Adt19::C7(_, _) => {
+        Adt19::C7(_) => {
             Ok(List::<(Bytes, Bytes)>::nil())
         }
-        Adt19::C8(v12, r1615, r1616) => {
-            let v13 = (*r1615).clone();
-            let v14 = (*r1616).clone();
-            Ok(List::cons((v12, f179(v13)?), f266(v14)?))
+        Adt19::C8 => {
+            Ok(List::<(Bytes, Bytes)>::nil())
+        }
+        Adt19::C9(_, _) => {
+            Ok(List::<(Bytes, Bytes)>::nil())
+        }
+        Adt19::C10(v14, r1615, r1616) => {
+            let v15 = (*r1615).clone();
+            let v16 = (*r1616).clone();
+            Ok(List::cons((v14, f179(v15)?), f266(v16)?))
         }
     }
 }
@@ -10782,10 +10802,16 @@ pub fn f305(v0: Bytes) -> R<Option<Bytes>> {
 pub fn f306(v0: bool, v1: Adt19) -> R<Option<Bytes>> {
     let m1758 = v1;
     match m1758 {
-        Adt19::C0(_) => {
+        Adt19::C0 => {
             Ok(None::<Bytes>)
         }
-        Adt19::C1(v7, v8) => {
+        Adt19::C1(_, _) => {
+            Ok(None::<Bytes>)
+        }
+        Adt19::C2(_) => {
+            Ok(None::<Bytes>)
+        }
+        Adt19::C3(v7, v8) => {
             Ok(Some({
                 let a1769 = if f321(v7, {
                     let a1767 = 0u64;
@@ -10800,7 +10826,7 @@ pub fn f306(v0: bool, v1: Adt19) -> R<Option<Bytes>> {
                 append_bytes(a1769, a1770)
             }))
         }
-        Adt19::C2(v3, v4, v5) => {
+        Adt19::C4(v3, v4, v5) => {
             let m1761 = f390({
                 let a1759 = f8(Str::lit("n"));
                 let a1760 = f261(false, v4, v5)?;
@@ -10828,22 +10854,22 @@ pub fn f306(v0: bool, v1: Adt19) -> R<Option<Bytes>> {
                 }
             }
         }
-        Adt19::C3(v2) => {
+        Adt19::C5(v2) => {
             f302(v0, v2)
         }
-        Adt19::C4(_) => {
+        Adt19::C6(_) => {
             Ok(None::<Bytes>)
         }
-        Adt19::C5(_) => {
+        Adt19::C7(_) => {
             Ok(None::<Bytes>)
         }
-        Adt19::C6 => {
+        Adt19::C8 => {
             Ok(None::<Bytes>)
         }
-        Adt19::C7(_, _) => {
+        Adt19::C9(_, _) => {
             Ok(None::<Bytes>)
         }
-        Adt19::C8(_, _, _) => {
+        Adt19::C10(_, _, _) => {
             Ok(None::<Bytes>)
         }
     }
@@ -11338,31 +11364,37 @@ pub fn f319(v0: Option<Adt19>) -> Option<Bytes> {
         Some(v1) => {
             let m1916 = v1;
             match m1916 {
-                Adt19::C0(_) => {
+                Adt19::C0 => {
                     None::<Bytes>
                 }
                 Adt19::C1(_, _) => {
                     None::<Bytes>
                 }
-                Adt19::C2(_, _, _) => {
+                Adt19::C2(_) => {
                     None::<Bytes>
                 }
-                Adt19::C3(v2) => {
+                Adt19::C3(_, _) => {
+                    None::<Bytes>
+                }
+                Adt19::C4(_, _, _) => {
+                    None::<Bytes>
+                }
+                Adt19::C5(v2) => {
                     Some(v2)
                 }
-                Adt19::C4(_) => {
+                Adt19::C6(_) => {
                     None::<Bytes>
                 }
-                Adt19::C5(_) => {
+                Adt19::C7(_) => {
                     None::<Bytes>
                 }
-                Adt19::C6 => {
+                Adt19::C8 => {
                     None::<Bytes>
                 }
-                Adt19::C7(_, _) => {
+                Adt19::C9(_, _) => {
                     None::<Bytes>
                 }
-                Adt19::C8(_, _, _) => {
+                Adt19::C10(_, _, _) => {
                     None::<Bytes>
                 }
             }
@@ -12238,7 +12270,7 @@ pub fn f350(v0: Bytes, v1: u64, v2: u64) -> R<Adt20> {
                 let a2092 = f173(v0.clone(), v17)?;
                 let a2093 = 256u64;
                 if nat_eq(a2092, a2093) {
-                    Ok(Adt20::C0(Adt19::C3({
+                    Ok(Adt20::C0(Adt19::C5({
                         let a2094 = v11;
                         let a2095 = 2u64;
                         if nat_eq(a2094, a2095) {
@@ -12334,7 +12366,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                 let a2122 = v12;
                                 let a2123 = 93u64;
                                 if nat_eq(a2122, a2123) {
-                                    Ok(Adt20::C0(Adt19::C7(std::rc::Rc::new(v8), std::rc::Rc::new(Adt19::C6)), {
+                                    Ok(Adt20::C0(Adt19::C9(std::rc::Rc::new(v8), std::rc::Rc::new(Adt19::C8)), {
                                         let a2124 = v11;
                                         let a2125 = 1u64;
                                         nat_add(a2124, a2125)?
@@ -12353,7 +12385,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                                 let a2131 = f173(v0.clone(), v14)?;
                                                 let a2132 = 93u64;
                                                 if nat_eq(a2131, a2132) {
-                                                    Ok(Adt20::C0(Adt19::C7(std::rc::Rc::new(v8), std::rc::Rc::new(Adt19::C6)), {
+                                                    Ok(Adt20::C0(Adt19::C9(std::rc::Rc::new(v8), std::rc::Rc::new(Adt19::C8)), {
                                                         let a2133 = v14;
                                                         let a2134 = 1u64;
                                                         nat_add(a2133, a2134)?
@@ -12362,7 +12394,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                                     let m2135 = f352(v0, v14, v2, v6, 1u64, List::<Bytes>::nil())?;
                                                     match m2135 {
                                                         Adt20::C0(v16, v17) => {
-                                                            Ok(Adt20::C0(Adt19::C7(std::rc::Rc::new(v8), std::rc::Rc::new(v16)), v17))
+                                                            Ok(Adt20::C0(Adt19::C9(std::rc::Rc::new(v8), std::rc::Rc::new(v16)), v17))
                                                         }
                                                         Adt20::C1(v15) => {
                                                             Ok(Adt20::C1(v15))
@@ -12437,7 +12469,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                                                     let a2151 = v30;
                                                                     let a2152 = 125u64;
                                                                     if nat_eq(a2151, a2152) {
-                                                                        Ok(Adt20::C0(Adt19::C8(v19, std::rc::Rc::new(v26), std::rc::Rc::new(Adt19::C6)), {
+                                                                        Ok(Adt20::C0(Adt19::C10(v19, std::rc::Rc::new(v26), std::rc::Rc::new(Adt19::C8)), {
                                                                             let a2153 = v29;
                                                                             let a2154 = 1u64;
                                                                             nat_add(a2153, a2154)?
@@ -12456,7 +12488,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                                                                     let a2160 = f173(v0.clone(), v32)?;
                                                                                     let a2161 = 125u64;
                                                                                     if nat_eq(a2160, a2161) {
-                                                                                        Ok(Adt20::C0(Adt19::C8(v19, std::rc::Rc::new(v26), std::rc::Rc::new(Adt19::C6)), {
+                                                                                        Ok(Adt20::C0(Adt19::C10(v19, std::rc::Rc::new(v26), std::rc::Rc::new(Adt19::C8)), {
                                                                                             let a2162 = v32;
                                                                                             let a2163 = 1u64;
                                                                                             nat_add(a2162, a2163)?
@@ -12465,7 +12497,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                                                                         let m2164 = f352(v0, v32, v2, v6, 2u64, List::cons(v19.clone(), v5))?;
                                                                                         match m2164 {
                                                                                             Adt20::C0(v34, v35) => {
-                                                                                                Ok(Adt20::C0(Adt19::C8(v19, std::rc::Rc::new(v26), std::rc::Rc::new(v34)), v35))
+                                                                                                Ok(Adt20::C0(Adt19::C10(v19, std::rc::Rc::new(v26), std::rc::Rc::new(v34)), v35))
                                                                                             }
                                                                                             Adt20::C1(v33) => {
                                                                                                 Ok(Adt20::C1(v33))
@@ -12538,9 +12570,9 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                     let a2176 = v36;
                                     let a2177 = 91u64;
                                     if nat_eq(a2176, a2177) {
-                                        Adt19::C4(std::rc::Rc::new(Adt19::C6))
+                                        Adt19::C6(std::rc::Rc::new(Adt19::C8))
                                     } else {
-                                        Adt19::C5(std::rc::Rc::new(Adt19::C6))
+                                        Adt19::C7(std::rc::Rc::new(Adt19::C8))
                                     }
                                 }, {
                                     let a2178 = v38;
@@ -12563,9 +12595,9 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                                             let a2183 = v36;
                                             let a2184 = 91u64;
                                             if nat_eq(a2183, a2184) {
-                                                Adt19::C4(std::rc::Rc::new(v40))
+                                                Adt19::C6(std::rc::Rc::new(v40))
                                             } else {
-                                                Adt19::C5(std::rc::Rc::new(v40))
+                                                Adt19::C7(std::rc::Rc::new(v40))
                                             }
                                         }, v41))
                                     }
@@ -12592,7 +12624,7 @@ pub fn f352(v0: Bytes, v1: u64, v2: u64, v3: u64, v4: u64, v5: List<Bytes>) -> R
                         let m2189 = f351(v0, v1, v2, false)?;
                         match m2189 {
                             Adt30::C0(v43, v44) => {
-                                Ok(Adt20::C0(Adt19::C3(v43), v44))
+                                Ok(Adt20::C0(Adt19::C5(v43), v44))
                             }
                             Adt30::C1(v42) => {
                                 Ok(Adt20::C1(v42))
@@ -12822,10 +12854,10 @@ pub fn f357(v0: Bytes, v1: u64, v2: u64) -> R<Adt20> {
         Ok(Adt20::C1(f256(v1)?))
     } else {
         if f211(v0.clone(), List::cons(f8(Str::lit("true")), List::cons(f8(Str::lit("True")), List::cons(f8(Str::lit("TRUE")), List::<Bytes>::nil())))) {
-            Ok(Adt20::C0(Adt19::C0(true), v2))
+            Ok(Adt20::C0(Adt19::C2(true), v2))
         } else {
             if f211(v0.clone(), List::cons(f8(Str::lit("false")), List::cons(f8(Str::lit("False")), List::cons(f8(Str::lit("FALSE")), List::<Bytes>::nil())))) {
-                Ok(Adt20::C0(Adt19::C0(false), v2))
+                Ok(Adt20::C0(Adt19::C2(false), v2))
             } else {
                 if f211(v0.clone(), List::cons(f8(Str::lit(".inf")), List::cons(f8(Str::lit(".Inf")), List::cons(f8(Str::lit(".INF")), List::cons(f8(Str::lit("+.inf")), List::cons(f8(Str::lit("+.Inf")), List::cons(f8(Str::lit("+.INF")), List::cons(f8(Str::lit("-.inf")), List::cons(f8(Str::lit("-.Inf")), List::cons(f8(Str::lit("-.INF")), List::cons(f8(Str::lit(".nan")), List::cons(f8(Str::lit(".NaN")), List::cons(f8(Str::lit(".NAN")), List::<Bytes>::nil()))))))))))))) {
                     Ok(Adt20::C1(f83(Str::lit("an infinite or not-a-number float is not read: Studio.Value has none (YAML 1.2.2 section 10.3.2)"), v1)?))
@@ -12857,7 +12889,7 @@ pub fn f357(v0: Bytes, v1: u64, v2: u64) -> R<Adt20> {
                             let m2249 = f447(v0.clone())?;
                             match m2249 {
                                 None => {
-                                    Ok(Adt20::C0(Adt19::C3(v0), v2))
+                                    Ok(Adt20::C0(Adt19::C5(v0), v2))
                                 }
                                 Some(v3) => {
                                     let m2250 = f448(v3.clone(), 0u64)?;
@@ -14649,7 +14681,7 @@ pub fn f432(v0: Bytes, v1: u64, v2: u64, v3: bool, v4: u64) -> R<Adt20> {
                 }, Bytes::lit(&[]), v6)?;
                 match m2571 {
                     Adt35::C0(v11, v12, v13) => {
-                        Ok(Adt20::C0(Adt19::C3(f7(List::cons(v11, List::cons({
+                        Ok(Adt20::C0(Adt19::C5(f7(List::cons(v11, List::cons({
                             let a2572 = v4;
                             let a2573 = 1u64;
                             if nat_eq(a2572, a2573) {
@@ -14672,7 +14704,7 @@ pub fn f432(v0: Bytes, v1: u64, v2: u64, v3: bool, v4: u64) -> R<Adt20> {
                     }
                 }
             } else {
-                Ok(Adt20::C0(Adt19::C3({
+                Ok(Adt20::C0(Adt19::C5({
                     let a2576 = v4;
                     let a2577 = 2u64;
                     if nat_eq(a2576, a2577) {
@@ -15177,7 +15209,7 @@ pub fn f446(v0: Bytes, v1: u64, v2: u64, v3: u64) -> R<Adt20> {
             let (_, h2713) = v4;
             h2713
         }) {
-            Ok(Adt20::C0(Adt19::C1(false, {
+            Ok(Adt20::C0(Adt19::C3(false, {
                 let (_, h2714) = v4;
                 h2714
             }), v3))
@@ -15185,7 +15217,7 @@ pub fn f446(v0: Bytes, v1: u64, v2: u64, v3: u64) -> R<Adt20> {
             Ok(Adt20::C1(f449(v2)?))
         }
     } else {
-        Ok(Adt20::C0(Adt19::C3(v0), v3))
+        Ok(Adt20::C0(Adt19::C5(v0), v3))
     }
 }
 
@@ -15561,9 +15593,9 @@ pub fn f448(v0: Bytes, v1: u64) -> R<Option<(u64, Adt19)>> {
                                             };
                                             let a2821 = 0u64;
                                             if nat_eq(a2820, a2821) {
-                                                Adt19::C1(v21, v20)
+                                                Adt19::C3(v21, v20)
                                             } else {
-                                                Adt19::C2(v21, v20, {
+                                                Adt19::C4(v21, v20, {
                                                     let (_, h2822) = v19;
                                                     h2822
                                                 })

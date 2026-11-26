@@ -313,7 +313,7 @@ definition{
     | Nat.zero => (flushed source start offset out)
     | Nat.succ rest => (match (prim index source offset : (Option UInt8))
       | Option.none => (flushed source start offset out)
-      | Option.some raw => (let byte : Nat := (byteValue raw); (if quoted then (compactFrom source (offset + 1) rest (if escaped then true else (if (byte =? 34) then false else true)) (if escaped then false else (byte =? 92)) start out) else (if ((((byte =? 32) || (byte =? 9)) || (byte =? 10)) || (byte =? 13)) then (compactFrom source (offset + 1) rest false false (offset + 1) (flushed source start offset out)) else (if (if (byte =? 110) then (same (LexLeanStd.Text::sliceOr source offset 4) (lit "null")) else false) then (compactFrom source (offset + 4) rest false false (offset + 4) (prim append (flushed source start offset out) (lit "[]") : Bytes)) else (compactFrom source (offset + 1) rest (byte =? 34) false start out))))))),
+      | Option.some raw => (let byte : Nat := (byteValue raw); (if quoted then (compactFrom source (offset + 1) rest (if escaped then true else (if (byte =? 34) then false else true)) (if escaped then false else (byte =? 92)) start out) else (if ((((byte =? 32) || (byte =? 9)) || (byte =? 10)) || (byte =? 13)) then (compactFrom source (offset + 1) rest false false (offset + 1) (flushed source start offset out)) else (compactFrom source (offset + 1) rest (byte =? 34) false start out)))))),
   recursive_argument: remaining,
   axioms: [Quot.sound, propext],
   executable: true

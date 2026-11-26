@@ -12,6 +12,8 @@ inductive{
   type_parameters: [],
   parameters: [],
   constructors: [
+    {name: VNull, fields: []},
+    {name: VTag, fields: [Bytes, Value]},
     {name: VBool, fields: [Bool]},
     {name: VInt, fields: [Bool, Nat]},
     {name: VDec, fields: [Bool, Nat, Nat]},
@@ -31,6 +33,8 @@ definition{
   body: (match members
     | Value.VMember name value rest => (if (Studio.Doc::same name key) then (ctor Option.some [Value] value) else (field rest key))
     | Value.VObj inner => (field inner key)
+    | Value.VTag tagName tagged => (ctor Option.none [Value])
+    | Value.VNull => (ctor Option.none [Value])
     | Value.VBool flag => (ctor Option.none [Value])
     | Value.VDec negative mantissa scale => (ctor Option.none [Value])
     | Value.VInt negative magnitude => (ctor Option.none [Value])
@@ -50,6 +54,8 @@ definition{
     | Option.none => (ctor Option.none [Bytes])
     | Option.some found => (match found
       | Value.VStr content => (ctor Option.some [Bytes] content)
+      | Value.VTag tagName tagged => (ctor Option.none [Bytes])
+      | Value.VNull => (ctor Option.none [Bytes])
       | Value.VBool flag => (ctor Option.none [Bytes])
       | Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
       | Value.VInt negative magnitude => (ctor Option.none [Bytes])
@@ -81,6 +87,8 @@ definition{
       | Value.VDec negative mantissa scale => (ctor Option.none [Nat])
       | Value.VInt negative magnitude => (if negative then (ctor Option.none [Nat]) else (ctor Option.some [Nat] magnitude))
       | Value.VStr content => (ctor Option.none [Nat])
+      | Value.VTag tagName tagged => (ctor Option.none [Nat])
+      | Value.VNull => (ctor Option.none [Nat])
       | Value.VBool flag => (ctor Option.none [Nat])
       | Value.VArr inner => (ctor Option.none [Nat])
       | Value.VObj inner => (ctor Option.none [Nat])
@@ -98,6 +106,8 @@ definition{
     | Value.VItem head rest => (cons head (spineItems rest))
     | Value.VArr inner => (spineItems inner)
     | Value.VNil => (nil Value)
+    | Value.VTag tagName tagged => (nil Value)
+    | Value.VNull => (nil Value)
     | Value.VBool flag => (nil Value)
     | Value.VDec negative mantissa scale => (nil Value)
     | Value.VInt negative magnitude => (nil Value)
@@ -126,6 +136,8 @@ definition{
     | Value.VMember name value rest => (cons (name, value) (memberSpine rest))
     | Value.VObj inner => (memberSpine inner)
     | Value.VNil => (nil (Bytes * Value))
+    | Value.VTag tagName tagged => (nil (Bytes * Value))
+    | Value.VNull => (nil (Bytes * Value))
     | Value.VBool flag => (nil (Bytes * Value))
     | Value.VDec negative mantissa scale => (nil (Bytes * Value))
     | Value.VInt negative magnitude => (nil (Bytes * Value))
@@ -222,13 +234,13 @@ definition{
           | Option.none => (ctor Option.none [(Value * Nat)])
           | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VMember (second key) (first value) (first spine)), (second spine)))) else (if (after =? 125) then (ctor Option.some [(Value * Nat)] ((ctor Value.VMember (second key) (first value) (ctor Value.VNil)), ((second value) + 1))) else (ctor Option.none [(Value * Nat)]))))) else (ctor Option.none [(Value * Nat)]))) else (if (byte =? 34) then (match (scanText source (position + 1))
       | Option.none => (ctor Option.none [(Value * Nat)])
-      | Option.some scanned => (ctor Option.some [(Value * Nat)] ((ctor Value.VStr (second scanned)), (first scanned)))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 4) (Studio.Doc::lit "true")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VBool true), (position + 4))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 5) (Studio.Doc::lit "false")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VBool false), (position + 5))) else (if (byte =? 91) then (if ((LexLeanStd.JsonRead::byteOf source (position + 1)) =? 93) then (ctor Option.some [(Value * Nat)] ((ctor Value.VArr (ctor Value.VNil)), (position + 2))) else (match (parseAt source (position + 1) rest 1)
+      | Option.some scanned => (ctor Option.some [(Value * Nat)] ((ctor Value.VStr (second scanned)), (first scanned)))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 4) (Studio.Doc::lit "null")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VNull), (position + 4))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 4) (Studio.Doc::lit "true")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VBool true), (position + 4))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 5) (Studio.Doc::lit "false")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VBool false), (position + 5))) else (if (byte =? 91) then (if ((LexLeanStd.JsonRead::byteOf source (position + 1)) =? 93) then (ctor Option.some [(Value * Nat)] ((ctor Value.VArr (ctor Value.VNil)), (position + 2))) else (match (parseAt source (position + 1) rest 1)
       | Option.none => (ctor Option.none [(Value * Nat)])
       | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VArr (first spine)), (second spine))))) else (if (byte =? 123) then (if ((LexLeanStd.JsonRead::byteOf source (position + 1)) =? 125) then (ctor Option.some [(Value * Nat)] ((ctor Value.VObj (ctor Value.VNil)), (position + 2))) else (match (parseAt source (position + 1) rest 2)
       | Option.none => (ctor Option.none [(Value * Nat)])
       | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VObj (first spine)), (second spine))))) else (match (readNumber source position)
       | Option.none => (ctor Option.none [(Value * Nat)])
-      | Option.some read => (ctor Option.some [(Value * Nat)] ((second read), (first read))))))))))))),
+      | Option.some read => (ctor Option.some [(Value * Nat)] ((second read), (first read)))))))))))))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
@@ -250,6 +262,8 @@ definition{
   parameters: [value : Value],
   result: (Option LexLeanStd.Json::Json),
   body: (match value
+    | Value.VTag tagName tagged => (ctor Option.none [LexLeanStd.Json::Json])
+    | Value.VNull => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JArr (ctor LexLeanStd.Json::Json.JNil)))
     | Value.VBool flag => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JBool flag))
     | Value.VInt negative magnitude => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JInt negative magnitude))
     | Value.VDec negative mantissa scale => (ctor Option.none [LexLeanStd.Json::Json])
@@ -308,6 +322,8 @@ definition{
   parameters: [value : Value],
   result: Bytes,
   body: (match value
+    | Value.VTag tagName tagged => 0x
+    | Value.VNull => 0x6e756c6c
     | Value.VBool flag => (if flag then 0x74727565 else 0x66616c7365)
     | Value.VInt negative magnitude => (LexLeanStd.Json::integerText negative magnitude)
     | Value.VDec negative mantissa scale => (decimalText negative mantissa scale)
@@ -328,6 +344,8 @@ definition{
   parameters: [items : Value],
   result: (List Bytes),
   body: (match items
+    | Value.VTag tagName tagged => (nil Bytes)
+    | Value.VNull => (nil Bytes)
     | Value.VBool flag => (nil Bytes)
     | Value.VInt negative magnitude => (nil Bytes)
     | Value.VDec negative mantissa scale => (nil Bytes)
@@ -348,6 +366,8 @@ definition{
   parameters: [members : Value],
   result: (List (Bytes * Bytes)),
   body: (match members
+    | Value.VTag tagName tagged => (nil (Bytes * Bytes))
+    | Value.VNull => (nil (Bytes * Bytes))
     | Value.VBool flag => (nil (Bytes * Bytes))
     | Value.VInt negative magnitude => (nil (Bytes * Bytes))
     | Value.VDec negative mantissa scale => (nil (Bytes * Bytes))
@@ -361,6 +381,41 @@ definition{
   executable: true,
   mutual: Write,
   recursive_argument: members
+}
+
+definition{
+  name: firstTag,
+  parameters: [value : Value],
+  result: (Option Bytes),
+  body: (match value
+    | Value.VTag tagName tagged => (ctor Option.some [Bytes] tagName)
+    | Value.VArr inner => (firstTag inner)
+    | Value.VObj inner => (firstTag inner)
+    | Value.VItem head rest => (match (firstTag head)
+      | Option.some found => (ctor Option.some [Bytes] found)
+      | Option.none => (firstTag rest))
+    | Value.VMember key head rest => (match (firstTag head)
+      | Option.some found => (ctor Option.some [Bytes] found)
+      | Option.none => (firstTag rest))
+    | Value.VNull => (ctor Option.none [Bytes])
+    | Value.VBool flag => (ctor Option.none [Bytes])
+    | Value.VInt negative magnitude => (ctor Option.none [Bytes])
+    | Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+    | Value.VStr text => (ctor Option.none [Bytes])
+    | Value.VNil => (ctor Option.none [Bytes])),
+  recursive_argument: value,
+  executable: true
+}
+
+definition{
+  name: jsonText,
+  parameters: [value : Value],
+  result: (Result Bytes Bytes),
+  body: (match (firstTag value)
+    | Option.some tagName => (ctor Result.error [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the node tagged ") (cons tagName (cons (Studio.Doc::lit " has no JSON text: a JSON value carries no tag (RFC 8259 section 3), and a YAML node keeps its tag (YAML 1.2.2 section 3.2.1.1)") (nil Bytes))))))
+    | Option.none => (ctor Result.ok [Bytes, Bytes] (writeValue value))),
+  axioms: [Quot.sound, propext],
+  executable: true
 }
 
 definition{
@@ -933,6 +988,8 @@ definition{
     | Value.VObj members => (refersTo members target)
     | Value.VItem head rest => ((refersTo head target) || (refersTo rest target))
     | Value.VMember key item rest => (((Studio.Doc::same key (Studio.Doc::lit "$ref")) && (namesTarget item target)) || ((refersTo item target) || (refersTo rest target)))
+    | Value.VTag tagName tagged => false
+    | Value.VNull => false
     | Value.VBool flag => false
     | Value.VDec negative mantissa scale => false
     | Value.VInt negative magnitude => false
@@ -986,6 +1043,8 @@ definition{
   parameters: [schema : Value],
   result: Bool,
   body: (match schema
+    | Value.VTag tagName tagged => false
+    | Value.VNull => false
     | Value.VBool accepts => (if accepts then false else true)
     | Value.VInt negative magnitude => false
     | Value.VDec negative mantissa scale => false
@@ -1049,6 +1108,8 @@ definition{
   body: (match fuel
     | Nat.zero => (refused (Studio.Doc::lit "additionalProperties nests deeper than the translator's bound") context)
     | Nat.succ deeper => (match extra
+    | Value.VTag tagName tagged => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
+    | Value.VNull => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VBool accepts => (if accepts then (anyValue) else (refused (Studio.Doc::lit "an object without properties that admits no member has no field to translate") context))
     | Value.VDec negative mantissa scale => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VInt negative magnitude => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
@@ -1088,6 +1149,8 @@ definition{
     | Value.VMember name value rest => (if (Studio.Doc::same name key) then (dropMember rest key) else (ctor Value.VMember name value (dropMember rest key)))
     | Value.VObj inner => (ctor Value.VObj (dropMember inner key))
     | Value.VNil => (ctor Value.VNil)
+    | Value.VTag tagName tagged => (ctor Value.VTag tagName tagged)
+    | Value.VNull => (ctor Value.VNull)
     | Value.VBool flag => (ctor Value.VBool flag)
     | Value.VDec negative mantissa scale => (ctor Value.VDec negative mantissa scale)
     | Value.VInt negative magnitude => (ctor Value.VInt negative magnitude)
@@ -1221,6 +1284,8 @@ definition{
     | Value.VObj inner => (ctor Value.VObj (ctor Value.VMember key value inner))
     | Value.VMember name item rest => (ctor Value.VMember name item rest)
     | Value.VNil => (ctor Value.VNil)
+    | Value.VTag tagName tagged => (ctor Value.VTag tagName tagged)
+    | Value.VNull => (ctor Value.VNull)
     | Value.VBool flag => (ctor Value.VBool flag)
     | Value.VDec negative mantissa scale => (ctor Value.VDec negative mantissa scale)
     | Value.VInt negative magnitude => (ctor Value.VInt negative magnitude)
@@ -1249,6 +1314,8 @@ definition{
   parameters: [schema : Value, context : Bytes],
   result: (Result Typed Bytes),
   body: (match schema
+    | Value.VTag tagName tagged => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
+    | Value.VNull => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VBool accepts => (if accepts then (anyValue) else (refused (Studio.Doc::lit "the false schema admits no instance") context))
     | Value.VDec negative mantissa scale => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VInt negative magnitude => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
@@ -1408,6 +1475,8 @@ definition{
       | Option.none => (ctor Option.none [Bytes])
       | Option.some spelled => (ctor Option.some [Bytes] (if negative then (prim append (Studio.Doc::lit "nMinus") (LexLeanStd.Text::sliceOr spelled 1 (prim subtract (prim length spelled : Nat) 1 : Nat)) : Bytes) else spelled)))
     | Value.VInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (Studio.Doc::both negative (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
+    | Value.VTag tagName tagged => (ctor Option.none [Bytes])
+    | Value.VNull => (ctor Option.none [Bytes])
     | Value.VBool flag => (ctor Option.none [Bytes])
     | Value.VArr items => (ctor Option.none [Bytes])
     | Value.VObj members => (ctor Option.none [Bytes])
@@ -1655,6 +1724,8 @@ definition{
       | Option.some reference => (match (refName reference)
         | Option.none => later
         | Option.some named => (cons named later))) else later))
+    | Value.VTag tagName tagged => found
+    | Value.VNull => found
     | Value.VBool flag => found
     | Value.VDec negative mantissa scale => found
     | Value.VInt negative magnitude => found
