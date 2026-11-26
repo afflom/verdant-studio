@@ -3,6 +3,15 @@
 \title{Natural number addition}
 \begin{semanticmodule}
 structure{
+  name: Binary64,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bits, type: Nat}
+  ]
+}
+
+structure{
   name: GamepadButton,
   type_parameters: [],
   parameters: [],
@@ -64,6 +73,115 @@ structure{
     {name: startDelay, type: Nat},
     {name: strongMagnitude, type: (Int * Int)},
     {name: weakMagnitude, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: DOMHighResTimeStamp,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: value, type: (Int * Int)}
+  ]
+}
+
+structure{
+  name: DOMPointReadOnly,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: Binary64},
+    {name: y, type: Binary64},
+    {name: z, type: Binary64},
+    {name: w, type: Binary64}
+  ]
+}
+
+structure{
+  name: DOMRectReadOnly,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: Binary64},
+    {name: y, type: Binary64},
+    {name: width, type: Binary64},
+    {name: height, type: Binary64},
+    {name: top, type: Binary64},
+    {name: right, type: Binary64},
+    {name: bottom, type: Binary64},
+    {name: left, type: Binary64}
+  ]
+}
+
+structure{
+  name: GamepadTouch,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: position, type: (Option DOMPointReadOnly)},
+    {name: surfaceDimensions, type: (Option (Option DOMRectReadOnly))},
+    {name: surfaceId, type: (Option Nat)},
+    {name: touchId, type: (Option Nat)}
+  ]
+}
+
+structure{
+  name: Gamepad,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: (List Nat)},
+    {name: index, type: Int},
+    {name: connected, type: Bool},
+    {name: timestamp, type: DOMHighResTimeStamp},
+    {name: mapping, type: GamepadMappingType},
+    {name: axes, type: (List (Int * Int))},
+    {name: buttons, type: (List GamepadButton)},
+    {name: touches, type: (List GamepadTouch)},
+    {name: vibrationActuator, type: GamepadHapticActuator}
+  ]
+}
+
+structure{
+  name: GamepadEventInit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bubbles, type: Bool},
+    {name: cancelable, type: Bool},
+    {name: composed, type: Bool},
+    {name: gamepad, type: (Option Gamepad)}
+  ]
+}
+
+inductive{
+  name: EventTarget,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: []}
+  ]
+}
+
+structure{
+  name: GamepadEvent,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: type, type: (List Nat)},
+    {name: target, type: (Option EventTarget)},
+    {name: srcElement, type: (Option EventTarget)},
+    {name: currentTarget, type: (Option EventTarget)},
+    {name: eventPhase, type: Nat},
+    {name: cancelBubble, type: Bool},
+    {name: bubbles, type: Bool},
+    {name: cancelable, type: Bool},
+    {name: returnValue, type: Bool},
+    {name: defaultPrevented, type: Bool},
+    {name: composed, type: Bool},
+    {name: isTrusted, type: Bool},
+    {name: timeStamp, type: DOMHighResTimeStamp},
+    {name: gamepad, type: Gamepad}
   ]
 }
 
