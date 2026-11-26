@@ -184,6 +184,27 @@ definition{
 }
 
 definition{
+  name: plainEnd,
+  parameters: [source : Bytes, position : Nat, fuel : Nat],
+  result: Nat,
+  body: (match fuel
+    | Nat.zero => position
+    | Nat.succ rest => (let byte : Nat := (LexLeanStd.JsonRead::byteOf source position); (if (byte =? 34) then position else (if (byte =? 92) then position else (if (byte <? 32) then position else (if (byte =? 256) then position else (plainEnd source (position + 1) rest))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: scanText,
+  parameters: [source : Bytes, start : Nat],
+  result: (Option (Nat * Bytes)),
+  body: (let stop : Nat := (plainEnd source start ((prim length source : Nat) + 1)); (if ((LexLeanStd.JsonRead::byteOf source stop) =? 34) then (ctor Option.some [(Nat * Bytes)] ((stop + 1), (LexLeanStd.Text::sliceOr source start (prim subtract stop start : Nat)))) else (LexLeanStd.JsonRead::scanString source start))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: parseAt,
   parameters: [source : Bytes, position : Nat, fuel : Nat, mode : Nat],
   result: (Option (Value * Nat)),
@@ -193,13 +214,13 @@ definition{
       | Option.none => (ctor Option.none [(Value * Nat)])
       | Option.some item => (let after : Nat := (LexLeanStd.JsonRead::byteOf source (second item)); (if (after =? 44) then (match (parseAt source ((second item) + 1) rest 1)
         | Option.none => (ctor Option.none [(Value * Nat)])
-        | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VItem (first item) (first spine)), (second spine)))) else (if (after =? 93) then (ctor Option.some [(Value * Nat)] ((ctor Value.VItem (first item) (ctor Value.VNil)), ((second item) + 1))) else (ctor Option.none [(Value * Nat)]))))) else (if (mode =? 2) then (match (LexLeanStd.JsonRead::scanString source (position + 1))
+        | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VItem (first item) (first spine)), (second spine)))) else (if (after =? 93) then (ctor Option.some [(Value * Nat)] ((ctor Value.VItem (first item) (ctor Value.VNil)), ((second item) + 1))) else (ctor Option.none [(Value * Nat)]))))) else (if (mode =? 2) then (match (scanText source (position + 1))
       | Option.none => (ctor Option.none [(Value * Nat)])
       | Option.some key => (if (Studio.Doc::both (byte =? 34) ((LexLeanStd.JsonRead::byteOf source (first key)) =? 58)) then (match (parseAt source ((first key) + 1) rest 0)
         | Option.none => (ctor Option.none [(Value * Nat)])
         | Option.some value => (let after : Nat := (LexLeanStd.JsonRead::byteOf source (second value)); (if (after =? 44) then (match (parseAt source ((second value) + 1) rest 2)
           | Option.none => (ctor Option.none [(Value * Nat)])
-          | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VMember (second key) (first value) (first spine)), (second spine)))) else (if (after =? 125) then (ctor Option.some [(Value * Nat)] ((ctor Value.VMember (second key) (first value) (ctor Value.VNil)), ((second value) + 1))) else (ctor Option.none [(Value * Nat)]))))) else (ctor Option.none [(Value * Nat)]))) else (if (byte =? 34) then (match (LexLeanStd.JsonRead::scanString source (position + 1))
+          | Option.some spine => (ctor Option.some [(Value * Nat)] ((ctor Value.VMember (second key) (first value) (first spine)), (second spine)))) else (if (after =? 125) then (ctor Option.some [(Value * Nat)] ((ctor Value.VMember (second key) (first value) (ctor Value.VNil)), ((second value) + 1))) else (ctor Option.none [(Value * Nat)]))))) else (ctor Option.none [(Value * Nat)]))) else (if (byte =? 34) then (match (scanText source (position + 1))
       | Option.none => (ctor Option.none [(Value * Nat)])
       | Option.some scanned => (ctor Option.some [(Value * Nat)] ((ctor Value.VStr (second scanned)), (first scanned)))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 4) (Studio.Doc::lit "true")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VBool true), (position + 4))) else (if (Studio.Doc::same (LexLeanStd.Text::sliceOr source position 5) (Studio.Doc::lit "false")) then (ctor Option.some [(Value * Nat)] ((ctor Value.VBool false), (position + 5))) else (if (byte =? 91) then (if ((LexLeanStd.JsonRead::byteOf source (position + 1)) =? 93) then (ctor Option.some [(Value * Nat)] ((ctor Value.VArr (ctor Value.VNil)), (position + 2))) else (match (parseAt source (position + 1) rest 1)
       | Option.none => (ctor Option.none [(Value * Nat)])
@@ -274,6 +295,15 @@ definition{
 }
 
 definition{
+  name: quotedText,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (if ((plainEnd text 0 ((prim length text : Nat) + 1)) =? (prim length text : Nat)) then (Studio.Doc::cat (cons (Studio.Doc::lit "\"") (cons text (cons (Studio.Doc::lit "\"") (nil Bytes))))) else (LexLeanStd.Json::quoted text)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: writeValue,
   parameters: [value : Value],
   result: Bytes,
@@ -281,7 +311,7 @@ definition{
     | Value.VBool flag => (if flag then 0x74727565 else 0x66616c7365)
     | Value.VInt negative magnitude => (LexLeanStd.Json::integerText negative magnitude)
     | Value.VDec negative mantissa scale => (decimalText negative mantissa scale)
-    | Value.VStr text => (LexLeanStd.Json::quoted text)
+    | Value.VStr text => (quotedText text)
     | Value.VArr items => (LexLeanStd.Json::arrayText (renderItems items))
     | Value.VObj members => (LexLeanStd.Json::objectText (renderMembers members))
     | Value.VNil => 0x
