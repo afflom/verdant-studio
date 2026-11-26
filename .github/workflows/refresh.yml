@@ -132,7 +132,9 @@ jobs:
             git fetch -q origin "$branch" main
             git checkout -q -B refresh origin/main
             git clean -fdq
-            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml > target/change.patch
+            # readers/lexlean.lock is generated: the export below writes it again, so it is left out of the
+            # change, and two reader pull requests never conflict on it.
+            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml ':!readers/lexlean.lock' > target/change.patch
             # model/strata.json is one line, so two changes that each add a stratum row always
             # conflict there. Its rows are keyed by path (VS-05), so the merge is main's rows, then
             # each row the pull request adds whose path main does not have, in the pull request's order.
