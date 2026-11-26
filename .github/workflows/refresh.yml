@@ -6,6 +6,10 @@
 # to the same pull request, so the owner never reviews a conflicting one. Every
 # conflicting pull request is marked a draft as soon as it is found, and each one is
 # regenerated in its own job, in parallel, and marked ready again only once it is pushed.
+# The exception is one whose auto-merge is set, the next change to merge: it stays ready and keeps its
+# auto-merge, so it merges as soon as its regeneration passes the studio check. It is
+# regenerated first, and only the oldest such one at a time, since two changes to the
+# API conflict on their export (#309 and #315 were pushed behind main this way).
 name: refresh
 
 # A pull request that opens while main moves is caught too: this workflow also starts when an
@@ -35,7 +39,7 @@ jobs:
     outputs:
       stale: ${{ steps.stale.outputs.stale }}
       matrix: ${{ steps.stale.outputs.matrix }}
-      merges: ${{ steps.stale.outputs.merges }}
+      auto: ${{ steps.stale.outputs.auto }}
     steps:
       - id: app
         uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
@@ -50,8 +54,9 @@ jobs:
         run: |
           set -euo pipefail
           stale=''
-          merges=''
-          for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq ".[] | select((.title | startswith(\"verdant_studio propose-command\")) and .user.login == \"${SLUG}[bot]\") | .number"); do
+          auto=''
+          # Oldest first, so the oldest one whose auto-merge is set is the one regenerated now.
+          for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq "sort_by(.number) | .[] | select((.title | startswith(\"verdant_studio propose-command\")) and .user.login == \"${SLUG}[bot]\") | .number"); do
             # mergeable is null while GitHub computes it, and it stays meaningful for a draft,
             # which a cancelled run may have left behind.
             mergeable=null
@@ -60,20 +65,21 @@ jobs:
               if [ "$mergeable" != null ]; then break; fi
               sleep 10
             done
-            if [ "$mergeable" = false ]; then
+            if [ "$mergeable" = false ] && [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.auto_merge != null')" = true ]; then
+              # Drafting would drop its auto-merge, so it stays ready. A later one waits: it is
+              # regenerated once this one merges, when it would conflict again anyway.
+              if [ -z "$auto" ]; then auto=$pr; else echo "#${pr} waits for #${auto} to merge"; fi
+            elif [ "$mergeable" = false ]; then
               stale="$stale $pr"
-              # Drafting drops a pull request's auto-merge, so the owner's merge method is kept
-              # here and restored once the regenerated pull request is ready again.
-              method=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.auto_merge.merge_method // ""')
-              if [ -n "$method" ]; then merges="$merges $pr:$method"; fi
               # A draft until its regeneration is pushed, so the owner never sees it conflicting.
               gh pr ready --undo "$pr" --repo "$GITHUB_REPOSITORY" || true
             elif [ "$mergeable" = true ] && [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .draft)" = true ]; then
               gh pr ready "$pr" --repo "$GITHUB_REPOSITORY" || true
             fi
           done
+          if [ -n "$auto" ]; then stale=" $auto$stale"; fi
           echo "stale=$stale" >> "$GITHUB_OUTPUT"
-          echo "merges=$merges" >> "$GITHUB_OUTPUT"
+          echo "auto=$auto" >> "$GITHUB_OUTPUT"
           echo "matrix=$(jq -cn --arg s "$stale" '$s | split(" ") | map(select(. != "") | tonumber)')" >> "$GITHUB_OUTPUT"
           echo "propose-command pull requests to regenerate:${stale:- none}"
 
@@ -116,9 +122,12 @@ jobs:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           SLUG: ${{ steps.app.outputs.app-slug }}
           STALE: ${{ matrix.pr }}
-          MERGES: ${{ needs.find.outputs.merges }}
+          AUTO: ${{ needs.find.outputs.auto }}
         run: |
           set -euo pipefail
+          # A regeneration of the one whose auto-merge is set that fails leaves it a draft, which drops
+          # its auto-merge, so it is no longer the next change to merge and nothing is handed over red.
+          trap 'rc=$?; if [ "$rc" != 0 ] && [ "$STALE" = "$AUTO" ]; then gh pr ready --undo "$STALE" || true; fi' EXIT
           if [ ! -x "$HOME/.elan/bin/elan" ]; then
             mkdir -p target
             curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
@@ -136,7 +145,8 @@ jobs:
             branch=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .head.ref)
             # While it is regenerated (an export takes minutes), the pull request is a draft, so
             # the owner never sees it as conflicting; it is marked ready again only once it is pushed.
-            gh pr ready --undo "$pr" || true
+            # The one whose auto-merge is set stays ready, so that it keeps its auto-merge.
+            if [ "$pr" != "$AUTO" ]; then gh pr ready --undo "$pr" || true; fi
             git fetch -q origin "$branch" main
             git checkout -q -B refresh origin/main
             git clean -fdq
@@ -184,13 +194,6 @@ jobs:
             git -c user.name="${SLUG}[bot]" -c user.email="${id}+${SLUG}[bot]@users.noreply.github.com" commit -q -F target/message.txt
             git push -q --force-with-lease="${branch}:origin/${branch}" origin "HEAD:refs/heads/${branch}"
             gh pr ready "$pr" || true
-            # The owner's auto-merge comes back with the same method, and only where it was set.
-            for entry in $MERGES; do
-              if [ "${entry/:*/}" = "$pr" ] && ! gh pr merge "$pr" --auto "--${entry#*:}"; then
-                echo "::error::#${pr}: its auto-merge (${entry#*:}) could not be restored"
-                failed="$failed $pr"
-              fi
-            done
             echo "::notice::regenerated #${pr} on the new main"
           done
           if [ -n "$failed" ]; then echo "::error::these pull requests could not be regenerated:$failed"; exit 1; fi
