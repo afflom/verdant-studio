@@ -904,12 +904,33 @@ definition{
 }
 
 definition{
-  name: documentEnd,
-  parameters: [source : Bytes, position : Nat],
+  name: suffixes,
+  parameters: [source : Bytes, position : Nat, fuel : Nat],
   result: (Result Nat Bytes),
-  body: (let line : Nat := (skipLines source position); (let total : Nat := (prim length source : Nat); (if ((line <? total) && ((Studio.Xml::startsAt source line "...") && (marker source line))) then (match (tail source (line + 3))
-    | Result.error reason => (ctor Result.error [Nat, Bytes] reason)
-    | Result.ok next => (let after : Nat := (skipLines source next); (if (after <? total) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a stream of more than one document is not read (YAML 1.2.2 [211])" after)) else (ctor Result.ok [Nat, Bytes] after)))) else (if ((line <? total) && (marker source line)) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "a stream of more than one document is not read (YAML 1.2.2 [211])" line)) else (if (line <? total) then (ctor Result.error [Nat, Bytes] (Studio.Xml::failure "only comments may follow the root node (YAML 1.2.2 [207])" line)) else (ctor Result.ok [Nat, Bytes] line)))))),
+  body: (match fuel
+    | Nat.zero => (ctor Result.ok [Nat, Bytes] position)
+    | Nat.succ rest => (if ((position <? (prim length source : Nat)) && ((Studio.Xml::startsAt source position "...") && (marker source position))) then (match (tail source (position + 3))
+      | Result.error reason => (ctor Result.error [Nat, Bytes] reason)
+      | Result.ok next => (suffixes source (skipLines source next) rest)) else (ctor Result.ok [Nat, Bytes] position))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: documents,
+  parameters: [source : Bytes, position : Nat, bare : Bool, fuel : Nat],
+  result: (Result (List Studio.Schema::Value) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "the stream holds more documents than it is long" position))
+    | Nat.succ rest => (let total : Nat := (prim length source : Nat); (if ((at source position) =? 37) then (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "a directive is not read (YAML 1.2.2 [82])" position)) else (match (if ((Studio.Xml::startsAt source position "---") && (marker source position)) then (block source (position + 3) 0 (total + 2) 1 false 0 (nil Bytes)) else (if bare then (block source position 0 (total + 2) 0 false 0 (nil Bytes)) else (ctor Got.Fail (Studio.Xml::failure "only comments, a document end marker or a document start marker may follow a document (YAML 1.2.2 [207], [211])" position))))
+      | Got.Fail reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+      | Got.Node value stop => (let line : Nat := (skipLines source stop); (match (suffixes source line (total + 1))
+        | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+        | Result.ok next => (if (total <=? next) then (ctor Result.ok [(List Studio.Schema::Value), Bytes] (cons value (nil Studio.Schema::Value))) else (match (documents source next (no (next =? line)) rest)
+          | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+          | Result.ok more => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (cons value more)))))))))),
+  recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -917,12 +938,20 @@ definition{
 definition{
   name: readYaml,
   parameters: [raw : Bytes],
-  result: (Result Studio.Schema::Value Bytes),
-  body: (let unmarked : Bytes := (if (LexLeanStd.Text::matchAt raw 0xefbbbf 0) then (LexLeanStd.Text::sliceOr raw 3 (prim subtract (prim length raw : Nat) 3 : Nat)) else raw); (let source : Bytes := (Studio.Xml::normalizeLines unmarked); (let total : Nat := (prim length source : Nat); (let valid : Nat := (printableEnd source); (let fuel : Nat := (total + 2); (let start : Nat := (skipLines source 0); (if (valid <? total) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "the input is not a sequence of printable characters in UTF-8 (YAML 1.2.2 [1], section 5.2)" valid)) else (if (((start <? total) && (Studio.Xml::startsAt source start "...")) && (marker source start)) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "a stream with no document is not read (YAML 1.2.2 [211])" start)) else (if ((at source start) =? 37) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "a directive is not read (YAML 1.2.2 [82])" start)) else (if (total <=? start) then (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Xml::failure "a stream with no document is not read (YAML 1.2.2 [211])" start)) else (match (if ((Studio.Xml::startsAt source start "---") && (marker source start)) then (block source (start + 3) 0 fuel 1 false 0 (nil Bytes)) else (block source start 0 fuel 0 false 0 (nil Bytes)))
-    | Got.Fail reason => (ctor Result.error [Studio.Schema::Value, Bytes] reason)
-    | Got.Node rootValue rootEnd => (match (documentEnd source rootEnd)
-      | Result.error reason => (ctor Result.error [Studio.Schema::Value, Bytes] reason)
-      | Result.ok after => (ctor Result.ok [Studio.Schema::Value, Bytes] rootValue))))))))))))),
+  result: (Result (List Studio.Schema::Value) Bytes),
+  body: (let unmarked : Bytes := (if (LexLeanStd.Text::matchAt raw 0xefbbbf 0) then (LexLeanStd.Text::sliceOr raw 3 (prim subtract (prim length raw : Nat) 3 : Nat)) else raw); (let source : Bytes := (Studio.Xml::normalizeLines unmarked); (let total : Nat := (prim length source : Nat); (let valid : Nat := (printableEnd source); (let start : Nat := (skipLines source 0); (if (valid <? total) then (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "the input is not a sequence of printable characters in UTF-8 (YAML 1.2.2 [1], section 5.2)" valid)) else (if ((total <=? start) || ((Studio.Xml::startsAt source start "...") && (marker source start))) then (ctor Result.error [(List Studio.Schema::Value), Bytes] (Studio.Xml::failure "a stream with no document is not read (YAML 1.2.2 [211])" start)) else (documents source start true (total + 1))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: streamText,
+  parameters: [items : (List Studio.Schema::Value)],
+  result: Bytes,
+  body: (match items
+    | List.nil => 0x
+    | List.cons head rest => (Studio.Doc::cat (cons (Studio.Schema::writeText head) (cons (Studio.Doc::lit "\n") (cons (streamText rest) (nil Bytes)))))),
+  recursive_argument: items,
   axioms: [Quot.sound, propext],
   executable: true
 }
