@@ -13,6 +13,7 @@
 \importmodule{Studio.Schema}
 \importmodule{Studio.Xml}
 \importmodule{Studio.Xsd}
+\importmodule{Studio.XsdComponents}
 \importmodule{Studio.WebIdl}
 \importmodule{Studio.Yaml}
 \importmodule{LexLeanStd.Numeral}
@@ -712,6 +713,20 @@ definition{
     | List.nil => (match (Studio.Yaml::readYaml (contents seen path))
       | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "not read as YAML 1.2.2: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
       | Result.ok root => (ctor Plan.done (nil (Bytes * Bytes)) (prim append (Studio.Schema::writeText root) (Studio.Doc::lit "\n") : Bytes)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planReadXsdComponents,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (cons (Studio.Doc::lit "model/authorities.toml") (nil Bytes))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (Studio.XsdComponents::readSchemaSet (project seen files) (contents seen (Studio.Doc::lit "model/authorities.toml")) path)
+      | Studio.XsdComponents::Outcome.needs paths => (ctor Plan.reads paths)
+      | Studio.XsdComponents::Outcome.refuses reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "XSD not translated: ") (cons reason (cons 0x0a (nil Bytes))))))
+      | Studio.XsdComponents::Outcome.translated count text => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "-- ") (cons (LexLeanStd.Numeral::decimal count) (cons (Studio.Doc::lit " declarations\n") (cons text (nil Bytes))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2355,6 +2370,7 @@ definition{
     (cons (Studio.Doc::lit "read-webidl FILE [IMPORT...]")
     (cons (Studio.Doc::lit "read-xml FILE")
     (cons (Studio.Doc::lit "read-xsd FILE")
+    (cons (Studio.Doc::lit "read-xsd-components FILE")
     (cons (Studio.Doc::lit "read-yaml FILE")
     (cons (Studio.Doc::lit "record-decision JSONL")
     (cons (Studio.Doc::lit "stage-admissions JSONL")
@@ -2364,7 +2380,7 @@ definition{
     (cons (Studio.Doc::lit "stage-engine")
     (cons (Studio.Doc::lit "stage-mappings JSONL")
     (cons (Studio.Doc::lit "stage-matrix JSONL")
-    (nil Bytes)))))))))))))))))))))))),
+    (nil Bytes))))))))))))))))))))))))),
   executable: true
 }
 
@@ -2405,8 +2421,9 @@ definition{
   body: (if (Studio.Doc::same op (Studio.Doc::lit "read-webidl")) then (planReadWebIdl seen path more) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-xml")) then (planReadXml seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-xsd")) then (planReadXsd seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "read-xsd-components")) then (planReadXsdComponents seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-yaml")) then (planReadYaml seen path) else
-    (ctor Plan.refuse (usage)))))),
+    (ctor Plan.refuse (usage))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2471,7 +2488,7 @@ definition{
       (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else
       (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-")) then (ctor Plan.refuse (Studio.Doc::lit "read-webidl, read-xml, read-xsd and read-yaml run in verdant_readers, the command of the readers project\n")) else (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "stage-")) then (routeStage op path more seen) else (routeOther op path more seen)))))))))),
+      | List.cons path more => (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-")) then (ctor Plan.refuse (Studio.Doc::lit "read-webidl, read-xml, read-xsd, read-xsd-components and read-yaml run in verdant_readers, the command of the readers project\n")) else (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "stage-")) then (routeStage op path more seen) else (routeOther op path more seen)))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
