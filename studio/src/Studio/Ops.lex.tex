@@ -271,10 +271,8 @@ definition{
 definition{
   name: jsonOf,
   parameters: [seen : Seen, path : Bytes],
-  result: (Option LexLeanStd.Json::Json),
-  body: (match (valueOf seen path)
-    | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
-    | Option.some value => (Studio.Schema::jsonOf value)),
+  result: (Option Studio.Schema::Value),
+  body: (valueOf seen path),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -284,8 +282,8 @@ definition{
 definition{
   name: arrayOf,
   parameters: [seen : Seen, path : Bytes],
-  result: (List LexLeanStd.Json::Json),
-  body: (Studio.Doc::itemsOf (jsonOf seen path)),
+  result: (List Studio.Schema::Value),
+  body: (Studio.Schema::itemsOf (jsonOf seen path)),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -430,10 +428,10 @@ definition{
 definition{
   name: jsonStrings,
   parameters: [items : (List Bytes)],
-  result: LexLeanStd.Json::Json,
+  result: Studio.Schema::Value,
   body: (match items
-    | List.nil => (ctor LexLeanStd.Json::Json.JNil)
-    | List.cons head rest => (ctor LexLeanStd.Json::Json.JItem (ctor LexLeanStd.Json::Json.JStr head) (jsonStrings rest))),
+    | List.nil => (ctor Studio.Schema::Value.VNil)
+    | List.cons head rest => (ctor Studio.Schema::Value.VItem (ctor Studio.Schema::Value.VStr head) (jsonStrings rest))),
   recursive_argument: items,
   executable: true
 }
@@ -441,24 +439,24 @@ definition{
 
 definition{
   name: citedRows,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+    | List.cons head rest => (match (Studio.Schema::field head (Studio.Doc::lit "std"))
       | Option.none => (citedRows rest)
-      | Option.some cited => (cons (Studio.Doc::str cited (Studio.Doc::lit "row")) (citedRows rest)))),
+      | Option.some cited => (cons (Studio.Schema::str cited (Studio.Doc::lit "row")) (citedRows rest)))),
   recursive_argument: items,
   executable: true
 }
 
 definition{
   name: deferredRows,
-  parameters: [decisions : (List LexLeanStd.Json::Json)],
+  parameters: [decisions : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match decisions
     | List.nil => (nil Bytes)
-    | List.cons head rest => (Studio.Check::concat (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field head (Studio.Doc::lit "defers")))) (deferredRows rest))),
+    | List.cons head rest => (Studio.Check::concat (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field head (Studio.Doc::lit "defers")))) (deferredRows rest))),
   recursive_argument: decisions,
   executable: true
 }
@@ -495,11 +493,11 @@ definition{
 
 definition{
   name: jsonItems,
-  parameters: [items : (List LexLeanStd.Json::Json)],
-  result: LexLeanStd.Json::Json,
+  parameters: [items : (List Studio.Schema::Value)],
+  result: Studio.Schema::Value,
   body: (match items
-    | List.nil => (ctor LexLeanStd.Json::Json.JNil)
-    | List.cons head rest => (ctor LexLeanStd.Json::Json.JItem head (jsonItems rest))),
+    | List.nil => (ctor Studio.Schema::Value.VNil)
+    | List.cons head rest => (ctor Studio.Schema::Value.VItem head (jsonItems rest))),
   recursive_argument: items,
   executable: true
 }
@@ -507,10 +505,10 @@ definition{
 
 definition{
   name: appendItem,
-  parameters: [items : (List LexLeanStd.Json::Json), item : LexLeanStd.Json::Json],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [items : (List Studio.Schema::Value), item : Studio.Schema::Value],
+  result: (List Studio.Schema::Value),
   body: (match items
-    | List.nil => (cons item (nil LexLeanStd.Json::Json))
+    | List.nil => (cons item (nil Studio.Schema::Value))
     | List.cons head rest => (cons head (appendItem rest item))),
   recursive_argument: items,
   executable: true
@@ -518,22 +516,22 @@ definition{
 
 definition{
   name: dropKeyed,
-  parameters: [items : (List LexLeanStd.Json::Json), key : Bytes, value : Bytes],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [items : (List Studio.Schema::Value), key : Bytes, value : Bytes],
+  result: (List Studio.Schema::Value),
   body: (match items
-    | List.nil => (nil LexLeanStd.Json::Json)
-    | List.cons head rest => (if (Studio.Doc::same (Studio.Doc::str head key) value) then (dropKeyed rest key value) else (cons head (dropKeyed rest key value)))),
+    | List.nil => (nil Studio.Schema::Value)
+    | List.cons head rest => (if (Studio.Doc::same (Studio.Schema::str head key) value) then (dropKeyed rest key value) else (cons head (dropKeyed rest key value)))),
   recursive_argument: items,
   executable: true
 }
 
 definition{
   name: replaceItem,
-  parameters: [items : (List LexLeanStd.Json::Json), key : Bytes, value : Bytes, item : LexLeanStd.Json::Json],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [items : (List Studio.Schema::Value), key : Bytes, value : Bytes, item : Studio.Schema::Value],
+  result: (List Studio.Schema::Value),
   body: (match items
-    | List.nil => (cons item (nil LexLeanStd.Json::Json))
-    | List.cons head rest => (if (Studio.Doc::same (Studio.Doc::str head key) value) then (cons item (dropKeyed rest key value)) else (cons head (replaceItem rest key value item)))),
+    | List.nil => (cons item (nil Studio.Schema::Value))
+    | List.cons head rest => (if (Studio.Doc::same (Studio.Schema::str head key) value) then (cons item (dropKeyed rest key value)) else (cons head (replaceItem rest key value item)))),
   recursive_argument: items,
   executable: true
 }
@@ -544,7 +542,7 @@ definition{
   name: lockWith,
   parameters: [seen : Seen, names : (List Bytes)],
   result: (Bytes * Bytes),
-  body: ((Studio.Doc::lit "model/register-lock.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonStrings (LexLeanStd.Order::sortedSet (Studio.Check::concat names (Studio.Doc::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))))))))),
+  body: ((Studio.Doc::lit "model/register-lock.json"), (Studio.Schema::writeFile (ctor Studio.Schema::Value.VArr (jsonStrings (LexLeanStd.Order::sortedSet (Studio.Check::concat names (Studio.Schema::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -777,21 +775,21 @@ definition{
 
 definition{
   name: sourceField,
-  parameters: [source : (Option LexLeanStd.Json::Json), key : Bytes],
+  parameters: [source : (Option Studio.Schema::Value), key : Bytes],
   result: Bytes,
   body: (match source
     | Option.none => 0x
-    | Option.some found => (Studio.Doc::str found key)),
+    | Option.some found => (Studio.Schema::str found key)),
   executable: true
 }
 
 definition{
   name: authorityRow,
-  parameters: [binding : LexLeanStd.Json::Json, artifact : (Option (Bytes * Bytes))],
+  parameters: [binding : Studio.Schema::Value, artifact : (Option (Bytes * Bytes))],
   result: Bytes,
-  body: (let source : (Option LexLeanStd.Json::Json) := (Studio.Doc::field binding (Studio.Doc::lit "source")); (Studio.Doc::cat (cons (Studio.Doc::lit "[[authority]]\n") (cons (tomlLine "id" (Studio.Doc::str binding (Studio.Doc::lit "id"))) (cons (tomlLine "name" (Studio.Doc::str binding (Studio.Doc::lit "name"))) (cons (tomlLine "issuer" (Studio.Doc::str binding (Studio.Doc::lit "issuer"))) (cons (tomlLine "edition" (Studio.Doc::str binding (Studio.Doc::lit "edition"))) (cons (tomlLine "canonical_id" (Studio.Doc::str binding (Studio.Doc::lit "canonical_id"))) (cons (tomlLine "source_role" (Studio.Doc::str binding (Studio.Doc::lit "source_role"))) (cons (tomlLine "retrieval_date" (Studio.Doc::str binding (Studio.Doc::lit "retrieval_date"))) (cons (tomlLine "url" (sourceField source (Studio.Doc::lit "url"))) (cons (tomlLine "media_type" (sourceField source (Studio.Doc::lit "media_type"))) (cons (tomlLine "license" (sourceField source (Studio.Doc::lit "license"))) (cons (tomlLine "redistribution" (sourceField source (Studio.Doc::lit "redistribution"))) (cons (tomlLine "statement" (Studio.Doc::str binding (Studio.Doc::lit "statement"))) (cons (match artifact
+  body: (let source : (Option Studio.Schema::Value) := (Studio.Schema::field binding (Studio.Doc::lit "source")); (Studio.Doc::cat (cons (Studio.Doc::lit "[[authority]]\n") (cons (tomlLine "id" (Studio.Schema::str binding (Studio.Doc::lit "id"))) (cons (tomlLine "name" (Studio.Schema::str binding (Studio.Doc::lit "name"))) (cons (tomlLine "issuer" (Studio.Schema::str binding (Studio.Doc::lit "issuer"))) (cons (tomlLine "edition" (Studio.Schema::str binding (Studio.Doc::lit "edition"))) (cons (tomlLine "canonical_id" (Studio.Schema::str binding (Studio.Doc::lit "canonical_id"))) (cons (tomlLine "source_role" (Studio.Schema::str binding (Studio.Doc::lit "source_role"))) (cons (tomlLine "retrieval_date" (Studio.Schema::str binding (Studio.Doc::lit "retrieval_date"))) (cons (tomlLine "url" (sourceField source (Studio.Doc::lit "url"))) (cons (tomlLine "media_type" (sourceField source (Studio.Doc::lit "media_type"))) (cons (tomlLine "license" (sourceField source (Studio.Doc::lit "license"))) (cons (tomlLine "redistribution" (sourceField source (Studio.Doc::lit "redistribution"))) (cons (tomlLine "statement" (Studio.Schema::str binding (Studio.Doc::lit "statement"))) (cons (match artifact
         | Option.none => (Studio.Doc::cat (cons (tomlLine "checksum" (Studio.Doc::lit "none")) (cons (tomlLine "checksum_reason" (Studio.Doc::lit "The authority is citation-only, so no artifact is committed.")) (nil Bytes))))
-        | Option.some pinned => (Studio.Doc::cat (cons (tomlLine "artifact" (first pinned)) (cons (tomlLine "checksum" (second pinned)) (nil Bytes))))) (cons (Studio.Doc::cat (cons (Studio.Doc::lit "realized_by = ") (cons (tomlList (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field binding (Studio.Doc::lit "realized_by"))))) (cons (Studio.Doc::lit "\n") (nil Bytes))))) (nil Bytes)))))))))))))))))),
+        | Option.some pinned => (Studio.Doc::cat (cons (tomlLine "artifact" (first pinned)) (cons (tomlLine "checksum" (second pinned)) (nil Bytes))))) (cons (Studio.Doc::cat (cons (Studio.Doc::lit "realized_by = ") (cons (tomlList (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field binding (Studio.Doc::lit "realized_by"))))) (cons (Studio.Doc::lit "\n") (nil Bytes))))) (nil Bytes)))))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -808,7 +806,7 @@ definition{
 
 definition{
   name: finishAuthority,
-  parameters: [seen : Seen, binding : LexLeanStd.Json::Json, entry : Bytes, saved : (Bytes * Bytes), artifact : (Option (Bytes * Bytes))],
+  parameters: [seen : Seen, binding : Studio.Schema::Value, entry : Bytes, saved : (Bytes * Bytes), artifact : (Option (Bytes * Bytes))],
   result: Plan,
   body: (ctor Plan.done (cons saved (cons ((Studio.Doc::lit "model/authorities.toml"), (upsertAuthority (contents seen (Studio.Doc::lit "model/authorities.toml")) entry (authorityRow binding artifact))) (cons (lockWith seen (cons entry (nil Bytes))) (nil (Bytes * Bytes))))) (Studio.Doc::cat (cons (Studio.Doc::lit "ingested authority ") (cons entry (cons (Studio.Doc::lit "\n") (nil Bytes)))))),
   axioms: [Quot.sound, propext],
@@ -823,11 +821,11 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (jsonOf seen path)
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the binding is not JSON\n"))
-      | Option.some binding => (if (negate (Studio.Doc::same (Studio.Doc::str binding (Studio.Doc::lit "schema")) (bindingSchema))) then (ctor Plan.refuse (Studio.Doc::lit "the binding is not prismpm/authority-binding/1\n")) else (let entry : Bytes := (Studio.Doc::str binding (Studio.Doc::lit "id")); (let source : LexLeanStd.Json::Json := (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
-          | Option.none => (ctor LexLeanStd.Json::Json.JNil)
-          | Option.some found => found); (let pinned : (Option Bytes) := (Studio.Doc::strOf (Studio.Doc::field source (Studio.Doc::lit "sha256"))); (let directory : Bytes := (join (Studio.Doc::lit "authorities") entry); (let saved : (Bytes * Bytes) := ((join directory (Studio.Doc::lit "binding.json")), (contents seen path)); (match pinned
+      | Option.some binding => (if (negate (Studio.Doc::same (Studio.Schema::str binding (Studio.Doc::lit "schema")) (bindingSchema))) then (ctor Plan.refuse (Studio.Doc::lit "the binding is not prismpm/authority-binding/1\n")) else (let entry : Bytes := (Studio.Schema::str binding (Studio.Doc::lit "id")); (let source : Studio.Schema::Value := (match (Studio.Schema::field binding (Studio.Doc::lit "source"))
+          | Option.none => (ctor Studio.Schema::Value.VNil)
+          | Option.some found => found); (let pinned : (Option Bytes) := (Studio.Schema::strOf (Studio.Schema::field source (Studio.Doc::lit "sha256"))); (let directory : Bytes := (join (Studio.Doc::lit "authorities") entry); (let saved : (Bytes * Bytes) := ((join directory (Studio.Doc::lit "binding.json")), (contents seen path)); (match pinned
           | Option.none => (finishAuthority seen binding entry saved (ctor Option.none [(Bytes * Bytes)]))
-          | Option.some digest => (if (negate (Studio.Doc::same (Studio.Doc::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable"))) then (finishAuthority seen binding entry saved (ctor Option.none [(Bytes * Bytes)])) else (let artifact : Bytes := (join directory (basename (Studio.Doc::str source (Studio.Doc::lit "url")))); (if (negate (Studio.Doc::memberBytes artifact (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "curl") (cons (Studio.Doc::lit "-fsSL") (cons (Studio.Doc::lit "--create-dirs") (cons (Studio.Doc::lit "-o") (cons artifact (cons (Studio.Doc::str source (Studio.Doc::lit "url")) (nil Bytes)))))) artifact) else (match (missing seen (cons artifact (nil Bytes)))
+          | Option.some digest => (if (negate (Studio.Doc::same (Studio.Schema::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable"))) then (finishAuthority seen binding entry saved (ctor Option.none [(Bytes * Bytes)])) else (let artifact : Bytes := (join directory (basename (Studio.Schema::str source (Studio.Doc::lit "url")))); (if (negate (Studio.Doc::memberBytes artifact (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "curl") (cons (Studio.Doc::lit "-fsSL") (cons (Studio.Doc::lit "--create-dirs") (cons (Studio.Doc::lit "-o") (cons artifact (cons (Studio.Schema::str source (Studio.Doc::lit "url")) (nil Bytes)))))) artifact) else (match (missing seen (cons artifact (nil Bytes)))
             | List.cons head rest => (ctor Plan.reads (cons head rest))
             | List.nil => (if (Studio.Doc::same (LexLeanStd.Sha256::sha256Hex (contents seen artifact)) digest) then (finishAuthority seen binding entry saved (ctor Option.some [(Bytes * Bytes)] (artifact, digest))) else (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "checksum mismatch: ") (cons artifact (cons (Studio.Doc::lit " is not the sha256 the binding pins\n") (nil Bytes)))))))))))))))))))),
   axioms: [Quot.sound, propext],
@@ -927,20 +925,20 @@ definition{
 definition{
   name: citationJson,
   parameters: [args : (List Bytes)],
-  result: (Option LexLeanStd.Json::Json),
+  result: (Option Studio.Schema::Value),
   body: (match args
-    | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+    | List.nil => (ctor Option.none [Studio.Schema::Value])
     | List.cons kind rest => (if (Studio.Doc::same kind (Studio.Doc::lit "req")) then (match rest
-      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
-      | List.cons requirement more => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "req") (ctor LexLeanStd.Json::Json.JStr requirement) (ctor LexLeanStd.Json::Json.JNil)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "std")) then (match rest
-      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
-      | List.cons authority more => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "std") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "authority") (ctor LexLeanStd.Json::Json.JStr authority) (match more
-        | List.nil => (ctor LexLeanStd.Json::Json.JNil)
-        | List.cons row tail => (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "row") (ctor LexLeanStd.Json::Json.JStr row) (ctor LexLeanStd.Json::Json.JNil))))) (ctor LexLeanStd.Json::Json.JNil)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "der")) then (match rest
-      | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
+      | List.nil => (ctor Option.none [Studio.Schema::Value])
+      | List.cons requirement more => (ctor Option.some [Studio.Schema::Value] (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "req") (ctor Studio.Schema::Value.VStr requirement) (ctor Studio.Schema::Value.VNil)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "std")) then (match rest
+      | List.nil => (ctor Option.none [Studio.Schema::Value])
+      | List.cons authority more => (ctor Option.some [Studio.Schema::Value] (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "std") (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "authority") (ctor Studio.Schema::Value.VStr authority) (match more
+        | List.nil => (ctor Studio.Schema::Value.VNil)
+        | List.cons row tail => (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "row") (ctor Studio.Schema::Value.VStr row) (ctor Studio.Schema::Value.VNil))))) (ctor Studio.Schema::Value.VNil)))) else (if (Studio.Doc::same kind (Studio.Doc::lit "der")) then (match rest
+      | List.nil => (ctor Option.none [Studio.Schema::Value])
       | List.cons rule more => (match more
-        | List.nil => (ctor Option.none [LexLeanStd.Json::Json])
-        | List.cons check inputs => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "der") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "check") (ctor LexLeanStd.Json::Json.JStr check) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "inputs") (ctor LexLeanStd.Json::Json.JArr (jsonStrings inputs)) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "rule") (ctor LexLeanStd.Json::Json.JStr rule) (ctor LexLeanStd.Json::Json.JNil))))) (ctor LexLeanStd.Json::Json.JNil))))) else (ctor Option.none [LexLeanStd.Json::Json]))))),
+        | List.nil => (ctor Option.none [Studio.Schema::Value])
+        | List.cons check inputs => (ctor Option.some [Studio.Schema::Value] (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "der") (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "check") (ctor Studio.Schema::Value.VStr check) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "inputs") (ctor Studio.Schema::Value.VArr (jsonStrings inputs)) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "rule") (ctor Studio.Schema::Value.VStr rule) (ctor Studio.Schema::Value.VNil))))) (ctor Studio.Schema::Value.VNil))))) else (ctor Option.none [Studio.Schema::Value]))))),
   executable: true
 }
 
@@ -992,9 +990,9 @@ definition{
 
 definition{
   name: admitTranslated,
-  parameters: [seen : Seen, name : Bytes, cited : LexLeanStd.Json::Json, text : Bytes, role : Bytes, extra : (List (Bytes * Bytes))],
+  parameters: [seen : Seen, name : Bytes, cited : Studio.Schema::Value, text : Bytes, role : Bytes, extra : (List (Bytes * Bytes))],
   result: Plan,
-  body: (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (ctor Plan.done (prependWrites extra (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") module (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (Studio.Doc::lit "path") source (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "path") (ctor LexLeanStd.Json::Json.JStr source) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "role") (ctor LexLeanStd.Json::Json.JStr role) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "stratum") (ctor LexLeanStd.Json::Json.JInt false 0) (ctor LexLeanStd.Json::Json.JNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) (Studio.Doc::lit "\n") : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons (Studio.Doc::lit "\n") (nil Bytes)))))))),
+  body: (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") (Studio.Schema::pascal name) : Bytes); (let source : Bytes := (Studio.Doc::cat (cons (Studio.Doc::lit "app/src/Catalog/") (cons (Studio.Schema::pascal name) (cons (Studio.Doc::lit ".lex.tex") (nil Bytes))))); (ctor Plan.done (prependWrites extra (cons (source, text) (cons ((Studio.Doc::lit "model/admissions.json"), (Studio.Schema::writeFile (ctor Studio.Schema::Value.VArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") module (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "construct") (ctor Studio.Schema::Value.VStr module) cited))))))) (cons ((Studio.Doc::lit "model/strata.json"), (Studio.Schema::writeFile (ctor Studio.Schema::Value.VArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/strata.json")) (Studio.Doc::lit "path") source (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "path") (ctor Studio.Schema::Value.VStr source) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "role") (ctor Studio.Schema::Value.VStr role) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "stratum") (ctor Studio.Schema::Value.VInt false 0) (ctor Studio.Schema::Value.VNil)))))))))) (cons ((Studio.Doc::lit "app/lexlean.toml"), (prim append (withEntrypoint (contents seen (Studio.Doc::lit "app/lexlean.toml")) (LexLeanStd.Text::sliceOr source 4 (prim subtract (prim length source : Nat) 4 : Nat))) (Studio.Doc::lit "\n") : Bytes)) (cons (lockWith seen (cons module (nil Bytes))) (nil (Bytes * Bytes)))))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted encoding ") (cons module (cons (Studio.Doc::lit "\n") (nil Bytes)))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1020,9 +1018,9 @@ definition{
   result: Plan,
   body: (match (missing seen (cons (Studio.Doc::lit "model/owner-decisions.json") (nil Bytes)))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (match (firstDeferred (citedRows (cons (ctor LexLeanStd.Json::Json.JObj (match (citationJson citation)
-      | Option.none => (ctor LexLeanStd.Json::Json.JNil)
-      | Option.some cited => cited)) (nil LexLeanStd.Json::Json))) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
+    | List.nil => (match (firstDeferred (citedRows (cons (ctor Studio.Schema::Value.VObj (match (citationJson citation)
+      | Option.none => (ctor Studio.Schema::Value.VNil)
+      | Option.some cited => cited)) (nil Studio.Schema::Value))) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
       | Option.some row => (deferredRefusal row)
       | Option.none => (encodingPlan seen schemaText schema name citation reads))),
   axioms: [Quot.sound, propext],
@@ -1109,9 +1107,9 @@ definition{
   result: Plan,
   body: (match (citationJson citation)
     | Option.none => (ctor Plan.refuse (Studio.Doc::lit "a citation is required: req ID | std AUTHORITY [ROW] | der RULE CHECK INPUT...\n"))
-    | Option.some cited => (match (firstDeferred (citedRows (cons (ctor LexLeanStd.Json::Json.JObj cited) (nil LexLeanStd.Json::Json))) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
+    | Option.some cited => (match (firstDeferred (citedRows (cons (ctor Studio.Schema::Value.VObj cited) (nil Studio.Schema::Value))) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
       | Option.some row => (deferredRefusal row)
-      | Option.none => (admitTranslated seen name (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "translation") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "command") (ctor LexLeanStd.Json::Json.JArr (jsonStrings command)) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "output_sha256") (ctor LexLeanStd.Json::Json.JStr (LexLeanStd.Sha256::sha256Hex output)) (ctor LexLeanStd.Json::Json.JNil)))) cited) (moduleText name (declarationsOf output)) (Studio.Doc::lit "Encoding entered through admit-translated from the verdant_readers command recorded in its admission.") (nil (Bytes * Bytes))))),
+      | Option.none => (admitTranslated seen name (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "translation") (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "command") (ctor Studio.Schema::Value.VArr (jsonStrings command)) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "output_sha256") (ctor Studio.Schema::Value.VStr (LexLeanStd.Sha256::sha256Hex output)) (ctor Studio.Schema::Value.VNil)))) cited) (moduleText name (declarationsOf output)) (Studio.Doc::lit "Encoding entered through admit-translated from the verdant_readers command recorded in its admission.") (nil (Bytes * Bytes))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1251,7 +1249,7 @@ definition{
       | Option.some guard => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: a negated guard in a generated workflow is one command, because `if !` negates only the first command of a chain: ") (cons guard (cons (Studio.Doc::lit "\n") (nil Bytes))))))
       | Option.none => (match (firstClassical seen (walked (project seen listed) true))
       | Option.some path => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: classical choice is an assumption, and ") (cons path (cons (Studio.Doc::lit " depends on it\n") (nil Bytes))))))
-      | Option.none => (let verdict : (Bool * Bytes) := (Studio.Check::verdict (record Studio.Check::Inputs {names := (record Studio.Check::Names {authorities := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))), rows := (catalogRows seen), requirements := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")), ids := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/ids.toml"))), constructs := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct"))}), admissions := (arrayOf seen (Studio.Doc::lit "model/admissions.json")), strata := (arrayOf seen (Studio.Doc::lit "model/strata.json")), locked := (Studio.Doc::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))), modules := (walked (project seen listed) true)})); (if (first verdict) then (ctor Plan.done (nil (Bytes * Bytes)) (second verdict)) else (ctor Plan.refuse (second verdict))))))))))),
+      | Option.none => (let verdict : (Bool * Bytes) := (Studio.Check::verdict (record Studio.Check::Inputs {names := (record Studio.Check::Names {authorities := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))), rows := (catalogRows seen), requirements := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")), ids := (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/ids.toml"))), constructs := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct"))}), admissions := (arrayOf seen (Studio.Doc::lit "model/admissions.json")), strata := (arrayOf seen (Studio.Doc::lit "model/strata.json")), locked := (Studio.Schema::strings (arrayOf seen (Studio.Doc::lit "model/register-lock.json"))), modules := (walked (project seen listed) true)})); (if (first verdict) then (ctor Plan.done (nil (Bytes * Bytes)) (second verdict)) else (ctor Plan.refuse (second verdict))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1312,9 +1310,9 @@ definition{
   result: (Option (List (Bytes * Bytes))),
   body: (match lines
     | List.nil => (ctor Option.some [(List (Bytes * Bytes))] (nil (Bytes * Bytes)))
-    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stageLines rest) else (match (Studio.Schema::readJson line)
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stageLines rest) else (match (Studio.Schema::readAny line)
       | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
-      | Option.some binding => (let entry : Bytes := (Studio.Doc::str binding (Studio.Doc::lit "id")); (if (VerdantStudio.Studio.Stage::bound (Studio.Doc::str binding (Studio.Doc::lit "schema")) entry) then (match (stageLines rest)
+      | Option.some binding => (let entry : Bytes := (Studio.Schema::str binding (Studio.Doc::lit "id")); (if (VerdantStudio.Studio.Stage::bound (Studio.Schema::str binding (Studio.Doc::lit "schema")) entry) then (match (stageLines rest)
         | Option.none => (ctor Option.none [(List (Bytes * Bytes))])
         | Option.some staged => (ctor Option.some [(List (Bytes * Bytes))] (cons ((stagedPath entry), (prim append line (Studio.Doc::lit "\n") : Bytes)) staged))) else (ctor Option.none [(List (Bytes * Bytes))]))))))),
   recursive_argument: lines,
@@ -1339,11 +1337,11 @@ definition{
   result: (Option Bytes),
   body: (match lines
     | List.nil => (ctor Option.none [Bytes])
-    | List.cons head rest => (match (Studio.Schema::readJson (LexLeanStd.Text::trim head))
+    | List.cons head rest => (match (Studio.Schema::readAny (LexLeanStd.Text::trim head))
       | Option.none => (unnamedArtifact rest)
-      | Option.some binding => (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
+      | Option.some binding => (match (Studio.Schema::field binding (Studio.Doc::lit "source"))
         | Option.none => (unnamedArtifact rest)
-        | Option.some source => (if (VerdantStudio.Studio.Stage::unnamed (Studio.Doc::str source (Studio.Doc::lit "redistribution")) (Studio.Doc::str source (Studio.Doc::lit "url"))) then (ctor Option.some [Bytes] (Studio.Doc::str binding (Studio.Doc::lit "id"))) else (unnamedArtifact rest))))),
+        | Option.some source => (if (VerdantStudio.Studio.Stage::unnamed (Studio.Schema::str source (Studio.Doc::lit "redistribution")) (Studio.Schema::str source (Studio.Doc::lit "url"))) then (ctor Option.some [Bytes] (Studio.Schema::str binding (Studio.Doc::lit "id"))) else (unnamedArtifact rest))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1452,9 +1450,9 @@ definition{
 
 definition{
   name: recordedChecksum,
-  parameters: [binding : LexLeanStd.Json::Json, digest : Bytes],
+  parameters: [binding : Studio.Schema::Value, digest : Bytes],
   result: Bytes,
-  body: (if (Studio.Doc::same (sourceField (Studio.Doc::field binding (Studio.Doc::lit "source")) (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable")) then digest else (Studio.Doc::lit "none")),
+  body: (if (Studio.Doc::same (sourceField (Studio.Schema::field binding (Studio.Doc::lit "source")) (Studio.Doc::lit "redistribution")) (Studio.Doc::lit "redistributable")) then digest else (Studio.Doc::lit "none")),
   executable: true
 }
 
@@ -1464,10 +1462,10 @@ definition{
   result: Bool,
   body: (match (jsonOf seen path)
     | Option.none => false
-    | Option.some binding => (let block : (List Bytes) := (blockFor blocks (Studio.Doc::str binding (Studio.Doc::lit "id"))); (match block
+    | Option.some binding => (let block : (List Bytes) := (blockFor blocks (Studio.Schema::str binding (Studio.Doc::lit "id"))); (match block
       | List.nil => true
-      | List.cons top others => (match (Studio.Doc::strOf (Studio.Doc::field (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
-          | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+      | List.cons top others => (match (Studio.Schema::strOf (Studio.Schema::field (match (Studio.Schema::field binding (Studio.Doc::lit "source"))
+          | Option.none => (ctor Studio.Schema::Value.VNil)
           | Option.some found => found) (Studio.Doc::lit "sha256")))
         | Option.none => false
         | Option.some digest => (negate (Studio.Doc::memberBytes (Studio.Doc::cat (cons (Studio.Doc::lit "checksum = ") (cons (tomlString (recordedChecksum binding digest)) (nil Bytes)))) block)))))),
@@ -1565,17 +1563,17 @@ definition{
 
 definition{
   name: filled,
-  parameters: [entry : LexLeanStd.Json::Json, key : Bytes],
+  parameters: [entry : Studio.Schema::Value, key : Bytes],
   result: Bool,
-  body: (negate ((prim length (Studio.Doc::str entry key) : Nat) =? 0)),
+  body: (negate ((prim length (Studio.Schema::str entry key) : Nat) =? 0)),
   executable: true
 }
 
 definition{
   name: hasField,
-  parameters: [entry : LexLeanStd.Json::Json, key : Bytes],
+  parameters: [entry : Studio.Schema::Value, key : Bytes],
   result: Bool,
-  body: (match (Studio.Doc::field entry key)
+  body: (match (Studio.Schema::field entry key)
     | Option.none => false
     | Option.some found => true),
   executable: true
@@ -1583,7 +1581,7 @@ definition{
 
 definition{
   name: lineKind,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bytes,
   body: (if (filled entry (Studio.Doc::lit "construct")) then (Studio.Doc::lit "admission") else (if ((filled entry (Studio.Doc::lit "id")) && ((filled entry (Studio.Doc::lit "statement")) && ((filled entry (Studio.Doc::lit "stakeholder")) && (hasField entry (Studio.Doc::lit "evidence"))))) then (Studio.Doc::lit "requirement") else 0x)),
   executable: true
@@ -1592,14 +1590,14 @@ definition{
 definition{
   name: admitLines,
   parameters: [lines : (List Bytes), kind : Bytes],
-  result: (Option (List LexLeanStd.Json::Json)),
+  result: (Option (List Studio.Schema::Value)),
   body: (match lines
-    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
-    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (admitLines rest kind) else (match (Studio.Schema::readJson line)
-      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
-      | Option.some entry => (let found : Bytes := (lineKind entry); (if ((prim length found : Nat) =? 0) then (ctor Option.none [(List LexLeanStd.Json::Json)]) else (match (admitLines rest kind)
-        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
-        | Option.some admitted => (if (Studio.Doc::same found kind) then (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry admitted)) else (ctor Option.some [(List LexLeanStd.Json::Json)] admitted))))))))),
+    | List.nil => (ctor Option.some [(List Studio.Schema::Value)] (nil Studio.Schema::Value))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (admitLines rest kind) else (match (Studio.Schema::readAny line)
+      | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
+      | Option.some entry => (let found : Bytes := (lineKind entry); (if ((prim length found : Nat) =? 0) then (ctor Option.none [(List Studio.Schema::Value)]) else (match (admitLines rest kind)
+        | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
+        | Option.some admitted => (if (Studio.Doc::same found kind) then (ctor Option.some [(List Studio.Schema::Value)] (cons entry admitted)) else (ctor Option.some [(List Studio.Schema::Value)] admitted))))))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1607,8 +1605,8 @@ definition{
 
 definition{
   name: appendJson,
-  parameters: [left : (List LexLeanStd.Json::Json), right : (List LexLeanStd.Json::Json)],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [left : (List Studio.Schema::Value), right : (List Studio.Schema::Value)],
+  result: (List Studio.Schema::Value),
   body: (match left
     | List.nil => right
     | List.cons head rest => (cons head (appendJson rest right))),
@@ -1618,9 +1616,9 @@ definition{
 
 definition{
   name: registerFile,
-  parameters: [path : Bytes, items : (List LexLeanStd.Json::Json)],
+  parameters: [path : Bytes, items : (List Studio.Schema::Value)],
   result: (Bytes * Bytes),
-  body: (path, (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems items)))),
+  body: (path, (Studio.Schema::writeFile (ctor Studio.Schema::Value.VArr (jsonItems items)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1643,7 +1641,7 @@ definition{
       | Option.none => (ctor Plan.refuse (admitRefusal))
       | Option.some requirements => (match (admitLines lines (Studio.Doc::lit "admission"))
         | Option.none => (ctor Plan.refuse (admitRefusal))
-        | Option.some admissions => (let heldRequirements : (List LexLeanStd.Json::Json) := (arrayOf seen (Studio.Doc::lit "model/requirements.json")); (let heldAdmissions : (List LexLeanStd.Json::Json) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let names : (List Bytes) := (Studio.Check::concat (Studio.Check::idsOf requirements (Studio.Doc::lit "id")) (Studio.Check::idsOf admissions (Studio.Doc::lit "construct"))); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::concat (Studio.Check::idsOf heldRequirements (Studio.Doc::lit "id")) (Studio.Check::idsOf heldAdmissions (Studio.Doc::lit "construct")))); (match (firstDeferred (citedRows admissions) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
+        | Option.some admissions => (let heldRequirements : (List Studio.Schema::Value) := (arrayOf seen (Studio.Doc::lit "model/requirements.json")); (let heldAdmissions : (List Studio.Schema::Value) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let names : (List Bytes) := (Studio.Check::concat (Studio.Check::idsOf requirements (Studio.Doc::lit "id")) (Studio.Check::idsOf admissions (Studio.Doc::lit "construct"))); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::concat (Studio.Check::idsOf heldRequirements (Studio.Doc::lit "id")) (Studio.Check::idsOf heldAdmissions (Studio.Doc::lit "construct")))); (match (firstDeferred (citedRows admissions) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json"))))
           | Option.some row => (deferredRefusal row)
           | Option.none => (if ((prim length names : Nat) =? 0) then (ctor Plan.refuse (admitRefusal)) else (if (negate ((prim length (LexLeanStd.Order::sortedSet (Studio.Check::concat names known)) : Nat) =? (prim length (Studio.Check::concat names known) : Nat))) then (ctor Plan.refuse (Studio.Doc::lit "a name is repeated, or is already in the model\n")) else (ctor Plan.done (cons (registerFile (Studio.Doc::lit "model/requirements.json") (appendJson heldRequirements requirements)) (cons (registerFile (Studio.Doc::lit "model/admissions.json") (appendJson heldAdmissions admissions)) (cons (lockWith seen names) (nil (Bytes * Bytes))))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted ") (cons (LexLeanStd.Text::joinWith names (Studio.Doc::lit " ")) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))))))))),
   axioms: [Quot.sound, propext],
@@ -1652,21 +1650,21 @@ definition{
 
 definition{
   name: nestedItems,
-  parameters: [entry : LexLeanStd.Json::Json, outer : Bytes, inner : Bytes],
-  result: (List LexLeanStd.Json::Json),
-  body: (match (Studio.Doc::field entry outer)
-    | Option.none => (nil LexLeanStd.Json::Json)
-    | Option.some found => (Studio.Doc::itemsOf (Studio.Doc::field found inner))),
+  parameters: [entry : Studio.Schema::Value, outer : Bytes, inner : Bytes],
+  result: (List Studio.Schema::Value),
+  body: (match (Studio.Schema::field entry outer)
+    | Option.none => (nil Studio.Schema::Value)
+    | Option.some found => (Studio.Schema::itemsOf (Studio.Schema::field found inner))),
   executable: true
 }
 
 definition{
   name: requiresStudio,
-  parameters: [rules : (List LexLeanStd.Json::Json)],
+  parameters: [rules : (List Studio.Schema::Value)],
   result: Bool,
   body: (match rules
     | List.nil => false
-    | List.cons head rest => (((Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "type")) (Studio.Doc::lit "required_status_checks")) && (Studio.Doc::memberBytes (Studio.Doc::lit "studio") (Studio.Check::idsOf (nestedItems head (Studio.Doc::lit "parameters") (Studio.Doc::lit "required_status_checks")) (Studio.Doc::lit "context")))) || (requiresStudio rest))),
+    | List.cons head rest => (((Studio.Doc::same (Studio.Schema::str head (Studio.Doc::lit "type")) (Studio.Doc::lit "required_status_checks")) && (Studio.Doc::memberBytes (Studio.Doc::lit "studio") (Studio.Check::idsOf (nestedItems head (Studio.Doc::lit "parameters") (Studio.Doc::lit "required_status_checks")) (Studio.Doc::lit "context")))) || (requiresStudio rest))),
   recursive_argument: rules,
   executable: true
 }
@@ -1679,7 +1677,7 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (jsonOf seen path)
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "the branch rules are not JSON\n"))
-      | Option.some rules => (if (requiresStudio (Studio.Doc::itemsOf (ctor Option.some [LexLeanStd.Json::Json] rules))) then (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "merge\n")) else (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "wait\n"))))),
+      | Option.some rules => (if (requiresStudio (Studio.Schema::itemsOf (ctor Option.some [Studio.Schema::Value] rules))) then (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "merge\n")) else (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "wait\n"))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1699,34 +1697,34 @@ definition{
 
 definition{
   name: citationText,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bytes,
-  body: (if (filled entry (Studio.Doc::lit "req")) then (prim append (Studio.Doc::lit "req ") (Studio.Doc::str entry (Studio.Doc::lit "req")) : Bytes) else (match (Studio.Doc::field entry (Studio.Doc::lit "std"))
-    | Option.some cited => (Studio.Doc::cat (cons (Studio.Doc::lit "std ") (cons (Studio.Doc::str cited (Studio.Doc::lit "authority")) (cons (if (filled cited (Studio.Doc::lit "row")) then (prim append (Studio.Doc::lit " row ") (Studio.Doc::str cited (Studio.Doc::lit "row")) : Bytes) else 0x) (nil Bytes)))))
-    | Option.none => (match (Studio.Doc::field entry (Studio.Doc::lit "der"))
-      | Option.some derived => (Studio.Doc::cat (cons (Studio.Doc::lit "der ") (cons (Studio.Doc::str derived (Studio.Doc::lit "rule")) (cons (Studio.Doc::lit " from ") (cons (LexLeanStd.Text::joinWith (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field derived (Studio.Doc::lit "inputs")))) (Studio.Doc::lit ", ")) (nil Bytes))))))
+  body: (if (filled entry (Studio.Doc::lit "req")) then (prim append (Studio.Doc::lit "req ") (Studio.Schema::str entry (Studio.Doc::lit "req")) : Bytes) else (match (Studio.Schema::field entry (Studio.Doc::lit "std"))
+    | Option.some cited => (Studio.Doc::cat (cons (Studio.Doc::lit "std ") (cons (Studio.Schema::str cited (Studio.Doc::lit "authority")) (cons (if (filled cited (Studio.Doc::lit "row")) then (prim append (Studio.Doc::lit " row ") (Studio.Schema::str cited (Studio.Doc::lit "row")) : Bytes) else 0x) (nil Bytes)))))
+    | Option.none => (match (Studio.Schema::field entry (Studio.Doc::lit "der"))
+      | Option.some derived => (Studio.Doc::cat (cons (Studio.Doc::lit "der ") (cons (Studio.Schema::str derived (Studio.Doc::lit "rule")) (cons (Studio.Doc::lit " from ") (cons (LexLeanStd.Text::joinWith (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field derived (Studio.Doc::lit "inputs")))) (Studio.Doc::lit ", ")) (nil Bytes))))))
       | Option.none => 0x))),
   executable: true
 }
 
 definition{
   name: requirementView,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- **") (cons (Studio.Doc::str head (Studio.Doc::lit "id")) (cons (Studio.Doc::lit "** (") (cons (Studio.Doc::str head (Studio.Doc::lit "stakeholder")) (cons (Studio.Doc::lit "): ") (cons (Studio.Doc::str head (Studio.Doc::lit "statement")) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))) (requirementView rest))),
+    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- **") (cons (Studio.Schema::str head (Studio.Doc::lit "id")) (cons (Studio.Doc::lit "** (") (cons (Studio.Schema::str head (Studio.Doc::lit "stakeholder")) (cons (Studio.Doc::lit "): ") (cons (Studio.Schema::str head (Studio.Doc::lit "statement")) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))) (requirementView rest))),
   recursive_argument: items,
   executable: true
 }
 
 definition{
   name: admissionView,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- `") (cons (Studio.Doc::str head (Studio.Doc::lit "construct")) (cons (Studio.Doc::lit "`: ") (cons (citationText head) (cons (Studio.Doc::lit "\n") (nil Bytes))))))) (admissionView rest))),
+    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- `") (cons (Studio.Schema::str head (Studio.Doc::lit "construct")) (cons (Studio.Doc::lit "`: ") (cons (citationText head) (cons (Studio.Doc::lit "\n") (nil Bytes))))))) (admissionView rest))),
   recursive_argument: items,
   executable: true
 }
@@ -1769,11 +1767,11 @@ definition{
 
 definition{
   name: decisionView,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "\n## ") (cons (LexLeanStd.Text::joinWith (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field head (Studio.Doc::lit "requirements")))) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit " (") (cons (Studio.Doc::str head (Studio.Doc::lit "agent")) (cons (Studio.Doc::lit ", ") (cons (Studio.Doc::str head (Studio.Doc::lit "at")) (cons (Studio.Doc::lit ")\n\n") (cons (Studio.Doc::cat (quoted (LexLeanStd.Text::lines (Studio.Doc::str head (Studio.Doc::lit "quote"))))) (nil Bytes)))))))))) (decisionView rest))),
+    | List.cons head rest => (cons (Studio.Doc::cat (cons (Studio.Doc::lit "\n## ") (cons (LexLeanStd.Text::joinWith (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field head (Studio.Doc::lit "requirements")))) (Studio.Doc::lit ", ")) (cons (Studio.Doc::lit " (") (cons (Studio.Schema::str head (Studio.Doc::lit "agent")) (cons (Studio.Doc::lit ", ") (cons (Studio.Schema::str head (Studio.Doc::lit "at")) (cons (Studio.Doc::lit ")\n\n") (cons (Studio.Doc::cat (quoted (LexLeanStd.Text::lines (Studio.Schema::str head (Studio.Doc::lit "quote"))))) (nil Bytes)))))))))) (decisionView rest))),
   recursive_argument: items,
   executable: true
 }
@@ -1854,9 +1852,9 @@ definition{
 
 definition{
   name: nestedFilled,
-  parameters: [entry : LexLeanStd.Json::Json, outer : Bytes, inner : Bytes],
+  parameters: [entry : Studio.Schema::Value, outer : Bytes, inner : Bytes],
   result: Bool,
-  body: (match (Studio.Doc::field entry outer)
+  body: (match (Studio.Schema::field entry outer)
     | Option.none => false
     | Option.some found => (filled found inner)),
   executable: true
@@ -1864,31 +1862,31 @@ definition{
 
 definition{
   name: mappingLine,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bool,
-  body: ((filled entry (Studio.Doc::lit "subject")) && ((filled entry (Studio.Doc::lit "object")) && ((filled entry (Studio.Doc::lit "evidence")) && (Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "relation")) (skosRelations))))),
+  body: ((filled entry (Studio.Doc::lit "subject")) && ((filled entry (Studio.Doc::lit "object")) && ((filled entry (Studio.Doc::lit "evidence")) && (Studio.Doc::memberBytes (Studio.Schema::str entry (Studio.Doc::lit "relation")) (skosRelations))))),
   executable: true
 }
 
 definition{
   name: matrixLine,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bool,
-  body: ((filled entry (Studio.Doc::lit "domain")) && ((filled entry (Studio.Doc::lit "row")) && ((Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "relation")) (provRelations)) && ((nestedFilled entry (Studio.Doc::lit "role") (Studio.Doc::lit "term")) && ((nestedFilled entry (Studio.Doc::lit "evidence") (Studio.Doc::lit "authority")) && ((nestedFilled entry (Studio.Doc::lit "evidence") (Studio.Doc::lit "quote")) && (nestedFilled entry (Studio.Doc::lit "origin") (Studio.Doc::lit "kind")))))))),
+  body: ((filled entry (Studio.Doc::lit "domain")) && ((filled entry (Studio.Doc::lit "row")) && ((Studio.Doc::memberBytes (Studio.Schema::str entry (Studio.Doc::lit "relation")) (provRelations)) && ((nestedFilled entry (Studio.Doc::lit "role") (Studio.Doc::lit "term")) && ((nestedFilled entry (Studio.Doc::lit "evidence") (Studio.Doc::lit "authority")) && ((nestedFilled entry (Studio.Doc::lit "evidence") (Studio.Doc::lit "quote")) && (nestedFilled entry (Studio.Doc::lit "origin") (Studio.Doc::lit "kind")))))))),
   executable: true
 }
 
 definition{
   name: stagedJson,
   parameters: [lines : (List Bytes), matrix : Bool],
-  result: (Option (List LexLeanStd.Json::Json)),
+  result: (Option (List Studio.Schema::Value)),
   body: (match lines
-    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
-    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stagedJson rest matrix) else (match (Studio.Schema::readJson line)
-      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+    | List.nil => (ctor Option.some [(List Studio.Schema::Value)] (nil Studio.Schema::Value))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (stagedJson rest matrix) else (match (Studio.Schema::readAny line)
+      | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
       | Option.some entry => (if (if matrix then (matrixLine entry) else (mappingLine entry)) then (match (stagedJson rest matrix)
-        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
-        | Option.some later => (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry later))) else (ctor Option.none [(List LexLeanStd.Json::Json)])))))),
+        | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
+        | Option.some later => (ctor Option.some [(List Studio.Schema::Value)] (cons entry later))) else (ctor Option.none [(List Studio.Schema::Value)])))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1910,9 +1908,9 @@ definition{
 definition{
   name: entriesOf,
   parameters: [seen : Seen, paths : (List Bytes)],
-  result: (List LexLeanStd.Json::Json),
+  result: (List Studio.Schema::Value),
   body: (match paths
-    | List.nil => (nil LexLeanStd.Json::Json)
+    | List.nil => (nil Studio.Schema::Value)
     | List.cons head rest => (match (stagedJson (LexLeanStd.Text::lines (contents seen head)) (LexLeanStd.Text::startsWith head (matrixDir)))
       | Option.none => (entriesOf seen rest)
       | Option.some entries => (appendJson entries (entriesOf seen rest)))),
@@ -1943,55 +1941,55 @@ definition{
 
 definition{
   name: endResolves,
-  parameters: [known : Known, entry : LexLeanStd.Json::Json, value : Bytes],
+  parameters: [known : Known, entry : Studio.Schema::Value, value : Bytes],
   result: Bool,
-  body: ((Studio.Doc::memberBytes value (project known rows)) || ((Studio.Doc::memberBytes value (project known authorities)) || ((Studio.Doc::memberBytes value (project known constructs)) || ((filled entry (Studio.Doc::lit "scheme")) && (Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "scheme")) (project known authorities)))))),
+  body: ((Studio.Doc::memberBytes value (project known rows)) || ((Studio.Doc::memberBytes value (project known authorities)) || ((Studio.Doc::memberBytes value (project known constructs)) || ((filled entry (Studio.Doc::lit "scheme")) && (Studio.Doc::memberBytes (Studio.Schema::str entry (Studio.Doc::lit "scheme")) (project known authorities)))))),
   executable: true
 }
 
 definition{
   name: mappingResolves,
-  parameters: [known : Known, entry : LexLeanStd.Json::Json],
+  parameters: [known : Known, entry : Studio.Schema::Value],
   result: Bool,
-  body: ((endResolves known entry (Studio.Doc::str entry (Studio.Doc::lit "subject"))) && (endResolves known entry (Studio.Doc::str entry (Studio.Doc::lit "object")))),
+  body: ((endResolves known entry (Studio.Schema::str entry (Studio.Doc::lit "subject"))) && (endResolves known entry (Studio.Schema::str entry (Studio.Doc::lit "object")))),
   executable: true
 }
 
 definition{
   name: edgeAuthority,
-  parameters: [entry : LexLeanStd.Json::Json],
+  parameters: [entry : Studio.Schema::Value],
   result: Bytes,
-  body: (match (Studio.Doc::field entry (Studio.Doc::lit "evidence"))
+  body: (match (Studio.Schema::field entry (Studio.Doc::lit "evidence"))
     | Option.none => 0x
-    | Option.some evidence => (Studio.Doc::str evidence (Studio.Doc::lit "authority"))),
+    | Option.some evidence => (Studio.Schema::str evidence (Studio.Doc::lit "authority"))),
   executable: true
 }
 
 definition{
   name: edgeResolves,
-  parameters: [known : Known, entry : LexLeanStd.Json::Json],
+  parameters: [known : Known, entry : Studio.Schema::Value],
   result: Bool,
-  body: ((Studio.Doc::memberBytes (Studio.Doc::str entry (Studio.Doc::lit "row")) (project known rows)) && (Studio.Doc::memberBytes (edgeAuthority entry) (project known authorities))),
+  body: ((Studio.Doc::memberBytes (Studio.Schema::str entry (Studio.Doc::lit "row")) (project known rows)) && (Studio.Doc::memberBytes (edgeAuthority entry) (project known authorities))),
   executable: true
 }
 
 definition{
   name: unresolvedWaits,
-  parameters: [known : Known, entries : (List LexLeanStd.Json::Json)],
+  parameters: [known : Known, entries : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match entries
     | List.nil => (nil Bytes)
-    | List.cons head rest => (if (filled head (Studio.Doc::lit "subject")) then (if (mappingResolves known head) then (unresolvedWaits known rest) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "waiting mapping: ") (cons (Studio.Doc::str head (Studio.Doc::lit "subject")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "object")) (cons (Studio.Doc::lit " has an end that is not in the model yet\n") (nil Bytes))))))))) (unresolvedWaits known rest))) else (if (edgeResolves known head) then (unresolvedWaits known rest) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "waiting matrix edge: row ") (cons (Studio.Doc::str head (Studio.Doc::lit "row")) (cons (Studio.Doc::lit " of ") (cons (edgeAuthority head) (cons (Studio.Doc::lit " is not in the model yet\n") (nil Bytes))))))) (unresolvedWaits known rest))))),
+    | List.cons head rest => (if (filled head (Studio.Doc::lit "subject")) then (if (mappingResolves known head) then (unresolvedWaits known rest) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "waiting mapping: ") (cons (Studio.Schema::str head (Studio.Doc::lit "subject")) (cons (Studio.Doc::lit " ") (cons (Studio.Schema::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " ") (cons (Studio.Schema::str head (Studio.Doc::lit "object")) (cons (Studio.Doc::lit " has an end that is not in the model yet\n") (nil Bytes))))))))) (unresolvedWaits known rest))) else (if (edgeResolves known head) then (unresolvedWaits known rest) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "waiting matrix edge: row ") (cons (Studio.Schema::str head (Studio.Doc::lit "row")) (cons (Studio.Doc::lit " of ") (cons (edgeAuthority head) (cons (Studio.Doc::lit " is not in the model yet\n") (nil Bytes))))))) (unresolvedWaits known rest))))),
   recursive_argument: entries,
   executable: true
 }
 
 definition{
   name: resolvedMappings,
-  parameters: [known : Known, entries : (List LexLeanStd.Json::Json)],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [known : Known, entries : (List Studio.Schema::Value)],
+  result: (List Studio.Schema::Value),
   body: (match entries
-    | List.nil => (nil LexLeanStd.Json::Json)
+    | List.nil => (nil Studio.Schema::Value)
     | List.cons head rest => (if ((filled head (Studio.Doc::lit "subject")) && (mappingResolves known head)) then (cons head (resolvedMappings known rest)) else (resolvedMappings known rest))),
   recursive_argument: entries,
   executable: true
@@ -1999,24 +1997,24 @@ definition{
 
 definition{
   name: citedPairs,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List (Bytes * Bytes)),
   body: (match items
     | List.nil => (nil (Bytes * Bytes))
-    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+    | List.cons head rest => (match (Studio.Schema::field head (Studio.Doc::lit "std"))
       | Option.none => (citedPairs rest)
-      | Option.some cited => (if (filled cited (Studio.Doc::lit "row")) then (cons ((Studio.Doc::str cited (Studio.Doc::lit "row")), (Studio.Doc::str cited (Studio.Doc::lit "authority"))) (citedPairs rest)) else (citedPairs rest)))),
+      | Option.some cited => (if (filled cited (Studio.Doc::lit "row")) then (cons ((Studio.Schema::str cited (Studio.Doc::lit "row")), (Studio.Schema::str cited (Studio.Doc::lit "authority"))) (citedPairs rest)) else (citedPairs rest)))),
   recursive_argument: items,
   executable: true
 }
 
 definition{
   name: stagedPairs,
-  parameters: [known : Known, mappings : (List LexLeanStd.Json::Json)],
+  parameters: [known : Known, mappings : (List Studio.Schema::Value)],
   result: (List (Bytes * Bytes)),
   body: (match mappings
     | List.nil => (nil (Bytes * Bytes))
-    | List.cons head rest => (let subject : Bytes := (Studio.Doc::str head (Studio.Doc::lit "subject")); (let object : Bytes := (Studio.Doc::str head (Studio.Doc::lit "object")); (if ((Studio.Doc::memberBytes subject (project known rows)) && (Studio.Doc::memberBytes object (project known authorities))) then (cons (subject, object) (stagedPairs known rest)) else (if ((Studio.Doc::memberBytes object (project known rows)) && (Studio.Doc::memberBytes subject (project known authorities))) then (cons (object, subject) (stagedPairs known rest)) else (stagedPairs known rest)))))),
+    | List.cons head rest => (let subject : Bytes := (Studio.Schema::str head (Studio.Doc::lit "subject")); (let object : Bytes := (Studio.Schema::str head (Studio.Doc::lit "object")); (if ((Studio.Doc::memberBytes subject (project known rows)) && (Studio.Doc::memberBytes object (project known authorities))) then (cons (subject, object) (stagedPairs known rest)) else (if ((Studio.Doc::memberBytes object (project known rows)) && (Studio.Doc::memberBytes subject (project known authorities))) then (cons (object, subject) (stagedPairs known rest)) else (stagedPairs known rest)))))),
   recursive_argument: mappings,
   executable: true
 }
@@ -2076,7 +2074,7 @@ definition{
 
 definition{
   name: derivedMappings,
-  parameters: [known : Known, admissions : (List LexLeanStd.Json::Json), mappings : (List LexLeanStd.Json::Json)],
+  parameters: [known : Known, admissions : (List Studio.Schema::Value), mappings : (List Studio.Schema::Value)],
   result: (List Derived),
   body: (let cited : (List (Bytes * Bytes)) := (citedPairs admissions); (let staged : (List (Bytes * Bytes)) := (stagedPairs known mappings); (deriveFrom cited (appendPairs cited staged) staged (nil (Bytes * Bytes))))),
   axioms: [propext],
@@ -2096,24 +2094,24 @@ definition{
 
 definition{
   name: mappingEdges,
-  parameters: [mappings : (List LexLeanStd.Json::Json)],
+  parameters: [mappings : (List Studio.Schema::Value)],
   result: (List (Bytes * Bytes)),
   body: (match mappings
     | List.nil => (nil (Bytes * Bytes))
-    | List.cons head rest => (cons ((Studio.Doc::str head (Studio.Doc::lit "subject")), (Studio.Doc::str head (Studio.Doc::lit "object"))) (mappingEdges rest))),
+    | List.cons head rest => (cons ((Studio.Schema::str head (Studio.Doc::lit "subject")), (Studio.Schema::str head (Studio.Doc::lit "object"))) (mappingEdges rest))),
   recursive_argument: mappings,
   executable: true
 }
 
 definition{
   name: originsOf,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+    | List.cons head rest => (match (Studio.Schema::field head (Studio.Doc::lit "std"))
       | Option.none => (originsOf rest)
-      | Option.some cited => (cons (Studio.Doc::str cited (Studio.Doc::lit "authority")) (if (filled cited (Studio.Doc::lit "row")) then (cons (Studio.Doc::str cited (Studio.Doc::lit "row")) (originsOf rest)) else (originsOf rest))))),
+      | Option.some cited => (cons (Studio.Schema::str cited (Studio.Doc::lit "authority")) (if (filled cited (Studio.Doc::lit "row")) then (cons (Studio.Schema::str cited (Studio.Doc::lit "row")) (originsOf rest)) else (originsOf rest))))),
   recursive_argument: items,
   executable: true
 }
@@ -2143,7 +2141,7 @@ definition{
 
 definition{
   name: relevant,
-  parameters: [known : Known, admissions : (List LexLeanStd.Json::Json), mappings : (List LexLeanStd.Json::Json)],
+  parameters: [known : Known, admissions : (List Studio.Schema::Value), mappings : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (let edges : (List (Bytes * Bytes)) := (appendPairs (mappingEdges mappings) (derivedEdges (derivedMappings known admissions mappings))); (closure (LexLeanStd.Order::sortedSet (originsOf admissions)) edges ((prim length edges : Nat) + 1))),
   axioms: [propext],
@@ -2225,18 +2223,18 @@ definition{
 
 definition{
   name: stagedLinks,
-  parameters: [target : Bytes, mappings : (List LexLeanStd.Json::Json)],
+  parameters: [target : Bytes, mappings : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match mappings
     | List.nil => (nil Bytes)
-    | List.cons head rest => (if (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "subject")) target) then (cons (Studio.Doc::cat (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "object")) (cons (Studio.Doc::lit " (staged)") (nil Bytes)))))) (stagedLinks target rest)) else (if (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "object")) target) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "inverse of ") (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " from ") (cons (Studio.Doc::str head (Studio.Doc::lit "subject")) (cons (Studio.Doc::lit " (staged)") (nil Bytes))))))) (stagedLinks target rest)) else (stagedLinks target rest)))),
+    | List.cons head rest => (if (Studio.Doc::same (Studio.Schema::str head (Studio.Doc::lit "subject")) target) then (cons (Studio.Doc::cat (cons (Studio.Schema::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " ") (cons (Studio.Schema::str head (Studio.Doc::lit "object")) (cons (Studio.Doc::lit " (staged)") (nil Bytes)))))) (stagedLinks target rest)) else (if (Studio.Doc::same (Studio.Schema::str head (Studio.Doc::lit "object")) target) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "inverse of ") (cons (Studio.Schema::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " from ") (cons (Studio.Schema::str head (Studio.Doc::lit "subject")) (cons (Studio.Doc::lit " (staged)") (nil Bytes))))))) (stagedLinks target rest)) else (stagedLinks target rest)))),
   recursive_argument: mappings,
   executable: true
 }
 
 definition{
   name: catalogLines,
-  parameters: [records : (List (List Bytes)), rows : (List Bytes), derived : (List Derived), mappings : (List LexLeanStd.Json::Json), reached : (List Bytes)],
+  parameters: [records : (List (List Bytes)), rows : (List Bytes), derived : (List Derived), mappings : (List Studio.Schema::Value), reached : (List Bytes)],
   result: (List Bytes),
   body: (match rows
     | List.nil => (nil Bytes)
@@ -2249,24 +2247,24 @@ definition{
   name: catalogView,
   parameters: [seen : Seen],
   result: Bytes,
-  body: (let known : Known := (knownOf seen); (let admissions : (List LexLeanStd.Json::Json) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let mappings : (List LexLeanStd.Json::Json) := (resolvedMappings known (entriesOf seen (stagedPaths seen))); (let records : (List (List Bytes)) := (restOf (Studio.Csv::parse (contents seen (indexPath)))); (Studio.Doc::cat (cons (Studio.Doc::lit "# The Verdant Studio catalog\n\nGenerated by `verdant_studio publish` from catalog/standards-index.csv, model/admissions.json and model/mappings/. Do not edit.\nEach index row with its SKOS mappings. A mapping derived from a citation is exactMatch only when the row cites one authority in every source, and narrowMatch otherwise; a staged mapping overrides it. A row is reached when the mappings connect it to an origin, an authority or row that an admission cites.\n\n") (cons (Studio.Doc::cat (catalogLines records (rowIds records) (derivedMappings known admissions mappings) mappings (relevant known admissions mappings))) (nil Bytes)))))))),
+  body: (let known : Known := (knownOf seen); (let admissions : (List Studio.Schema::Value) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let mappings : (List Studio.Schema::Value) := (resolvedMappings known (entriesOf seen (stagedPaths seen))); (let records : (List (List Bytes)) := (restOf (Studio.Csv::parse (contents seen (indexPath)))); (Studio.Doc::cat (cons (Studio.Doc::lit "# The Verdant Studio catalog\n\nGenerated by `verdant_studio publish` from catalog/standards-index.csv, model/admissions.json and model/mappings/. Do not edit.\nEach index row with its SKOS mappings. A mapping derived from a citation is exactMatch only when the row cites one authority in every source, and narrowMatch otherwise; a staged mapping overrides it. A row is reached when the mappings connect it to an origin, an authority or row that an admission cites.\n\n") (cons (Studio.Doc::cat (catalogLines records (rowIds records) (derivedMappings known admissions mappings) mappings (relevant known admissions mappings))) (nil Bytes)))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
 
 definition{
   name: matrixLines,
-  parameters: [known : Known, edges : (List LexLeanStd.Json::Json)],
+  parameters: [known : Known, edges : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match edges
     | List.nil => (nil Bytes)
-    | List.cons head rest => (if ((filled head (Studio.Doc::lit "domain")) && (edgeResolves known head)) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- ") (cons (Studio.Doc::str head (Studio.Doc::lit "domain")) (cons (Studio.Doc::lit ", row ") (cons (Studio.Doc::str head (Studio.Doc::lit "row")) (cons (Studio.Doc::lit ": **") (cons (match (Studio.Doc::field head (Studio.Doc::lit "role"))
+    | List.cons head rest => (if ((filled head (Studio.Doc::lit "domain")) && (edgeResolves known head)) then (cons (Studio.Doc::cat (cons (Studio.Doc::lit "- ") (cons (Studio.Schema::str head (Studio.Doc::lit "domain")) (cons (Studio.Doc::lit ", row ") (cons (Studio.Schema::str head (Studio.Doc::lit "row")) (cons (Studio.Doc::lit ": **") (cons (match (Studio.Schema::field head (Studio.Doc::lit "role"))
         | Option.none => 0x
-        | Option.some role => (Studio.Doc::str role (Studio.Doc::lit "term"))) (cons (Studio.Doc::lit "** is ") (cons (Studio.Doc::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " of ") (cons (Studio.Doc::str head (Studio.Doc::lit "artifact")) (cons (Studio.Doc::lit " under ") (cons (edgeAuthority head) (cons (Studio.Doc::lit " (") (cons (match (Studio.Doc::field head (Studio.Doc::lit "origin"))
+        | Option.some role => (Studio.Schema::str role (Studio.Doc::lit "term"))) (cons (Studio.Doc::lit "** is ") (cons (Studio.Schema::str head (Studio.Doc::lit "relation")) (cons (Studio.Doc::lit " of ") (cons (Studio.Schema::str head (Studio.Doc::lit "artifact")) (cons (Studio.Doc::lit " under ") (cons (edgeAuthority head) (cons (Studio.Doc::lit " (") (cons (match (Studio.Schema::field head (Studio.Doc::lit "origin"))
         | Option.none => 0x
-        | Option.some origin => (Studio.Doc::str origin (Studio.Doc::lit "kind"))) (cons (Studio.Doc::lit ")\n  > ") (cons (match (Studio.Doc::field head (Studio.Doc::lit "evidence"))
+        | Option.some origin => (Studio.Schema::str origin (Studio.Doc::lit "kind"))) (cons (Studio.Doc::lit ")\n  > ") (cons (match (Studio.Schema::field head (Studio.Doc::lit "evidence"))
         | Option.none => 0x
-        | Option.some evidence => (Studio.Doc::str evidence (Studio.Doc::lit "quote"))) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))))))))))) (matrixLines known rest)) else (matrixLines known rest))),
+        | Option.some evidence => (Studio.Schema::str evidence (Studio.Doc::lit "quote"))) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))))))))))) (matrixLines known rest)) else (matrixLines known rest))),
   recursive_argument: edges,
   executable: true
 }
@@ -2288,7 +2286,7 @@ definition{
     | List.cons head rest => (ctor Plan.lists (cons head rest))
     | List.nil => (match (Studio.Check::concat (missing seen (cons (Studio.Doc::lit "model/owner-decisions.json") (nil Bytes))) (mappingNeeds seen))
       | List.cons head rest => (ctor Plan.reads (cons head rest))
-      | List.nil => (let known : Known := (knownOf seen); (let admissions : (List LexLeanStd.Json::Json) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (Studio.Check::concat (uncited (withoutRows (project known rows) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json")))) (citedRows admissions)) (unreached (withoutRows (project known rows) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json")))) (relevant known admissions (resolvedMappings known (entriesOf seen (stagedPaths seen)))))))))))),
+      | List.nil => (let known : Known := (knownOf seen); (let admissions : (List Studio.Schema::Value) := (arrayOf seen (Studio.Doc::lit "model/admissions.json")); (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (Studio.Check::concat (uncited (withoutRows (project known rows) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json")))) (citedRows admissions)) (unreached (withoutRows (project known rows) (deferredRows (arrayOf seen (Studio.Doc::lit "model/owner-decisions.json")))) (relevant known admissions (resolvedMappings known (entriesOf seen (stagedPaths seen)))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2368,14 +2366,14 @@ definition{
 definition{
   name: decisionLines,
   parameters: [lines : (List Bytes)],
-  result: (Option (List LexLeanStd.Json::Json)),
+  result: (Option (List Studio.Schema::Value)),
   body: (match lines
-    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
-    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (decisionLines rest) else (match (Studio.Schema::readJson line)
-      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+    | List.nil => (ctor Option.some [(List Studio.Schema::Value)] (nil Studio.Schema::Value))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (decisionLines rest) else (match (Studio.Schema::readAny line)
+      | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
       | Option.some entry => (if ((filled entry (Studio.Doc::lit "agent")) && ((filled entry (Studio.Doc::lit "at")) && ((filled entry (Studio.Doc::lit "quote")) && (hasField entry (Studio.Doc::lit "requirements"))))) then (match (decisionLines rest)
-        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
-        | Option.some recorded => (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry recorded))) else (ctor Option.none [(List LexLeanStd.Json::Json)])))))),
+        | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
+        | Option.some recorded => (ctor Option.some [(List Studio.Schema::Value)] (cons entry recorded))) else (ctor Option.none [(List Studio.Schema::Value)])))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -2389,7 +2387,7 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (decisionLines (LexLeanStd.Text::lines (contents seen path)))
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "every line must be an owner decision: agent, at, the verbatim quote, and requirements\n"))
-      | Option.some recorded => (let held : (List LexLeanStd.Json::Json) := (arrayOf seen (decisionsPath)); (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::idsOf held (Studio.Doc::lit "at"))); (if (((prim length times : Nat) =? 0) || (negate ((prim length (LexLeanStd.Order::sortedSet (Studio.Check::concat times known)) : Nat) =? (prim length (Studio.Check::concat times known) : Nat)))) then (ctor Plan.refuse (Studio.Doc::lit "a decision is repeated, or is already recorded\n")) else (ctor Plan.done (cons (registerFile (decisionsPath) (appendJson held recorded)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the owner's decisions of ") (cons (LexLeanStd.Text::joinWith times (Studio.Doc::lit " ")) (cons (Studio.Doc::lit "\n") (nil Bytes)))))))))))),
+      | Option.some recorded => (let held : (List Studio.Schema::Value) := (arrayOf seen (decisionsPath)); (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::idsOf held (Studio.Doc::lit "at"))); (if (((prim length times : Nat) =? 0) || (negate ((prim length (LexLeanStd.Order::sortedSet (Studio.Check::concat times known)) : Nat) =? (prim length (Studio.Check::concat times known) : Nat)))) then (ctor Plan.refuse (Studio.Doc::lit "a decision is repeated, or is already recorded\n")) else (ctor Plan.done (cons (registerFile (decisionsPath) (appendJson held recorded)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the owner's decisions of ") (cons (LexLeanStd.Text::joinWith times (Studio.Doc::lit " ")) (cons (Studio.Doc::lit "\n") (nil Bytes)))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2442,13 +2440,13 @@ definition{
 
 definition{
   name: admittedUnder,
-  parameters: [admissions : (List LexLeanStd.Json::Json), construct : Bytes, row : Bytes],
+  parameters: [admissions : (List Studio.Schema::Value), construct : Bytes, row : Bytes],
   result: Bool,
   body: (match admissions
     | List.nil => false
-    | List.cons head rest => (if (Studio.Doc::both (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "construct")) construct) (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+    | List.cons head rest => (if (Studio.Doc::both (Studio.Doc::same (Studio.Schema::str head (Studio.Doc::lit "construct")) construct) (match (Studio.Schema::field head (Studio.Doc::lit "std"))
       | Option.none => false
-      | Option.some cited => (Studio.Doc::same (Studio.Doc::str cited (Studio.Doc::lit "row")) row))) then true else (admittedUnder rest construct row))),
+      | Option.some cited => (Studio.Doc::same (Studio.Schema::str cited (Studio.Doc::lit "row")) row))) then true else (admittedUnder rest construct row))),
   recursive_argument: admissions,
   executable: true
 }
@@ -2459,7 +2457,7 @@ definition{
   result: Plan,
   body: (match (Studio.Schema::jsonText (registryRow authority row construct value))
     | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons json (cons (Studio.Doc::lit ": ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))))
-    | Result.ok text => (let register : Bytes := (registryPath authority); (ctor Plan.done (cons (register, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") register (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr register) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "std") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "authority") (ctor LexLeanStd.Json::Json.JStr authority) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "row") (ctor LexLeanStd.Json::Json.JStr row) (ctor LexLeanStd.Json::Json.JNil)))) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "translation") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "command") (ctor LexLeanStd.Json::Json.JArr (jsonStrings command)) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "output_sha256") (ctor LexLeanStd.Json::Json.JStr (LexLeanStd.Sha256::sha256Hex (contents seen json))) (ctor LexLeanStd.Json::Json.JNil)))) (ctor LexLeanStd.Json::Json.JNil)))))))))) (nil (Bytes * Bytes)))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted ") (cons register (cons (Studio.Doc::lit "\n") (nil Bytes)))))))),
+    | Result.ok text => (let register : Bytes := (registryPath authority); (ctor Plan.done (cons (register, text) (cons ((Studio.Doc::lit "model/admissions.json"), (Studio.Schema::writeFile (ctor Studio.Schema::Value.VArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") register (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "construct") (ctor Studio.Schema::Value.VStr register) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "std") (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "authority") (ctor Studio.Schema::Value.VStr authority) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "row") (ctor Studio.Schema::Value.VStr row) (ctor Studio.Schema::Value.VNil)))) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "translation") (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "command") (ctor Studio.Schema::Value.VArr (jsonStrings command)) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "output_sha256") (ctor Studio.Schema::Value.VStr (LexLeanStd.Sha256::sha256Hex (contents seen json))) (ctor Studio.Schema::Value.VNil)))) (ctor Studio.Schema::Value.VNil)))))))))) (nil (Bytes * Bytes)))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted ") (cons register (cons (Studio.Doc::lit "\n") (nil Bytes)))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2575,17 +2573,17 @@ definition{
 
 definition{
   name: someItems,
-  parameters: [found : (Option (List LexLeanStd.Json::Json))],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [found : (Option (List Studio.Schema::Value))],
+  result: (List Studio.Schema::Value),
   body: (match found
-    | Option.none => (nil LexLeanStd.Json::Json)
+    | Option.none => (nil Studio.Schema::Value)
     | Option.some items => items),
   executable: true
 }
 
 definition{
   name: parses,
-  parameters: [found : (Option (List LexLeanStd.Json::Json))],
+  parameters: [found : (Option (List Studio.Schema::Value))],
   result: Bool,
   body: (match found
     | Option.none => false
@@ -2624,24 +2622,24 @@ definition{
 
 definition{
   name: authoritiesCited,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+    | List.cons head rest => (match (Studio.Schema::field head (Studio.Doc::lit "std"))
       | Option.none => (authoritiesCited rest)
-      | Option.some cited => (cons (Studio.Doc::str cited (Studio.Doc::lit "authority")) (authoritiesCited rest)))),
+      | Option.some cited => (cons (Studio.Schema::str cited (Studio.Doc::lit "authority")) (authoritiesCited rest)))),
   recursive_argument: items,
   executable: true
 }
 
 definition{
   name: requirementsCited,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (match (Studio.Doc::strOf (Studio.Doc::field head (Studio.Doc::lit "req")))
+    | List.cons head rest => (match (Studio.Schema::strOf (Studio.Schema::field head (Studio.Doc::lit "req")))
       | Option.none => (requirementsCited rest)
       | Option.some cited => (cons cited (requirementsCited rest)))),
   recursive_argument: items,
@@ -2669,7 +2667,7 @@ definition{
 
 definition{
   name: queuedDecision,
-  parameters: [seen : Seen, path : Bytes, recorded : (List LexLeanStd.Json::Json)],
+  parameters: [seen : Seen, path : Bytes, recorded : (List Studio.Schema::Value)],
   result: (Bool * Bytes),
   body: (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let fresh : (List Bytes) := (absent times (Studio.Check::idsOf (arrayOf seen (decisionsPath)) (Studio.Doc::lit "at"))); (if ((prim length fresh : Nat) =? 0) then (false, 0x) else (if ((prim length fresh : Nat) =? (prim length times : Nat)) then (true, (Studio.Doc::cat (cons (Studio.Doc::lit "record-decision ") (cons path (cons (Studio.Doc::lit "\n") (nil Bytes)))))) else (false, (waiting path (Studio.Doc::lit "some of its decisions are recorded already, so it needs a corrected file"))))))),
   axioms: [Quot.sound, propext],
@@ -2680,7 +2678,7 @@ definition{
   name: queuedAdmission,
   parameters: [seen : Seen, path : Bytes, lines : (List Bytes)],
   result: (Bool * Bytes),
-  body: (let requirements : (List LexLeanStd.Json::Json) := (someItems (admitLines lines (Studio.Doc::lit "requirement"))); (let admissions : (List LexLeanStd.Json::Json) := (someItems (admitLines lines (Studio.Doc::lit "admission"))); (let names : (List Bytes) := (Studio.Check::concat (Studio.Check::idsOf requirements (Studio.Doc::lit "id")) (Studio.Check::idsOf admissions (Studio.Doc::lit "construct"))); (let held : (List Bytes) := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")); (let fresh : (List Bytes) := (absent names (Studio.Check::concat held (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct")))); (if ((prim length fresh : Nat) =? 0) then (false, 0x) else (if (negate ((prim length fresh : Nat) =? (prim length names : Nat))) then (false, (waiting path (Studio.Doc::lit "some of its names are in the model already, so it needs a corrected file"))) else (let unresolved : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::concat (absent (authoritiesCited admissions) (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml")))) (absent (requirementsCited admissions) (Studio.Check::concat held (Studio.Check::idsOf requirements (Studio.Doc::lit "id")))))); (if ((prim length unresolved : Nat) =? 0) then (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admit ") (cons path (cons (Studio.Doc::lit "\n") (nil Bytes)))))) else (false, (waiting path (Studio.Doc::cat (cons (Studio.Doc::lit "cites ") (cons (LexLeanStd.Text::joinWith unresolved (Studio.Doc::lit " ")) (cons (Studio.Doc::lit ", which are not in the model yet") (nil Bytes)))))))))))))))),
+  body: (let requirements : (List Studio.Schema::Value) := (someItems (admitLines lines (Studio.Doc::lit "requirement"))); (let admissions : (List Studio.Schema::Value) := (someItems (admitLines lines (Studio.Doc::lit "admission"))); (let names : (List Bytes) := (Studio.Check::concat (Studio.Check::idsOf requirements (Studio.Doc::lit "id")) (Studio.Check::idsOf admissions (Studio.Doc::lit "construct"))); (let held : (List Bytes) := (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/requirements.json")) (Studio.Doc::lit "id")); (let fresh : (List Bytes) := (absent names (Studio.Check::concat held (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct")))); (if ((prim length fresh : Nat) =? 0) then (false, 0x) else (if (negate ((prim length fresh : Nat) =? (prim length names : Nat))) then (false, (waiting path (Studio.Doc::lit "some of its names are in the model already, so it needs a corrected file"))) else (let unresolved : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::concat (absent (authoritiesCited admissions) (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml")))) (absent (requirementsCited admissions) (Studio.Check::concat held (Studio.Check::idsOf requirements (Studio.Doc::lit "id")))))); (if ((prim length unresolved : Nat) =? 0) then (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admit ") (cons path (cons (Studio.Doc::lit "\n") (nil Bytes)))))) else (false, (waiting path (Studio.Doc::cat (cons (Studio.Doc::lit "cites ") (cons (LexLeanStd.Text::joinWith unresolved (Studio.Doc::lit " ")) (cons (Studio.Doc::lit ", which are not in the model yet") (nil Bytes)))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2688,14 +2686,14 @@ definition{
 definition{
   name: registryLines,
   parameters: [lines : (List Bytes)],
-  result: (Option (List LexLeanStd.Json::Json)),
+  result: (Option (List Studio.Schema::Value)),
   body: (match lines
-    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
-    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (registryLines rest) else (match (Studio.Schema::readJson line)
-      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
-      | Option.some entry => (if (Studio.Doc::both (Studio.Doc::both (filled entry (Studio.Doc::lit "authority")) (filled entry (Studio.Doc::lit "row"))) (Studio.Doc::both (Studio.Doc::both (filled entry (Studio.Doc::lit "construct")) (filled entry (Studio.Doc::lit "artifact"))) (LexLeanStd.Text::startsWith (Studio.Doc::str entry (Studio.Doc::lit "reader")) (Studio.Doc::lit "read-")))) then (match (registryLines rest)
-        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
-        | Option.some later => (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry later))) else (ctor Option.none [(List LexLeanStd.Json::Json)])))))),
+    | List.nil => (ctor Option.some [(List Studio.Schema::Value)] (nil Studio.Schema::Value))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (registryLines rest) else (match (Studio.Schema::readAny line)
+      | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
+      | Option.some entry => (if (Studio.Doc::both (Studio.Doc::both (filled entry (Studio.Doc::lit "authority")) (filled entry (Studio.Doc::lit "row"))) (Studio.Doc::both (Studio.Doc::both (filled entry (Studio.Doc::lit "construct")) (filled entry (Studio.Doc::lit "artifact"))) (LexLeanStd.Text::startsWith (Studio.Schema::str entry (Studio.Doc::lit "reader")) (Studio.Doc::lit "read-")))) then (match (registryLines rest)
+        | Option.none => (ctor Option.none [(List Studio.Schema::Value)])
+        | Option.some later => (ctor Option.some [(List Studio.Schema::Value)] (cons entry later))) else (ctor Option.none [(List Studio.Schema::Value)])))))),
   recursive_argument: lines,
   axioms: [Quot.sound, propext],
   executable: true
@@ -2704,9 +2702,9 @@ definition{
 definition{
   name: registryQueued,
   parameters: [lines : (List Bytes)],
-  result: (List LexLeanStd.Json::Json),
+  result: (List Studio.Schema::Value),
   body: (match (decisionLines lines)
-    | Option.some recorded => (nil LexLeanStd.Json::Json)
+    | Option.some recorded => (nil Studio.Schema::Value)
     | Option.none => (someItems (registryLines lines))),
   axioms: [Quot.sound, propext],
   executable: true
@@ -2723,11 +2721,11 @@ definition{
 
 definition{
   name: registryNeedsOf,
-  parameters: [entries : (List LexLeanStd.Json::Json)],
+  parameters: [entries : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match entries
     | List.nil => (nil Bytes)
-    | List.cons head rest => (cons (registryPath (Studio.Doc::str head (Studio.Doc::lit "authority"))) (cons (bindingPath (Studio.Doc::str head (Studio.Doc::lit "authority"))) (registryNeedsOf rest)))),
+    | List.cons head rest => (cons (registryPath (Studio.Schema::str head (Studio.Doc::lit "authority"))) (cons (bindingPath (Studio.Schema::str head (Studio.Doc::lit "authority"))) (registryNeedsOf rest)))),
   recursive_argument: entries,
   executable: true
 }
@@ -2746,11 +2744,11 @@ definition{
 
 definition{
   name: queuedRegistry,
-  parameters: [seen : Seen, path : Bytes, skipped : (List Bytes), entries : (List LexLeanStd.Json::Json)],
+  parameters: [seen : Seen, path : Bytes, skipped : (List Bytes), entries : (List Studio.Schema::Value)],
   result: (Bool * Bytes),
   body: (match entries
     | List.nil => (false, 0x)
-    | List.cons head rest => (let authority : Bytes := (Studio.Doc::str head (Studio.Doc::lit "authority")); (let row : Bytes := (Studio.Doc::str head (Studio.Doc::lit "row")); (let construct : Bytes := (Studio.Doc::str head (Studio.Doc::lit "construct")); (if (Studio.Doc::either (present seen (registryPath authority)) (Studio.Doc::memberBytes authority skipped)) then (queuedRegistry seen path skipped rest) else (if (negate (present seen (bindingPath authority))) then (let later : (Bool * Bytes) := (queuedRegistry seen path skipped rest); (if (first later) then later else (false, (prim append (waiting path (Studio.Doc::cat (cons authority (cons (Studio.Doc::lit " is not bound yet") (nil Bytes))))) (second later) : Bytes)))) else (if (Studio.Doc::both (negate (Studio.Doc::same construct (Studio.Doc::lit "none"))) (negate (admittedUnder (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (prim append (Studio.Doc::lit "Catalog.") construct : Bytes) row))) then (let later : (Bool * Bytes) := (queuedRegistry seen path skipped rest); (if (first later) then later else (false, (prim append (waiting path (Studio.Doc::cat (cons (Studio.Doc::lit "Catalog.") (cons construct (cons (Studio.Doc::lit " is not admitted under row ") (cons row (cons (Studio.Doc::lit " yet") (nil Bytes)))))))) (second later) : Bytes)))) else (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admit-registry ") (cons authority (cons (Studio.Doc::lit " ") (cons row (cons (Studio.Doc::lit " ") (cons construct (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "reader")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "artifact")) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))))))))))))),
+    | List.cons head rest => (let authority : Bytes := (Studio.Schema::str head (Studio.Doc::lit "authority")); (let row : Bytes := (Studio.Schema::str head (Studio.Doc::lit "row")); (let construct : Bytes := (Studio.Schema::str head (Studio.Doc::lit "construct")); (if (Studio.Doc::either (present seen (registryPath authority)) (Studio.Doc::memberBytes authority skipped)) then (queuedRegistry seen path skipped rest) else (if (negate (present seen (bindingPath authority))) then (let later : (Bool * Bytes) := (queuedRegistry seen path skipped rest); (if (first later) then later else (false, (prim append (waiting path (Studio.Doc::cat (cons authority (cons (Studio.Doc::lit " is not bound yet") (nil Bytes))))) (second later) : Bytes)))) else (if (Studio.Doc::both (negate (Studio.Doc::same construct (Studio.Doc::lit "none"))) (negate (admittedUnder (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (prim append (Studio.Doc::lit "Catalog.") construct : Bytes) row))) then (let later : (Bool * Bytes) := (queuedRegistry seen path skipped rest); (if (first later) then later else (false, (prim append (waiting path (Studio.Doc::cat (cons (Studio.Doc::lit "Catalog.") (cons construct (cons (Studio.Doc::lit " is not admitted under row ") (cons row (cons (Studio.Doc::lit " yet") (nil Bytes)))))))) (second later) : Bytes)))) else (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admit-registry ") (cons authority (cons (Studio.Doc::lit " ") (cons row (cons (Studio.Doc::lit " ") (cons construct (cons (Studio.Doc::lit " ") (cons (Studio.Schema::str head (Studio.Doc::lit "reader")) (cons (Studio.Doc::lit " ") (cons (Studio.Schema::str head (Studio.Doc::lit "artifact")) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))))))))))))),
   recursive_argument: entries,
   axioms: [Quot.sound, propext],
   executable: true
@@ -2946,9 +2944,9 @@ definition{
             | List.cons head tail => (ctor Plan.reads (cons head tail))
             | List.nil => (if (negate (present seen (bindingPath authority))) then (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons authority (cons (Studio.Doc::lit " is not a bound authority, because ") (cons (bindingPath authority) (cons (Studio.Doc::lit " is absent, and every admitted value cites a bound standard (REQ-ADMISSION)\n") (nil Bytes)))))))) else (match (jsonOf seen (bindingPath authority))
               | Option.none => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons (bindingPath authority) (cons (Studio.Doc::lit " is not one JSON text (RFC 8259 section 2)\n") (nil Bytes))))))
-              | Option.some binding => (let pinned : Bytes := (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
+              | Option.some binding => (let pinned : Bytes := (match (Studio.Schema::field binding (Studio.Doc::lit "source"))
                 | Option.none => 0x
-                | Option.some source => (Studio.Doc::str source (Studio.Doc::lit "sha256"))); (let digest : Bytes := (LexLeanStd.Sha256::sha256Hex (contents seen artifact)); (if (negate (Studio.Doc::same digest pinned)) then (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons artifact (cons (Studio.Doc::lit " is not the artifact ") (cons authority (cons (Studio.Doc::lit " binds: its SHA-256 is ") (cons digest (cons (Studio.Doc::lit " and the binding's source.sha256 is ") (cons pinned (cons (Studio.Doc::lit " (FIPS 180-4 section 6.2)\n") (nil Bytes)))))))))))) else (registryRead seen authority row construct command artifact))))))))
+                | Option.some source => (Studio.Schema::str source (Studio.Doc::lit "sha256"))); (let digest : Bytes := (LexLeanStd.Sha256::sha256Hex (contents seen artifact)); (if (negate (Studio.Doc::same digest pinned)) then (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons artifact (cons (Studio.Doc::lit " is not the artifact ") (cons authority (cons (Studio.Doc::lit " binds: its SHA-256 is ") (cons digest (cons (Studio.Doc::lit " and the binding's source.sha256 is ") (cons pinned (cons (Studio.Doc::lit " (FIPS 180-4 section 6.2)\n") (nil Bytes)))))))))))) else (registryRead seen authority row construct command artifact))))))))
           | List.nil => (ctor Plan.refuse (usage)))
         | List.nil => (ctor Plan.refuse (usage)))
       | List.nil => (ctor Plan.refuse (usage)))
@@ -3020,11 +3018,11 @@ definition{
 
 definition{
   name: observedBefore,
-  parameters: [held : (List LexLeanStd.Json::Json), operation : Bytes, refusal : Bytes],
+  parameters: [held : (List Studio.Schema::Value), operation : Bytes, refusal : Bytes],
   result: Bool,
   body: (match held
     | List.nil => false
-    | List.cons head rest => (if (Studio.Doc::both (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "observedProperty")) operation) (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "hasSimpleResult")) refusal)) then true else (observedBefore rest operation refusal))),
+    | List.cons head rest => (if (Studio.Doc::both (Studio.Doc::same (Studio.Schema::str head (Studio.Doc::lit "observedProperty")) operation) (Studio.Doc::same (Studio.Schema::str head (Studio.Doc::lit "hasSimpleResult")) refusal)) then true else (observedBefore rest operation refusal))),
   recursive_argument: held,
   executable: true
 }
@@ -3032,8 +3030,8 @@ definition{
 definition{
   name: errorObservation,
   parameters: [operation : Bytes, refusal : Bytes, run : Bytes, time : Bytes],
-  result: LexLeanStd.Json::Json,
-  body: (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr (Studio.Doc::lit "Studio.Error.Observation")) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "hasSimpleResult") (ctor LexLeanStd.Json::Json.JStr refusal) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "madeBySensor") (ctor LexLeanStd.Json::Json.JStr run) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "observedProperty") (ctor LexLeanStd.Json::Json.JStr operation) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "resultTime") (ctor LexLeanStd.Json::Json.JStr time) (ctor LexLeanStd.Json::Json.JNil))))))),
+  result: Studio.Schema::Value,
+  body: (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "construct") (ctor Studio.Schema::Value.VStr (Studio.Doc::lit "Studio.Error.Observation")) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "hasSimpleResult") (ctor Studio.Schema::Value.VStr refusal) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "madeBySensor") (ctor Studio.Schema::Value.VStr run) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "observedProperty") (ctor Studio.Schema::Value.VStr operation) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "resultTime") (ctor Studio.Schema::Value.VStr time) (ctor Studio.Schema::Value.VNil))))))),
   executable: true
 }
 
@@ -3049,7 +3047,7 @@ definition{
         | List.nil => (ctor Plan.refuse (usage))
         | List.cons first others => (match (missing seen (cons path (cons (errorsPath) (nil Bytes))))
           | List.cons head pending => (ctor Plan.reads (cons head pending))
-          | List.nil => (let operation : Bytes := (LexLeanStd.Text::joinWith words (Studio.Doc::lit " ")); (let refusal : Bytes := (contents seen path); (let held : (List LexLeanStd.Json::Json) := (arrayOf seen (errorsPath)); (if (observedBefore held operation refusal) then (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "this refusal of ") (cons operation (cons (Studio.Doc::lit " is already recorded in model/errors.json\n") (nil Bytes)))))) else (ctor Plan.done (cons (registerFile (errorsPath) (appendJson held (cons (errorObservation operation refusal run time) (nil LexLeanStd.Json::Json)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the refusal of ") (cons operation (cons (Studio.Doc::lit " in model/errors.json as a Studio.Error.Observation (W3C-SOSA-2017)\n") (nil Bytes)))))))))))))),
+          | List.nil => (let operation : Bytes := (LexLeanStd.Text::joinWith words (Studio.Doc::lit " ")); (let refusal : Bytes := (contents seen path); (let held : (List Studio.Schema::Value) := (arrayOf seen (errorsPath)); (if (observedBefore held operation refusal) then (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "this refusal of ") (cons operation (cons (Studio.Doc::lit " is already recorded in model/errors.json\n") (nil Bytes)))))) else (ctor Plan.done (cons (registerFile (errorsPath) (appendJson held (cons (errorObservation operation refusal run time) (nil Studio.Schema::Value)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the refusal of ") (cons operation (cons (Studio.Doc::lit " in model/errors.json as a Studio.Error.Observation (W3C-SOSA-2017)\n") (nil Bytes)))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }

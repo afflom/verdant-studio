@@ -278,7 +278,7 @@ definition{
   result: (Option LexLeanStd.Json::Json),
   body: (match value
     | Value.VTag tagName tagged => (ctor Option.none [LexLeanStd.Json::Json])
-    | Value.VNull => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JArr (ctor LexLeanStd.Json::Json.JNil)))
+    | Value.VNull => (ctor Option.none [LexLeanStd.Json::Json])
     | Value.VBool flag => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JBool flag))
     | Value.VInt negative magnitude => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JInt negative magnitude))
     | Value.VDec negative mantissa scale => (ctor Option.none [LexLeanStd.Json::Json])

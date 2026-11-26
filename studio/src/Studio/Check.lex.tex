@@ -5,6 +5,7 @@
 \importmodule{VerdantStudio.Studio.Catalog}
 \importmodule{VerdantStudio.Studio.Admission}
 \importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
@@ -42,11 +43,11 @@ definition{
 
 definition{
   name: idsOf,
-  parameters: [items : (List LexLeanStd.Json::Json), key : Bytes],
+  parameters: [items : (List Studio.Schema::Value), key : Bytes],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (cons (Studio.Doc::str head key) (idsOf rest key))),
+    | List.cons head rest => (cons (Studio.Schema::str head key) (idsOf rest key))),
   recursive_argument: items,
   executable: true
 }
@@ -90,25 +91,25 @@ definition{
 
 definition{
   name: citationOf,
-  parameters: [names : Names, item : LexLeanStd.Json::Json],
+  parameters: [names : Names, item : Studio.Schema::Value],
   result: VerdantStudio.Studio.Catalog::Citation,
-  body: (match (Studio.Doc::field item (Studio.Doc::lit "std"))
-    | Option.some standard => (match (Studio.Doc::strOf (Studio.Doc::field standard (Studio.Doc::lit "row")))
-      | Option.none => (ctor VerdantStudio.Studio.Catalog::Citation.std (Studio.Doc::intern (Studio.Doc::str standard (Studio.Doc::lit "authority")) (project names authorities)) (ctor Option.none [Nat]))
-      | Option.some row => (ctor VerdantStudio.Studio.Catalog::Citation.std (Studio.Doc::intern (Studio.Doc::str standard (Studio.Doc::lit "authority")) (project names authorities)) (ctor Option.some [Nat] (Studio.Doc::intern row (project names rows)))))
-    | Option.none => (match (Studio.Doc::strOf (Studio.Doc::field item (Studio.Doc::lit "req")))
+  body: (match (Studio.Schema::field item (Studio.Doc::lit "std"))
+    | Option.some standard => (match (Studio.Schema::strOf (Studio.Schema::field standard (Studio.Doc::lit "row")))
+      | Option.none => (ctor VerdantStudio.Studio.Catalog::Citation.std (Studio.Doc::intern (Studio.Schema::str standard (Studio.Doc::lit "authority")) (project names authorities)) (ctor Option.none [Nat]))
+      | Option.some row => (ctor VerdantStudio.Studio.Catalog::Citation.std (Studio.Doc::intern (Studio.Schema::str standard (Studio.Doc::lit "authority")) (project names authorities)) (ctor Option.some [Nat] (Studio.Doc::intern row (project names rows)))))
+    | Option.none => (match (Studio.Schema::strOf (Studio.Schema::field item (Studio.Doc::lit "req")))
       | Option.some requirement => (ctor VerdantStudio.Studio.Catalog::Citation.req (Studio.Doc::intern requirement (project names requirements)))
-      | Option.none => (match (Studio.Doc::field item (Studio.Doc::lit "der"))
+      | Option.none => (match (Studio.Schema::field item (Studio.Doc::lit "der"))
         | Option.none => (unresolvable names)
-        | Option.some derivation => (match (settlementOf (Studio.Doc::str derivation (Studio.Doc::lit "rule")))
+        | Option.some derivation => (match (settlementOf (Studio.Schema::str derivation (Studio.Doc::lit "rule")))
           | Option.none => (unresolvable names)
-          | Option.some rule => (ctor VerdantStudio.Studio.Catalog::Citation.der rule (Studio.Doc::internAll (Studio.Doc::strings (Studio.Doc::itemsOf (Studio.Doc::field derivation (Studio.Doc::lit "inputs")))) (project names constructs)) (Studio.Doc::intern (Studio.Doc::str derivation (Studio.Doc::lit "check")) (project names ids))))))),
+          | Option.some rule => (ctor VerdantStudio.Studio.Catalog::Citation.der rule (Studio.Doc::internAll (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field derivation (Studio.Doc::lit "inputs")))) (project names constructs)) (Studio.Doc::intern (Studio.Schema::str derivation (Studio.Doc::lit "check")) (project names ids))))))),
   executable: true
 }
 
 definition{
   name: declsOf,
-  parameters: [names : Names, items : (List LexLeanStd.Json::Json), position : Nat],
+  parameters: [names : Names, items : (List Studio.Schema::Value), position : Nat],
   result: (List VerdantStudio.Studio.Catalog::Decl),
   body: (match items
     | List.nil => (nil VerdantStudio.Studio.Catalog::Decl)
@@ -119,9 +120,9 @@ definition{
 
 definition{
   name: stratumOf,
-  parameters: [item : LexLeanStd.Json::Json],
+  parameters: [item : Studio.Schema::Value],
   result: Nat,
-  body: (match (Studio.Doc::natOf (Studio.Doc::field item (Studio.Doc::lit "stratum")))
+  body: (match (Studio.Schema::natOf (Studio.Schema::field item (Studio.Doc::lit "stratum")))
     | Option.none => 8
     | Option.some stratum => stratum),
   executable: true
@@ -129,7 +130,7 @@ definition{
 
 definition{
   name: strataOf,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Nat),
   body: (match items
     | List.nil => (nil Nat)
@@ -163,8 +164,8 @@ structure{
   parameters: [],
   fields: [
     {name: names, type: Names},
-    {name: admissions, type: (List LexLeanStd.Json::Json)},
-    {name: strata, type: (List LexLeanStd.Json::Json)},
+    {name: admissions, type: (List Studio.Schema::Value)},
+    {name: strata, type: (List Studio.Schema::Value)},
     {name: locked, type: (List Bytes)},
     {name: modules, type: (List Bytes)}
   ]
