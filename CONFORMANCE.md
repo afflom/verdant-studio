@@ -522,6 +522,12 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `IETF-RFC-6901` | The JSON Pointer syntax and its evaluation against a JSON document (section 4), in the RFC's official plain-text form. Cited by the API's refusal texts. |  |
 | `IETF-RFC-8259` | The JSON grammar (section 2) and its values, including null (section 3), in the RFC's official plain-text form. Cited by the API's JSON reader and writer. |  |
 | `NIST-FIPS-180-4` | The SHA-1 and SHA-2 hash algorithms, including SHA-256 (section 6.2). Cited by the API's checksums. |  |
+| `IANA-MEDIA-TYPES` | Every registered media type, by top-level type and subtype, in IANA's official XML form; the declared type of each Verdant Prism artifact (REQ-PRISM-GENERATION). |  |
+| `W3C-EPUB-3.3` | The EPUB publication format, application/epub+zip: OCF container, package manifest and the cover-image property; a book bundle output of REQ-PRISM-GENERATION. |  |
+| `W3C-PNG-3` | The PNG raster image format, image/png: datastream, chunks, colour and HDR metadata; a raster artwork output of REQ-PRISM-GENERATION. |  |
+| `W3C-SVG-2` | The SVG vector image format, image/svg+xml; a vector artwork output such as a logo (REQ-PRISM-GENERATION). |  |
+| `W3C-WASM-JS-API-2` | The JavaScript interface a browser host gives WebAssembly modules; the browser runtime of a Verdant Prism's WebAssembly (REQ-PRISM-GENERATION). |  |
+| `W3C-WASM-WEB-API-2` | Streaming compilation and the application/wasm media type for WebAssembly on the Web; the browser delivery of a Verdant Prism's WebAssembly (REQ-PRISM-GENERATION). |  |
 
 ## Claims that are not conformance IDs
 
