@@ -292,6 +292,7 @@ definition{
     | Studio.Schema::Value.VNull => (ctor Studio.Schema::Value.VNull)
     | Studio.Schema::Value.VTag tagName tagged => (ctor Studio.Schema::Value.VTag tagName tagged)
     | Studio.Schema::Value.VDec negative mantissa scale => (ctor Studio.Schema::Value.VDec negative mantissa scale)
+    | Studio.Schema::Value.VFloat wide bits => (ctor Studio.Schema::Value.VFloat wide bits)
     | Studio.Schema::Value.VItem head rest => (ctor Studio.Schema::Value.VItem head rest)
     | Studio.Schema::Value.VMember key inner rest => (ctor Studio.Schema::Value.VMember key inner rest)),
   executable: true
@@ -312,6 +313,7 @@ definition{
     | Studio.Schema::Value.VNull => (ctor Studio.Schema::Value.VNull)
     | Studio.Schema::Value.VTag tagName tagged => (ctor Studio.Schema::Value.VTag tagName tagged)
     | Studio.Schema::Value.VDec negative mantissa scale => (ctor Studio.Schema::Value.VDec negative mantissa scale)
+    | Studio.Schema::Value.VFloat wide bits => (ctor Studio.Schema::Value.VFloat wide bits)
     | Studio.Schema::Value.VItem head rest => (ctor Studio.Schema::Value.VItem head rest)),
   recursive_argument: spine,
   executable: true
@@ -332,6 +334,7 @@ definition{
     | Studio.Schema::Value.VNull => (ctor Studio.Schema::Value.VNull)
     | Studio.Schema::Value.VTag tagName tagged => (ctor Studio.Schema::Value.VTag tagName tagged)
     | Studio.Schema::Value.VDec negative mantissa scale => (ctor Studio.Schema::Value.VDec negative mantissa scale)
+    | Studio.Schema::Value.VFloat wide bits => (ctor Studio.Schema::Value.VFloat wide bits)
     | Studio.Schema::Value.VItem head rest => (ctor Studio.Schema::Value.VItem head rest)),
   recursive_argument: spine,
   executable: true

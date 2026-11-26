@@ -6,6 +6,7 @@
 \importmodule{LexLeanStd.Text}
 \importmodule{LexLeanStd.Order}
 \importmodule{Studio.Doc}
+\importmodule{Studio.Ieee754}
 \title{Natural number addition}
 \begin{semanticmodule}
 inductive{
@@ -18,6 +19,7 @@ inductive{
     {name: VBool, fields: [Bool]},
     {name: VInt, fields: [Bool, Nat]},
     {name: VDec, fields: [Bool, Nat, Nat]},
+    {name: VFloat, fields: [Bool, Nat]},
     {name: VStr, fields: [Bytes]},
     {name: VArr, fields: [Value]},
     {name: VObj, fields: [Value]},
@@ -38,6 +40,7 @@ definition{
     | Value.VNull => (ctor Option.none [Value])
     | Value.VBool flag => (ctor Option.none [Value])
     | Value.VDec negative mantissa scale => (ctor Option.none [Value])
+    | Value.VFloat wide bits => (ctor Option.none [Value])
     | Value.VInt negative magnitude => (ctor Option.none [Value])
     | Value.VStr value => (ctor Option.none [Value])
     | Value.VArr inner => (ctor Option.none [Value])
@@ -59,6 +62,7 @@ definition{
       | Value.VNull => (ctor Option.none [Bytes])
       | Value.VBool flag => (ctor Option.none [Bytes])
       | Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+      | Value.VFloat wide bits => (ctor Option.none [Bytes])
       | Value.VInt negative magnitude => (ctor Option.none [Bytes])
       | Value.VArr inner => (ctor Option.none [Bytes])
       | Value.VObj inner => (ctor Option.none [Bytes])
@@ -86,6 +90,7 @@ definition{
     | Option.none => (ctor Option.none [Nat])
     | Option.some found => (match found
       | Value.VDec negative mantissa scale => (ctor Option.none [Nat])
+      | Value.VFloat wide bits => (ctor Option.none [Nat])
       | Value.VInt negative magnitude => (if negative then (ctor Option.none [Nat]) else (ctor Option.some [Nat] magnitude))
       | Value.VStr content => (ctor Option.none [Nat])
       | Value.VTag tagName tagged => (ctor Option.none [Nat])
@@ -111,6 +116,7 @@ definition{
     | Value.VNull => (nil Value)
     | Value.VBool flag => (nil Value)
     | Value.VDec negative mantissa scale => (nil Value)
+    | Value.VFloat wide bits => (nil Value)
     | Value.VInt negative magnitude => (nil Value)
     | Value.VStr value => (nil Value)
     | Value.VObj inner => (nil Value)
@@ -141,6 +147,7 @@ definition{
     | Value.VNull => (nil (Bytes * Value))
     | Value.VBool flag => (nil (Bytes * Value))
     | Value.VDec negative mantissa scale => (nil (Bytes * Value))
+    | Value.VFloat wide bits => (nil (Bytes * Value))
     | Value.VInt negative magnitude => (nil (Bytes * Value))
     | Value.VStr value => (nil (Bytes * Value))
     | Value.VArr inner => (nil (Bytes * Value))
@@ -282,6 +289,7 @@ definition{
     | Value.VBool flag => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JBool flag))
     | Value.VInt negative magnitude => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JInt negative magnitude))
     | Value.VDec negative mantissa scale => (ctor Option.none [LexLeanStd.Json::Json])
+    | Value.VFloat wide bits => (ctor Option.none [LexLeanStd.Json::Json])
     | Value.VStr text => (ctor Option.some [LexLeanStd.Json::Json] (ctor LexLeanStd.Json::Json.JStr text))
     | Value.VArr inner => (match (jsonOf inner)
       | Option.none => (ctor Option.none [LexLeanStd.Json::Json])
@@ -374,6 +382,7 @@ definition{
     | Value.VBool flag => (if flag then 0x74727565 else 0x66616c7365)
     | Value.VInt negative magnitude => (LexLeanStd.Json::integerText negative magnitude)
     | Value.VDec negative mantissa scale => (decimalText negative mantissa scale)
+    | Value.VFloat wide bits => (Studio.Ieee754::toText wide bits)
     | Value.VStr text => (quotedText text)
     | Value.VArr items => (LexLeanStd.Json::arrayText (renderItems items))
     | Value.VObj members => (objectTextOf (renderMembers members))
@@ -396,6 +405,7 @@ definition{
     | Value.VBool flag => (nil Bytes)
     | Value.VInt negative magnitude => (nil Bytes)
     | Value.VDec negative mantissa scale => (nil Bytes)
+    | Value.VFloat wide bits => (nil Bytes)
     | Value.VStr text => (nil Bytes)
     | Value.VArr inner => (nil Bytes)
     | Value.VObj inner => (nil Bytes)
@@ -418,6 +428,7 @@ definition{
     | Value.VBool flag => (nil (Bytes * Bytes))
     | Value.VInt negative magnitude => (nil (Bytes * Bytes))
     | Value.VDec negative mantissa scale => (nil (Bytes * Bytes))
+    | Value.VFloat wide bits => (nil (Bytes * Bytes))
     | Value.VStr text => (nil (Bytes * Bytes))
     | Value.VArr inner => (nil (Bytes * Bytes))
     | Value.VObj inner => (nil (Bytes * Bytes))
@@ -448,9 +459,36 @@ definition{
     | Value.VBool flag => (ctor Option.none [Bytes])
     | Value.VInt negative magnitude => (ctor Option.none [Bytes])
     | Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+    | Value.VFloat wide bits => (ctor Option.none [Bytes])
     | Value.VStr text => (ctor Option.none [Bytes])
     | Value.VNil => (ctor Option.none [Bytes])),
   recursive_argument: value,
+  executable: true
+}
+
+definition{
+  name: firstNonFinite,
+  parameters: [value : Value],
+  result: (Option Bytes),
+  body: (match value
+    | Value.VTag tagName tagged => (firstNonFinite tagged)
+    | Value.VArr inner => (firstNonFinite inner)
+    | Value.VObj inner => (firstNonFinite inner)
+    | Value.VItem head rest => (match (firstNonFinite head)
+      | Option.some found => (ctor Option.some [Bytes] found)
+      | Option.none => (firstNonFinite rest))
+    | Value.VMember key head rest => (match (firstNonFinite head)
+      | Option.some found => (ctor Option.some [Bytes] found)
+      | Option.none => (firstNonFinite rest))
+    | Value.VNull => (ctor Option.none [Bytes])
+    | Value.VBool flag => (ctor Option.none [Bytes])
+    | Value.VInt negative magnitude => (ctor Option.none [Bytes])
+    | Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+    | Value.VFloat wide bits => (if (Studio.Ieee754::finite wide bits) then (ctor Option.none [Bytes]) else (ctor Option.some [Bytes] (Studio.Ieee754::toText wide bits)))
+    | Value.VStr text => (ctor Option.none [Bytes])
+    | Value.VNil => (ctor Option.none [Bytes])),
+  recursive_argument: value,
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -460,7 +498,9 @@ definition{
   result: (Result Bytes Bytes),
   body: (match (firstTag value)
     | Option.some tagName => (ctor Result.error [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the node tagged ") (cons tagName (cons (Studio.Doc::lit " has no JSON text: a JSON value carries no tag (RFC 8259 section 3), and a YAML node keeps its tag (YAML 1.2.2 section 3.2.1.1)") (nil Bytes))))))
-    | Option.none => (ctor Result.ok [Bytes, Bytes] (writeValue value))),
+    | Option.none => (match (firstNonFinite value)
+      | Option.some shown => (ctor Result.error [Bytes, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the binary floating-point value ") (cons shown (cons (Studio.Doc::lit " has no JSON text: numeric values that cannot be represented as a sequence of digits (such as Infinity and NaN) are not permitted (RFC 8259 section 6)") (nil Bytes))))))
+      | Option.none => (ctor Result.ok [Bytes, Bytes] (writeValue value)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -1039,6 +1079,7 @@ definition{
     | Value.VNull => false
     | Value.VBool flag => false
     | Value.VDec negative mantissa scale => false
+    | Value.VFloat wide bits => false
     | Value.VInt negative magnitude => false
     | Value.VStr text => false
     | Value.VNil => false),
@@ -1095,6 +1136,7 @@ definition{
     | Value.VBool accepts => (if accepts then false else true)
     | Value.VInt negative magnitude => false
     | Value.VDec negative mantissa scale => false
+    | Value.VFloat wide bits => false
     | Value.VStr text => false
     | Value.VArr items => false
     | Value.VObj members => false
@@ -1159,6 +1201,7 @@ definition{
     | Value.VNull => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VBool accepts => (if accepts then (anyValue) else (refused (Studio.Doc::lit "an object without properties that admits no member has no field to translate") context))
     | Value.VDec negative mantissa scale => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
+    | Value.VFloat wide bits => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VInt negative magnitude => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VStr text => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VArr items => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
@@ -1200,6 +1243,7 @@ definition{
     | Value.VNull => (ctor Value.VNull)
     | Value.VBool flag => (ctor Value.VBool flag)
     | Value.VDec negative mantissa scale => (ctor Value.VDec negative mantissa scale)
+    | Value.VFloat wide bits => (ctor Value.VFloat wide bits)
     | Value.VInt negative magnitude => (ctor Value.VInt negative magnitude)
     | Value.VStr value => (ctor Value.VStr value)
     | Value.VArr inner => (ctor Value.VArr inner)
@@ -1335,6 +1379,7 @@ definition{
     | Value.VNull => (ctor Value.VNull)
     | Value.VBool flag => (ctor Value.VBool flag)
     | Value.VDec negative mantissa scale => (ctor Value.VDec negative mantissa scale)
+    | Value.VFloat wide bits => (ctor Value.VFloat wide bits)
     | Value.VInt negative magnitude => (ctor Value.VInt negative magnitude)
     | Value.VStr text => (ctor Value.VStr text)
     | Value.VArr inner => (ctor Value.VArr inner)
@@ -1365,6 +1410,7 @@ definition{
     | Value.VNull => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VBool accepts => (if accepts then (anyValue) else (refused (Studio.Doc::lit "the false schema admits no instance") context))
     | Value.VDec negative mantissa scale => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
+    | Value.VFloat wide bits => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VInt negative magnitude => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VStr text => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
     | Value.VArr items => (refused (Studio.Doc::lit "a schema must be an object or a boolean") context)
@@ -1521,6 +1567,7 @@ definition{
     | Value.VDec negative mantissa scale => (match (escapedName (prim append (Studio.Doc::lit "n") (decimalText false mantissa scale) : Bytes))
       | Option.none => (ctor Option.none [Bytes])
       | Option.some spelled => (ctor Option.some [Bytes] (if negative then (prim append (Studio.Doc::lit "nMinus") (LexLeanStd.Text::sliceOr spelled 1 (prim subtract (prim length spelled : Nat) 1 : Nat)) : Bytes) else spelled)))
+    | Value.VFloat wide bits => (ctor Option.none [Bytes])
     | Value.VInt negative magnitude => (ctor Option.some [Bytes] (prim append (if (Studio.Doc::both negative (0 <? magnitude)) then (Studio.Doc::lit "nMinus") else (Studio.Doc::lit "n")) (LexLeanStd.Json::integerText false magnitude) : Bytes))
     | Value.VTag tagName tagged => (ctor Option.none [Bytes])
     | Value.VNull => (ctor Option.none [Bytes])
@@ -1775,6 +1822,7 @@ definition{
     | Value.VNull => found
     | Value.VBool flag => found
     | Value.VDec negative mantissa scale => found
+    | Value.VFloat wide bits => found
     | Value.VInt negative magnitude => found
     | Value.VStr text => found
     | Value.VNil => found),

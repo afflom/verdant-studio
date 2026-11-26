@@ -1,0 +1,398 @@
+\begin{lexlean}{Studio.Ieee754}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Numeral}
+\importmodule{LexLeanStd.JsonRead}
+\importmodule{LexLeanStd.Text}
+\importmodule{Studio.Doc}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: limb,
+  parameters: [],
+  result: Nat,
+  body: 1000000000,
+  executable: true
+}
+
+definition{
+  name: mulAdd,
+  parameters: [digits : (List Nat), factor : Nat, carry : Nat],
+  result: (List Nat),
+  body: (match digits
+    | List.nil => (if (carry =? 0) then (nil Nat) else (cons carry (nil Nat)))
+    | List.cons head rest => (let value : Nat := ((prim multiply head factor : Nat) + carry); (cons (prim remainder value (limb) 0 : Nat) (mulAdd rest factor (prim quotient value (limb) 0 : Nat))))),
+  recursive_argument: digits,
+  executable: true
+}
+
+definition{
+  name: fromNat,
+  parameters: [fuel : Nat, number : Nat],
+  result: (List Nat),
+  body: (match fuel
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (if (number =? 0) then (nil Nat) else (cons (prim remainder number (limb) 0 : Nat) (fromNat rest (prim quotient number (limb) 0 : Nat))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: repeatTimes,
+  parameters: [count : Nat, digits : (List Nat), factor : Nat],
+  result: (List Nat),
+  body: (match count
+    | Nat.zero => digits
+    | Nat.succ rest => (repeatTimes rest (mulAdd digits factor 0) factor)),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: limbCount,
+  parameters: [digits : (List Nat)],
+  result: Nat,
+  body: (match digits
+    | List.nil => 0
+    | List.cons head rest => ((limbCount rest) + 1)),
+  recursive_argument: digits,
+  executable: true
+}
+
+definition{
+  name: compareSame,
+  parameters: [left : (List Nat), right : (List Nat)],
+  result: Nat,
+  body: (match left
+    | List.nil => 1
+    | List.cons head rest => (match right
+      | List.nil => 2
+      | List.cons other later => (let high : Nat := (compareSame rest later); (if (high =? 1) then (if (head <? other) then 0 else (if (other <? head) then 2 else 1)) else high)))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: compare,
+  parameters: [left : (List Nat), right : (List Nat)],
+  result: Nat,
+  body: (let a : Nat := (limbCount left); (let b : Nat := (limbCount right); (if (a <? b) then 0 else (if (b <? a) then 2 else (compareSame left right))))),
+  executable: true
+}
+
+definition{
+  name: trimHigh,
+  parameters: [digits : (List Nat)],
+  result: (List Nat),
+  body: (match digits
+    | List.nil => (nil Nat)
+    | List.cons head rest => (let high : (List Nat) := (trimHigh rest); (match high
+      | List.nil => (if (head =? 0) then (nil Nat) else (cons head (nil Nat)))
+      | List.cons top more => (cons head high)))),
+  recursive_argument: digits,
+  executable: true
+}
+
+definition{
+  name: subtractFrom,
+  parameters: [left : (List Nat), right : (List Nat), borrow : Nat],
+  result: (List Nat),
+  body: (match left
+    | List.nil => (nil Nat)
+    | List.cons head rest => (let need : Nat := ((match right
+      | List.nil => 0
+      | List.cons other later => other) + borrow); (let tail : (List Nat) := (match right
+      | List.nil => (nil Nat)
+      | List.cons other later => later); (if (need <=? head) then (cons (prim subtract head need : Nat) (subtractFrom rest tail 0)) else (cons (prim subtract (head + (limb)) need : Nat) (subtractFrom rest tail 1)))))),
+  recursive_argument: left,
+  executable: true
+}
+
+definition{
+  name: minus,
+  parameters: [left : (List Nat), right : (List Nat)],
+  result: (List Nat),
+  body: (trimHigh (subtractFrom left right 0)),
+  executable: true
+}
+
+definition{
+  name: bitsFrom,
+  parameters: [fuel : Nat, probe : (List Nat), digits : (List Nat), count : Nat],
+  result: Nat,
+  body: (match fuel
+    | Nat.zero => count
+    | Nat.succ rest => (if ((compare probe digits) =? 2) then count else (bitsFrom rest (mulAdd probe 2 0) digits (count + 1)))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: bitLength,
+  parameters: [fuel : Nat, digits : (List Nat)],
+  result: Nat,
+  body: (bitsFrom fuel (cons 1 (nil Nat)) digits 0),
+  executable: true
+}
+
+definition{
+  name: reversed,
+  parameters: [digits : (List Nat), out : (List Nat)],
+  result: (List Nat),
+  body: (match digits
+    | List.nil => out
+    | List.cons head rest => (reversed rest (cons head out))),
+  recursive_argument: digits,
+  executable: true
+}
+
+definition{
+  name: zeros,
+  parameters: [count : Nat],
+  result: Bytes,
+  body: (match count
+    | Nat.zero => 0x
+    | Nat.succ rest => (prim append 0x30 (zeros rest) : Bytes)),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: padded,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (let shown : Bytes := (LexLeanStd.Numeral::decimal value); (prim append (zeros (prim subtract 9 (prim length shown : Nat) : Nat)) shown : Bytes)),
+  executable: true
+}
+
+definition{
+  name: lowerText,
+  parameters: [digits : (List Nat)],
+  result: Bytes,
+  body: (match digits
+    | List.nil => 0x
+    | List.cons head rest => (prim append (padded head) (lowerText rest) : Bytes)),
+  recursive_argument: digits,
+  executable: true
+}
+
+definition{
+  name: text,
+  parameters: [digits : (List Nat)],
+  result: Bytes,
+  body: (match (reversed digits (nil Nat))
+    | List.nil => 0x30
+    | List.cons head rest => (prim append (LexLeanStd.Numeral::decimal head) (lowerText rest) : Bytes)),
+  executable: true
+}
+
+definition{
+  name: power,
+  parameters: [count : Nat],
+  result: Nat,
+  body: (match count
+    | Nat.zero => 1
+    | Nat.succ rest => (prim multiply 2 (power rest) : Nat)),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: precision,
+  parameters: [wide : Bool],
+  result: Nat,
+  body: (if wide then 53 else 24),
+  executable: true
+}
+
+definition{
+  name: bias,
+  parameters: [wide : Bool],
+  result: Nat,
+  body: (if wide then 1023 else 127),
+  executable: true
+}
+
+definition{
+  name: exponentWidth,
+  parameters: [wide : Bool],
+  result: Nat,
+  body: (if wide then 11 else 8),
+  executable: true
+}
+
+definition{
+  name: trailingSpan,
+  parameters: [wide : Bool],
+  result: Nat,
+  body: (power (prim subtract (precision wide) 1 : Nat)),
+  executable: true
+}
+
+definition{
+  name: exponentTop,
+  parameters: [wide : Bool],
+  result: Nat,
+  body: (prim subtract (power (exponentWidth wide)) 1 : Nat),
+  executable: true
+}
+
+definition{
+  name: signBit,
+  parameters: [wide : Bool],
+  result: Nat,
+  body: (power (if wide then 63 else 31)),
+  executable: true
+}
+
+definition{
+  name: signed,
+  parameters: [negative : Bool, shown : Bytes],
+  result: Bytes,
+  body: (if negative then (prim append 0x2d shown : Bytes) else shown),
+  executable: true
+}
+
+definition{
+  name: trimZeros,
+  parameters: [shown : Bytes, count : Nat],
+  result: Bytes,
+  body: (match count
+    | Nat.zero => shown
+    | Nat.succ rest => (if ((LexLeanStd.JsonRead::byteOf shown (prim subtract (prim length shown : Nat) 1 : Nat)) =? 48) then (trimZeros (LexLeanStd.Text::sliceOr shown 0 (prim subtract (prim length shown : Nat) 1 : Nat)) rest) else shown)),
+  recursive_argument: count,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: exactText,
+  parameters: [significand : Nat, up : Bool, scale : Nat],
+  result: Bytes,
+  body: (if up then (text (repeatTimes scale (fromNat 3 significand) 2)) else (let digits : Bytes := (text (repeatTimes scale (fromNat 3 significand) 5)); (let length : Nat := (prim length digits : Nat); (let whole : Bytes := (if (scale <? length) then (LexLeanStd.Text::sliceOr digits 0 (prim subtract length scale : Nat)) else 0x30); (let fraction : Bytes := (trimZeros (if (scale <? length) then (LexLeanStd.Text::sliceOr digits (prim subtract length scale : Nat) scale) else (prim append (zeros (prim subtract scale length : Nat)) digits : Bytes)) (scale + 1)); (if ((prim length fraction : Nat) =? 0) then whole else (Studio.Doc::cat (cons whole (cons 0x2e (cons fraction (nil Bytes))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: finite,
+  parameters: [wide : Bool, bits : Nat],
+  result: Bool,
+  body: (if ((prim remainder (prim quotient bits (trailingSpan wide) 0 : Nat) (power (exponentWidth wide)) 0 : Nat) =? (exponentTop wide)) then false else true),
+  executable: true
+}
+
+definition{
+  name: toText,
+  parameters: [wide : Bool, bits : Nat],
+  result: Bytes,
+  body: (let span : Nat := (trailingSpan wide); (let negative : Bool := ((signBit wide) <=? bits); (let field : Nat := (prim remainder (prim quotient bits span 0 : Nat) (power (exponentWidth wide)) 0 : Nat); (let trailing : Nat := (prim remainder bits span 0 : Nat); (if (field =? (exponentTop wide)) then (if (trailing =? 0) then (signed negative (Studio.Doc::lit "inf")) else (signed negative (if ((prim quotient span 2 0 : Nat) <=? trailing) then (Studio.Doc::lit "nan") else (Studio.Doc::lit "snan")))) else (if (Studio.Doc::both (field =? 0) (trailing =? 0)) then (signed negative 0x30) else (let significand : Nat := (if (field =? 0) then trailing else (span + trailing)); (let exponent : Nat := (if (field =? 0) then 1 else field); (let offset : Nat := (prim subtract (prim subtract (exponent + 2000) (bias wide) : Nat) (prim subtract (precision wide) 1 : Nat) : Nat); (signed negative (if (2000 <=? offset) then (exactText significand true (prim subtract offset 2000 : Nat)) else (exactText significand false (prim subtract 2000 offset : Nat))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+inductive{
+  name: Parsed,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: number, fields: [(List Nat), Nat, Bool, Nat, Nat]},
+    {name: malformed, fields: []}
+  ]
+}
+
+definition{
+  name: digitAt,
+  parameters: [source : Bytes, position : Nat],
+  result: Nat,
+  body: (LexLeanStd.JsonRead::byteOf source position),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: scan,
+  parameters: [fuel : Nat, source : Bytes, position : Nat, phase : Nat, digits : (List Nat), fraction : Nat, below : Bool, exponent : Nat, seen : Nat],
+  result: Parsed,
+  body: (match fuel
+    | Nat.zero => (ctor Parsed.malformed)
+    | Nat.succ rest => (if ((prim length source : Nat) <=? position) then (if (Studio.Doc::both (0 <? (prim remainder seen 2 0 : Nat)) (Studio.Doc::either (phase <? 2) (2 <=? seen))) then (ctor Parsed.number digits fraction below exponent seen) else (ctor Parsed.malformed)) else (let byte : Nat := (digitAt source position); (if (Studio.Doc::both (48 <=? byte) (byte <=? 57)) then (if (phase <? 2) then (scan rest source (position + 1) phase (mulAdd digits 10 (prim subtract byte 48 : Nat)) (if (phase =? 1) then (fraction + 1) else fraction) below exponent (if (0 <? (prim remainder seen 2 0 : Nat)) then seen else (seen + 1))) else (scan rest source (position + 1) 3 digits fraction below (if (100000 <? exponent) then exponent else ((prim multiply exponent 10 : Nat) + (prim subtract byte 48 : Nat))) (if (2 <=? seen) then seen else (seen + 2)))) else (if (Studio.Doc::both (byte =? 46) (phase =? 0)) then (scan rest source (position + 1) 1 digits fraction below exponent seen) else (if (Studio.Doc::both (Studio.Doc::either (byte =? 101) (byte =? 69)) (Studio.Doc::both (phase <? 2) (0 <? seen))) then (scan rest source (position + 1) 2 digits fraction below exponent seen) else (if (Studio.Doc::both (Studio.Doc::either (byte =? 43) (byte =? 45)) (phase =? 2)) then (scan rest source (position + 1) 3 digits fraction (byte =? 45) exponent seen) else (ctor Parsed.malformed)))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: foldCase,
+  parameters: [source : Bytes, position : Nat, fuel : Nat],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => 0x
+    | Nat.succ rest => (if ((prim length source : Nat) <=? position) then 0x else (let byte : Nat := (digitAt source position); (prim append (if (Studio.Doc::both (65 <=? byte) (byte <=? 90)) then (LexLeanStd.Text::sliceOr (Studio.Doc::lit "abcdefghijklmnopqrstuvwxyz") (prim subtract byte 65 : Nat) 1) else (LexLeanStd.Text::sliceOr source position 1)) (foldCase source (position + 1) rest) : Bytes)))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: doublings,
+  parameters: [count : Nat, value : (List Nat), out : (List (List Nat))],
+  result: (List (List Nat)),
+  body: (match count
+    | Nat.zero => (cons value out)
+    | Nat.succ rest => (doublings rest (mulAdd value 2 0) (cons value out))),
+  recursive_argument: count,
+  executable: true
+}
+
+definition{
+  name: divideBy,
+  parameters: [steps : (List (List Nat)), remaining : (List Nat), quotient : Nat],
+  result: (Nat * (List Nat)),
+  body: (match steps
+    | List.nil => (quotient, remaining)
+    | List.cons head rest => (if ((compare remaining head) =? 0) then (divideBy rest remaining (prim multiply quotient 2 : Nat)) else (divideBy rest (minus remaining head) ((prim multiply quotient 2 : Nat) + 1)))),
+  recursive_argument: steps,
+  executable: true
+}
+
+definition{
+  name: scaled,
+  parameters: [wide : Bool, numerator : (List Nat), denominator : (List Nat), offset : Nat, shift : Nat],
+  result: (Nat * (List Nat)),
+  body: (let top : (List Nat) := (if (offset <=? shift) then numerator else (repeatTimes (prim subtract offset shift : Nat) numerator 2)); (let bottom : (List Nat) := (if (offset <=? shift) then (repeatTimes (prim subtract shift offset : Nat) denominator 2) else denominator); (let result : (Nat * (List Nat)) := (divideBy (doublings (precision wide) bottom (nil (List Nat))) top 0); ((first result), (if ((compare (mulAdd (second result) 2 0) bottom) =? 0) then (nil Nat) else (if ((compare (mulAdd (second result) 2 0) bottom) =? 1) then (cons 0 (nil Nat)) else (cons 1 (nil Nat)))))))),
+  executable: true
+}
+
+definition{
+  name: encodeRounded,
+  parameters: [wide : Bool, negative : Bool, quotient : Nat, half : (List Nat), offset : Nat, shift : Nat],
+  result: Nat,
+  body: (let p : Nat := (precision wide); (let up : Bool := (match half
+    | List.nil => false
+    | List.cons mark rest => (Studio.Doc::either (mark =? 1) (0 <? (prim remainder quotient 2 0 : Nat)))); (let rounded : Nat := (if up then (quotient + 1) else quotient); (let carried : Bool := (rounded =? (power p)); (let significand : Nat := (if carried then (power (prim subtract p 1 : Nat)) else rounded); (let place : Nat := (if carried then (shift + 1) else shift); (let sign : Nat := (if negative then (signBit wide) else 0); (if (significand <? (trailingSpan wide)) then (sign + significand) else (let field : Nat := (prim subtract ((place + p) + (bias wide)) (offset + 1) : Nat); (if ((exponentTop wide) <=? field) then (sign + (prim multiply (exponentTop wide) (trailingSpan wide) : Nat)) else ((sign + (prim multiply field (trailingSpan wide) : Nat)) + (prim subtract significand (trailingSpan wide) : Nat)))))))))))),
+  executable: true
+}
+
+definition{
+  name: finiteBits,
+  parameters: [wide : Bool, negative : Bool, digits : (List Nat), up : Bool, scale : Nat, fuel : Nat],
+  result: Nat,
+  body: (let numerator : (List Nat) := (if up then (repeatTimes scale digits 10) else digits); (let denominator : (List Nat) := (if up then (cons 1 (nil Nat)) else (repeatTimes scale (cons 1 (nil Nat)) 10)); (let offset : Nat := (fuel + 6000); (let estimate : Nat := (prim subtract ((bitLength fuel numerator) + offset) ((bitLength fuel denominator) + (precision wide)) : Nat); (let lowest : Nat := (prim subtract (offset + 1) ((bias wide) + (prim subtract (precision wide) 1 : Nat)) : Nat); (let start : Nat := (if (estimate <? lowest) then lowest else estimate); (let trial : (Nat * (List Nat)) := (scaled wide numerator denominator offset start); (if ((power (precision wide)) <=? (first trial)) then (encodeRounded wide negative (first (scaled wide numerator denominator offset (start + 1))) (second (scaled wide numerator denominator offset (start + 1))) offset (start + 1)) else (encodeRounded wide negative (first trial) (second trial) offset start))))))))),
+  executable: true
+}
+
+definition{
+  name: fromText,
+  parameters: [wide : Bool, source : Bytes],
+  result: (Option Nat),
+  body: (let total : Nat := (prim length source : Nat); (let lead : Nat := (digitAt source 0); (let negative : Bool := (lead =? 45); (let start : Nat := (if (Studio.Doc::either (lead =? 45) (lead =? 43)) then 1 else 0); (let word : Bytes := (foldCase (LexLeanStd.Text::sliceOr source start (prim subtract total start : Nat)) 0 (total + 1)); (let sign : Nat := (if negative then (signBit wide) else 0); (if (Studio.Doc::either (Studio.Doc::same word (Studio.Doc::lit "inf")) (Studio.Doc::same word (Studio.Doc::lit "infinity"))) then (ctor Option.some [Nat] (sign + (prim multiply (exponentTop wide) (trailingSpan wide) : Nat))) else (if (Studio.Doc::same word (Studio.Doc::lit "nan")) then (ctor Option.some [Nat] ((sign + (prim multiply (exponentTop wide) (trailingSpan wide) : Nat)) + (prim quotient (trailingSpan wide) 2 0 : Nat))) else (if (Studio.Doc::same word (Studio.Doc::lit "snan")) then (ctor Option.some [Nat] ((sign + (prim multiply (exponentTop wide) (trailingSpan wide) : Nat)) + 1)) else (match (scan (total + 1) source start 0 (nil Nat) 0 false 0 0)
+    | Parsed.malformed => (ctor Option.none [Nat])
+    | Parsed.number digits fraction below exponent count => (let mantissa : (List Nat) := (trimHigh digits); (match mantissa
+      | List.nil => (ctor Option.some [Nat] sign)
+      | List.cons low high => (let length : Nat := (prim length (text mantissa) : Nat); (let raised : Nat := (if below then 0 else exponent); (let lowered : Nat := ((if below then exponent else 0) + fraction); (if (lowered <=? raised) then (if (310 <=? ((prim subtract raised lowered : Nat) + (prim subtract length 1 : Nat))) then (ctor Option.some [Nat] (sign + (prim multiply (exponentTop wide) (trailingSpan wide) : Nat))) else (ctor Option.some [Nat] (finiteBits wide negative mantissa true (prim subtract raised lowered : Nat) (prim multiply 4 (total + 1100) : Nat)))) else (if ((length + 350) <=? (prim subtract lowered raised : Nat)) then (ctor Option.some [Nat] sign) else (ctor Option.some [Nat] (finiteBits wide negative mantissa false (prim subtract lowered raised : Nat) (prim multiply 4 ((total + (prim subtract lowered raised : Nat)) + 1100) : Nat)))))))))))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+\end{semanticmodule}
+\end{lexlean}
