@@ -2445,6 +2445,19 @@ definition{
 }
 
 definition{
+  name: readersPlan,
+  parameters: [args : (List Bytes), seen : Seen],
+  result: Plan,
+  body: (match args
+    | List.nil => (ctor Plan.refuse (usage))
+    | List.cons op rest => (match rest
+      | List.nil => (ctor Plan.refuse (usage))
+      | List.cons path more => (routeRead op path more seen))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: route,
   parameters: [args : (List Bytes), seen : Seen],
   result: Plan,
@@ -2458,7 +2471,7 @@ definition{
       (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else
       (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-")) then (routeRead op path more seen) else (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "stage-")) then (routeStage op path more seen) else (routeOther op path more seen)))))))))),
+      | List.cons path more => (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-")) then (ctor Plan.refuse (Studio.Doc::lit "read-webidl, read-xml, read-xsd and read-yaml run in verdant_readers, the command of the readers project\n")) else (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "stage-")) then (routeStage op path more seen) else (routeOther op path more seen)))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
