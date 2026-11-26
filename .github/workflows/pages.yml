@@ -53,7 +53,7 @@ jobs:
           # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.
           if [ -d certified-readers ]; then
             target/lexlean/bin/lexlean production verify-artifact certified-readers
-            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target
+            cargo build --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock
           fi
       - name: check, build and publish through the API
         run: |
