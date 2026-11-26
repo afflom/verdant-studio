@@ -875,6 +875,19 @@ definition{
 }
 
 definition{
+  name: planCheckYaml,
+  parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (match (missing seen (cons path (nil Bytes)))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (Studio.Yaml::readYaml (contents seen path))
+      | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "not read as YAML 1.2.2: ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))
+      | Result.ok items => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (LexLeanStd.Numeral::decimal (Studio.Yaml::documentCount items)) (cons (Studio.Doc::lit " documents\n") (nil Bytes))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: planReadXsdComponents,
   parameters: [seen : Seen, path : Bytes],
   result: Plan,
@@ -2874,6 +2887,7 @@ definition{
     (cons (Studio.Doc::lit "agenda")
     (cons (Studio.Doc::lit "build")
     (cons (Studio.Doc::lit "check")
+    (cons (Studio.Doc::lit "check-yaml FILE")
     (cons (Studio.Doc::lit "ingest-authority BINDING")
     (cons (Studio.Doc::lit "ingest-index CSV")
     (cons (Studio.Doc::lit "merge-gate RULES")
@@ -2895,7 +2909,7 @@ definition{
     (cons (Studio.Doc::lit "stage-mappings JSONL")
     (cons (Studio.Doc::lit "stage-matrix JSONL")
     (cons (Studio.Doc::lit "stage-registries JSONL")
-    (nil Bytes))))))))))))))))))))))))))))),
+    (nil Bytes)))))))))))))))))))))))))))))),
   executable: true
 }
 
@@ -2984,12 +2998,13 @@ definition{
   name: routeRead,
   parameters: [op : Bytes, path : Bytes, more : (List Bytes), seen : Seen],
   result: Plan,
-  body: (if (Studio.Doc::same op (Studio.Doc::lit "read-webidl")) then (planReadWebIdl seen path more) else
+  body: (if (Studio.Doc::same op (Studio.Doc::lit "check-yaml")) then (planCheckYaml seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "read-webidl")) then (planReadWebIdl seen path more) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-xml")) then (planReadXml seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-xsd")) then (planReadXsd seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-xsd-components")) then (planReadXsdComponents seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "read-yaml")) then (planReadYaml seen path) else
-    (ctor Plan.refuse (usage))))))),
+    (ctor Plan.refuse (usage)))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -3104,7 +3119,7 @@ definition{
       (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else
       (match rest
       | List.nil => (ctor Plan.refuse (usage))
-      | List.cons path more => (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-")) then (ctor Plan.refuse (Studio.Doc::lit "read-webidl, read-xml, read-xsd, read-xsd-components and read-yaml run in verdant_readers, the command of the readers project\n")) else (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "stage-")) then (routeStage op path more seen) else (routeOther op path more seen)))))))))),
+      | List.cons path more => (if ((LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-")) || (Studio.Doc::same op (Studio.Doc::lit "check-yaml"))) then (ctor Plan.refuse (Studio.Doc::lit "check-yaml, read-webidl, read-xml, read-xsd, read-xsd-components and read-yaml run in verdant_readers, the command of the readers project\n")) else (if (LexLeanStd.Text::startsWith op (Studio.Doc::lit "stage-")) then (routeStage op path more seen) else (routeOther op path more seen)))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
