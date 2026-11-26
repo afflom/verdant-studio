@@ -47,7 +47,7 @@ jobs:
         if: steps.command.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
-          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
+          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; cargo install --locked --version 0.4.3 lexlean --root target/lexlean; }
           target/lexlean/bin/lexlean production verify-artifact certified
           cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
           # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.
