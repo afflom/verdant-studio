@@ -4,6 +4,7 @@
 \importmodule{LexLeanStd.Text}
 \importmodule{LexLeanStd.Sha256}
 \importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
 \importmodule{Studio.Check}
 \importmodule{Studio.Ops}
 \title{Natural number addition}
@@ -279,60 +280,69 @@ definition{
 
 definition{
   name: reciteValue,
-  parameters: [value : LexLeanStd.Json::Json, version : Bytes],
-  result: LexLeanStd.Json::Json,
+  parameters: [value : Studio.Schema::Value, version : Bytes],
+  result: Studio.Schema::Value,
   body: (match value
-    | LexLeanStd.Json::Json.JStr cited => (ctor LexLeanStd.Json::Json.JStr (retarget (registers) cited version))
-    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
-    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
-    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
-    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj inner)
-    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
-    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)
-    | LexLeanStd.Json::Json.JMember key inner rest => (ctor LexLeanStd.Json::Json.JMember key inner rest)),
+    | Studio.Schema::Value.VStr cited => (ctor Studio.Schema::Value.VStr (retarget (registers) cited version))
+    | Studio.Schema::Value.VBool flag => (ctor Studio.Schema::Value.VBool flag)
+    | Studio.Schema::Value.VInt negative magnitude => (ctor Studio.Schema::Value.VInt negative magnitude)
+    | Studio.Schema::Value.VArr inner => (ctor Studio.Schema::Value.VArr inner)
+    | Studio.Schema::Value.VObj inner => (ctor Studio.Schema::Value.VObj inner)
+    | Studio.Schema::Value.VNil => (ctor Studio.Schema::Value.VNil)
+    | Studio.Schema::Value.VNull => (ctor Studio.Schema::Value.VNull)
+    | Studio.Schema::Value.VTag tagName tagged => (ctor Studio.Schema::Value.VTag tagName tagged)
+    | Studio.Schema::Value.VDec negative mantissa scale => (ctor Studio.Schema::Value.VDec negative mantissa scale)
+    | Studio.Schema::Value.VItem head rest => (ctor Studio.Schema::Value.VItem head rest)
+    | Studio.Schema::Value.VMember key inner rest => (ctor Studio.Schema::Value.VMember key inner rest)),
   executable: true
 }
 
 definition{
   name: reciteStd,
-  parameters: [spine : LexLeanStd.Json::Json, version : Bytes],
-  result: LexLeanStd.Json::Json,
+  parameters: [spine : Studio.Schema::Value, version : Bytes],
+  result: Studio.Schema::Value,
   body: (match spine
-    | LexLeanStd.Json::Json.JMember name value rest => (if (Studio.Doc::same name (Studio.Doc::lit "authority")) then (ctor LexLeanStd.Json::Json.JMember name (reciteValue value version) (reciteStd rest version)) else (ctor LexLeanStd.Json::Json.JMember name value (reciteStd rest version)))
-    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj (reciteStd inner version))
-    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
-    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
-    | LexLeanStd.Json::Json.JStr value => (ctor LexLeanStd.Json::Json.JStr value)
-    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
-    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
-    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)),
+    | Studio.Schema::Value.VMember name value rest => (if (Studio.Doc::same name (Studio.Doc::lit "authority")) then (ctor Studio.Schema::Value.VMember name (reciteValue value version) (reciteStd rest version)) else (ctor Studio.Schema::Value.VMember name value (reciteStd rest version)))
+    | Studio.Schema::Value.VObj inner => (ctor Studio.Schema::Value.VObj (reciteStd inner version))
+    | Studio.Schema::Value.VBool flag => (ctor Studio.Schema::Value.VBool flag)
+    | Studio.Schema::Value.VInt negative magnitude => (ctor Studio.Schema::Value.VInt negative magnitude)
+    | Studio.Schema::Value.VStr value => (ctor Studio.Schema::Value.VStr value)
+    | Studio.Schema::Value.VArr inner => (ctor Studio.Schema::Value.VArr inner)
+    | Studio.Schema::Value.VNil => (ctor Studio.Schema::Value.VNil)
+    | Studio.Schema::Value.VNull => (ctor Studio.Schema::Value.VNull)
+    | Studio.Schema::Value.VTag tagName tagged => (ctor Studio.Schema::Value.VTag tagName tagged)
+    | Studio.Schema::Value.VDec negative mantissa scale => (ctor Studio.Schema::Value.VDec negative mantissa scale)
+    | Studio.Schema::Value.VItem head rest => (ctor Studio.Schema::Value.VItem head rest)),
   recursive_argument: spine,
   executable: true
 }
 
 definition{
   name: reciteTop,
-  parameters: [spine : LexLeanStd.Json::Json, version : Bytes],
-  result: LexLeanStd.Json::Json,
+  parameters: [spine : Studio.Schema::Value, version : Bytes],
+  result: Studio.Schema::Value,
   body: (match spine
-    | LexLeanStd.Json::Json.JMember name value rest => (if (Studio.Doc::same name (Studio.Doc::lit "std")) then (ctor LexLeanStd.Json::Json.JMember name (reciteStd value version) (reciteTop rest version)) else (ctor LexLeanStd.Json::Json.JMember name value (reciteTop rest version)))
-    | LexLeanStd.Json::Json.JObj inner => (ctor LexLeanStd.Json::Json.JObj (reciteTop inner version))
-    | LexLeanStd.Json::Json.JBool flag => (ctor LexLeanStd.Json::Json.JBool flag)
-    | LexLeanStd.Json::Json.JInt negative magnitude => (ctor LexLeanStd.Json::Json.JInt negative magnitude)
-    | LexLeanStd.Json::Json.JStr value => (ctor LexLeanStd.Json::Json.JStr value)
-    | LexLeanStd.Json::Json.JArr inner => (ctor LexLeanStd.Json::Json.JArr inner)
-    | LexLeanStd.Json::Json.JNil => (ctor LexLeanStd.Json::Json.JNil)
-    | LexLeanStd.Json::Json.JItem head rest => (ctor LexLeanStd.Json::Json.JItem head rest)),
+    | Studio.Schema::Value.VMember name value rest => (if (Studio.Doc::same name (Studio.Doc::lit "std")) then (ctor Studio.Schema::Value.VMember name (reciteStd value version) (reciteTop rest version)) else (ctor Studio.Schema::Value.VMember name value (reciteTop rest version)))
+    | Studio.Schema::Value.VObj inner => (ctor Studio.Schema::Value.VObj (reciteTop inner version))
+    | Studio.Schema::Value.VBool flag => (ctor Studio.Schema::Value.VBool flag)
+    | Studio.Schema::Value.VInt negative magnitude => (ctor Studio.Schema::Value.VInt negative magnitude)
+    | Studio.Schema::Value.VStr value => (ctor Studio.Schema::Value.VStr value)
+    | Studio.Schema::Value.VArr inner => (ctor Studio.Schema::Value.VArr inner)
+    | Studio.Schema::Value.VNil => (ctor Studio.Schema::Value.VNil)
+    | Studio.Schema::Value.VNull => (ctor Studio.Schema::Value.VNull)
+    | Studio.Schema::Value.VTag tagName tagged => (ctor Studio.Schema::Value.VTag tagName tagged)
+    | Studio.Schema::Value.VDec negative mantissa scale => (ctor Studio.Schema::Value.VDec negative mantissa scale)
+    | Studio.Schema::Value.VItem head rest => (ctor Studio.Schema::Value.VItem head rest)),
   recursive_argument: spine,
   executable: true
 }
 
 definition{
   name: reciteAll,
-  parameters: [items : (List LexLeanStd.Json::Json), version : Bytes],
-  result: (List LexLeanStd.Json::Json),
+  parameters: [items : (List Studio.Schema::Value), version : Bytes],
+  result: (List Studio.Schema::Value),
   body: (match items
-    | List.nil => (nil LexLeanStd.Json::Json)
+    | List.nil => (nil Studio.Schema::Value)
     | List.cons head rest => (cons (reciteTop head version) (reciteAll rest version))),
   recursive_argument: items,
   executable: true
@@ -340,13 +350,13 @@ definition{
 
 definition{
   name: citedOf,
-  parameters: [items : (List LexLeanStd.Json::Json)],
+  parameters: [items : (List Studio.Schema::Value)],
   result: (List Bytes),
   body: (match items
     | List.nil => (nil Bytes)
-    | List.cons head rest => (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+    | List.cons head rest => (match (Studio.Schema::field head (Studio.Doc::lit "std"))
       | Option.none => (citedOf rest)
-      | Option.some std => (cons (Studio.Doc::str std (Studio.Doc::lit "authority")) (citedOf rest)))),
+      | Option.some std => (cons (Studio.Schema::str std (Studio.Doc::lit "authority")) (citedOf rest)))),
   recursive_argument: items,
   executable: true
 }
@@ -355,7 +365,7 @@ definition{
   name: planRecite,
   parameters: [seen : Studio.Ops::Seen, tag : Bytes],
   result: Studio.Ops::Plan,
-  body: (let items : (List LexLeanStd.Json::Json) := (Studio.Ops::arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let moved : (List LexLeanStd.Json::Json) := (reciteAll items (versionOf tag)); (if (Studio.Ops::sameList (citedOf items) (citedOf moved)) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "verdant-engine ") (cons tag (cons (Studio.Doc::lit " is pinned, and every admission of its registers cites it\n") (nil Bytes)))))) else (ctor Studio.Ops::Plan.done (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (Studio.Ops::jsonItems moved)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "re-cited the admissions of the verdant-engine registers at ") (cons tag (cons 0x0a (nil Bytes))))))))),
+  body: (let items : (List Studio.Schema::Value) := (Studio.Ops::arrayOf seen (Studio.Doc::lit "model/admissions.json")); (let moved : (List Studio.Schema::Value) := (reciteAll items (versionOf tag)); (if (Studio.Ops::sameList (citedOf items) (citedOf moved)) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "verdant-engine ") (cons tag (cons (Studio.Doc::lit " is pinned, and every admission of its registers cites it\n") (nil Bytes)))))) else (ctor Studio.Ops::Plan.done (cons ((Studio.Doc::lit "model/admissions.json"), (Studio.Schema::writeFile (ctor Studio.Schema::Value.VArr (Studio.Ops::jsonItems moved)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "re-cited the admissions of the verdant-engine registers at ") (cons tag (cons 0x0a (nil Bytes))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -379,17 +389,17 @@ definition{
   result: Studio.Ops::Plan,
   body: (if (Studio.Ops::negate (Studio.Doc::memberBytes (refPath) (project seen ran))) then (download (refPath) (api (Studio.Doc::cat (cons (Studio.Doc::lit "git/ref/tags/") (cons tag (nil Bytes)))))) else (match (Studio.Ops::missing seen (cons (refPath) (nil Bytes)))
     | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
-    | List.nil => (let object : LexLeanStd.Json::Json := (match (Studio.Doc::field (match (Studio.Ops::jsonOf seen (refPath))
-          | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+    | List.nil => (let object : Studio.Schema::Value := (match (Studio.Schema::field (match (Studio.Ops::jsonOf seen (refPath))
+          | Option.none => (ctor Studio.Schema::Value.VNil)
           | Option.some found => found) (Studio.Doc::lit "object"))
-        | Option.none => (ctor LexLeanStd.Json::Json.JNil)
-        | Option.some found => found); (if (Studio.Doc::same (Studio.Doc::str object (Studio.Doc::lit "type")) (Studio.Doc::lit "tag")) then (if (Studio.Ops::negate (Studio.Doc::memberBytes (tagPath) (project seen ran))) then (download (tagPath) (api (Studio.Doc::cat (cons (Studio.Doc::lit "git/tags/") (cons (Studio.Doc::str object (Studio.Doc::lit "sha")) (nil Bytes)))))) else (match (Studio.Ops::missing seen (cons (tagPath) (nil Bytes)))
+        | Option.none => (ctor Studio.Schema::Value.VNil)
+        | Option.some found => found); (if (Studio.Doc::same (Studio.Schema::str object (Studio.Doc::lit "type")) (Studio.Doc::lit "tag")) then (if (Studio.Ops::negate (Studio.Doc::memberBytes (tagPath) (project seen ran))) then (download (tagPath) (api (Studio.Doc::cat (cons (Studio.Doc::lit "git/tags/") (cons (Studio.Schema::str object (Studio.Doc::lit "sha")) (nil Bytes)))))) else (match (Studio.Ops::missing seen (cons (tagPath) (nil Bytes)))
           | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
-          | List.nil => (planFetch seen tag (match (Studio.Doc::field (match (Studio.Ops::jsonOf seen (tagPath))
-              | Option.none => (ctor LexLeanStd.Json::Json.JNil)
+          | List.nil => (planFetch seen tag (match (Studio.Schema::field (match (Studio.Ops::jsonOf seen (tagPath))
+              | Option.none => (ctor Studio.Schema::Value.VNil)
               | Option.some found => found) (Studio.Doc::lit "object"))
             | Option.none => 0x
-            | Option.some found => (Studio.Doc::str found (Studio.Doc::lit "sha")))))) else (planFetch seen tag (Studio.Doc::str object (Studio.Doc::lit "sha"))))))),
+            | Option.some found => (Studio.Schema::str found (Studio.Doc::lit "sha")))))) else (planFetch seen tag (Studio.Schema::str object (Studio.Doc::lit "sha"))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -402,7 +412,7 @@ definition{
     | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
     | List.nil => (let tag : Bytes := (match (Studio.Ops::jsonOf seen (releasePath))
         | Option.none => 0x
-        | Option.some release => (Studio.Doc::str release (Studio.Doc::lit "tag_name"))); (if ((prim length tag : Nat) =? 0) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "waiting engine: the latest verdant-engine release names no tag\n")) else (let entries : (List Bytes) := (idsAt (registers) (versionOf tag)); (if ((prim length (Studio.Ops::absent entries (Studio.Check::tomlIds (Studio.Ops::contents seen (Studio.Doc::lit "model/authorities.toml")))) : Nat) =? 0) then (planRecite seen tag) else (match (Studio.Ops::missing seen (bindingPaths entries))
+        | Option.some release => (Studio.Schema::str release (Studio.Doc::lit "tag_name"))); (if ((prim length tag : Nat) =? 0) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "waiting engine: the latest verdant-engine release names no tag\n")) else (let entries : (List Bytes) := (idsAt (registers) (versionOf tag)); (if ((prim length (Studio.Ops::absent entries (Studio.Check::tomlIds (Studio.Ops::contents seen (Studio.Doc::lit "model/authorities.toml")))) : Nat) =? 0) then (planRecite seen tag) else (match (Studio.Ops::missing seen (bindingPaths entries))
       | List.cons head rest => (ctor Studio.Ops::Plan.reads (cons head rest))
       | List.nil => (if (Studio.Ops::present seen (bindingPath (idOf (ctor Register.ids) (versionOf tag)))) then (ctor Studio.Ops::Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "waiting ingest: the verdant-engine ") (cons tag (cons (Studio.Doc::lit " bindings are staged, and advance ingests them\n") (nil Bytes)))))) else (planPin seen tag))))))))),
   axioms: [Quot.sound, propext],
