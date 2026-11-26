@@ -1,0 +1,697 @@
+\begin{lexlean}{Studio.Conforms}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{LexLeanStd.Numeral}
+\importmodule{LexLeanStd.Text}
+\importmodule{LexLeanStd.JsonRead}
+\importmodule{Studio.Doc}
+\importmodule{Studio.Schema}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: negate,
+  parameters: [flag : Bool],
+  result: Bool,
+  body: (if flag then false else true),
+  executable: true
+}
+
+definition{
+  name: absentFrom,
+  parameters: [names : (List Bytes), present : (List Bytes)],
+  result: (List Bytes),
+  body: (match names
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::memberBytes head present) then (absentFrom rest present) else (cons head (absentFrom rest present)))),
+  recursive_argument: names,
+  executable: true
+}
+
+inductive{
+  name: Term,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mk, fields: [Bool, (List (Nat * Nat)), Nat]}
+  ]
+}
+
+definition{
+  name: escapedFrom,
+  parameters: [fuel : Nat, text : Bytes, offset : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (match (prim index text offset : (Option UInt8))
+      | Option.none => out
+      | Option.some raw => (let byte : Nat := (Studio.Doc::byteValue raw); (escapedFrom rest text (offset + 1) (prim append out (if (byte =? 126) then (Studio.Doc::lit "~0") else (if (byte =? 47) then (Studio.Doc::lit "~1") else (LexLeanStd.Text::sliceOr text offset 1))) : Bytes))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: below,
+  parameters: [at : Bytes, token : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons at (cons (Studio.Doc::lit "/") (cons (escapedFrom ((prim length token : Nat) + 1) token 0 0x) (nil Bytes))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: failure,
+  parameters: [at : Bytes, reason : Bytes],
+  result: (Option Bytes),
+  body: (ctor Option.some [Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the instance at \"") (cons at (cons (Studio.Doc::lit "\" ") (cons reason (nil Bytes))))))),
+  executable: true
+}
+
+definition{
+  name: memberCount,
+  parameters: [spine : Studio.Schema::Value],
+  result: Nat,
+  body: (match spine
+    | Studio.Schema::Value.VMember key item rest => ((memberCount rest) + 1)
+    | Studio.Schema::Value.VItem item rest => ((memberCount rest) + 1)
+    | Studio.Schema::Value.VNull => 0
+    | Studio.Schema::Value.VTag tagName tagged => 0
+    | Studio.Schema::Value.VBool flag => 0
+    | Studio.Schema::Value.VInt negative magnitude => 0
+    | Studio.Schema::Value.VDec negative mantissa scale => 0
+    | Studio.Schema::Value.VStr text => 0
+    | Studio.Schema::Value.VArr inner => 0
+    | Studio.Schema::Value.VObj inner => 0
+    | Studio.Schema::Value.VNil => 0),
+  recursive_argument: spine,
+  executable: true
+}
+
+definition{
+  name: valueEq,
+  parameters: [members : Bool, left : Studio.Schema::Value, right : Studio.Schema::Value],
+  result: Bool,
+  body: (match left
+    | Studio.Schema::Value.VMember key item rest => ((match (Studio.Schema::field right key)
+      | Option.none => false
+      | Option.some other => (valueEq false item other)) && (valueEq true rest right))
+    | Studio.Schema::Value.VNil => (if members then true else (match right
+      | Studio.Schema::Value.VNil => true
+      | Studio.Schema::Value.VMember key item rest => false
+      | Studio.Schema::Value.VItem item rest => false
+      | Studio.Schema::Value.VNull => false
+      | Studio.Schema::Value.VTag tagName tagged => false
+      | Studio.Schema::Value.VBool flag => false
+      | Studio.Schema::Value.VInt negative magnitude => false
+      | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VStr text => false
+      | Studio.Schema::Value.VArr inner => false
+      | Studio.Schema::Value.VObj inner => false))
+    | Studio.Schema::Value.VItem item rest => (match right
+      | Studio.Schema::Value.VItem other later => ((valueEq false item other) && (valueEq false rest later))
+      | Studio.Schema::Value.VNil => false
+      | Studio.Schema::Value.VMember key value more => false
+      | Studio.Schema::Value.VNull => false
+      | Studio.Schema::Value.VTag tagName tagged => false
+      | Studio.Schema::Value.VBool flag => false
+      | Studio.Schema::Value.VInt negative magnitude => false
+      | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VStr text => false
+      | Studio.Schema::Value.VArr inner => false
+      | Studio.Schema::Value.VObj inner => false)
+    | Studio.Schema::Value.VObj inner => (match right
+      | Studio.Schema::Value.VObj other => ((Studio.Doc::both ((memberCount inner) =? (memberCount other)) true) && (valueEq true inner other))
+      | Studio.Schema::Value.VNil => false
+      | Studio.Schema::Value.VItem item rest => false
+      | Studio.Schema::Value.VMember key value more => false
+      | Studio.Schema::Value.VNull => false
+      | Studio.Schema::Value.VTag tagName tagged => false
+      | Studio.Schema::Value.VBool flag => false
+      | Studio.Schema::Value.VInt negative magnitude => false
+      | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VStr text => false
+      | Studio.Schema::Value.VArr items => false)
+    | Studio.Schema::Value.VArr inner => (match right
+      | Studio.Schema::Value.VArr other => (valueEq false inner other)
+      | Studio.Schema::Value.VNil => false
+      | Studio.Schema::Value.VItem item rest => false
+      | Studio.Schema::Value.VMember key value more => false
+      | Studio.Schema::Value.VNull => false
+      | Studio.Schema::Value.VTag tagName tagged => false
+      | Studio.Schema::Value.VBool flag => false
+      | Studio.Schema::Value.VInt negative magnitude => false
+      | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VStr text => false
+      | Studio.Schema::Value.VObj members2 => false)
+    | Studio.Schema::Value.VTag tagName tagged => false
+    | Studio.Schema::Value.VNull => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Doc::lit "null"))
+    | Studio.Schema::Value.VBool flag => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VBool flag)))
+    | Studio.Schema::Value.VInt negative magnitude => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VInt negative magnitude)))
+    | Studio.Schema::Value.VDec negative mantissa scale => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VDec negative mantissa scale)))
+    | Studio.Schema::Value.VStr text => (match right
+      | Studio.Schema::Value.VStr other => (Studio.Doc::same text other)
+      | Studio.Schema::Value.VNil => false
+      | Studio.Schema::Value.VItem item rest => false
+      | Studio.Schema::Value.VMember key value more => false
+      | Studio.Schema::Value.VNull => false
+      | Studio.Schema::Value.VTag tagName tagged => false
+      | Studio.Schema::Value.VBool flag => false
+      | Studio.Schema::Value.VInt negative magnitude => false
+      | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VArr items => false
+      | Studio.Schema::Value.VObj members2 => false)),
+  recursive_argument: left,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: kindOf,
+  parameters: [value : Studio.Schema::Value],
+  result: Bytes,
+  body: (match value
+    | Studio.Schema::Value.VNull => (Studio.Doc::lit "null")
+    | Studio.Schema::Value.VBool flag => (Studio.Doc::lit "boolean")
+    | Studio.Schema::Value.VInt negative magnitude => (Studio.Doc::lit "integer")
+    | Studio.Schema::Value.VDec negative mantissa scale => (Studio.Doc::lit "number")
+    | Studio.Schema::Value.VStr text => (Studio.Doc::lit "string")
+    | Studio.Schema::Value.VArr inner => (Studio.Doc::lit "array")
+    | Studio.Schema::Value.VObj inner => (Studio.Doc::lit "object")
+    | Studio.Schema::Value.VTag tagName tagged => (Studio.Doc::lit "tagged")
+    | Studio.Schema::Value.VNil => (Studio.Doc::lit "spine")
+    | Studio.Schema::Value.VItem item rest => (Studio.Doc::lit "spine")
+    | Studio.Schema::Value.VMember key item rest => (Studio.Doc::lit "spine")),
+  executable: true
+}
+
+definition{
+  name: hasType,
+  parameters: [name : Bytes, value : Studio.Schema::Value],
+  result: Bool,
+  body: (let kind : Bytes := (kindOf value); (if (Studio.Doc::same name (Studio.Doc::lit "number")) then ((Studio.Doc::same kind (Studio.Doc::lit "integer")) || (Studio.Doc::same kind (Studio.Doc::lit "number"))) else (Studio.Doc::same name kind))),
+  executable: true
+}
+
+definition{
+  name: anyType,
+  parameters: [names : (List Bytes), value : Studio.Schema::Value],
+  result: Bool,
+  body: (match names
+    | List.nil => false
+    | List.cons head rest => ((hasType head value) || (anyType rest value))),
+  recursive_argument: names,
+  executable: true
+}
+
+definition{
+  name: anyEqual,
+  parameters: [items : (List Studio.Schema::Value), value : Studio.Schema::Value],
+  result: Bool,
+  body: (match items
+    | List.nil => false
+    | List.cons head rest => ((valueEq false head value) || (anyEqual rest value))),
+  recursive_argument: items,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: pointsFrom,
+  parameters: [fuel : Nat, text : Bytes, offset : Nat],
+  result: (Option (List Nat)),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [(List Nat)] (nil Nat))
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then (ctor Option.some [(List Nat)] (nil Nat)) else (match (Studio.Schema::decodeAt text offset)
+      | Option.none => (ctor Option.none [(List Nat)])
+      | Option.some decoded => (match (pointsFrom rest text (offset + (second decoded)))
+        | Option.none => (ctor Option.none [(List Nat)])
+        | Option.some later => (ctor Option.some [(List Nat)] (cons (first decoded) later)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: pointsOf,
+  parameters: [text : Bytes],
+  result: (Option (List Nat)),
+  body: (pointsFrom ((prim length text : Nat) + 1) text 0),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: natCount,
+  parameters: [items : (List Nat)],
+  result: Nat,
+  body: (match items
+    | List.nil => 0
+    | List.cons head rest => ((natCount rest) + 1)),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: tenTo,
+  parameters: [power : Nat],
+  result: Nat,
+  body: (match power
+    | Nat.zero => 1
+    | Nat.succ rest => (prim multiply (tenTo rest) 10 : Nat)),
+  recursive_argument: power,
+  executable: true
+}
+
+definition{
+  name: numberOf,
+  parameters: [value : Studio.Schema::Value],
+  result: (Option (Bool * (Nat * Nat))),
+  body: (match value
+    | Studio.Schema::Value.VInt negative magnitude => (ctor Option.some [(Bool * (Nat * Nat))] (negative, (magnitude, 0)))
+    | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.some [(Bool * (Nat * Nat))] (negative, (mantissa, scale)))
+    | Studio.Schema::Value.VNull => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VTag tagName tagged => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VBool flag => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VStr text => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VArr inner => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VObj inner => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VNil => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VItem item rest => (ctor Option.none [(Bool * (Nat * Nat))])
+    | Studio.Schema::Value.VMember key item rest => (ctor Option.none [(Bool * (Nat * Nat))])),
+  executable: true
+}
+
+definition{
+  name: lessNumber,
+  parameters: [left : (Bool * (Nat * Nat)), right : (Bool * (Nat * Nat))],
+  result: Bool,
+  body: (let x : Nat := (prim multiply (first (second left)) (tenTo (second (second right))) : Nat); (let y : Nat := (prim multiply (first (second right)) (tenTo (second (second left))) : Nat); (if (first left) then (if (first right) then (y <? x) else true) else (if (first right) then false else (x <? y))))),
+  executable: true
+}
+
+definition{
+  name: classStep,
+  parameters: [fuel : Nat, pattern : Bytes, offset : Nat, ranges : (List (Nat * Nat))],
+  result: (Result ((List (Nat * Nat)) * Nat) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.error [((List (Nat * Nat)) * Nat), Bytes] (Studio.Doc::lit "a character class in a pattern has no closing ] (ECMA-262 section 22.2.1)"))
+    | Nat.succ rest => (let byte : Nat := (LexLeanStd.JsonRead::byteOf pattern offset); (if ((prim length pattern : Nat) <=? offset) then (ctor Result.error [((List (Nat * Nat)) * Nat), Bytes] (Studio.Doc::lit "a character class in a pattern has no closing ] (ECMA-262 section 22.2.1)")) else (if (byte =? 93) then (ctor Result.ok [((List (Nat * Nat)) * Nat), Bytes] (ranges, (offset + 1))) else (if ((byte =? 92) || (127 <? byte)) then (ctor Result.error [((List (Nat * Nat)) * Nat), Bytes] (Studio.Doc::lit "an escape or a non-ASCII character in a pattern's character class is not evaluated (ECMA-262 section 22.2.1)")) else (if (((LexLeanStd.JsonRead::byteOf pattern (offset + 1)) =? 45) && (Studio.Doc::both ((offset + 2) <? (prim length pattern : Nat)) (Studio.Doc::both (negate ((LexLeanStd.JsonRead::byteOf pattern (offset + 2)) =? 93)) (negate ((LexLeanStd.JsonRead::byteOf pattern (offset + 2)) =? 92))))) then (classStep rest pattern (offset + 3) (cons (byte, (LexLeanStd.JsonRead::byteOf pattern (offset + 2))) ranges)) else (classStep rest pattern (offset + 1) (cons (byte, byte) ranges)))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: quantifierOf,
+  parameters: [byte : Nat],
+  result: Nat,
+  body: (if (byte =? 42) then 1 else (if (byte =? 43) then 2 else (if (byte =? 63) then 3 else 0))),
+  executable: true
+}
+
+definition{
+  name: termsFrom,
+  parameters: [fuel : Nat, pattern : Bytes, offset : Nat, stop : Nat],
+  result: (Result (List Term) Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Result.ok [(List Term), Bytes] (nil Term))
+    | Nat.succ rest => (if (stop <=? offset) then (ctor Result.ok [(List Term), Bytes] (nil Term)) else (let byte : Nat := (LexLeanStd.JsonRead::byteOf pattern offset); (match (if (byte =? 91) then (if ((LexLeanStd.JsonRead::byteOf pattern (offset + 1)) =? 94) then (match (classStep (prim length pattern : Nat) pattern (offset + 2) (nil (Nat * Nat)))
+      | Result.error reason => (ctor Result.error [((Bool * (List (Nat * Nat))) * Nat), Bytes] reason)
+      | Result.ok found => (ctor Result.ok [((Bool * (List (Nat * Nat))) * Nat), Bytes] ((true, (first found)), (second found)))) else (match (classStep (prim length pattern : Nat) pattern (offset + 1) (nil (Nat * Nat)))
+      | Result.error reason => (ctor Result.error [((Bool * (List (Nat * Nat))) * Nat), Bytes] reason)
+      | Result.ok found => (ctor Result.ok [((Bool * (List (Nat * Nat))) * Nat), Bytes] ((false, (first found)), (second found))))) else (if (byte =? 46) then (ctor Result.ok [((Bool * (List (Nat * Nat))) * Nat), Bytes] ((true, (cons (10, 10) (cons (13, 13) (cons (8232, 8233) (nil (Nat * Nat)))))), (offset + 1))) else (if ((((((byte =? 40) || (byte =? 41)) || ((byte =? 124) || (byte =? 123))) || (((byte =? 125) || (byte =? 92)) || ((byte =? 94) || (byte =? 36)))) || (((byte =? 42) || (byte =? 43)) || (byte =? 63))) || (127 <? byte)) then (ctor Result.error [((Bool * (List (Nat * Nat))) * Nat), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the pattern construct ") (cons (LexLeanStd.Text::sliceOr pattern offset 1) (cons (Studio.Doc::lit " is not evaluated: only ^, $, ., character classes, literal ASCII characters and the quantifiers *, + and ? are (ECMA-262 section 22.2.1)") (nil Bytes)))))) else (ctor Result.ok [((Bool * (List (Nat * Nat))) * Nat), Bytes] ((false, (cons (byte, byte) (nil (Nat * Nat)))), (offset + 1))))))
+      | Result.error reason => (ctor Result.error [(List Term), Bytes] reason)
+      | Result.ok atom => (let after : Nat := (second atom); (let quantifier : Nat := (if (after <? stop) then (quantifierOf (LexLeanStd.JsonRead::byteOf pattern after)) else 0); (if ((after <? stop) && ((LexLeanStd.JsonRead::byteOf pattern after) =? 123)) then (ctor Result.error [(List Term), Bytes] (Studio.Doc::lit "a {n,m} quantifier in a pattern is not evaluated (ECMA-262 section 22.2.1)")) else (match (termsFrom rest pattern (if (0 <? quantifier) then (after + 1) else after) stop)
+        | Result.error reason => (ctor Result.error [(List Term), Bytes] reason)
+        | Result.ok later => (ctor Result.ok [(List Term), Bytes] (cons (ctor Term.mk (first (first atom)) (second (first atom)) quantifier) later)))))))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: patternOf,
+  parameters: [pattern : Bytes],
+  result: (Result ((Bool * Bool) * (List Term)) Bytes),
+  body: (let total : Nat := (prim length pattern : Nat); (let start : Bool := ((0 <? total) && ((LexLeanStd.JsonRead::byteOf pattern 0) =? 94)); (let finish : Bool := ((0 <? total) && (Studio.Doc::both ((LexLeanStd.JsonRead::byteOf pattern (prim subtract total 1 : Nat)) =? 36) (negate ((LexLeanStd.JsonRead::byteOf pattern (prim subtract total 2 : Nat)) =? 92)))); (match (termsFrom (total + 1) pattern (if start then 1 else 0) (if finish then (prim subtract total 1 : Nat) else total))
+    | Result.error reason => (ctor Result.error [((Bool * Bool) * (List Term)), Bytes] reason)
+    | Result.ok terms => (ctor Result.ok [((Bool * Bool) * (List Term)), Bytes] ((start, finish), terms)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: inRanges,
+  parameters: [ranges : (List (Nat * Nat)), point : Nat],
+  result: Bool,
+  body: (match ranges
+    | List.nil => false
+    | List.cons head rest => ((((first head) <=? point) && (point <=? (second head))) || (inRanges rest point))),
+  recursive_argument: ranges,
+  executable: true
+}
+
+definition{
+  name: admits,
+  parameters: [term : Term, point : Nat],
+  result: Bool,
+  body: (match term
+    | Term.mk negated ranges quantifier => (if negated then (negate (inRanges ranges point)) else (inRanges ranges point))),
+  executable: true
+}
+
+definition{
+  name: matchHere,
+  parameters: [fuel : Nat, terms : (List Term), points : (List Nat), finish : Bool],
+  result: Bool,
+  body: (match fuel
+    | Nat.zero => false
+    | Nat.succ rest => (match terms
+      | List.nil => (if finish then ((natCount points) =? 0) else true)
+      | List.cons term later => (match term
+        | Term.mk negated ranges quantifier => (if (quantifier =? 1) then ((matchHere rest later points finish) || (match points
+          | List.nil => false
+          | List.cons point more => ((admits term point) && (matchHere rest terms more finish)))) else (if (quantifier =? 2) then (match points
+          | List.nil => false
+          | List.cons point more => ((admits term point) && (matchHere rest (cons (ctor Term.mk negated ranges 1) later) more finish))) else (if (quantifier =? 3) then ((matchHere rest later points finish) || (match points
+          | List.nil => false
+          | List.cons point more => ((admits term point) && (matchHere rest later more finish)))) else (match points
+          | List.nil => false
+          | List.cons point more => ((admits term point) && (matchHere rest later more finish))))))))),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
+  name: termCount,
+  parameters: [terms : (List Term)],
+  result: Nat,
+  body: (match terms
+    | List.nil => 0
+    | List.cons head rest => ((termCount rest) + 1)),
+  recursive_argument: terms,
+  executable: true
+}
+
+definition{
+  name: searchRest,
+  parameters: [terms : (List Term), points : (List Nat), finish : Bool],
+  result: Bool,
+  body: (match points
+    | List.nil => false
+    | List.cons point more => ((matchHere (((termCount terms) + (natCount more)) + 2) terms more finish) || (searchRest terms more finish))),
+  recursive_argument: points,
+  executable: true
+}
+
+definition{
+  name: searchFrom,
+  parameters: [terms : (List Term), points : (List Nat), finish : Bool],
+  result: Bool,
+  body: ((matchHere (((termCount terms) + (natCount points)) + 2) terms points finish) || (searchRest terms points finish)),
+  executable: true
+}
+
+definition{
+  name: matches,
+  parameters: [pattern : Bytes, text : Bytes],
+  result: (Result Bool Bytes),
+  body: (match (patternOf pattern)
+    | Result.error reason => (ctor Result.error [Bool, Bytes] reason)
+    | Result.ok parsed => (match (pointsOf text)
+      | Option.none => (ctor Result.error [Bool, Bytes] (Studio.Doc::lit "a string is not well-formed UTF-8 (RFC 3629 section 4)"))
+      | Option.some points => (ctor Result.ok [Bool, Bytes] (if (first (first parsed)) then (matchHere (((termCount (second parsed)) + (natCount points)) + 2) (second parsed) points (second (first parsed))) else (searchFrom (second parsed) points (second (first parsed))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: checkedKeywords,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "type") (cons (Studio.Doc::lit "enum") (cons (Studio.Doc::lit "const") (cons (Studio.Doc::lit "minLength") (cons (Studio.Doc::lit "maxLength") (cons (Studio.Doc::lit "pattern") (cons (Studio.Doc::lit "minimum") (cons (Studio.Doc::lit "maximum") (cons (Studio.Doc::lit "minItems") (cons (Studio.Doc::lit "maxItems") (cons (Studio.Doc::lit "required") (cons (Studio.Doc::lit "properties") (cons (Studio.Doc::lit "patternProperties") (cons (Studio.Doc::lit "additionalProperties") (cons (Studio.Doc::lit "items") (cons (Studio.Doc::lit "$ref") (cons (Studio.Doc::lit "allOf") (cons (Studio.Doc::lit "anyOf") (cons (Studio.Doc::lit "oneOf") (cons (Studio.Doc::lit "$schema") (cons (Studio.Doc::lit "$id") (cons (Studio.Doc::lit "$comment") (cons (Studio.Doc::lit "$defs") (cons (Studio.Doc::lit "definitions") (cons (Studio.Doc::lit "title") (cons (Studio.Doc::lit "description") (cons (Studio.Doc::lit "default") (cons (Studio.Doc::lit "examples") (cons (Studio.Doc::lit "deprecated") (cons (Studio.Doc::lit "readOnly") (cons (Studio.Doc::lit "writeOnly") (cons (Studio.Doc::lit "format") (nil Bytes))))))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: uncheckedKeyword,
+  parameters: [members : (List (Bytes * Studio.Schema::Value))],
+  result: (Option Bytes),
+  body: (match members
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (if (Studio.Doc::memberBytes (first head) (checkedKeywords)) then (uncheckedKeyword rest) else (ctor Option.some [Bytes] (first head)))),
+  recursive_argument: members,
+  executable: true
+}
+
+definition{
+  name: unescapedFrom,
+  parameters: [fuel : Nat, text : Bytes, offset : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then out else (if (Studio.Doc::both ((LexLeanStd.JsonRead::byteOf text offset) =? 126) ((LexLeanStd.JsonRead::byteOf text (offset + 1)) =? 48)) then (unescapedFrom rest text (offset + 2) (prim append out (Studio.Doc::lit "~") : Bytes)) else (if (Studio.Doc::both ((LexLeanStd.JsonRead::byteOf text offset) =? 126) ((LexLeanStd.JsonRead::byteOf text (offset + 1)) =? 49)) then (unescapedFrom rest text (offset + 2) (prim append out (Studio.Doc::lit "/") : Bytes)) else (unescapedFrom rest text (offset + 1) (prim append out (LexLeanStd.Text::sliceOr text offset 1) : Bytes)))))),
+  recursive_argument: fuel,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: referenced,
+  parameters: [root : Studio.Schema::Value, reference : Bytes],
+  result: (Result Studio.Schema::Value Bytes),
+  body: (let total : Nat := (prim length reference : Nat); (if (Studio.Doc::same reference (Studio.Doc::lit "#")) then (ctor Result.ok [Studio.Schema::Value, Bytes] root) else (match (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/$defs/")) then (ctor Option.some [(Bytes * Bytes)] ((Studio.Doc::lit "$defs"), (LexLeanStd.Text::sliceOr reference 8 (prim subtract total 8 : Nat)))) else (if (LexLeanStd.Text::startsWith reference (Studio.Doc::lit "#/definitions/")) then (ctor Option.some [(Bytes * Bytes)] ((Studio.Doc::lit "definitions"), (LexLeanStd.Text::sliceOr reference 14 (prim subtract total 14 : Nat)))) else (ctor Option.none [(Bytes * Bytes)])))
+    | Option.none => (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the reference ") (cons reference (cons (Studio.Doc::lit " is not resolved: only #, #/$defs/NAME and #/definitions/NAME in the same document are (JSON Schema 2020-12 Core section 8.2.3.1)") (nil Bytes))))))
+    | Option.some place => (let name : Bytes := (unescapedFrom ((prim length (second place) : Nat) + 1) (second place) 0 0x); (match (match (Studio.Schema::field root (first place))
+      | Option.none => (ctor Option.none [Studio.Schema::Value])
+      | Option.some defs => (Studio.Schema::field defs name))
+      | Option.none => (ctor Result.error [Studio.Schema::Value, Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the reference ") (cons reference (cons (Studio.Doc::lit " names no definition of this schema (JSON Schema 2020-12 Core section 8.2.3.1)") (nil Bytes))))))
+      | Option.some target => (ctor Result.ok [Studio.Schema::Value, Bytes] target)))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: firstOf,
+  parameters: [found : (Option Bytes), later : (Option Bytes)],
+  result: (Option Bytes),
+  body: (match found
+    | Option.some reason => (ctor Option.some [Bytes] reason)
+    | Option.none => later),
+  executable: true
+}
+
+definition{
+  name: assertions,
+  parameters: [schema : Studio.Schema::Value, value : Studio.Schema::Value, at : Bytes],
+  result: (Option Bytes),
+  body: (let kind : Bytes := (kindOf value); (let typed : (Option Bytes) := (match (Studio.Schema::field schema (Studio.Doc::lit "type"))
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some declared => (let names : (List Bytes) := (match (Studio.Schema::strOf (ctor Option.some [Studio.Schema::Value] declared))
+      | Option.some single => (cons single (nil Bytes))
+      | Option.none => (Studio.Schema::strings (Studio.Schema::itemsOf (ctor Option.some [Studio.Schema::Value] declared)))); (if (anyType names value) then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::cat (cons (Studio.Doc::lit "is ") (cons kind (cons (Studio.Doc::lit ", not of the type ") (cons (Studio.Schema::joinWith names (Studio.Doc::lit " or ")) (cons (Studio.Doc::lit " (JSON Schema 2020-12 Validation section 6.1.1)") (nil Bytes))))))))))); (let listed : (Option Bytes) := (match (Studio.Schema::field schema (Studio.Doc::lit "enum"))
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some allowed => (if (anyEqual (Studio.Schema::itemsOf (ctor Option.some [Studio.Schema::Value] allowed)) value) then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::lit "is none of the enum values (JSON Schema 2020-12 Validation section 6.1.2)")))); (let constant : (Option Bytes) := (match (Studio.Schema::field schema (Studio.Doc::lit "const"))
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some fixed => (if (valueEq false fixed value) then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::lit "is not the const value (JSON Schema 2020-12 Validation section 6.1.3)")))); (let lengths : (Option Bytes) := (match value
+    | Studio.Schema::Value.VStr text => (match (pointsOf text)
+      | Option.none => (failure at (Studio.Doc::lit "is not well-formed UTF-8 (RFC 3629 section 4)"))
+      | Option.some points => (let count : Nat := (natCount points); (firstOf (match (Studio.Schema::natOf (Studio.Schema::field schema (Studio.Doc::lit "minLength")))
+        | Option.none => (ctor Option.none [Bytes])
+        | Option.some least => (if (count <? least) then (failure at (Studio.Doc::lit "is shorter than minLength (JSON Schema 2020-12 Validation section 6.3.2)")) else (ctor Option.none [Bytes]))) (firstOf (match (Studio.Schema::natOf (Studio.Schema::field schema (Studio.Doc::lit "maxLength")))
+        | Option.none => (ctor Option.none [Bytes])
+        | Option.some most => (if (most <? count) then (failure at (Studio.Doc::lit "is longer than maxLength (JSON Schema 2020-12 Validation section 6.3.1)")) else (ctor Option.none [Bytes]))) (match (Studio.Schema::strOf (Studio.Schema::field schema (Studio.Doc::lit "pattern")))
+        | Option.none => (ctor Option.none [Bytes])
+        | Option.some pattern => (match (matches pattern text)
+          | Result.error reason => (ctor Option.some [Bytes] reason)
+          | Result.ok matched => (if matched then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::cat (cons (Studio.Doc::lit "does not match the pattern ") (cons pattern (cons (Studio.Doc::lit " (JSON Schema 2020-12 Validation section 6.3.3)") (nil Bytes)))))))))))))
+    | Studio.Schema::Value.VArr items => (let count : Nat := (memberCount items); (firstOf (match (Studio.Schema::natOf (Studio.Schema::field schema (Studio.Doc::lit "minItems")))
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some least => (if (count <? least) then (failure at (Studio.Doc::lit "has fewer items than minItems (JSON Schema 2020-12 Validation section 6.4.2)")) else (ctor Option.none [Bytes]))) (match (Studio.Schema::natOf (Studio.Schema::field schema (Studio.Doc::lit "maxItems")))
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some most => (if (most <? count) then (failure at (Studio.Doc::lit "has more items than maxItems (JSON Schema 2020-12 Validation section 6.4.1)")) else (ctor Option.none [Bytes])))))
+    | Studio.Schema::Value.VObj members => (let missing : (List Bytes) := (absentFrom (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field schema (Studio.Doc::lit "required")))) (Studio.Schema::keysOf (Studio.Schema::memberSpine members))); (match missing
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons absent rest => (failure at (Studio.Doc::cat (cons (Studio.Doc::lit "lacks the required member ") (cons absent (cons (Studio.Doc::lit " (JSON Schema 2020-12 Validation section 6.5.3)") (nil Bytes))))))))
+    | Studio.Schema::Value.VNull => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VTag tagName tagged => (failure at (Studio.Doc::cat (cons (Studio.Doc::lit "is tagged ") (cons tagName (cons (Studio.Doc::lit " and has no JSON type (RFC 8259 section 3)") (nil Bytes))))))
+    | Studio.Schema::Value.VBool flag => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VInt negative magnitude => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VNil => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VItem item rest => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VMember key item rest => (ctor Option.none [Bytes])); (let bounds : (Option Bytes) := (match (numberOf value)
+    | Option.none => (ctor Option.none [Bytes])
+    | Option.some number => (firstOf (match (match (Studio.Schema::field schema (Studio.Doc::lit "minimum"))
+      | Option.none => (ctor Option.none [(Bool * (Nat * Nat))])
+      | Option.some bound => (numberOf bound))
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some least => (if (lessNumber number least) then (failure at (Studio.Doc::lit "is less than minimum (JSON Schema 2020-12 Validation section 6.2.4)")) else (ctor Option.none [Bytes]))) (match (match (Studio.Schema::field schema (Studio.Doc::lit "maximum"))
+      | Option.none => (ctor Option.none [(Bool * (Nat * Nat))])
+      | Option.some bound => (numberOf bound))
+      | Option.none => (ctor Option.none [Bytes])
+      | Option.some most => (if (lessNumber most number) then (failure at (Studio.Doc::lit "is greater than maximum (JSON Schema 2020-12 Validation section 6.2.2)")) else (ctor Option.none [Bytes]))))); (firstOf typed (firstOf listed (firstOf constant (firstOf lengths bounds)))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: patternHits,
+  parameters: [patterns : (List (Bytes * Studio.Schema::Value)), key : Bytes],
+  result: (Result (List Studio.Schema::Value) Bytes),
+  body: (match patterns
+    | List.nil => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (nil Studio.Schema::Value))
+    | List.cons head rest => (match (matches (first head) key)
+      | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+      | Result.ok hit => (match (patternHits rest key)
+        | Result.error reason => (ctor Result.error [(List Studio.Schema::Value), Bytes] reason)
+        | Result.ok later => (ctor Result.ok [(List Studio.Schema::Value), Bytes] (if hit then (cons (second head) later) else later))))),
+  recursive_argument: patterns,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: conformsAt,
+  parameters: [fuel : Nat, root : Studio.Schema::Value, schema : Studio.Schema::Value, value : Studio.Schema::Value, at : Bytes],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the schema's references do not end before the instance at \"") (cons at (cons (Studio.Doc::lit "\" is checked (JSON Schema 2020-12 Core section 8.2.3.1)") (nil Bytes))))))
+    | Nat.succ rest => (match schema
+      | Studio.Schema::Value.VBool accepts => (if accepts then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::lit "is refused by the false schema (JSON Schema 2020-12 Core section 4.3.2)")))
+      | Studio.Schema::Value.VObj inner => (match (uncheckedKeyword (Studio.Schema::memberSpine inner))
+        | Option.some keyword => (ctor Option.some [Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the keyword ") (cons keyword (cons (Studio.Doc::lit " is not checked by conforms, so the instance is not admitted (JSON Schema 2020-12 Core section 4.3.1)") (nil Bytes))))))
+        | Option.none => (firstOf (assertions schema value at) (firstOf (match (Studio.Schema::strOf (Studio.Schema::field schema (Studio.Doc::lit "$ref")))
+          | Option.none => (ctor Option.none [Bytes])
+          | Option.some reference => (match (referenced root reference)
+            | Result.error reason => (ctor Option.some [Bytes] reason)
+            | Result.ok target => (conformsAt rest root target value at))) (firstOf (allOf rest root (Studio.Schema::itemsOf (Studio.Schema::field schema (Studio.Doc::lit "allOf"))) value at) (firstOf (match (Studio.Schema::field schema (Studio.Doc::lit "anyOf"))
+          | Option.none => (ctor Option.none [Bytes])
+          | Option.some branches => (if (0 <? (passes rest root (Studio.Schema::itemsOf (ctor Option.some [Studio.Schema::Value] branches)) value at)) then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::lit "matches no anyOf branch (JSON Schema 2020-12 Core section 10.2.1.2)")))) (firstOf (match (Studio.Schema::field schema (Studio.Doc::lit "oneOf"))
+          | Option.none => (ctor Option.none [Bytes])
+          | Option.some branches => (if ((passes rest root (Studio.Schema::itemsOf (ctor Option.some [Studio.Schema::Value] branches)) value at) =? 1) then (ctor Option.none [Bytes]) else (failure at (Studio.Doc::lit "does not match exactly one oneOf branch (JSON Schema 2020-12 Core section 10.2.1.3)")))) (match value
+          | Studio.Schema::Value.VObj members => (firstOf (eachProperty rest root (Studio.Schema::membersOf (Studio.Schema::field schema (Studio.Doc::lit "properties"))) value at) (eachMember rest root schema (Studio.Schema::memberSpine members) at))
+          | Studio.Schema::Value.VArr items => (match (Studio.Schema::field schema (Studio.Doc::lit "items"))
+            | Option.none => (ctor Option.none [Bytes])
+            | Option.some each => (eachItem rest root each (Studio.Schema::spineItems items) at 0))
+          | Studio.Schema::Value.VNull => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VTag tagName tagged => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VBool flag => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VInt negative magnitude => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VStr text => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VNil => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VItem item more => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VMember key item more => (ctor Option.none [Bytes]))))))))
+      | Studio.Schema::Value.VNull => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VTag tagName tagged => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VInt negative magnitude => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VStr text => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VArr items => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VNil => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VItem item more => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VMember key item more => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)")))),
+  recursive_argument: fuel,
+  mutual: Conform,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: allOf,
+  parameters: [fuel : Nat, root : Studio.Schema::Value, branches : (List Studio.Schema::Value), value : Studio.Schema::Value, at : Bytes],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] (Studio.Doc::lit "the allOf branches do not end (JSON Schema 2020-12 Core section 10.2.1.1)"))
+    | Nat.succ rest => (match branches
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons head later => (firstOf (conformsAt rest root head value at) (allOf rest root later value at)))),
+  recursive_argument: fuel,
+  mutual: Conform,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: passes,
+  parameters: [fuel : Nat, root : Studio.Schema::Value, branches : (List Studio.Schema::Value), value : Studio.Schema::Value, at : Bytes],
+  result: Nat,
+  body: (match fuel
+    | Nat.zero => 0
+    | Nat.succ rest => (match branches
+      | List.nil => 0
+      | List.cons head later => ((match (conformsAt rest root head value at)
+        | Option.none => 1
+        | Option.some reason => 0) + (passes rest root later value at)))),
+  recursive_argument: fuel,
+  mutual: Conform,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: eachProperty,
+  parameters: [fuel : Nat, root : Studio.Schema::Value, properties : (List (Bytes * Studio.Schema::Value)), value : Studio.Schema::Value, at : Bytes],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] (Studio.Doc::lit "the properties do not end (JSON Schema 2020-12 Core section 10.3.2.1)"))
+    | Nat.succ rest => (match properties
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons head later => (firstOf (match (Studio.Schema::field value (first head))
+        | Option.none => (ctor Option.none [Bytes])
+        | Option.some item => (conformsAt rest root (second head) item (below at (first head)))) (eachProperty rest root later value at)))),
+  recursive_argument: fuel,
+  mutual: Conform,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: eachMember,
+  parameters: [fuel : Nat, root : Studio.Schema::Value, schema : Studio.Schema::Value, members : (List (Bytes * Studio.Schema::Value)), at : Bytes],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] (Studio.Doc::lit "the members do not end (JSON Schema 2020-12 Core section 10.3.2.2)"))
+    | Nat.succ rest => (match members
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons head later => (let here : Bytes := (below at (first head)); (match (patternHits (Studio.Schema::membersOf (Studio.Schema::field schema (Studio.Doc::lit "patternProperties"))) (first head))
+        | Result.error reason => (ctor Option.some [Bytes] reason)
+        | Result.ok hits => (firstOf (allOf rest root hits (second head) here) (firstOf (match hits
+          | List.cons hit others => (ctor Option.none [Bytes])
+          | List.nil => (if (Studio.Doc::memberBytes (first head) (Studio.Schema::keysOf (Studio.Schema::memberSpine (match (Studio.Schema::field schema (Studio.Doc::lit "properties"))
+            | Option.none => (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VNil))
+            | Option.some named => named)))) then (ctor Option.none [Bytes]) else (match (Studio.Schema::field schema (Studio.Doc::lit "additionalProperties"))
+            | Option.none => (ctor Option.none [Bytes])
+            | Option.some extra => (conformsAt rest root extra (second head) here)))) (eachMember rest root schema later at))))))),
+  recursive_argument: fuel,
+  mutual: Conform,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: eachItem,
+  parameters: [fuel : Nat, root : Studio.Schema::Value, schema : Studio.Schema::Value, items : (List Studio.Schema::Value), at : Bytes, index : Nat],
+  result: (Option Bytes),
+  body: (match fuel
+    | Nat.zero => (ctor Option.some [Bytes] (Studio.Doc::lit "the items do not end (JSON Schema 2020-12 Core section 10.3.1.2)"))
+    | Nat.succ rest => (match items
+      | List.nil => (ctor Option.none [Bytes])
+      | List.cons head later => (firstOf (conformsAt rest root schema head (below at (LexLeanStd.Numeral::decimal index))) (eachItem rest root schema later at (index + 1))))),
+  recursive_argument: fuel,
+  mutual: Conform,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: conforms,
+  parameters: [schema : Studio.Schema::Value, value : Studio.Schema::Value],
+  result: (Option Bytes),
+  body: (conformsAt (prim multiply ((prim length (Studio.Schema::writeText schema) : Nat) + 2) ((prim length (Studio.Schema::writeText value) : Nat) + 2) : Nat) schema schema value 0x),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+\end{semanticmodule}
+\end{lexlean}

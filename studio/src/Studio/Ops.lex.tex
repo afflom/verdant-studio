@@ -17,6 +17,7 @@
 \importmodule{Studio.WebIdl}
 \importmodule{Studio.Yaml}
 \importmodule{LexLeanStd.Numeral}
+\importmodule{Studio.Conforms}
 \title{Natural number addition}
 \begin{semanticmodule}
 inductive{
@@ -2119,6 +2120,163 @@ definition{
 
 
 definition{
+  name: registriesDir,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "model/registries"),
+  executable: true
+}
+
+definition{
+  name: registryPath,
+  parameters: [authority : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (registriesDir) (cons (Studio.Doc::lit "/") (cons authority (cons (Studio.Doc::lit ".jsonl") (nil Bytes)))))),
+  executable: true
+}
+
+definition{
+  name: bindingPath,
+  parameters: [authority : Bytes],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "model/bindings/") (cons authority (cons (Studio.Doc::lit ".json") (nil Bytes))))),
+  executable: true
+}
+
+definition{
+  name: vstrings,
+  parameters: [items : (List Bytes)],
+  result: Studio.Schema::Value,
+  body: (match items
+    | List.nil => (ctor Studio.Schema::Value.VNil)
+    | List.cons head rest => (ctor Studio.Schema::Value.VItem (ctor Studio.Schema::Value.VStr head) (vstrings rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: registryRow,
+  parameters: [authority : Bytes, row : Bytes, construct : Bytes, value : Studio.Schema::Value],
+  result: Studio.Schema::Value,
+  body: (ctor Studio.Schema::Value.VObj (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "citation") (ctor Studio.Schema::Value.VArr (vstrings (cons (Studio.Doc::lit "std") (cons authority (cons row (nil Bytes)))))) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "construct") (ctor Studio.Schema::Value.VStr construct) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "pointer") (ctor Studio.Schema::Value.VStr 0x) (ctor Studio.Schema::Value.VMember (Studio.Doc::lit "value") value (ctor Studio.Schema::Value.VNil)))))),
+  executable: true
+}
+
+definition{
+  name: admittedUnder,
+  parameters: [admissions : (List LexLeanStd.Json::Json), construct : Bytes, row : Bytes],
+  result: Bool,
+  body: (match admissions
+    | List.nil => false
+    | List.cons head rest => (if (Studio.Doc::both (Studio.Doc::same (Studio.Doc::str head (Studio.Doc::lit "construct")) construct) (match (Studio.Doc::field head (Studio.Doc::lit "std"))
+      | Option.none => false
+      | Option.some cited => (Studio.Doc::same (Studio.Doc::str cited (Studio.Doc::lit "row")) row))) then true else (admittedUnder rest construct row))),
+  recursive_argument: admissions,
+  executable: true
+}
+
+definition{
+  name: registryWrites,
+  parameters: [seen : Seen, authority : Bytes, json : Bytes, row : Bytes, construct : Bytes, command : (List Bytes), value : Studio.Schema::Value],
+  result: Plan,
+  body: (match (Studio.Schema::jsonText (registryRow authority row construct value))
+    | Result.error reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons json (cons (Studio.Doc::lit ": ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))))
+    | Result.ok text => (let register : Bytes := (registryPath authority); (ctor Plan.done (cons (register, text) (cons ((Studio.Doc::lit "model/admissions.json"), (LexLeanStd.Json::writeJsonFile (ctor LexLeanStd.Json::Json.JArr (jsonItems (replaceItem (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct") register (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "construct") (ctor LexLeanStd.Json::Json.JStr register) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "std") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "authority") (ctor LexLeanStd.Json::Json.JStr authority) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "row") (ctor LexLeanStd.Json::Json.JStr row) (ctor LexLeanStd.Json::Json.JNil)))) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "translation") (ctor LexLeanStd.Json::Json.JObj (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "command") (ctor LexLeanStd.Json::Json.JArr (jsonStrings command)) (ctor LexLeanStd.Json::Json.JMember (Studio.Doc::lit "output_sha256") (ctor LexLeanStd.Json::Json.JStr (LexLeanStd.Sha256::sha256Hex (contents seen json))) (ctor LexLeanStd.Json::Json.JNil)))) (ctor LexLeanStd.Json::Json.JNil)))))))))) (nil (Bytes * Bytes)))) (Studio.Doc::cat (cons (Studio.Doc::lit "admitted ") (cons register (cons (Studio.Doc::lit "\n") (nil Bytes)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryChecked,
+  parameters: [seen : Seen, authority : Bytes, json : Bytes, row : Bytes, construct : Bytes, command : (List Bytes)],
+  result: Plan,
+  body: (match (valueOf seen json)
+    | Option.none => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons json (cons (Studio.Doc::lit " is not one JSON text (RFC 8259 section 2)\n") (nil Bytes))))))
+    | Option.some value => (if (Studio.Doc::same construct (Studio.Doc::lit "none")) then (registryWrites seen authority json row construct command value) else (let module : Bytes := (prim append (Studio.Doc::lit "Catalog.") construct : Bytes); (if (negate (admittedUnder (arrayOf seen (Studio.Doc::lit "model/admissions.json")) module row)) then (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons module (cons (Studio.Doc::lit " is not admitted under row ") (cons row (cons (Studio.Doc::lit " in model/admissions.json, so it cannot check the entries\n") (nil Bytes)))))))) else (match (valueOf seen (Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons construct (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))))
+      | Option.none => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: encodings/") (cons construct (cons (Studio.Doc::lit ".schema.json is not one JSON text (RFC 8259 section 2)\n") (nil Bytes))))))
+      | Option.some schema => (match (Studio.Conforms::conforms schema value)
+        | Option.some reason => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons json (cons (Studio.Doc::lit " does not conform to ") (cons module (cons (Studio.Doc::lit ": ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))
+        | Option.none => (registryWrites seen authority json row (prim append (Studio.Doc::lit "Catalog.") construct : Bytes) command value))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryProblem,
+  parameters: [path : Bytes, reason : Bytes],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::cat (cons (Studio.Doc::lit "registry ") (cons path (cons (Studio.Doc::lit ": ") (cons reason (cons (Studio.Doc::lit "\n") (nil Bytes))))))) (nil Bytes)),
+  executable: true
+}
+
+definition{
+  name: registryLineProblem,
+  parameters: [path : Bytes, line : Bytes, authorities : (List Bytes), constructs : (List Bytes)],
+  result: (List Bytes),
+  body: (match (Studio.Schema::readAny line)
+    | Option.none => (registryProblem path (Studio.Doc::lit "a line is not one JSON text (RFC 8259 section 2)"))
+    | Option.some row => (let citation : (List Bytes) := (Studio.Schema::strings (Studio.Schema::itemsOf (Studio.Schema::field row (Studio.Doc::lit "citation")))); (let construct : Bytes := (match (Studio.Schema::strOf (Studio.Schema::field row (Studio.Doc::lit "construct")))
+      | Option.none => 0x
+      | Option.some named => named); (match citation
+      | List.cons kind cited => (match cited
+        | List.cons authority more => (if (negate (Studio.Doc::same kind (Studio.Doc::lit "std"))) then (registryProblem path (Studio.Doc::lit "a row's citation is not [\"std\", AUTHORITY, ROW]")) else (if (negate (Studio.Doc::memberBytes authority authorities)) then (registryProblem path (Studio.Doc::cat (cons (Studio.Doc::lit "the cited authority ") (cons authority (cons (Studio.Doc::lit " is not bound") (nil Bytes)))))) else (if (Studio.Doc::both (negate (Studio.Doc::same construct (Studio.Doc::lit "none"))) (negate (Studio.Doc::memberBytes construct constructs))) then (registryProblem path (Studio.Doc::cat (cons (Studio.Doc::lit "the construct ") (cons construct (cons (Studio.Doc::lit " is not admitted") (nil Bytes)))))) else (match (Studio.Schema::strOf (Studio.Schema::field row (Studio.Doc::lit "pointer")))
+          | Option.none => (registryProblem path (Studio.Doc::lit "a row has no RFC 6901 pointer"))
+          | Option.some pointer => (match (Studio.Schema::field row (Studio.Doc::lit "value"))
+            | Option.none => (registryProblem path (Studio.Doc::lit "a row has no value"))
+            | Option.some value => (nil Bytes))))))
+        | List.nil => (registryProblem path (Studio.Doc::lit "a row's citation is not [\"std\", AUTHORITY, ROW]")))
+      | List.nil => (registryProblem path (Studio.Doc::lit "a row's citation is not [\"std\", AUTHORITY, ROW]")))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryLinesProblems,
+  parameters: [path : Bytes, lines : (List Bytes), authorities : (List Bytes), constructs : (List Bytes)],
+  result: (List Bytes),
+  body: (match lines
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (Studio.Check::concat (if ((prim length (LexLeanStd.Text::trim head) : Nat) =? 0) then (nil Bytes) else (registryLineProblem path head authorities constructs)) (registryLinesProblems path rest authorities constructs))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryProblems,
+  parameters: [seen : Seen, paths : (List Bytes), authorities : (List Bytes), constructs : (List Bytes)],
+  result: (List Bytes),
+  body: (match paths
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (Studio.Check::concat (if (Studio.Doc::memberBytes head constructs) then (registryLinesProblems head (LexLeanStd.Text::lines (contents seen head)) authorities constructs) else (registryProblem head (Studio.Doc::lit "the file has no row in model/admissions.json, so admit-registry did not write it"))) (registryProblems seen rest authorities constructs))),
+  recursive_argument: paths,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryFiles,
+  parameters: [seen : Seen],
+  result: (List Bytes),
+  body: (LexLeanStd.Order::sortedSet (jsonlIn (registriesDir) (listingOf (project seen listed) (registriesDir)))),
+  axioms: [propext],
+  executable: true
+}
+
+definition{
+  name: planCheckRegistries,
+  parameters: [seen : Seen],
+  result: Plan,
+  body: (if (negate (isListed (project seen listed) (registriesDir))) then (ctor Plan.lists (cons (registriesDir) (nil Bytes))) else (match (missing seen (cons (Studio.Doc::lit "model/authorities.toml") (cons (Studio.Doc::lit "model/admissions.json") (registryFiles seen))))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (match (registryProblems seen (registryFiles seen) (Studio.Check::tomlIds (contents seen (Studio.Doc::lit "model/authorities.toml"))) (Studio.Check::idsOf (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (Studio.Doc::lit "construct")))
+      | List.cons head rest => (ctor Plan.refuse (Studio.Doc::cat (cons head rest)))
+      | List.nil => (planCheck seen)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: queueDir,
   parameters: [],
   result: Bytes,
@@ -2250,23 +2408,96 @@ definition{
 }
 
 definition{
-  name: queueStep,
+  name: registryLines,
+  parameters: [lines : (List Bytes)],
+  result: (Option (List LexLeanStd.Json::Json)),
+  body: (match lines
+    | List.nil => (ctor Option.some [(List LexLeanStd.Json::Json)] (nil LexLeanStd.Json::Json))
+    | List.cons head rest => (let line : Bytes := (LexLeanStd.Text::trim head); (if ((prim length line : Nat) =? 0) then (registryLines rest) else (match (Studio.Schema::readJson line)
+      | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+      | Option.some entry => (if (Studio.Doc::both (Studio.Doc::both (filled entry (Studio.Doc::lit "authority")) (filled entry (Studio.Doc::lit "row"))) (Studio.Doc::both (Studio.Doc::both (filled entry (Studio.Doc::lit "construct")) (filled entry (Studio.Doc::lit "artifact"))) (LexLeanStd.Text::startsWith (Studio.Doc::str entry (Studio.Doc::lit "reader")) (Studio.Doc::lit "read-")))) then (match (registryLines rest)
+        | Option.none => (ctor Option.none [(List LexLeanStd.Json::Json)])
+        | Option.some later => (ctor Option.some [(List LexLeanStd.Json::Json)] (cons entry later))) else (ctor Option.none [(List LexLeanStd.Json::Json)])))))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryQueued,
+  parameters: [lines : (List Bytes)],
+  result: (List LexLeanStd.Json::Json),
+  body: (match (decisionLines lines)
+    | Option.some recorded => (nil LexLeanStd.Json::Json)
+    | Option.none => (someItems (registryLines lines))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planStageRegistries,
   parameters: [seen : Seen, path : Bytes],
+  result: Plan,
+  body: (let lines : (List Bytes) := (LexLeanStd.Text::lines (contents seen path)); (if (negate (LexLeanStd.Text::endsWith path (Studio.Doc::lit ".jsonl"))) then (ctor Plan.refuse (Studio.Doc::lit "a queued file is named NAME.jsonl\n")) else (if (Studio.Doc::both (parses (registryLines lines)) (negate ((prim length (someItems (registryLines lines)) : Nat) =? 0))) then (ctor Plan.done (cons ((join (queueDir) (basename path)), (contents seen path)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "queued ") (cons (join (queueDir) (basename path)) (cons (Studio.Doc::lit ": next derives admit-registry for each entry that has no register yet\n") (nil Bytes)))))) else (ctor Plan.refuse (Studio.Doc::lit "every line must be a registry entry: authority, row, construct (a Catalog type, or none), reader (a verdant_readers read- command) and artifact\n"))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: registryNeedsOf,
+  parameters: [entries : (List LexLeanStd.Json::Json)],
+  result: (List Bytes),
+  body: (match entries
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (registryPath (Studio.Doc::str head (Studio.Doc::lit "authority"))) (cons (bindingPath (Studio.Doc::str head (Studio.Doc::lit "authority"))) (registryNeedsOf rest)))),
+  recursive_argument: entries,
+  executable: true
+}
+
+definition{
+  name: registryNeeds,
+  parameters: [seen : Seen, paths : (List Bytes)],
+  result: (List Bytes),
+  body: (match paths
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (Studio.Check::concat (registryNeedsOf (registryQueued (LexLeanStd.Text::lines (contents seen head)))) (registryNeeds seen rest))),
+  recursive_argument: paths,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: queuedRegistry,
+  parameters: [seen : Seen, path : Bytes, skipped : (List Bytes), entries : (List LexLeanStd.Json::Json)],
+  result: (Bool * Bytes),
+  body: (match entries
+    | List.nil => (false, 0x)
+    | List.cons head rest => (let authority : Bytes := (Studio.Doc::str head (Studio.Doc::lit "authority")); (let row : Bytes := (Studio.Doc::str head (Studio.Doc::lit "row")); (let construct : Bytes := (Studio.Doc::str head (Studio.Doc::lit "construct")); (if (Studio.Doc::either (present seen (registryPath authority)) (Studio.Doc::memberBytes authority skipped)) then (queuedRegistry seen path skipped rest) else (if (negate (present seen (bindingPath authority))) then (let later : (Bool * Bytes) := (queuedRegistry seen path skipped rest); (if (first later) then later else (false, (prim append (waiting path (Studio.Doc::cat (cons authority (cons (Studio.Doc::lit " is not bound yet") (nil Bytes))))) (second later) : Bytes)))) else (if (Studio.Doc::both (negate (Studio.Doc::same construct (Studio.Doc::lit "none"))) (negate (admittedUnder (arrayOf seen (Studio.Doc::lit "model/admissions.json")) (prim append (Studio.Doc::lit "Catalog.") construct : Bytes) row))) then (let later : (Bool * Bytes) := (queuedRegistry seen path skipped rest); (if (first later) then later else (false, (prim append (waiting path (Studio.Doc::cat (cons (Studio.Doc::lit "Catalog.") (cons construct (cons (Studio.Doc::lit " is not admitted under row ") (cons row (cons (Studio.Doc::lit " yet") (nil Bytes)))))))) (second later) : Bytes)))) else (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admit-registry ") (cons authority (cons (Studio.Doc::lit " ") (cons row (cons (Studio.Doc::lit " ") (cons construct (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "reader")) (cons (Studio.Doc::lit " ") (cons (Studio.Doc::str head (Studio.Doc::lit "artifact")) (cons (Studio.Doc::lit "\n") (nil Bytes))))))))))))))))))))),
+  recursive_argument: entries,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: queueStep,
+  parameters: [seen : Seen, path : Bytes, skipped : (List Bytes)],
   result: (Bool * Bytes),
   body: (let lines : (List Bytes) := (LexLeanStd.Text::lines (contents seen path)); (match (decisionLines lines)
     | Option.some recorded => (queuedDecision seen path recorded)
-    | Option.none => (queuedAdmission seen path lines))),
+    | Option.none => (match (registryLines lines)
+      | Option.some entries => (queuedRegistry seen path skipped entries)
+      | Option.none => (queuedAdmission seen path lines)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
 
 definition{
   name: queueScan,
-  parameters: [seen : Seen, paths : (List Bytes)],
+  parameters: [seen : Seen, paths : (List Bytes), skipped : (List Bytes)],
   result: (Bool * Bytes),
   body: (match paths
     | List.nil => (false, 0x)
-    | List.cons head rest => (let outcome : (Bool * Bytes) := (queueStep seen head); (if (first outcome) then outcome else (let later : (Bool * Bytes) := (queueScan seen rest); (if (first later) then later else (false, (prim append (second outcome) (second later) : Bytes))))))),
+    | List.cons head rest => (let outcome : (Bool * Bytes) := (queueStep seen head skipped); (if (first outcome) then outcome else (let later : (Bool * Bytes) := (queueScan seen rest skipped); (if (first later) then later else (false, (prim append (second outcome) (second later) : Bytes))))))),
   recursive_argument: paths,
   axioms: [Quot.sound, propext],
   executable: true
@@ -2287,11 +2518,13 @@ definition{
   result: Plan,
   body: (if (negate (isListed (project seen listed) (queueDir))) then (ctor Plan.lists (cons (queueDir) (nil Bytes))) else (let paths : (List Bytes) := (unskipped (LexLeanStd.Order::sortedSet (queuedFiles (listingOf (project seen listed) (queueDir)))) skipped); (match (missing seen (cons (decisionsPath) (cons (indexPath) (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (Studio.Doc::lit "model/authorities.toml") paths))))))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (let found : (Bool * Bytes) := (queueScan seen paths); (if (first found) then (ctor Plan.done (nil (Bytes * Bytes)) (second found)) else (match (unlistedStaging seen)
+    | List.nil => (match (missing seen (registryNeeds seen paths))
+    | List.cons head rest => (ctor Plan.reads (cons head rest))
+    | List.nil => (let found : (Bool * Bytes) := (queueScan seen paths skipped); (if (first found) then (ctor Plan.done (nil (Bytes * Bytes)) (second found)) else (match (unlistedStaging seen)
       | List.cons head rest => (ctor Plan.lists (cons head rest))
       | List.nil => (match (mappingNeeds seen)
         | List.cons head rest => (ctor Plan.reads (cons head rest))
-        | List.nil => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (second found) (cons (Studio.Doc::cat (LexLeanStd.Order::sortedSet (unresolvedWaits (knownOf seen) (entriesOf seen (stagedPaths seen))))) (cons (inferenceWait seen) (nil Bytes))))))))))))),
+        | List.nil => (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (second found) (cons (Studio.Doc::cat (LexLeanStd.Order::sortedSet (unresolvedWaits (knownOf seen) (entriesOf seen (stagedPaths seen))))) (cons (inferenceWait seen) (nil Bytes)))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2358,6 +2591,7 @@ definition{
   result: (List Bytes),
   body: (cons (Studio.Doc::lit "admit JSONL")
     (cons (Studio.Doc::lit "admit-encoding STAGED")
+    (cons (Studio.Doc::lit "admit-registry AUTHORITY ROW CONSTRUCT|none read-OP ARTIFACT")
     (cons (Studio.Doc::lit "agenda")
     (cons (Studio.Doc::lit "build")
     (cons (Studio.Doc::lit "check")
@@ -2381,7 +2615,8 @@ definition{
     (cons (Studio.Doc::lit "stage-engine")
     (cons (Studio.Doc::lit "stage-mappings JSONL")
     (cons (Studio.Doc::lit "stage-matrix JSONL")
-    (nil Bytes)))))))))))))))))))))))))),
+    (cons (Studio.Doc::lit "stage-registries JSONL")
+    (nil Bytes)))))))))))))))))))))))))))),
   executable: true
 }
 
@@ -2392,6 +2627,57 @@ definition{
   body: (Studio.Doc::cat (cons (Studio.Doc::lit "usage: verdant_studio ") (cons (LexLeanStd.Text::joinWith (usageEntries) (Studio.Doc::lit " | ")) (cons (Studio.Doc::lit "\n") (nil Bytes))))),
   executable: true
 }
+
+definition{
+  name: childOut,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/verdant_studio.child.out"),
+  executable: true
+}
+
+definition{
+  name: readerProgram,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "target/release/verdant_readers"),
+  executable: true
+}
+
+definition{
+  name: registryRead,
+  parameters: [seen : Seen, authority : Bytes, row : Bytes, construct : Bytes, command : (List Bytes), artifact : Bytes],
+  result: Plan,
+  body: (let tag : Bytes := (prim append (Studio.Doc::lit "registry-read ") artifact : Bytes); (if (negate (Studio.Doc::memberBytes tag (project seen ran))) then (ctor Plan.run (readerProgram) command tag) else (match (missing seen (cons (childOut) (nil Bytes)))
+    | List.cons head tail => (ctor Plan.reads (cons head tail))
+    | List.nil => (registryChecked seen authority (childOut) row construct command)))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: planAdmitRegistry,
+  parameters: [seen : Seen, authority : Bytes, rest : (List Bytes)],
+  result: Plan,
+  body: (match rest
+    | List.cons row others => (match others
+      | List.cons construct command => (match command
+        | List.cons op args => (match args
+          | List.cons artifact extra => (if (negate (LexLeanStd.Text::startsWith op (Studio.Doc::lit "read-"))) then (ctor Plan.refuse (Studio.Doc::lit "name the verdant_readers command that reads the artifact: admit-registry AUTHORITY ROW CONSTRUCT|none read-OP ARTIFACT\n")) else (match (missing seen (cons (bindingPath authority) (cons artifact (cons (Studio.Doc::lit "model/admissions.json") (if (Studio.Doc::same construct (Studio.Doc::lit "none")) then (nil Bytes) else (cons (Studio.Doc::cat (cons (Studio.Doc::lit "encodings/") (cons construct (cons (Studio.Doc::lit ".schema.json") (nil Bytes))))) (nil Bytes)))))))
+            | List.cons head tail => (ctor Plan.reads (cons head tail))
+            | List.nil => (if (negate (present seen (bindingPath authority))) then (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons authority (cons (Studio.Doc::lit " is not a bound authority, because ") (cons (bindingPath authority) (cons (Studio.Doc::lit " is absent, and every admitted value cites a bound standard (REQ-ADMISSION)\n") (nil Bytes)))))))) else (match (jsonOf seen (bindingPath authority))
+              | Option.none => (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons (bindingPath authority) (cons (Studio.Doc::lit " is not one JSON text (RFC 8259 section 2)\n") (nil Bytes))))))
+              | Option.some binding => (let pinned : Bytes := (match (Studio.Doc::field binding (Studio.Doc::lit "source"))
+                | Option.none => 0x
+                | Option.some source => (Studio.Doc::str source (Studio.Doc::lit "sha256"))); (let digest : Bytes := (LexLeanStd.Sha256::sha256Hex (contents seen artifact)); (if (negate (Studio.Doc::same digest pinned)) then (ctor Plan.refuse (Studio.Doc::cat (cons (Studio.Doc::lit "refused: ") (cons artifact (cons (Studio.Doc::lit " is not the artifact ") (cons authority (cons (Studio.Doc::lit " binds: its SHA-256 is ") (cons digest (cons (Studio.Doc::lit " and the binding's source.sha256 is ") (cons pinned (cons (Studio.Doc::lit " (FIPS 180-4 section 6.2)\n") (nil Bytes)))))))))))) else (registryRead seen authority row construct command artifact))))))))
+          | List.nil => (ctor Plan.refuse (usage)))
+        | List.nil => (ctor Plan.refuse (usage)))
+      | List.nil => (ctor Plan.refuse (usage)))
+    | List.nil => (ctor Plan.refuse (usage))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
 
 
 definition{
@@ -2436,10 +2722,11 @@ definition{
   body: (if (Studio.Doc::same op (Studio.Doc::lit "stage-admissions")) then (stageGuard seen path (planStageQueue seen path false)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "stage-bindings")) then (stageGuard seen path (planStage seen path)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "stage-decisions")) then (stageGuard seen path (planStageQueue seen path true)) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "stage-registries")) then (stageGuard seen path (planStageRegistries seen path)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "stage-encodings")) then (stageGuard seen path (planStageEncodings seen path)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "stage-mappings")) then (stageGuard seen path (planStageInto seen path false)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "stage-matrix")) then (stageGuard seen path (planStageInto seen path true)) else
-    (ctor Plan.refuse (usage)))))))),
+    (ctor Plan.refuse (usage))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2494,6 +2781,7 @@ definition{
   result: Plan,
   body: (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "admit-registry")) then (planAdmitRegistry seen path more) else
     (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else
@@ -2502,7 +2790,7 @@ definition{
       | List.cons name citation => (planProposeEncoding seen path name citation)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "record-error")) then (planRecordError seen path more) else
-    (ctor Plan.refuse (usage)))))))))),
+    (ctor Plan.refuse (usage))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -2529,7 +2817,7 @@ definition{
     | List.cons op rest =>
       (if (Studio.Doc::same op (Studio.Doc::lit "agenda")) then (planAgenda seen) else
       (if (Studio.Doc::same op (Studio.Doc::lit "build")) then (planBuild seen) else
-      (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheck seen) else
+      (if (Studio.Doc::same op (Studio.Doc::lit "check")) then (planCheckRegistries seen) else
       (if (Studio.Doc::same op (Studio.Doc::lit "next")) then (planNext seen rest) else
       (if (Studio.Doc::same op (Studio.Doc::lit "publish")) then (planPublish seen) else
       (match rest
