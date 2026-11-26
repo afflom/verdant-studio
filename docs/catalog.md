@@ -116,7 +116,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G11** ACES (Academy Color Encoding System) 2.0 (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch AMPAS-ACES-2.0-OUTPUT-TRANSFORM (staged)
 - **G12** OpenColorIO (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 (staged)
 - **G13** OpenXR (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch KHRONOS-OPENXR-REGISTRY-1.1.65 (staged)
-- **G14** WebXR Device API (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch W3C-WEBXR-20261109 (staged)
+- **G14** WebXR Device API (Rendering, graphics APIs, color, and display): narrowMatch W3C-WEBREF-IDL-WEBXR-A0114B8 (derived from its citation); exactMatch W3C-WEBXR-20261109 (staged)
 - **G15** ISO 9241-392 Ergonomics of stereoscopic images (visual fatigue) (Rendering, graphics APIs, color, and display): exactMatch ISO-9241-392-2015 (staged)
 - **G16** HDMI 2.1 (VRR, ALLM) and VESA Adaptive-Sync / ClearMR (Rendering, graphics APIs, color, and display): exactMatch HDMI-FOR-GAMING-VRR-PAGE (derived from its citation)
 - **H01** C++ (ISO/IEC 14882) (Engine, runtime, languages, and software engineering), not reached from any origin: inverse of closeMatch from http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f (staged)

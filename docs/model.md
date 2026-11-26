@@ -429,3 +429,4 @@ Each construct and the citation that admits it.
 - `model/registries/OPENASSETIO-MEDIACREATION-TRAITS.jsonl`: std OPENASSETIO-MEDIACREATION-TRAITS row D16
 - `model/registries/OWASP-MASVS-2.1.0.jsonl`: std OWASP-MASVS-2.1.0 row T02
 - `Catalog.Gamepad`: std W3C-WEBREF-IDL-GAMEPAD-A0114B8 row H15
+- `Catalog.WebXr`: std W3C-WEBREF-IDL-WEBXR-A0114B8 row G14
