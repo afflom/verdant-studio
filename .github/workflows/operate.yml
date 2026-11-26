@@ -45,6 +45,29 @@ jobs:
         with:
           app-id: ${{ vars.VERDANT_STUDIO_APP_ID }}
           private-key: ${{ secrets.VERDANT_STUDIO_APP_KEY }}
+      # Main moves about every 10 minutes, and refresh's regeneration of an API change plus its check takes
+      # about 12, so an operation merged in that window pushes the change behind main again (#309, #315).
+      # refresh keeps a regenerated change ready with its auto-merge set, so this run waits for every such
+      # change whose studio check has not failed to merge first, then starts from the new main. It waits at
+      # most 10 minutes, so neither queue stalls. A new propose-command waits too, so it never merges ahead of an
+      # older change that is being regenerated; revert-merge, the repair of a broken path, never waits.
+      - name: wait for the API changes that are next to merge (every operation but revert-merge)
+        if: ${{ !startsWith(inputs.args, 'revert-merge ') }}
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          set -euo pipefail
+          for try in $(seq 1 20); do
+            next=''
+            for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.user.type == "Bot" and (.title | startswith("verdant_studio propose-command")) and .auto_merge != null and (.draft | not)) | .number'); do
+              sha=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .head.sha)
+              if [ "$(gh api "repos/${GITHUB_REPOSITORY}/commits/${sha}/check-runs?check_name=studio" --jq '[.check_runs[] | select(.conclusion == "failure")] | length')" = 0 ]; then next="$next #${pr}"; fi
+            done
+            if [ -z "$next" ]; then exit 0; fi
+            echo "waiting for${next} to merge (check $try of 20)"
+            sleep 30
+          done
+          echo "::warning::${next# } still open after 10 minutes, so this run goes on"
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app.outputs.token }}
@@ -291,7 +314,7 @@ jobs:
           gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > target/rules.json
           # A change to the API itself (propose-command, revert-merge) merges as every App pull request does:
           # the owner automated these approvals (2026-11-26), so the studio check, which runs the API's own
-          # end-to-end propose run, is its gate. refresh restores its auto-merge after a regeneration.
+          # end-to-end propose run, is its gate. refresh keeps its auto-merge while it regenerates it.
           if [ "$(target/release/verdant_studio merge-gate target/rules.json)" = merge ]; then
             gh pr merge "$pr" --auto --squash --delete-branch
           else

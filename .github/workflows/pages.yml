@@ -38,8 +38,9 @@ jobs:
         with:
           path: ~/.npm
           key: npm-prism-code-0.11.1
-      - if: steps.command.outputs.cache-hit != 'true'
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      # Restored on every run, not only when certified/ changed: the end-to-end propose-command step below
+      # exports with the attested lexlean binary, and a fresh cargo install does not reproduce its hash.
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: target/lexlean
           key: lexlean-0.4.3
