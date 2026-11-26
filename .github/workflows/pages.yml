@@ -65,6 +65,8 @@ jobs:
         run: |
           set -euo pipefail
           target/release/verdant_studio check
+          # Each encoding admitted through admit-translated recorded the reader command that printed it: run it again and fail if the output differs.
+          target/release/verdant_readers verify-translations model/admissions.json
           target/release/verdant_studio build
           target/release/verdant_studio publish
           if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
