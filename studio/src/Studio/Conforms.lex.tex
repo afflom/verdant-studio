@@ -5,6 +5,7 @@
 \importmodule{LexLeanStd.JsonRead}
 \importmodule{Studio.Doc}
 \importmodule{Studio.Schema}
+\importmodule{Studio.Ieee754}
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
@@ -78,6 +79,7 @@ definition{
     | Studio.Schema::Value.VBool flag => 0
     | Studio.Schema::Value.VInt negative magnitude => 0
     | Studio.Schema::Value.VDec negative mantissa scale => 0
+    | Studio.Schema::Value.VFloat wide bits => 0
     | Studio.Schema::Value.VStr text => 0
     | Studio.Schema::Value.VArr inner => 0
     | Studio.Schema::Value.VObj inner => 0
@@ -103,6 +105,7 @@ definition{
       | Studio.Schema::Value.VBool flag => false
       | Studio.Schema::Value.VInt negative magnitude => false
       | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VFloat wide bits => false
       | Studio.Schema::Value.VStr text => false
       | Studio.Schema::Value.VArr inner => false
       | Studio.Schema::Value.VObj inner => false))
@@ -115,6 +118,7 @@ definition{
       | Studio.Schema::Value.VBool flag => false
       | Studio.Schema::Value.VInt negative magnitude => false
       | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VFloat wide bits => false
       | Studio.Schema::Value.VStr text => false
       | Studio.Schema::Value.VArr inner => false
       | Studio.Schema::Value.VObj inner => false)
@@ -128,6 +132,7 @@ definition{
       | Studio.Schema::Value.VBool flag => false
       | Studio.Schema::Value.VInt negative magnitude => false
       | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VFloat wide bits => false
       | Studio.Schema::Value.VStr text => false
       | Studio.Schema::Value.VArr items => false)
     | Studio.Schema::Value.VArr inner => (match right
@@ -140,6 +145,7 @@ definition{
       | Studio.Schema::Value.VBool flag => false
       | Studio.Schema::Value.VInt negative magnitude => false
       | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VFloat wide bits => false
       | Studio.Schema::Value.VStr text => false
       | Studio.Schema::Value.VObj members2 => false)
     | Studio.Schema::Value.VTag tagName tagged => false
@@ -147,6 +153,7 @@ definition{
     | Studio.Schema::Value.VBool flag => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VBool flag)))
     | Studio.Schema::Value.VInt negative magnitude => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VInt negative magnitude)))
     | Studio.Schema::Value.VDec negative mantissa scale => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VDec negative mantissa scale)))
+    | Studio.Schema::Value.VFloat wide bits => (Studio.Doc::same (Studio.Schema::writeText right) (Studio.Schema::writeText (ctor Studio.Schema::Value.VFloat wide bits)))
     | Studio.Schema::Value.VStr text => (match right
       | Studio.Schema::Value.VStr other => (Studio.Doc::same text other)
       | Studio.Schema::Value.VNil => false
@@ -157,6 +164,7 @@ definition{
       | Studio.Schema::Value.VBool flag => false
       | Studio.Schema::Value.VInt negative magnitude => false
       | Studio.Schema::Value.VDec negative mantissa scale => false
+      | Studio.Schema::Value.VFloat wide bits => false
       | Studio.Schema::Value.VArr items => false
       | Studio.Schema::Value.VObj members2 => false)),
   recursive_argument: left,
@@ -173,6 +181,7 @@ definition{
     | Studio.Schema::Value.VBool flag => (Studio.Doc::lit "boolean")
     | Studio.Schema::Value.VInt negative magnitude => (Studio.Doc::lit "integer")
     | Studio.Schema::Value.VDec negative mantissa scale => (Studio.Doc::lit "number")
+    | Studio.Schema::Value.VFloat wide bits => (Studio.Doc::lit "number")
     | Studio.Schema::Value.VStr text => (Studio.Doc::lit "string")
     | Studio.Schema::Value.VArr inner => (Studio.Doc::lit "array")
     | Studio.Schema::Value.VObj inner => (Studio.Doc::lit "object")
@@ -268,6 +277,7 @@ definition{
   body: (match value
     | Studio.Schema::Value.VInt negative magnitude => (ctor Option.some [(Bool * (Nat * Nat))] (negative, (magnitude, 0)))
     | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.some [(Bool * (Nat * Nat))] (negative, (mantissa, scale)))
+    | Studio.Schema::Value.VFloat wide bits => (ctor Option.none [(Bool * (Nat * Nat))])
     | Studio.Schema::Value.VNull => (ctor Option.none [(Bool * (Nat * Nat))])
     | Studio.Schema::Value.VTag tagName tagged => (ctor Option.none [(Bool * (Nat * Nat))])
     | Studio.Schema::Value.VBool flag => (ctor Option.none [(Bool * (Nat * Nat))])
@@ -517,6 +527,11 @@ definition{
     | Studio.Schema::Value.VBool flag => (ctor Option.none [Bytes])
     | Studio.Schema::Value.VInt negative magnitude => (ctor Option.none [Bytes])
     | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+    | Studio.Schema::Value.VFloat wide bits => (if (Studio.Ieee754::finite wide bits) then (match (Studio.Schema::field schema (Studio.Doc::lit "minimum"))
+      | Option.some bound => (failure at (Studio.Doc::lit "is a binary floating-point number, which minimum compares only as an exact decimal (JSON Schema 2020-12 Validation section 6.2.4)"))
+      | Option.none => (match (Studio.Schema::field schema (Studio.Doc::lit "maximum"))
+        | Option.some bound => (failure at (Studio.Doc::lit "is a binary floating-point number, which maximum compares only as an exact decimal (JSON Schema 2020-12 Validation section 6.2.2)"))
+        | Option.none => (ctor Option.none [Bytes]))) else (failure at (Studio.Doc::lit "is NaN or an infinity, which is not a JSON number (RFC 8259 section 6)")))
     | Studio.Schema::Value.VNil => (ctor Option.none [Bytes])
     | Studio.Schema::Value.VItem item rest => (ctor Option.none [Bytes])
     | Studio.Schema::Value.VMember key item rest => (ctor Option.none [Bytes])); (let bounds : (Option Bytes) := (match (numberOf value)
@@ -578,6 +593,7 @@ definition{
           | Studio.Schema::Value.VBool flag => (ctor Option.none [Bytes])
           | Studio.Schema::Value.VInt negative magnitude => (ctor Option.none [Bytes])
           | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.none [Bytes])
+          | Studio.Schema::Value.VFloat wide bits => (ctor Option.none [Bytes])
           | Studio.Schema::Value.VStr text => (ctor Option.none [Bytes])
           | Studio.Schema::Value.VNil => (ctor Option.none [Bytes])
           | Studio.Schema::Value.VItem item more => (ctor Option.none [Bytes])
@@ -586,6 +602,7 @@ definition{
       | Studio.Schema::Value.VTag tagName tagged => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
       | Studio.Schema::Value.VInt negative magnitude => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
       | Studio.Schema::Value.VDec negative mantissa scale => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
+      | Studio.Schema::Value.VFloat wide bits => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
       | Studio.Schema::Value.VStr text => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
       | Studio.Schema::Value.VArr items => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
       | Studio.Schema::Value.VNil => (ctor Option.some [Bytes] (Studio.Doc::lit "a schema must be an object or a boolean (JSON Schema 2020-12 Core section 4.3)"))
