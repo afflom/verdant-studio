@@ -1,0 +1,2 @@
+{"artifact":"authorities/OPENASSETIO-MEDIACREATION-TRAITS/traits.yml","authority":"OPENASSETIO-MEDIACREATION-TRAITS","construct":"TraitGenPackage","reader":"read-yaml","row":"D16"}
+{"artifact":"authorities/OWASP-MASVS-2.1.0/OWASP_MASVS.yaml","authority":"OWASP-MASVS-2.1.0","construct":"none","reader":"read-yaml","row":"T02"}
