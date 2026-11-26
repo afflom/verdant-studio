@@ -7900,8 +7900,8 @@ media_type = "application/pdf"
 license = "Ecma International copyright notice (may be copied and distributed unmodified with the notice; software parts BSD)"
 redistribution = "redistributable"
 statement = "The ECMAScript language, including the regular expression pattern grammar (section 22.2.1) that JSON Schema 2020-12 Core section 6.4 names for pattern. The current edition, since JSON Schema names no edition."
-checksum = "none"
-checksum_reason = "The authority is citation-only, so no artifact is committed."
+artifact = "authorities/ECMA-262-16/ECMA-262_16th_edition_june_2025.pdf"
+checksum = "50e932767f16f3d4bf03e9d94157885125eeff1c165a8d8c05a867bcb56ee7da"
 realized_by = []
 
 [[authority]]
@@ -7917,8 +7917,8 @@ media_type = "text/plain"
 license = "IETF Trust Legal Provisions"
 redistribution = "redistributable"
 statement = "The UTF-8 encoding and its octet sequences (section 4), in the RFC's official plain-text form. Cited by the API's text handling."
-checksum = "none"
-checksum_reason = "The authority is citation-only, so no artifact is committed."
+artifact = "authorities/IETF-RFC-3629/rfc3629.txt"
+checksum = "a2a3a39457d30420c812f87a38cc2b9194832f6982ef17e619de7d816879d6a6"
 realized_by = []
 
 [[authority]]
@@ -7934,8 +7934,8 @@ media_type = "text/plain"
 license = "IETF Trust Legal Provisions"
 redistribution = "redistributable"
 statement = "The JSON Pointer syntax and its evaluation against a JSON document (section 4), in the RFC's official plain-text form. Cited by the API's refusal texts."
-checksum = "none"
-checksum_reason = "The authority is citation-only, so no artifact is committed."
+artifact = "authorities/IETF-RFC-6901/rfc6901.txt"
+checksum = "12f9f4fc13d686aa4fbe7d144d70166cd3fcd4ab89174c2b13bda8f4b55e49da"
 realized_by = []
 
 [[authority]]
@@ -7951,8 +7951,8 @@ media_type = "text/plain"
 license = "IETF Trust Legal Provisions"
 redistribution = "redistributable"
 statement = "The JSON grammar (section 2) and its values, including null (section 3), in the RFC's official plain-text form. Cited by the API's JSON reader and writer."
-checksum = "none"
-checksum_reason = "The authority is citation-only, so no artifact is committed."
+artifact = "authorities/IETF-RFC-8259/rfc8259.txt"
+checksum = "61a5378f4255c720beb2a4b4a63b29540147c140f36988bf086291989b4cd2d7"
 realized_by = []
 
 [[authority]]
@@ -7968,6 +7968,6 @@ media_type = "application/pdf"
 license = "Public domain (US Government work)"
 redistribution = "redistributable"
 statement = "The SHA-1 and SHA-2 hash algorithms, including SHA-256 (section 6.2). Cited by the API's checksums."
-checksum = "none"
-checksum_reason = "The authority is citation-only, so no artifact is committed."
+artifact = "authorities/NIST-FIPS-180-4/NIST.FIPS.180-4.pdf"
+checksum = "0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82"
 realized_by = []
