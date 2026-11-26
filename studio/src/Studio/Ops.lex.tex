@@ -1053,12 +1053,23 @@ definition{
 }
 
 definition{
+  name: declarationsFrom,
+  parameters: [fuel : Nat, text : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => text
+    | Nat.succ rest => (if (LexLeanStd.Text::startsWith text (Studio.Doc::lit "-- ")) then (match (LexLeanStd.Text::find text (Studio.Doc::lit "\n"))
+      | Option.none => text
+      | Option.some at => (declarationsFrom rest (LexLeanStd.Text::sliceOr text (at + 1) (prim subtract (prim length text : Nat) (at + 1) : Nat)))) else text)),
+  recursive_argument: fuel,
+  executable: true
+}
+
+definition{
   name: declarationsOf,
   parameters: [text : Bytes],
   result: Bytes,
-  body: (if (LexLeanStd.Text::startsWith text (Studio.Doc::lit "-- ")) then (match (LexLeanStd.Text::find text (Studio.Doc::lit "\n"))
-    | Option.none => text
-    | Option.some at => (LexLeanStd.Text::sliceOr text (at + 1) (prim subtract (prim length text : Nat) (at + 1) : Nat))) else text),
+  body: (declarationsFrom ((prim length text : Nat) + 1) text),
   executable: true
 }
 
