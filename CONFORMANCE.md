@@ -517,6 +517,11 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `VERDANT-ENGINE-STANDARDS-LOCK-2.22.4` | The engine's prismpm/standards-lock/1: the standards it binds and the executable oracles, corpora and failure mappings it runs against them. |  |
 | `OPENASSETIO-TRAITGEN-SCHEMA-1.0.0A14` | The JSON Schema 2020-12 that TraitGen YAML packages of OpenAssetIO traits and specifications conform to; the schema of index row D16's traits.yml. |  |
 | `LEXLEAN-LEAN-TOKENS-0.4.3` | The identifier-like tokens of the pinned Lean 4.32.2 toolchain that LexLean 0.4.3 refuses as a generated declaration name (SPEC.md 17.8), which the Studio translators must never emit as a name. |  |
+| `ECMA-262-16` | The ECMAScript language, including the regular expression pattern grammar (section 22.2.1) that JSON Schema 2020-12 Core section 6.4 names for pattern. The current edition, since JSON Schema names no edition. |  |
+| `IETF-RFC-3629` | The UTF-8 encoding and its octet sequences (section 4), in the RFC's official plain-text form. Cited by the API's text handling. |  |
+| `IETF-RFC-6901` | The JSON Pointer syntax and its evaluation against a JSON document (section 4), in the RFC's official plain-text form. Cited by the API's refusal texts. |  |
+| `IETF-RFC-8259` | The JSON grammar (section 2) and its values, including null (section 3), in the RFC's official plain-text form. Cited by the API's JSON reader and writer. |  |
+| `NIST-FIPS-180-4` | The SHA-1 and SHA-2 hash algorithms, including SHA-256 (section 6.2). Cited by the API's checksums. |  |
 
 ## Claims that are not conformance IDs
 
