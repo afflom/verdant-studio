@@ -207,14 +207,18 @@ jobs:
             # queue waits: each begins with "waiting", and none is dispatched.
             while op=$(target/release/verdant_studio next $skipped) && [ -n "$op" ] && [ "${op#waiting}" = "$op" ]; do
               if [ "$op" = "$last" ]; then echo "::error::$op did not settle"; exit 1; fi
-              if vs $op | tee -a target/operation.txt; then
+              if vs $op > target/attempt.txt 2>&1; then
+                tee -a target/operation.txt < target/attempt.txt
                 last=$op
               else
+                cat target/attempt.txt
                 binding=${op#* }
                 echo "::warning::$op was refused; the other bindings continue"
                 echo "refused: $op" >> target/operation.txt
                 git clean -fdq -- "authorities/$(basename "$binding" .json)"
                 skipped="$skipped $binding"
+                # The refusal becomes a Studio.Error.Observation in the model (REQ-SELF-HEALING).
+                vs record-error target/attempt.txt "$(date -u -Iseconds)" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" $op | tee -a target/operation.txt
               fi
             done
             t0=$EPOCHREALTIME
