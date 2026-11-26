@@ -128,7 +128,7 @@ jobs:
           fi
           export PATH="$HOME/.elan/bin:$PATH"
           test -d "$HOME/.elan/toolchains/leanprover--lean4---v4.32.2" || elan toolchain install leanprover/lean4:v4.32.2
-          test -x target/lexlean/bin/lexlean || cargo install --locked --version 0.4.3 lexlean --root target/lexlean
+          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; cargo install --locked --version 0.4.3 lexlean --root target/lexlean; }
           ll="$PWD/target/lexlean/bin/lexlean"
           id=$(gh api "users/${SLUG}[bot]" --jq .id)
           failed=''
