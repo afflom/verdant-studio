@@ -710,5 +710,33 @@ definition{
   executable: true
 }
 
+definition{
+  name: notBinary,
+  parameters: [wide : Bool, value : Studio.Schema::Value],
+  result: (Option Bytes),
+  body: (ctor Option.some [Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "a ") (cons (kindOf value) (cons (Studio.Doc::lit " value is not a ") (cons (if wide then (Studio.Schema::binary64Type) else (Studio.Schema::binary32Type)) (cons (Studio.Doc::lit ": only an IEEE 754 interchange encoding of that width is (IEEE 754-2019 3.4 and 3.6 Table 3.5, Web IDL 3.2)") (nil Bytes)))))))),
+  executable: true
+}
+
+definition{
+  name: binaryConforms,
+  parameters: [wide : Bool, value : Studio.Schema::Value],
+  result: (Option Bytes),
+  body: (match value
+    | Studio.Schema::Value.VFloat valueWide bits => (if ((if wide then valueWide else (if valueWide then false else true)) && (bits <? (if wide then 18446744073709551616 else 4294967296))) then (ctor Option.none [Bytes]) else (ctor Option.some [Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "the value is not a ") (cons (if wide then (Studio.Schema::binary64Type) else (Studio.Schema::binary32Type)) (cons (Studio.Doc::lit ": its width or its bit pattern does not fit that interchange format (IEEE 754-2019 3.4 and 3.6 Table 3.5)") (nil Bytes)))))))
+    | Studio.Schema::Value.VNull => (notBinary wide value)
+    | Studio.Schema::Value.VTag tagName tagged => (notBinary wide value)
+    | Studio.Schema::Value.VBool flag => (notBinary wide value)
+    | Studio.Schema::Value.VInt negative magnitude => (notBinary wide value)
+    | Studio.Schema::Value.VDec negative mantissa scale => (notBinary wide value)
+    | Studio.Schema::Value.VStr text => (notBinary wide value)
+    | Studio.Schema::Value.VArr inner => (notBinary wide value)
+    | Studio.Schema::Value.VObj inner => (notBinary wide value)
+    | Studio.Schema::Value.VNil => (notBinary wide value)
+    | Studio.Schema::Value.VItem item rest => (notBinary wide value)
+    | Studio.Schema::Value.VMember key item rest => (notBinary wide value)),
+  executable: true
+}
+
 \end{semanticmodule}
 \end{lexlean}

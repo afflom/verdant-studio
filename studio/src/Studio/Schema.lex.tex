@@ -1097,6 +1097,30 @@ definition{
 }
 
 definition{
+  name: binary32Type,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "Binary32"),
+  executable: true
+}
+
+definition{
+  name: binary64Type,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "Binary64"),
+  executable: true
+}
+
+definition{
+  name: binaryDeclaration,
+  parameters: [wide : Bool],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "structure{\n  name: ") (cons (if wide then (binary64Type) else (binary32Type)) (cons (Studio.Doc::lit ",\n  type_parameters: [],\n  parameters: [],\n  fields: [\n    {name: bits, type: Nat}\n  ]\n}\n") (nil Bytes))))),
+  executable: true
+}
+
+definition{
   name: integerType,
   parameters: [schema : Value],
   result: Bytes,

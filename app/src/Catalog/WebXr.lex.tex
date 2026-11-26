@@ -2,6 +2,24 @@
 \useglossary{lexlean.std.nat@1.2.0}
 \title{Natural number addition}
 \begin{semanticmodule}
+structure{
+  name: Binary32,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bits, type: Nat}
+  ]
+}
+
+structure{
+  name: Binary64,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bits, type: Nat}
+  ]
+}
+
 inductive{
   name: XRSessionMode,
   type_parameters: [],
@@ -145,6 +163,18 @@ structure{
     {name: framebufferScaleFactor, type: (Int * Int)},
     {name: ignoreDepthValues, type: Bool},
     {name: stencil, type: Bool}
+  ]
+}
+
+structure{
+  name: DOMPointReadOnly,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: x, type: Binary64},
+    {name: y, type: Binary64},
+    {name: z, type: Binary64},
+    {name: w, type: Binary64}
   ]
 }
 \end{semanticmodule}
