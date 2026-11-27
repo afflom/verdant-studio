@@ -1,0 +1,1 @@
+{"citation":["std","KHRONOS-WEBGL-1.0-IDL","G04"],"name":"WebglPowerPreference","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from KHRONOS-WEBGL-1.0-IDL IDL, enum WebGLPowerPreference.","enum":["default","low-power","high-performance"],"title":"WebGLPowerPreference"}}
