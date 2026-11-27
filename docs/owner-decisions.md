@@ -97,3 +97,10 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ## REQ-PRISM-GENERATION (afflom, 2026-11-26T19:30:10Z)
 
 > The entire Verdant Prism must be procedurally synthesized from the Verdant Studio, so that VerdantUI is only used to route weights onto the Verdant Prism.
+
+## REQ-PLAYER-FEEDBACK (afflom, 2026-11-27T11:12:38Z)
+
+> A Player would not login to Verdant Studio unless they were making their own separate game. Player feedback will be sent in the game they play through player feedback forms. Creators can also request feedback on new features by occasionally prompting their Players for feedback.
+>
+>
+> The best way that we can enable fast feedback loops between players and creators is to focus on completing the Verdant Studio, so that its generative features enhance its automations, so that we are reducing the time from feedback to publishing.  the feedback loop from the player to the creator will make use of this same generative acceleration, so that the feedback can be cataloged and distilled into future releases. Player feedback needs to be masked and analyzed with other feedback, instead of catering to bespoke feedback; game features must based on consensus instead of single-interests. There also needs to be a way of identifying and actioning  single-feedback that merits action without consensus, such as identifying bugs or special requests that would add significant value to the referenced game or app.
