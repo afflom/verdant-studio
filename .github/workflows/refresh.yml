@@ -112,7 +112,7 @@ jobs:
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: target/lexlean
-          key: lexlean-0.4.3
+          key: lexlean-0.4.3-rust-1.97.0
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.npm
@@ -137,7 +137,7 @@ jobs:
           fi
           export PATH="$HOME/.elan/bin:$PATH"
           test -d "$HOME/.elan/toolchains/leanprover--lean4---v4.32.2" || elan toolchain install leanprover/lean4:v4.32.2
-          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; cargo install --locked --version 0.4.3 lexlean --root target/lexlean; }
+          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; rustup toolchain install 1.97.0 --profile minimal; RUSTFLAGS="--remap-path-prefix=${CARGO_HOME:-$HOME/.cargo}=cargo-home" cargo +1.97.0 install --locked --version 0.4.3 lexlean --root target/lexlean; }
           ll="$PWD/target/lexlean/bin/lexlean"
           id=$(gh api "users/${SLUG}[bot]" --jq .id)
           failed=''
