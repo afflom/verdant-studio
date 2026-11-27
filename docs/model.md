@@ -633,3 +633,4 @@ Each construct and the citation that admits it.
 - `Studio.Project.AccessRequest`: std VERDANT-ENGINE-IDS-2.22.4
 - `Studio.Project.IdentityLink`: std W3C-PROV-O
 - `Studio.Project.Isolation`: der pattern from Studio.Project, Studio.ContentBoundary.Differentiation, Studio.Runtime
+- `Studio.Project.Authority`: std VERDANT-ENGINE-IDS-2.22.4
