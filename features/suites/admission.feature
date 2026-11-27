@@ -28,6 +28,7 @@ Feature: admission
     When prism-code check has Lean's kernel prove Studio.Admission.first_decl_decides_admission
     Then each admitted construct becomes an input for the declarations after it
     And verdant_studio check answers "unresolved citation" with the first construct that does not resolve
+    And verdant_studio check answers "unbound constraint" with the first requirement whose constraint evidence names an authority or catalog row that is not bound
 
   @VS-05 @build
   Scenario: The modules are grounded only when every module has a stratum row, every stratum row names a module, and every stratum is at most 7
