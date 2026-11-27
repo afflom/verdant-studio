@@ -702,3 +702,4 @@ Each construct and the citation that admits it.
 - `Studio.Observer.Channel`: std VERDANT-ENGINE-OBSERVER-2.22.4
 - `Studio.Observer.Participation`: der pattern from Studio.Observer, Studio.Observer.Holon, Studio.Observer.Stakeholder, Studio.Observer.Channel, Studio.User, Studio.Agent.PrismId
 - `Studio.Observer.Experience`: der pattern from Studio.Observer.Participation, Studio.Gui.Perception, Studio.Gui.Enactment, Studio.Gui.Coordination
+- `Studio.Generator.Typeface.Scaled`: std KNUTH-MF-WEB-2.71828182
