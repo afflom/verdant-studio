@@ -93,3 +93,7 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ## REQ-PRISM-GENERATION (afflom, 2026-11-26T23:22:33Z)
 
 > Yes and including the webassembly that will be running in the browser or webassembly runtime.
+
+## REQ-PRISM-GENERATION (afflom, 2026-11-26T19:30:10Z)
+
+> The entire Verdant Prism must be procedurally synthesized from the Verdant Studio, so that VerdantUI is only used to route weights onto the Verdant Prism.

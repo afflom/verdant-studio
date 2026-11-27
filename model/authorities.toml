@@ -8107,3 +8107,71 @@ statement = "The Web IDL fragments of Permissions, extracted by Reffy into W3C w
 artifact = "authorities/W3C-WEBREF-IDL-PERMISSIONS-A0114B8/permissions.idl"
 checksum = "b075888a184acff979ee6fcb8900d940a8b09f9bba6e39006470378c1b14029b"
 realized_by = []
+
+[[authority]]
+id = "SDXS-512-Q8-0-3144D89"
+name = "SDXS-512 tinySD distilled, GGUF Q8_0"
+issuer = "concedo"
+edition = "Hugging Face revision 3144d898d61492f8382ffcabec055733fc5b2a0e (2026-01-19)"
+canonical_id = "https://huggingface.co/concedo/sdxs-512-tinySDdistilled-GGUF"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://huggingface.co/concedo/sdxs-512-tinySDdistilled-GGUF/resolve/3144d898d61492f8382ffcabec055733fc5b2a0e/sdxs-512-tinySDdistilled_Q8_0.gguf"
+media_type = "application/octet-stream"
+license = "CreativeML Open RAIL++-M"
+redistribution = "citation-only"
+statement = "The one-step distilled diffusion weights for image synthesis (SDXS UNet with its TAESD decoder), the image expert VerdantUI runs on vTensor (VerdantUI DEC-014); pinned so an accepted Prism's raster artwork can be regenerated (REQ-PRISM-GENERATION, REQ-ENGINE-RASTER-IMAGE)."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "SMOLVLM2-256M-MMPROJ-Q8-0-A48F519"
+name = "SmolVLM2-256M-Video-Instruct multimodal projector, GGUF Q8_0"
+issuer = "ggml-org"
+edition = "Hugging Face revision a48f519adb9e5a5f262e3a5004fb9a88fcfca54e (2026-11-15)"
+canonical_id = "https://huggingface.co/ggml-org/SmolVLM2-256M-Video-Instruct-GGUF"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://huggingface.co/ggml-org/SmolVLM2-256M-Video-Instruct-GGUF/resolve/a48f519adb9e5a5f262e3a5004fb9a88fcfca54e/mmproj-SmolVLM2-256M-Video-Instruct-Q8_0.gguf"
+media_type = "application/octet-stream"
+license = "Apache-2.0"
+redistribution = "citation-only"
+statement = "The image-to-token projector that the SmolVLM2 vision expert loads with its weights (SMOLVLM2-256M-Q8-0-A48F519); pinned with them (REQ-PRISM-GENERATION)."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "SMOLVLM2-256M-Q8-0-A48F519"
+name = "SmolVLM2-256M-Video-Instruct, GGUF Q8_0"
+issuer = "ggml-org"
+edition = "Hugging Face revision a48f519adb9e5a5f262e3a5004fb9a88fcfca54e (2026-11-15)"
+canonical_id = "https://huggingface.co/ggml-org/SmolVLM2-256M-Video-Instruct-GGUF"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://huggingface.co/ggml-org/SmolVLM2-256M-Video-Instruct-GGUF/resolve/a48f519adb9e5a5f262e3a5004fb9a88fcfca54e/SmolVLM2-256M-Video-Instruct-Q8_0.gguf"
+media_type = "application/octet-stream"
+license = "Apache-2.0"
+redistribution = "citation-only"
+statement = "The vision-language weights, the vision expert VerdantUI runs on vTensor for its closed-loop critique (VerdantUI DEC-014); pinned so a Prism's visual artifacts are validated against its intent reproducibly (REQ-PRISM-GENERATION, ISO/IEC/IEEE 15288 validation)."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "WHISPER-TINY-EN-Q8-0-5359861"
+name = "whisper tiny.en, ggml Q8_0"
+issuer = "ggerganov"
+edition = "Hugging Face revision 5359861c739e955e79d9a303bcbc70fb988958b1 (2024-10-29)"
+canonical_id = "https://huggingface.co/ggerganov/whisper.cpp"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny.en-q8_0.bin"
+media_type = "application/octet-stream"
+license = "MIT"
+redistribution = "citation-only"
+statement = "The English speech recognition weights, the speech expert VerdantUI runs on vTensor (VerdantUI DEC-014); pinned so a Prism's spoken audio can be verified by transcription (REQ-PRISM-GENERATION)."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
