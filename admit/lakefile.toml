@@ -1,0 +1,6 @@
+name = "VerdantAdmitCli"
+version = "0.1.0"
+defaultTargets = ["VerdantAdmitCli"]
+
+[[lean_lib]]
+name = "VerdantAdmitCli"
