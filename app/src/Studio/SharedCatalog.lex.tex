@@ -1,0 +1,215 @@
+\begin{lexlean}{Studio.SharedCatalog}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.Project}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: published,
+  parameters: [catalog : Bytes, owner : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x7075626c697368656420696e20 catalog : Bytes) (prim append 0x3a207468652073686172656420636f6e74656e74206f6620 owner : Bytes) : Bytes) (prim append 0x2c20646973747269627574656420746f20657665727920696e7374616e6365207375627363726962656420746f20 catalog : Bytes) : Bytes)
+}
+
+definition{
+  name: privateRefusal,
+  parameters: [catalog : Bytes, owner : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a2074686520636f6e74656e74206f6620 owner : Bytes) (prim append 0x206973207072697661746520746f20 owner : Bytes) : Bytes) (prim append 0x20756e74696c206974206973207368617265642c20736f206974206973206e6f74207075626c697368656420696e20 catalog : Bytes) : Bytes)
+}
+
+definition{
+  name: publish,
+  parameters: [catalog : Bytes, owner : Bytes, share : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same share 0x736861726564) then (published catalog owner) else (privateRefusal catalog owner)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: subscribed,
+  parameters: [catalog : Bytes, prismId : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x737562736372696265643a20657665727920696e7374616e6365206f6620 prismId : Bytes) (prim append 0x207265636569766573207468652073686172656420636f6e74656e74206f6620 catalog : Bytes) : Bytes) 0x2c2073796e6368726f6e697a656420756e6465722069747320507269736d204944 : Bytes)
+}
+
+definition{
+  name: catalogScope,
+  parameters: [scope : Bytes],
+  result: Bool,
+  body: ((Studio.Runtime::same scope 0x6d61696e7461696e) || ((Studio.Runtime::same scope 0x7075626c697368) || ((Studio.Runtime::same scope 0x637572617465) || (Studio.Runtime::same scope 0x6d6f646572617465)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: handOff,
+  parameters: [catalog : Bytes, requester : Bytes, scope : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x7369676e696e67207265717565737420666f7220 (Studio.Project::engineCapability) : Bytes) (prim append 0x3a20 requester : Bytes) : Bytes) (prim append (prim append 0x2061736b732074686520636174616c6f6720 catalog : Bytes) (prim append 0x20666f7220 (prim append scope 0x2c20666f7220746865206d61696e7461696e657273206f662074686520636174616c6f6720746f20617070726f7665206f722072656a656374 : Bytes) : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: scopeRefusal,
+  parameters: [catalog : Bytes, scope : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a2074686520636174616c6f6720 catalog : Bytes) (prim append 0x206772616e7473206d61696e7461696e2c207075626c6973682c20637572617465206f72206d6f6465726174652c20736f20 scope : Bytes) : Bytes) 0x206973206e6f74206f6e65206f6620697473207065726d697373696f6e73 : Bytes)
+}
+
+definition{
+  name: permission,
+  parameters: [catalog : Bytes, requester : Bytes, scope : Bytes],
+  result: Bytes,
+  body: (if (catalogScope scope) then (handOff catalog requester scope) else (scopeRefusal catalog scope)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: globalCatalog,
+  parameters: [],
+  result: Bytes,
+  body: 0x56657264616e742053747564696f
+}
+
+definition{
+  name: foundGlobally,
+  parameters: [],
+  result: Bytes,
+  body: (prim append 0x666f756e643a20 (prim append (globalCatalog) 0x2c20746865206f6e6520636174616c6f6720646973636f76657261626c652065766572797768657265 : Bytes) : Bytes)
+}
+
+definition{
+  name: globalRefusal,
+  parameters: [catalog : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a206f6e6c7920 (globalCatalog) : Bytes) (prim append 0x20697320646973636f76657261626c6520657665727977686572652c20736f20 catalog : Bytes) : Bytes) 0x20697320666f756e64207468726f756768206120636174616c6f672074686174206c69737473206974 : Bytes)
+}
+
+definition{
+  name: listed,
+  parameters: [catalog : Bytes, entries : (List Bytes)],
+  result: Bool,
+  body: (match entries
+    | List.nil => false
+    | List.cons entry rest => (if (Studio.Runtime::same entry catalog) then true else (listed catalog rest))),
+  recursive_argument: entries,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: foundThrough,
+  parameters: [catalog : Bytes, via : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x666f756e643a20 catalog : Bytes) (prim append 0x2c206c69737465642062792074686520636174616c6f6720 via : Bytes) : Bytes)
+}
+
+definition{
+  name: unlistedRefusal,
+  parameters: [catalog : Bytes, via : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a2074686520636174616c6f6720 via : Bytes) (prim append 0x20646f6573206e6f74206c69737420 catalog : Bytes) : Bytes) (prim append 0x2c20736f20 (prim append catalog 0x206973206e6f7420666f756e64207468726f756768206974 : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: discover,
+  parameters: [catalog : Bytes, rest : (List Bytes)],
+  result: Bytes,
+  body: (match rest
+    | List.nil => (if (Studio.Runtime::same catalog (globalCatalog)) then (foundGlobally) else (globalRefusal catalog))
+    | List.cons via entries => (if (listed catalog entries) then (foundThrough catalog via) else (unlistedRefusal catalog via))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons catalog more2 => (if (Studio.Runtime::same verb 0x646973636f766572) then (discover catalog more2) else (match more2
+        | List.cons subject more3 => (if (Studio.Runtime::same verb 0x737562736372696265) then (match more3
+          | List.nil => (subscribed catalog subject)
+          | List.cons extra others => 0x696e76616c69642072657175657374) else (match more3
+          | List.cons third more4 => (match more4
+            | List.nil => (if (Studio.Runtime::same verb 0x7075626c697368) then (publish catalog subject third) else (if (Studio.Runtime::same verb 0x7065726d697373696f6e) then (permission catalog subject third) else 0x696e76616c69642072657175657374))
+            | List.cons extra others => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374))
+        | List.nil => 0x696e76616c69642072657175657374))
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: publishes_shared_content,
+  parameters: [],
+  statement: ((request 0x7075626c6973680963726561746f722d67616d657309707269736d3a616c657809736861726564) = (published 0x63726561746f722d67616d6573 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_to_publish_private_content,
+  parameters: [],
+  statement: ((request 0x7075626c6973680963726561746f722d67616d657309707269736d3a616c65780970726976617465) = (privateRefusal 0x63726561746f722d67616d6573 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: subscribes_every_instance_of_a_prism_id,
+  parameters: [],
+  statement: ((request 0x7375627363726962650963726561746f722d67616d657309707269736d3a626f62) = (subscribed 0x63726561746f722d67616d6573 0x707269736d3a626f62)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: hands_a_catalog_permission_request_to_the_engine,
+  parameters: [],
+  statement: ((request 0x7065726d697373696f6e0963726561746f722d67616d657309707269736d3a626f6209637572617465) = (handOff 0x63726561746f722d67616d6573 0x707269736d3a626f62 0x637572617465)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_scope_a_catalog_does_not_grant,
+  parameters: [],
+  statement: ((request 0x7065726d697373696f6e0963726561746f722d67616d657309707269736d3a626f620964656c657465) = (scopeRefusal 0x63726561746f722d67616d6573 0x64656c657465)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: verdant_studio_is_discoverable_everywhere,
+  parameters: [],
+  statement: ((request 0x646973636f7665720956657264616e742053747564696f) = (foundGlobally)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_global_discovery_of_any_other_catalog,
+  parameters: [],
+  statement: ((request 0x646973636f7665720976657264616e742d73747564696f) = (globalRefusal 0x76657264616e742d73747564696f)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: finds_a_catalog_through_one_that_lists_it,
+  parameters: [],
+  statement: ((request 0x646973636f7665720963726561746f722d67616d65730956657264616e742053747564696f0963726561746f722d67616d65730976657264616e742d73747564696f) = (foundThrough 0x63726561746f722d67616d6573 0x56657264616e742053747564696f)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_catalog_through_one_that_does_not_list_it,
+  parameters: [],
+  statement: ((request 0x646973636f7665720963726561746f722d67616d6573096f746865722d636174616c6f670976657264616e742d73747564696f) = (unlistedRefusal 0x63726561746f722d67616d6573 0x6f746865722d636174616c6f67)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
