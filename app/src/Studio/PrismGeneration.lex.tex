@@ -1,0 +1,168 @@
+\begin{lexlean}{Studio.PrismGeneration}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Prism.Seed}
+\importmodule{Studio.Generator.Music.Midi}
+\importmodule{Studio.Generator.AudioFile.Bwf}
+\importmodule{Studio.Generator.VectorImage.Svg}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: midiType,
+  parameters: [],
+  result: Bytes,
+  body: 0x617564696f2f6d696469
+}
+
+definition{
+  name: waveType,
+  parameters: [],
+  result: Bytes,
+  body: 0x617564696f2f77617665
+}
+
+definition{
+  name: svgType,
+  parameters: [],
+  result: Bytes,
+  body: 0x696d6167652f7376672b786d6c
+}
+
+definition{
+  name: manifest,
+  parameters: [],
+  result: Bytes,
+  body: (prim append (prim append (prim append (midiType) 0x0a : Bytes) (prim append (waveType) 0x0a : Bytes) : Bytes) (prim append (svgType) 0x0a : Bytes) : Bytes)
+}
+
+definition{
+  name: byteNat,
+  parameters: [value : Bytes, offset : Nat],
+  result: Nat,
+  body: (match (prim index value offset : (Option UInt8))
+    | Option.none => 256
+    | Option.some byte => (prim to_nat byte : Nat))
+}
+
+definition{
+  name: sameFrom,
+  parameters: [value : Bytes, pattern : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (((byteNat value offset) =? (byteNat pattern offset)) && (sameFrom value pattern (offset + 1) rest))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: same,
+  parameters: [value : Bytes, pattern : Bytes],
+  result: Bool,
+  body: (((prim length value : Nat) =? (prim length pattern : Nat)) && (sameFrom value pattern 0 (prim length pattern : Nat)))
+}
+
+definition{
+  name: begins,
+  parameters: [value : Bytes, pattern : Bytes],
+  result: Bool,
+  body: (((prim length pattern : Nat) <=? (prim length value : Nat)) && (sameFrom value pattern 0 (prim length pattern : Nat)))
+}
+
+definition{
+  name: piece,
+  parameters: [value : Bytes, offset : Nat, count : Nat],
+  result: Bytes,
+  body: (match (prim slice value offset count : (Option Bytes))
+    | Option.none => 0x
+    | Option.some part => part)
+}
+
+definition{
+  name: tabFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => offset
+    | Nat.succ rest => (if ((byteNat value offset) =? 9) then offset else (tabFrom value (offset + 1) rest))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: unknownRefusal,
+  parameters: [mediaType : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a2074686520507269736d20686173206e6f206661636574206f66206d65646961207479706520 mediaType : Bytes) 0x2c20616e6420697473206661636574732061726520617564696f2f6d6964692c20617564696f2f7761766520616e6420696d6167652f7376672b786d6c : Bytes)
+}
+
+definition{
+  name: shapeRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a206120507269736d20726571756573742069732061206d6564696120747970652c2061207461622c207468656e2074686520736565642c20616e6420616e20656d707479206d6564696120747970652061736b7320666f722074686520507269736d277320666163657473
+}
+
+definition{
+  name: facet,
+  parameters: [mediaType : Bytes, seed : Bytes],
+  result: Bytes,
+  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed)) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType)))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: generate,
+  parameters: [request : Bytes],
+  result: Bytes,
+  body: (if ((tabFrom request 0 (prim length request : Nat)) =? (prim length request : Nat)) then (shapeRefusal) else (facet (piece request 0 (tabFrom request 0 (prim length request : Nat))) (piece request ((tabFrom request 0 (prim length request : Nat)) + 1) (prim subtract (prim length request : Nat) ((tabFrom request 0 (prim length request : Nat)) + 1) : Nat)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: conforms,
+  parameters: [mediaType : Bytes, artifact : Bytes],
+  result: Bool,
+  body: (if (same mediaType (midiType)) then (begins artifact 0x4d54686400000006) else (if (same mediaType (waveType)) then ((begins artifact 0x52494646) && (same (piece artifact 8 4) 0x57415645)) else (if (same mediaType (svgType)) then (begins artifact 0x3c73766720786d6c6e733d22687474703a2f2f7777772e77332e6f72672f323030302f737667223e) else false))),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: lists_the_facets,
+  parameters: [],
+  statement: ((generate 0x0976657264616e74) = 0x617564696f2f6d6964690a617564696f2f776176650a696d6167652f7376672b786d6c0a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: routes_each_media_type_to_its_generator,
+  parameters: [],
+  statement: (((generate 0x617564696f2f6d6964690976657264616e74) = (Studio.Generator.Music.Midi::compose 0x76657264616e74)) /\ ((generate 0x696d6167652f7376672b786d6c0976657264616e74) = (Studio.Generator.VectorImage.Svg::generate 0x76657264616e74))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: each_facet_has_its_media_type,
+  parameters: [],
+  statement: (((conforms (midiType) (generate 0x617564696f2f6d6964690976657264616e74)) = true) /\ (((conforms (svgType) (generate 0x696d6167652f7376672b786d6c0976657264616e74)) = true) /\ ((conforms (waveType) (Studio.Generator.AudioFile.Bwf::wave 0x45 0x0100)) = true))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_facet_it_has_not,
+  parameters: [],
+  statement: (((conforms (svgType) (generate 0x617564696f2f6d6964690976657264616e74)) = false) /\ ((generate 0x746578742f706c61696e0976657264616e74) = (unknownRefusal 0x746578742f706c61696e))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_request_with_no_seed,
+  parameters: [],
+  statement: (((generate 0x76657264616e74) = (shapeRefusal)) /\ ((generate 0x617564696f2f6d69646909) = (Studio.Prism.Seed::emptyRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

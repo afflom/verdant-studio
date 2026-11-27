@@ -1,0 +1,64 @@
+\begin{lexlean}{Studio.Prism.Seed}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Guard}
+\importmodule{Studio.Generator.Music.Midi}
+\importmodule{Studio.Generator.AudioFile.Bwf}
+\importmodule{Studio.Generator.VectorImage.Svg}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: emptyRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a20746865207365656420697320656d7074792c20736f207468657265206973206e6f20507269736d20746f2067656e6572617465
+}
+
+definition{
+  name: admitted,
+  parameters: [seed : Bytes],
+  result: Bool,
+  body: ((not ((prim length seed : Nat) =? 0)) && ((Studio.Generator.AudioFile.Bwf::admits (prim length seed : Nat)) && ((Studio.Guard::asciiText seed) && (Studio.Generator.VectorImage.Svg::xmlText seed)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: refusal,
+  parameters: [seed : Bytes],
+  result: Bytes,
+  body: (if ((prim length seed : Nat) =? 0) then (emptyRefusal) else (if (not (Studio.Generator.AudioFile.Bwf::admits (prim length seed : Nat))) then (Studio.Generator.AudioFile.Bwf::capacityRefusal) else (if (not (Studio.Guard::asciiText seed)) then (Studio.Generator.Music.Midi::refusal seed) else (Studio.Generator.VectorImage.Svg::textRefusal)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: features,
+  parameters: [seed : Bytes],
+  result: Bytes,
+  body: seed
+}
+
+theorem{
+  name: admits_a_word_and_a_sentence,
+  parameters: [],
+  statement: (((admitted 0x76657264616e74) = true) /\ ((admitted 0x466174656c696e65732c20612067616d65206f6620666174652e) = true)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_the_empty_seed,
+  parameters: [],
+  statement: (((admitted 0x) = false) /\ ((refusal 0x) = (emptyRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_seed_a_generator_refuses,
+  parameters: [],
+  statement: (((admitted 0x636166c3a9) = false) /\ (((refusal 0x636166c3a9) = (Studio.Generator.Music.Midi::refusal 0x636166c3a9)) /\ (((admitted 0x6101) = false) /\ ((refusal 0x6101) = (Studio.Generator.VectorImage.Svg::textRefusal))))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
