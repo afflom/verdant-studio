@@ -167,6 +167,28 @@ structure{
 }
 
 structure{
+  name: XRSessionSupportedPermissionDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: (List Nat)},
+    {name: mode, type: (Option XRSessionMode)}
+  ]
+}
+
+structure{
+  name: XRPermissionDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: (List Nat)},
+    {name: mode, type: (Option XRSessionMode)},
+    {name: optionalFeatures, type: (Option (List (List Nat)))},
+    {name: requiredFeatures, type: (Option (List (List Nat)))}
+  ]
+}
+
+structure{
   name: DOMPointReadOnly,
   type_parameters: [],
   parameters: [],
