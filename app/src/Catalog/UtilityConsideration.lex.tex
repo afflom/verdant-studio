@@ -1,0 +1,40 @@
+\begin{lexlean}{Catalog.UtilityConsideration}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: UtilityConsiderationCurve,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: linear, fields: []},
+    {name: quadratic, fields: []},
+    {name: logistic, fields: []},
+    {name: piecewiseLinear, fields: []}
+  ]
+}
+
+inductive{
+  name: UtilityConsiderationSelection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: highestScoringOption, fields: []},
+    {name: weightedRandom, fields: []},
+    {name: bucketing, fields: []}
+  ]
+}
+
+structure{
+  name: UtilityConsideration,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: curve, type: UtilityConsiderationCurve},
+    {name: input, type: (Int * Int)},
+    {name: selection, type: (Option UtilityConsiderationSelection)},
+    {name: utility, type: (Int * Int)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
