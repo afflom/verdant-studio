@@ -1,0 +1,49 @@
+\begin{lexlean}{Catalog.MusicLicense}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: MusicLicensePerformingRightsOrganization,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: americanSocietyOfComposersAuthorsAndPublishers, fields: []},
+    {name: broadcastMusicInc, fields: []},
+    {name: sESACInc, fields: []},
+    {name: globalMusicRights, fields: []}
+  ]
+}
+
+inductive{
+  name: MusicLicenseRight,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mechanical, fields: []},
+    {name: publicPerformance, fields: []},
+    {name: synchronization, fields: []}
+  ]
+}
+
+inductive{
+  name: MusicLicenseWork,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: musicalWork, fields: []},
+    {name: soundRecording, fields: []}
+  ]
+}
+
+structure{
+  name: MusicLicense,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: performingRightsOrganization, type: (Option MusicLicensePerformingRightsOrganization)},
+    {name: right, type: MusicLicenseRight},
+    {name: work, type: MusicLicenseWork}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

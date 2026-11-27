@@ -597,3 +597,12 @@ Each construct and the citation that admits it.
 - `Catalog.ShotFieldSize`: std WIKIPEDIA-SHOT-FILMMAKING row F01
 - `Catalog.VirtualProductionTerm`: std WIKIPEDIA-VIRTUAL-PRODUCTION row F08
 - `Catalog.VoglerJourneyStage`: std WIKIPEDIA-HEROS-JOURNEY row C01
+- `Catalog.AswgLoudnessTarget`: std SONY-ASWG-R001 row I03
+- `Catalog.ClientServerNetcodeStep`: std GAMBETTA-FAST-PACED-MULTIPLAYER-LAG-COMPENSATION row K01
+- `Catalog.FmodStudioObject`: std FMOD-STUDIO-2.03-GLOSSARY row I04
+- `Catalog.Gb18030EncodingLabel`: std WHATWG-ENCODING-ENCODINGS-JSON row N12
+- `Catalog.I3dl2ReverbParameter`: std MS-XAUDIO2FX-REVERB-I3DL2-PARAMETERS row I11
+- `Catalog.MusicLicense`: std USCO-COPYRIGHT-AND-THE-MUSIC-MARKETPLACE-2015 row I12
+- `Catalog.NintendoSwitchGraphicsApi`: std WIKIPEDIA-NINTENDO-SWITCH row G06
+- `Catalog.PlayStation4GraphicsApi`: std WIKIPEDIA-LIST-OF-RENDERING-APIS row G06
+- `Catalog.PlayStation5GraphicsApi`: std WIKIPEDIA-PLAYSTATION-5 row G06

@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Inferred (all-source, Alex 2026-11-24) from WIKIPEDIA-LIST-OF-RENDERING-APIS: GNMX is listed under Vendor specific, high level and LibGNM under Vendor specific, low level. The SDK documentation is under NDA.","enum":["GNMX","LibGNM"],"title":"PlayStation 4 graphics API"}

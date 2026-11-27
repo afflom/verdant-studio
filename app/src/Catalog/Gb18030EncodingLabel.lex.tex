@@ -1,0 +1,43 @@
+\begin{lexlean}{Catalog.Gb18030EncodingLabel}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Gb18030EncodingLabelEncoding,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gb18030, fields: []},
+    {name: gBK, fields: []}
+  ]
+}
+
+inductive{
+  name: Gb18030EncodingLabelLabel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gb18030, fields: []},
+    {name: chinese, fields: []},
+    {name: csgb2312, fields: []},
+    {name: csiso58gb231280, fields: []},
+    {name: gb2312, fields: []},
+    {name: gbu005F2312, fields: []},
+    {name: gbu005F2312u002D80, fields: []},
+    {name: gbk, fields: []},
+    {name: isou002Diru002D58, fields: []},
+    {name: xu002Dgbk, fields: []}
+  ]
+}
+
+structure{
+  name: Gb18030EncodingLabel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: encoding, type: Gb18030EncodingLabelEncoding},
+    {name: label, type: Gb18030EncodingLabelLabel}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
