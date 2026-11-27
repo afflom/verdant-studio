@@ -52,8 +52,8 @@ version = "0.1.0"
 kind = "path"
 source = "app"
 module_prefix = "VerdantStudio"
-tree_sha256 = "02d80cef015e9c0a1573d8891bc68fac2fb8b7743fe61a515940c0d66c4a9169"
-manifest_sha256 = "f7485dbd25ddae131faafc161a4c432eadfd48339141305e7ae1a0007b74d82a"
+tree_sha256 = "e00f7858c748d324ddb6d53b92e157b6129350b9afc0a3cb6896ef32c4a163d2"
+manifest_sha256 = "bebcf577f7800bd6d78153a732c801809a01e18ccac02c9c351d8397b3a13965"
 imports = []
 
 [[source_package]]
@@ -72,6 +72,6 @@ version = "0.1.0"
 kind = "path"
 source = "studio"
 module_prefix = "VerdantStudioCli"
-tree_sha256 = "cc8d2b42250e469bad5f901813b5143a3ca8683edd2c8ee4f9d3b63bc1b474da"
+tree_sha256 = "b61b70b6b7c4bdf1d466b87c0912f8b542c5c318e34fb02a6764d509dc398ed5"
 manifest_sha256 = "0a0e0f56d766c0ce6b701e6e1abfa698e130495841f2b9506de2a4a40e708dcb"
 imports = ["core@0.1.0", "std@1.0.0"]
