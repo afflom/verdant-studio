@@ -1975,10 +1975,26 @@ definition{
 
 
 definition{
+  name: prismCodeRev,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "2cd8f263b74dc97f58476fb199a29d190f726df6"),
+  executable: true
+}
+
+definition{
+  name: prismCodeFetch,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "set -euo pipefail; repo=$1; rev=$2; shift 2; d=target/prismpm; if [ \"$(git -C $d rev-parse HEAD 2>/dev/null)\" != \"$rev\" ]; then rm -rf $d; git init -q $d; git -C $d remote add origin \"https://github.com/$repo\"; git -C $d sparse-checkout set --no-cone sdk/npm/prism-code; git -C $d fetch -q --depth=1 --filter=blob:none origin \"$rev\"; git -C $d checkout -q FETCH_HEAD; fi; exec node $d/sdk/npm/prism-code/bin/prism-code.mjs \"$@\""),
+  executable: true
+}
+
+definition{
   name: prismCode,
   parameters: [command : String],
   result: (List Bytes),
-  body: (cons (Studio.Doc::lit "--yes") (cons (Studio.Doc::lit "prism-code@0.11.1") (cons (Studio.Doc::lit command) (cons (Studio.Doc::lit "--project") (cons (Studio.Doc::lit "app") (cons (Studio.Doc::lit ".") (nil Bytes))))))),
+  body: (cons (Studio.Doc::lit "-c") (cons (prismCodeFetch) (cons (Studio.Doc::lit "prism-code") (cons (Studio.Doc::lit "UOR-Foundation/prismpm") (cons (prismCodeRev) (cons (Studio.Doc::lit command) (cons (Studio.Doc::lit "--project") (cons (Studio.Doc::lit "app") (cons (Studio.Doc::lit ".") (nil Bytes)))))))))),
   executable: true
 }
 
@@ -1986,7 +2002,7 @@ definition{
   name: planBuild,
   parameters: [seen : Seen],
   result: Plan,
-  body: (if (negate (Studio.Doc::memberBytes (Studio.Doc::lit "prism-code lock") (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "npx") (prismCode "lock") (Studio.Doc::lit "prism-code lock")) else (if (negate (Studio.Doc::memberBytes (Studio.Doc::lit "prism-code build") (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "npx") (prismCode "build") (Studio.Doc::lit "prism-code build")) else (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "built: prism-code lock, then build (which checks), passed\n")))),
+  body: (if (negate (Studio.Doc::memberBytes (Studio.Doc::lit "prism-code lock") (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "bash") (prismCode "lock") (Studio.Doc::lit "prism-code lock")) else (if (negate (Studio.Doc::memberBytes (Studio.Doc::lit "prism-code build") (project seen ran))) then (ctor Plan.run (Studio.Doc::lit "bash") (prismCode "build") (Studio.Doc::lit "prism-code build")) else (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::lit "built: prism-code lock, then build (which checks), passed\n")))),
   executable: true
 }
 
