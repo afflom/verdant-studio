@@ -1,0 +1,1364 @@
+# model/ids.toml --- the conformance ID register.
+#
+# Every ID this repository claims, in one place, so that nothing is referenced
+# without being defined. `CONFORMANCE.md` is generated from this file. A test
+# whose name ends in an ID not listed here fails `check-model`, and an ID listed
+# here with no scenario and no test fails it too (CM-02).
+#
+# `level` is the honesty level (R2):
+#   some-true  a fact reproduced from an authority; not established here
+#   build      constructed here and validated against its oracle
+#   open       measured and reported, never asserted
+#
+# Every row here has a scenario in `features/suites/` and a test whose name ends
+# in the ID, lowercased with underscores (R3, CM-02). There is no "pending"
+# state: a capability that is not built does not get a row, and every row in this
+# file is built.
+#
+# A row that specifies a public failure declares its error type (R5):
+#
+#   failure   the error type, as written in `Result<_, E>`
+#   negative  the ID of the `build` row whose test provokes the refusal and
+#             observes it; this row's own ID when the row is that claim
+#
+# `cargo xtask audit-limits` lets a shipped crate name an error type in a
+# `Result` only when a row here declares it and the negative test exists. A type
+# is declared once. Nothing else sanctions a type: there is no list in the gate.
+#
+# The first row is the template's own Prism application in `app/` (TC-01).
+# A capability starts with a row here; `just new-capability` writes the row,
+# its scenario and its failing test in the order `AGENTS.md` sets out.
+
+spec = "template/1"
+
+[[id]]
+id = "TC-01"
+level = "build"
+suite = "contract"
+statement = "The checker answers conformant exactly when every universal policy file's observed digest equals its locked digest"
+
+[[id]]
+id = "FR-01"
+level = "build"
+suite = "frame"
+statement = "With a working worker, the page loads and verifies the archive only in that worker before using its identities or guest"
+
+[[id]]
+id = "FR-02"
+level = "build"
+suite = "frame"
+statement = "A returning browser whose worker kept an earlier deploy serves this deploy from the navigation that brings its page"
+
+[[id]]
+id = "FR-03"
+level = "build"
+suite = "frame"
+statement = "A first visit's bytes are counted once the page has started, the frame's and the app's each within its own budget"
+
+[[id]]
+id = "FR-04"
+level = "build"
+suite = "frame"
+statement = "An app's workspace key opens only on a device of the Prism ID that made it, follows the ID when it joins or is recovered, and stays locked on a removed device"
+
+[[id]]
+id = "FR-05"
+level = "build"
+suite = "frame"
+statement = "An app's pages on every device of one Prism ID meet on a relay topic only those devices derive, per app, with every message sealed to the ID, and a removed device is left behind"
+
+[[id]]
+id = "VT-01"
+level = "build"
+suite = "oracle-import"
+statement = "The imported GGML backend contract, implementation interface, and operator oracle match their pinned upstream source"
+
+[[id]]
+id = "VT-02"
+level = "build"
+suite = "verdant-api"
+statement = "The backend resolves the pinned Verdant API with fifteen ordered kernel descriptors and imports only GGML host services"
+
+[[id]]
+id = "VT-03"
+level = "build"
+suite = "verdant-api"
+statement = "vTensor delegates fixed 4x4 F64 matrix multiplication to Verdant Tensor and preserves column-major results"
+failure = "TensorComputeError"
+negative = "VT-03"
+
+[[id]]
+id = "VT-04"
+level = "build"
+suite = "ggml-inventory"
+statement = "The imported GGML operation and tensor type declarations are inventoried exactly without implementation claims"
+
+[[id]]
+id = "VT-05"
+level = "build"
+suite = "ggml-storage-oracle"
+statement = "The pinned GGML storage oracle executes upstream byte-span semantics for scalar and block-encoded tensors"
+
+[[id]]
+id = "VT-06"
+level = "build"
+suite = "tensor-layout"
+statement = "The Prism-generated four-dimensional byte-span function matches the pinned GGML storage oracle and rejects invalid blocks and arithmetic overflow"
+failure = "Overflow"
+negative = "VT-06"
+
+[[id]]
+id = "VT-07"
+level = "build"
+suite = "tensor-layout"
+statement = "The Prism-generated type catalog matches every declared GGML storage type and refuses removed and out-of-range identifiers"
+
+[[id]]
+id = "VT-08"
+level = "build"
+suite = "source-accounting"
+statement = "Source accounting includes untracked implementation files and rejects drifted imported bytes"
+
+[[id]]
+id = "VT-09"
+level = "build"
+suite = "buffer-transfer"
+statement = "Prism transfer admission matches upstream GGML set and get guards and rejects overflowing ranges"
+
+[[id]]
+id = "VT-10"
+level = "build"
+suite = "buffer-allocation"
+statement = "Prism tensor placement matches the imported GGML linear allocator for aligned buffers and refuses invalid alignment, exhausted capacity, and arithmetic overflow"
+
+[[id]]
+id = "VT-11"
+level = "build"
+suite = "native-backend"
+statement = "GGML discovers the Prism-defined vTensor device and its owned buffers preserve upstream allocation and byte-transfer behavior"
+failure = "BackendError"
+negative = "VT-11"
+
+[[id]]
+id = "VT-12"
+level = "build"
+suite = "matrix-graphs"
+statement = "GGML F32 matrix-product graphs execute through Verdant across rectangular shapes, padded storage and batch broadcasting and match the imported GGML CPU reference"
+
+[[id]]
+id = "VT-13"
+level = "build"
+suite = "elementwise-graphs"
+statement = "F32 arithmetic and unary graphs execute through Verdant with Prism-defined scalar semantics and broadcasting and match the imported GGML CPU reference"
+
+[[id]]
+id = "VT-14"
+level = "build"
+suite = "empty-graphs"
+statement = "Prism empty-node admission matches the imported GGML CPU no-op behavior for empty copy graphs across every live storage type without accessing operand buffers"
+
+[[id]]
+id = "VT-15"
+level = "build"
+suite = "copy-graphs"
+statement = "Prism plans same-type DUP, CONT and CPY across every live GGML storage type and Verdant moves the admitted blocks with upstream-equivalent logical order and preserved padding"
+
+[[id]]
+id = "VT-16"
+level = "build"
+suite = "repeat-graphs"
+statement = "Prism models four-axis REPEAT addressing and Verdant preserves encoded values for every type admitted by the imported GGML CPU repeat oracle"
+
+[[id]]
+id = "VT-17"
+level = "build"
+suite = "concat-graphs"
+statement = "Prism selects and addresses CONCAT source blocks on every axis and Verdant execution matches the imported GGML CPU oracle across all live storage types"
+
+[[id]]
+id = "VT-18"
+level = "build"
+suite = "spatial-graphs"
+statement = "Prism defines F32 zero and circular padding, reflected padding and signed four-axis roll addressing and Verdant execution matches the imported GGML CPU oracle"
+
+[[id]]
+id = "VT-19"
+level = "build"
+suite = "update-graphs"
+statement = "Prism plans SET and ACC initialization, bounded update views and aliases and Verdant execution matches the imported GGML CPU oracle for supported float and integer storage"
+
+[[id]]
+id = "VT-20"
+level = "build"
+suite = "fold-graphs"
+statement = "Prism models four-axis REPEAT_BACK initialization and accumulation order and Verdant execution matches the imported GGML F32 CPU oracle across strided and empty tensors"
+
+[[id]]
+id = "VT-21"
+level = "build"
+suite = "diagonal-graphs"
+statement = "Prism defines batched DIAG placement and Verdant preserves diagonal encodings and positive-zero off-diagonal values for every type supported by the imported GGML CPU oracle"
+
+[[id]]
+id = "VT-22"
+level = "build"
+suite = "triangular-graphs"
+statement = "Prism defines all four TRI variants and Verdant preserves retained encodings and zeroes masked elements for every type supported by the imported GGML CPU oracle"
+
+[[id]]
+id = "VT-23"
+level = "build"
+suite = "fill-graphs"
+statement = "Prism plans copied and in-place FILL and Verdant converts and transfers F32 and F16 constants with upstream-equivalent encodings and preserved padding"
+
+[[id]]
+id = "VT-24"
+level = "build"
+suite = "cast-graphs"
+statement = "Prism plans mixed F32 F16 and BF16 casts and copies by logical element order and Verdant conversion matches the imported GGML CPU oracle across reshaped strided and empty layouts"
+
+[[id]]
+id = "VT-25"
+level = "build"
+suite = "window-graphs"
+statement = "Prism models window partition padding and window join logical indexing and Verdant transfers match the imported GGML CPU oracle for independent strided empty and bounded window inputs"
+
+[[id]]
+id = "VT-26"
+level = "build"
+suite = "transform-graphs"
+statement = "Prism plans scale bias clamp and leaky ReLU graphs and Verdant matches the imported GGML CPU kernels for every supported float storage type across copied in-place strided and empty tensors"
+
+[[id]]
+id = "VT-27"
+level = "build"
+suite = "unary-graphs"
+statement = "Prism plans thirteen unary operations for all five supported GGML float source destination pairs and Verdant matches copied in-place strided and empty CPU graphs with exact finite outputs and preserved padding"
+
+[[id]]
+id = "VT-28"
+level = "build"
+suite = "scan-graphs"
+statement = "Prism models row-local F32 cumulative sums with exact first-word preservation and Verdant matches the imported GGML CPU scan across strided and empty graphs"
+
+[[id]]
+id = "VT-29"
+level = "build"
+suite = "reduction-graphs"
+statement = "Prism models SUM SUM_ROWS and MEAN accumulation precision rounding and empty reductions and Verdant matches every supported float type against the imported GGML CPU oracle"
+
+[[id]]
+id = "VT-30"
+level = "build"
+suite = "row-graphs"
+statement = "Prism models ARGMAX last-tie and NaN state and logical COUNT_EQUAL across all four tensor axes and Verdant matches imported GGML CPU row operations with typed refusals and exact integer outputs"
+
+[[id]]
+id = "VT-31"
+level = "build"
+suite = "row-graphs"
+statement = "Prism models indexed F16 and F32 row-gradient accumulation into F32 and Verdant matches imported GGML GET_ROWS_BACK graphs with duplicate indices empty tensors and atomic invalid-index refusals"
+
+[[id]]
+id = "VT-32"
+level = "build"
+suite = "row-graphs"
+statement = "Prism models four-dimensional indexed row gathering and every executable GGML CPU source format and Verdant decodes the packed blocks with imported authoritative codebooks while preserving integer words padding empty tensors and atomic invalid-index refusals"
+
+[[id]]
+id = "VT-33"
+level = "build"
+suite = "relative-position-graphs"
+statement = "Prism models GGML relative-position word selection and Verdant preserves F16 and BF16 source encodings in F16 outputs across strided empty and higher-dimensional source layouts"
+
+[[id]]
+id = "VT-34"
+level = "build"
+suite = "indexed-add-graphs"
+statement = "Prism models three-source indexed row addition and Verdant matches GGML ADD_ID arithmetic and exact minus-one row copies across strides empty tensors and atomic invalid-index refusals"
+
+[[id]]
+id = "VT-35"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates all matrix fixture dimensions layouts and input words matching the complete frozen prior oracle corpus while GGML independently computes every expected result"
+
+[[id]]
+id = "VT-36"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates every arithmetic fixture descriptor and input word while preserving the complete frozen broadcasting and exceptional-word corpus and the independent GGML CPU numerical oracle"
+
+[[id]]
+id = "VT-37"
+level = "build"
+suite = "generator-graphs"
+statement = "Prism models zero-source GGML ARANGE planning and Verdant executes every required imported upstream ARANGE case with atomic invalid-parameter refusals"
+
+[[id]]
+id = "VT-38"
+level = "build"
+suite = "normalization-graphs"
+statement = "Prism models GGML L2 normalization and Verdant matches every imported ordinary and batched upstream case with atomic invalid-parameter refusals"
+
+[[id]]
+id = "VT-39"
+level = "build"
+suite = "relative-position-add"
+statement = "Prism models copied and in-place GGML ADD_REL_POS event ordering and Verdant matches the imported CPU oracle with atomic descriptor refusals"
+
+[[id]]
+id = "VT-40"
+level = "build"
+suite = "fixture-generation"
+statement = "Native fixture construction initialized bytes execution descriptors and atomic refusal mutations match the frozen pre-migration corpus while expected numerical results remain computed by the imported GGML CPU oracle"
+
+[[id]]
+id = "VT-41"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates COPY fixture enumeration source and target descriptors and initial bytes while preserving all 3456 frozen cases and independent GGML CPU expected results"
+
+[[id]]
+id = "VT-42"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates REPEAT fixture enumeration source target and output layouts and initial bytes while preserving all 160 frozen cases and independent GGML CPU expected results"
+
+[[id]]
+id = "VT-43"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates CONCAT fixture enumeration operand and output layouts and byte recipes while preserving all 10368 frozen cases and independent GGML CPU expected results"
+
+[[id]]
+id = "VT-44"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates FILL and CAST fixture enumeration typed layouts constants and initial bytes while preserving all 17280 frozen cases source release states and independent GGML CPU expected results"
+
+[[id]]
+id = "VT-45"
+level = "build"
+suite = "normalization-graphs"
+statement = "Verdant supplies certified F64 division and unsigned count to F64 conversion for normalization and preserves the imported GGML accumulator division before narrowing regression"
+
+[[id]]
+id = "VT-46"
+level = "build"
+suite = "normalization-graphs"
+statement = "Prism models copied and in-place F32 and BF16 RMS normalization and Verdant matches every imported GGML CPU case with F64 mean ordering and atomic numeric refusals"
+
+[[id]]
+id = "VT-47"
+level = "build"
+suite = "fixture-generation"
+statement = "Prism generates spatial fixture signed pad reflect and roll parameters and circular oracle adaptation while preserving all 2256 frozen construction and input cases"
+
+[[id]]
+id = "VT-48"
+level = "build"
+suite = "normalization-graphs"
+statement = "Prism models copied and in-place F32 NORM with stride-selected accumulation and grouped contiguous variance while Verdant matches the pinned imported GGML CPU oracle"
+
+[[id]]
+id = "VT-49"
+level = "build"
+suite = "normalization-graphs"
+statement = "Prism models copied and in-place F32 GROUP_NORM with nested F64 row subtotals and Verdant matches the imported ordinary and fused GGML CPU cases"
+
+[[id]]
+id = "VT-50"
+level = "build"
+suite = "normalization-graphs"
+statement = "Prism models F32 RMS_NORM_BACK with independent source strides and its specified narrowing order while Verdant matches every imported GGML CPU case"
+
+[[id]]
+id = "VT-51"
+level = "build"
+suite = "normalization-graphs"
+statement = "Prism models composed normalization graphs with mixed scalar storage broadcast and aliases while Verdant matches every imported non-RoPE composed normalization factory case"
+
+[[id]]
+id = "VT-52"
+level = "build"
+suite = "native-backend"
+statement = "Prism selects graph nodes by the imported GGML compute flag and vTensor preserves inactive results across scheduled graph reuse"
+
+[[id]]
+id = "VT-53"
+level = "build"
+suite = "matrix-graphs"
+statement = "Prism admits Q8_0 by F32 GGML matrix graphs and Verdant executes their block products against the imported GGML CPU"
+
+[[id]]
+id = "VT-54"
+level = "build"
+suite = "matrix-graphs"
+statement = "Prism admits Q4_0 by F32 GGML matrix graphs and Verdant executes their block products against the imported GGML CPU"
+
+[[id]]
+id = "VT-55"
+level = "build"
+suite = "row-graphs"
+statement = "Prism plans SET_ROWS for F32 and F16 sources with F32 F16 or BF16 destinations and Verdant executes indexed writes against the imported GGML CPU"
+
+[[id]]
+id = "VT-56"
+level = "build"
+suite = "elementwise-graphs"
+statement = "Prism plans combined swapped and split GGML SWIGLU rows and Verdant evaluates the gated values across F32 F16 and BF16 against the imported GGML CPU"
+
+[[id]]
+id = "VT-57"
+level = "build"
+suite = "spatial-graphs"
+statement = "Prism plans GGML rotary position encodings and their backward graphs and Verdant computes each rotation against the imported GGML CPU"
+
+[[id]]
+id = "VT-58"
+level = "build"
+suite = "spatial-graphs"
+statement = "Prism plans GGML extended flash attention views and Verdant computes the masked attention output against the imported GGML CPU evaluator"
+
+[[id]]
+id = "VT-60"
+level = "build"
+suite = "native-backend"
+statement = "GGML logarithm sine cosine and exponential graphs execute through the Verdant scalar primitives across the imported factory storage and view cases"
+
+[[id]]
+id = "VT-61"
+level = "build"
+suite = "native-backend"
+statement = "GGML sigmoid and SiLU execute through Verdant in unary, multiplied and added graph compositions across all 122 imported factory cases"
+
+[[id]]
+id = "VT-62"
+level = "build"
+suite = "native-backend"
+statement = "GGML BF16 row gradients accumulate into F32 with repeated and strided indices and match the pinned CPU widening and row-gradient operators"
+
+[[id]]
+id = "VT-63"
+level = "build"
+suite = "native-backend"
+statement = "GGML attention with BF16 key and value rows uses Verdant conversion and contraction and matches the imported CPU with optional masks and sinks"
+
+[[id]]
+id = "VT-64"
+level = "build"
+suite = "native-backend"
+statement = "GGML matrix products with F16 and BF16 operands honor the input dot-product storage and match the imported CPU across six scalar type pairs"
+
+[[id]]
+id = "VT-65"
+level = "build"
+suite = "native-backend"
+statement = "GGML Q2_K matrix products use Verdant grouped activation blocks and match the imported CPU in standalone and row-gather graphs"
+
+[[id]]
+id = "VT-66"
+level = "build"
+suite = "native-backend"
+statement = "GGML extended attention with Q4_0 and Q8_0 keys and values executes through Verdant block conversion and row products and matches the imported CPU"
+
+[[id]]
+id = "VT-67"
+level = "build"
+suite = "native-backend"
+statement = "GGML hyperbolic tangent and composed soft-cap graphs execute through the pinned Verdant binary32 activation and match the imported CPU evaluator"
+
+[[id]]
+id = "VT-68"
+level = "build"
+suite = "native-backend"
+statement = "Prism places attention logit soft caps before the mask and Verdant evaluates the scaled hyperbolic tangent against the imported GGML CPU"
+
+[[id]]
+id = "VT-69"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps GGML scalar outer-product axes and batch replication to the Verdant matrix primitive and matches the imported CPU evaluator"
+
+[[id]]
+id = "VT-70"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps GGML three-dimensional image columns through padded and dilated input views, with Verdant storing each typed output"
+
+[[id]]
+id = "VT-71"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps packed GGML outer-product rows into strided Verdant block decoding and matrix contraction and matches the imported CPU evaluator"
+
+[[id]]
+id = "VT-72"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps one- and two-dimensional GGML image columns across channel and batch strides and Verdant converts the result storage"
+
+[[id]]
+id = "VT-73"
+level = "build"
+suite = "native-backend"
+statement = "Original GGML outer-product graphs with CPU-refused type and batch combinations match the authoritative decoder followed by the F32 CPU outer product"
+
+[[id]]
+id = "VT-74"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps direct two-dimensional GGML convolution to padded image patches and kernel strides and Verdant contracts each patch matrix"
+
+[[id]]
+id = "VT-75"
+level = "build"
+suite = "native-backend"
+statement = "Prism admits GELU and GELU_QUICK GGML graphs and vTensor delegates the Gaussian activations to Verdant"
+
+[[id]]
+id = "VT-76"
+level = "build"
+suite = "native-backend"
+statement = "Original channel-major GGML convolution graphs agree with upstream CPU convolution on equivalent contiguous tensors"
+
+[[id]]
+id = "VT-77"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans combined split and swapped gated rows and Verdant evaluates their rectified and Gaussian activations"
+
+[[id]]
+id = "VT-78"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds head-specific masked attention and Verdant evaluates linear bias slopes before the weighted mean"
+
+[[id]]
+id = "VT-79"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps one- and two-dimensional pooling windows and binds their maximum and average reductions to Verdant"
+
+[[id]]
+id = "VT-80"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps direct three-dimensional GGML convolution to padded volume patches and packed channel offsets and Verdant contracts each patch matrix"
+
+[[id]]
+id = "VT-81"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps each state convolution window to its channel and Verdant accumulates ordered binary32 products"
+
+[[id]]
+id = "VT-82"
+level = "build"
+suite = "native-backend"
+statement = "Prism gathers contributing columns in input order and Verdant sums their stored values in binary32"
+
+[[id]]
+id = "VT-83"
+level = "build"
+suite = "native-backend"
+statement = "Prism selects expert rows and Verdant evaluates packed indexed matrix products"
+
+[[id]]
+id = "VT-84"
+level = "build"
+suite = "native-backend"
+statement = "Prism selects scalar expert rows and activation precision and Verdant multiplies the selected rows"
+
+[[id]]
+id = "VT-85"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules ordinary and indexed E4M3 weight products and Verdant decodes the weights and contracts binary32 rows"
+
+[[id]]
+id = "VT-86"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules binary32 row ranking and Verdant selects deterministic indices for GGML ARGSORT and TOP_K"
+
+[[id]]
+id = "VT-59"
+level = "build"
+suite = "native-backend"
+statement = "The vTensor CPU registry creates attaches switches and releases threadpools while GGML graphs match the imported CPU across repeated submissions"
+
+[[id]]
+id = "VT-87"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds GGML masks, sinks and row layouts and Verdant normalizes the score rows against the imported CPU softmax"
+
+[[id]]
+id = "VT-88"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans ordinary and indexed Q4_K and Q5_K weight products and Verdant contracts the packed weights against grouped signed activations"
+
+[[id]]
+id = "VT-89"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds GGML softplus storage and views and Verdant computes the binary32 activation against the pinned CPU"
+
+[[id]]
+id = "VT-90"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds F16 activation rows for packed matrix products and Verdant widens each activation before the certified dot product"
+
+[[id]]
+id = "VT-91"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans ordinary and indexed Q1_0 and Q2_0 weight products and Verdant contracts the packed weights against symmetric eight-bit activation blocks"
+
+[[id]]
+id = "VT-92"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans sparse GGML top-k mask cells and Verdant compares scores and transfers selected mask words"
+
+[[id]]
+id = "VT-93"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds GGML clamp limits and storage for SwiGLU and Verdant evaluates the bounded operands in binary32"
+
+[[id]]
+id = "VT-94"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds Q5_0 and IQ4_NL matrix and attention rows to Verdant signed-coefficient contractions and value decoding"
+
+[[id]]
+id = "VT-95"
+level = "build"
+suite = "native-backend"
+statement = "Prism binds affine four- and five-bit matrix and attention rows to Verdant activation encoding, row products and value decoding"
+
+[[id]]
+id = "VT-96"
+level = "build"
+suite = "native-backend"
+statement = "Prism admits sign, two-bit and E4M3 attention rows and binds their query conversion, key contraction and value reads to Verdant"
+
+[[id]]
+id = "VT-97"
+level = "build"
+suite = "native-backend"
+statement = "Prism validates indexed key and value cache rows and maps each unmasked column to the selected cache cell for Verdant attention"
+
+[[id]]
+id = "VT-98"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps strided scalar copies between E4M3 and GGML float storage to the existing Verdant word conversions"
+
+[[id]]
+id = "VT-99"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans MXFP4 and NVFP4 matrix and indexed expert rows and Verdant contracts their E2M1 weights with signed-byte activations"
+
+[[id]]
+id = "VT-100"
+level = "build"
+suite = "native-backend"
+statement = "Prism maps indexed scalar row writes to E4M3 storage and Verdant performs the signed conversion after source widening"
+
+[[id]]
+id = "VT-101"
+level = "build"
+suite = "native-backend"
+statement = "Prism selects scalar source lanes and destination blocks for copies and indexed row writes while Verdant encodes Q8_0"
+
+[[id]]
+id = "VT-102"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans indexed gradient accumulation by source block and Verdant decodes the source and adds each binary32 lane"
+
+[[id]]
+id = "VT-103"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans grouped two-bit codebook matrix and expert graphs and Verdant contracts their signed codeword rows"
+
+[[id]]
+id = "VT-104"
+level = "build"
+suite = "native-backend"
+statement = "Prism addresses source blocks and binary32 destination lanes for type-changing copies and Verdant decodes each original GGML input"
+
+[[id]]
+id = "VT-105"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans indexed and copied four- and five-bit block writes and Verdant encodes the original binary32 and half-width sources"
+
+[[id]]
+id = "VT-106"
+level = "build"
+suite = "native-backend"
+statement = "Prism addresses one-dimensional transposed convolution taps and overlaps and Verdant contracts and sums the input channels"
+
+[[id]]
+id = "VT-107"
+level = "build"
+suite = "native-backend"
+statement = "Prism addresses two-dimensional transposed convolution taps and overlaps and Verdant contracts and sums the input channels"
+
+[[id]]
+id = "VT-109"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans full-width sign and centered two-bit writes and Verdant encodes every indexed or copied destination block"
+
+[[id]]
+id = "VT-110"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans signed three-bit and six-bit grouped matrix and expert graphs and Verdant contracts their quantized weight rows"
+
+[[id]]
+id = "VT-111"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules parameterized SwiGLU clipping, exponential and arithmetic through Verdant for fused and separate inputs"
+
+[[id]]
+id = "VT-112"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans grouped nonlinear four-bit ordinary and expert matrices and Verdant evaluates their row products"
+
+[[id]]
+id = "VT-113"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules 256-lane ternary row encoders for copied and indexed writes through Verdant"
+
+[[id]]
+id = "VT-114"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans ordinary and expert matrices with ternary weights and Verdant contracts their rows"
+
+[[id]]
+id = "VT-115"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans ordinary and expert matrices with four-lane codebooks and Verdant contracts their quantized rows"
+
+[[id]]
+id = "VT-116"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans ordinary and expert matrices with shifted one-bit codebooks and Verdant contracts their quantized rows"
+
+[[id]]
+id = "VT-117"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules exponent-only and grouped four-bit floating encoders for copied and indexed GGML writes through Verdant"
+
+[[id]]
+id = "VT-118"
+level = "build"
+suite = "native-backend"
+statement = "Prism composes Verdant exponential and binary32 subtraction for strided GGML EXPM1 graphs"
+
+[[id]]
+id = "VT-119"
+level = "build"
+suite = "native-backend"
+statement = "Prism places grouped signed six-bit Verdant encodings through GGML indexed writes and copies"
+
+[[id]]
+id = "VT-120"
+level = "build"
+suite = "native-backend"
+statement = "Prism admits ordinary and in-place E4M3 additions and Verdant reproduces the GGML CPU results"
+
+[[id]]
+id = "VT-121"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules the rowwise softmax derivative and Verdant reproduces the imported GGML gradient"
+
+[[id]]
+id = "VT-122"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules grouped affine two-, four- and five-bit copies and indexed writes through the Verdant encoders"
+
+[[id]]
+id = "VT-123"
+level = "build"
+suite = "native-backend"
+statement = "Prism admits GGML scheduler delays that preserve their input view and complete before graph return"
+
+[[id]]
+id = "VT-124"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules the binary32 SiLU derivative with Verdant arithmetic"
+
+[[id]]
+id = "VT-125"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules depthwise spatial convolution in both GGML channel layouts using Verdant products and sums"
+
+[[id]]
+id = "VT-126"
+level = "build"
+suite = "native-backend"
+statement = "Prism stages binary32 to signed integer copies through the Verdant truncation operation"
+
+[[id]]
+id = "VT-127"
+level = "build"
+suite = "native-backend"
+statement = "Prism contracts hyperconnection channels through Verdant with optional per-element sigmoid gates"
+
+[[id]]
+id = "VT-128"
+level = "build"
+suite = "native-backend"
+statement = "Dense and indexed projections preserve explicit GGML accumulator and activation precision across stored weight formats"
+
+[[id]]
+id = "VT-108"
+level = "build"
+suite = "native-backend"
+statement = "Prism selects query heads and key rows and Verdant computes masked weighted rectified attention scores"
+
+[[id]]
+id = "VT-129"
+level = "build"
+suite = "native-backend"
+statement = "Prism models residual hyperconnection mixing and Verdant contracts optional channel combinations against the GGML CPU evaluator"
+
+[[id]]
+id = "VT-130"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules four-channel hyperconnection normalization and Verdant evaluates each word against the GGML CPU combination oracle"
+
+[[id]]
+id = "VT-131"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules in-place SGD and AdamW updates and Verdant evaluates parameters and Adam moments against GGML CPU"
+
+[[id]]
+id = "VT-132"
+level = "build"
+suite = "native-backend"
+statement = "Prism models cross-entropy loss and its logit gradient through Verdant reductions against GGML"
+
+[[id]]
+id = "VT-133"
+level = "build"
+suite = "native-backend"
+statement = "Prism admits Q3_K copies and indexed writes and Verdant encodes each selected block against the GGML CPU reference"
+
+[[id]]
+id = "VT-134"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules batched lower triangular solves and Verdant performs forward substitution against GGML CPU"
+
+[[id]]
+id = "VT-135"
+level = "build"
+suite = "native-backend"
+statement = "Prism routes nonlinear four-bit row writes and copies through Verdant encoders against GGML CPU"
+
+[[id]]
+id = "VT-136"
+level = "build"
+suite = "native-backend"
+statement = "Custom GGML callbacks retain their tensor descriptors, user data, task indices and synchronous graph completion"
+
+[[id]]
+id = "VT-137"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules GELU_ERF and GEGLU_ERF using the Verdant binary32 Gaussian error function"
+
+[[id]]
+id = "VT-139"
+level = "build"
+suite = "native-backend"
+statement = "Prism accumulates one- and two-dimensional image-column gradients in GGML kernel order using Verdant binary32 addition"
+
+[[id]]
+id = "VT-140"
+level = "build"
+suite = "native-backend"
+statement = "Prism scatters average and first-maximum pooling gradients through Verdant in upstream GGML window order"
+
+[[id]]
+id = "VT-141"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans timestep embedding frequencies and destination lanes and Verdant evaluates the circular functions against the imported GGML CPU"
+
+[[id]]
+id = "VT-138"
+level = "build"
+suite = "native-backend"
+statement = "Prism schedules ELU and parameterized XIELU with cancellation-preserving Verdant exponential increments"
+
+[[id]]
+id = "VT-142"
+level = "build"
+suite = "native-backend"
+statement = "Prism models gated linear attention state updates and ordered output accumulation through Verdant for the imported GGML CPU"
+
+[[id]]
+id = "VT-143"
+level = "build"
+suite = "native-backend"
+statement = "Prism models RWKV6 and RWKV7 recurrent state and output accumulation through Verdant against the imported GGML CPU"
+
+[[id]]
+id = "VT-144"
+level = "build"
+suite = "native-backend"
+statement = "Prism models GGML nearest-neighbor resampling on four strided axes with Verdant binary32 coordinates"
+
+[[id]]
+id = "VT-145"
+level = "build"
+suite = "native-backend"
+statement = "Prism models GGML bilinear interpolation on strided tensors with Verdant binary32 pixel weights"
+
+[[id]]
+id = "VT-146"
+level = "build"
+suite = "native-backend"
+statement = "Prism models GGML bicubic convolution weights and strided sampling through Verdant against the pinned CPU"
+
+[[id]]
+id = "VT-147"
+level = "build"
+suite = "native-backend"
+statement = "Prism models GGML antialiased bilinear filtering across bounded source windows through Verdant against the pinned CPU"
+
+[[id]]
+id = "VT-148"
+level = "build"
+suite = "native-backend"
+statement = "Prism routes IQ3 row writes and copies through Verdant encoders against the GGML quantizer"
+
+[[id]]
+id = "VT-149"
+level = "build"
+suite = "native-backend"
+statement = "Prism models gated delta attention and retained state snapshots through Verdant against GGML CPU"
+
+[[id]]
+id = "VT-150"
+level = "build"
+suite = "native-backend"
+statement = "Prism models grouped selective state scans and cache rollback through Verdant against GGML CPU"
+
+[[id]]
+id = "VT-151"
+level = "build"
+suite = "native-backend"
+statement = "Prism routes IQ2_S row writes and copies through Verdant encoders against the GGML quantizer"
+
+[[id]]
+id = "VT-152"
+level = "build"
+suite = "native-backend"
+statement = "Prism supplies uniform importance for IQ2_XS copies and indexed writes through Verdant against the weighted GGML quantizer"
+
+[[id]]
+id = "VT-153"
+level = "build"
+suite = "native-backend"
+statement = "Prism supplies uniform importance for IQ2_XXS copies and indexed writes through Verdant against the weighted GGML quantizer"
+
+[[id]]
+id = "VT-154"
+level = "build"
+suite = "native-backend"
+statement = "Prism dispatches weighted IQ1_S and unweighted IQ1_M row writes and copies through Verdant against the pinned GGML quantizers"
+
+[[id]]
+id = "VT-155"
+level = "build"
+suite = "native-backend"
+statement = "Prism repeats whole storage blocks on every GGML type against independently concatenated CPU tensors"
+
+[[id]]
+id = "VT-156"
+level = "build"
+suite = "native-backend"
+statement = "Prism admits ordinary GGML host buffers for graph execution and bounds foreign tensor views before Verdant accesses their contents"
+
+[[id]]
+id = "VT-157"
+level = "build"
+suite = "native-backend"
+statement = "Prism constructs diagonals for every scalar storage type with Verdant byte transfers against the GGML CPU diagonal kernel"
+
+[[id]]
+id = "VT-158"
+level = "build"
+suite = "native-backend"
+statement = "Reusable GGML graph plans preserve the planned topology and execute current tensor data and compute flags through the certified graph planner"
+
+[[id]]
+id = "VT-159"
+level = "build"
+suite = "native-backend"
+statement = "Prism plans signed integer width conversions and Verdant reproduces the upstream GGML typed accessor bytes"
+
+[[id]]
+id = "VT-160"
+level = "build"
+suite = "native-backend"
+statement = "Prism converts between GGML signed I8 I16 I32 and F32 F16 BF16 storage through released Verdant scalar operations"
+
+[[id]]
+id = "VT-161"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant convert between binary32 and binary64 against imported Berkeley SoftFloat words"
+
+[[id]]
+id = "VT-162"
+level = "build"
+suite = "native-backend"
+statement = "Prism composes E4M3 and signed integer conversions against the original GGML E4M3 quantizer and dequantizer"
+
+[[id]]
+id = "VT-163"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant convert between I64 and each narrower signed GGML storage width against the imported Lean signed word conversions"
+
+[[id]]
+id = "VT-164"
+level = "build"
+suite = "native-backend"
+statement = "Prism routes signed I64 conversions to F32 and F64 and representable F64 truncations to I64 through Verdant against Berkeley SoftFloat"
+
+[[id]]
+id = "VT-165"
+level = "build"
+suite = "native-backend"
+statement = "Prism composes twelve wide GGML scalar conversions through Verdant and preserves the whole destination on invalid truncation"
+
+[[id]]
+id = "VT-166"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant narrow wide GGML words at the original precision boundaries and preserve destination state for invalid signed conversions"
+
+[[id]]
+id = "VT-167"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant encode Q8_1 and Q8_K copies and indexed row stores against the original GGML CPU bytes"
+
+[[id]]
+id = "VT-168"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant scatter F32 and F16 rows into signed I32 storage against original GGML CPU output"
+
+[[id]]
+id = "VT-169"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant add packed rows to F32 addends and store every directly encoded GGML CPU result type"
+
+[[id]]
+id = "VT-170"
+level = "build"
+suite = "native-backend"
+statement = "Prism and Verdant consume stored Q8 activation blocks in ordinary and indexed GGML matrix products across 25 weight formats"
+
+[[id]]
+id = "VT-171"
+level = "build"
+suite = "native-backend"
+statement = "Stored Q8 activations retain their original GGML row products across all documented accumulation and activation precision settings"
+
+[[id]]
+id = "VT-172"
+level = "build"
+suite = "native-backend"
+statement = "Ordinary F16 and indexed BF16 matrix products consume BF16 activation rows at their stored precision"
+
+[[id]]
+id = "VT-173"
+level = "build"
+suite = "native-backend"
+statement = "Packed addition broadcasts repeated rows along three GGML axes before encoding or updating the destination"
+
+[[id]]
+id = "VT-174"
+level = "build"
+suite = "native-backend"
+statement = "Copied and in-place packed GGML addition repeats scalar and partial-width addends across all four axes"
+
+[[id]]
+id = "VT-175"
+level = "build"
+suite = "native-backend"
+statement = "F8_E4M3 addition repeats dense and offset padded F32 addends across all four axes"
+
+[[id]]
+id = "VT-176"
+level = "build"
+suite = "native-backend"
+statement = "Packed GGML addition reaches all seven codebook destination encodings through Verdant"
+
+[[id]]
+id = "VT-177"
+level = "build"
+suite = "native-backend"
+statement = "GGML flash attention supports all directly executable key and value storage pairs with default precision"
+
+[[id]]
+id = "VT-178"
+level = "build"
+suite = "native-backend"
+statement = "Flash attention honors all documented accumulator settings and atomically refuses quantized accumulators"
+
+[[id]]
+id = "VT-179"
+level = "build"
+suite = "native-backend"
+statement = "GGML ADD_CAST encodes F16 and BF16 inputs plus F32 addends in every packed destination type"
+
+[[id]]
+id = "VT-180"
+level = "build"
+suite = "native-backend"
+statement = "GGML packed binary arithmetic decodes both operands and encodes copied and in-place results"
+
+[[id]]
+id = "VT-181"
+level = "build"
+suite = "native-backend"
+statement = "GGML ADD_CAST decodes mixed input rows and encodes all floating and packed destinations"
+
+[[id]]
+id = "VT-182"
+level = "build"
+suite = "native-backend"
+statement = "GGML scalar-left binary graphs consume all decodable mixed right operands"
+
+[[id]]
+id = "VT-183"
+level = "build"
+suite = "native-backend"
+statement = "Four-axis packed binary broadcasts preserve offset views and in-place storage"
+
+[[id]]
+id = "VT-184"
+level = "build"
+suite = "native-backend"
+statement = "GGML ADD_CAST stores bounded signed integers and binary64 results from decoded rows"
+
+[[id]]
+id = "VT-185"
+level = "build"
+suite = "native-backend"
+statement = "Scalar flash attention rounds each product to binary32 and accumulates in binary64 order"
+
+[[id]]
+id = "VT-186"
+level = "build"
+suite = "native-backend"
+statement = "Scalar matrix and expert products follow GGML multiplication and accumulation rounding"
+
+[[id]]
+id = "VT-187"
+level = "build"
+suite = "native-backend"
+statement = "Signed and binary64 right operands participate in decoded GGML row arithmetic"
+
+[[id]]
+id = "VT-188"
+level = "build"
+suite = "native-backend"
+statement = "Q8 activation rows participate in binary arithmetic and explicit result casts"
+
+[[id]]
+id = "VT-189"
+level = "build"
+suite = "native-backend"
+statement = "Complete F32 SwiGLU vectors follow the original GGML rounded exponential profile"
+
+[[id]]
+id = "VT-190"
+level = "build"
+suite = "native-backend"
+statement = "Signed I8 I16 and I32 left operands follow GGML binary row arithmetic"
+
+[[id]]
+id = "VT-191"
+level = "build"
+suite = "native-backend"
+statement = "Wide mixed binary operands and wide division follow GGML binary32 promotion"
+
+[[id]]
+id = "VT-192"
+level = "build"
+suite = "native-backend"
+statement = "Matching I64 and F64 binary operands retain native precision in sums differences and products"
+
+[[id]]
+id = "VT-193"
+level = "build"
+suite = "native-backend"
+statement = "The provider places every public GGML CAST storage pair and preserves the original conversion words"
+
+[[id]]
+id = "VT-194"
+level = "build"
+suite = "native-backend"
+statement = "All GGML indexed row store types place on the provider and preserve selected rows and guard bytes"
+
+[[id]]
+id = "VT-195"
+level = "build"
+suite = "native-backend"
+statement = "All registered GGML row gather storage types execute against the original selection and conversion oracles"
+
+[[id]]
+id = "VT-196"
+level = "build"
+suite = "native-backend"
+statement = "Reshaped GGML copies preserve logical values and untouched backing storage across differing source and destination block widths"
+
+[[id]]
+id = "VT-197"
+level = "build"
+suite = "native-backend"
+statement = "Outer products place and contract both operands across all registered GGML storage types"
+
+[[id]]
+id = "VT-198"
+level = "build"
+suite = "native-backend"
+statement = "Ordinary and indexed GGML matrix products contract independently decoded rows across remaining registered storage pairs"
+
+[[id]]
+id = "VT-199"
+level = "build"
+suite = "native-backend"
+statement = "Flash attention accepts all registered GGML key and value storage combinations and matches the original CPU attention operation"
+
+[[id]]
+id = "VT-200"
+level = "build"
+suite = "native-backend"
+statement = "Certified unary operation and storage pairs project rows through binary32 and reproduce the original GGML CPU result after storage conversion"
+
+[[id]]
+id = "VT-201"
+level = "build"
+suite = "native-backend"
+statement = "Packed SiLU and quick GELU reproduce GGML CPU row activation and encoding through the certified vector instruction schedule"
+
+[[id]]
+id = "VT-202"
+level = "build"
+suite = "native-backend"
+statement = "GLU constructors execute certified split or concatenated gate rows over registered storage and reproduce independently encoded GGML CPU results"
+
+[[id]]
+id = "VT-204"
+level = "build"
+suite = "native-backend"
+statement = "Scale, scale with bias, clamp and leaky ReLU project stored rows through certified binary32 transforms and reproduce GGML CPU storage"
+
+[[id]]
+id = "VT-203"
+level = "build"
+suite = "native-backend"
+statement = "Packed LOG executes through certified row projection and matches original GGML CPU logarithm and quantization"
+
+[[id]]
+id = "VT-205"
+level = "build"
+suite = "native-backend"
+statement = "Stored MEAN and ARGMAX reduce independently decoded rows with the original GGML mean and last-maximum semantics"
+
+[[id]]
+id = "VT-206"
+level = "build"
+suite = "native-backend"
+statement = "Signed integer SUM and SUM_ROWS preserve the declared storage width and match the original OpenVINO reduction selected by GGML"
+
+[[id]]
+id = "VT-207"
+level = "build"
+suite = "native-backend"
+statement = "COUNT_EQUAL compares independently stored tensors with lossless binary32 operands and counts equal lanes using the imported GGML and SoftFloat oracles"
+
+[[id]]
+id = "VT-208"
+level = "build"
+suite = "native-backend"
+statement = "COUNT_EQUAL preserves signed integer and binary64 precision across mixed GGML storage and independent row layouts"
+
+[[id]]
+id = "VT-209"
+level = "build"
+suite = "native-backend"
+statement = "Binary64 SUM and SUM_ROWS reproduce compensated OpenVINO reductions over the axes selected by GGML"
+
+[[id]]
+id = "VT-210"
+level = "build"
+suite = "native-backend"
+statement = "F16 and BF16 row sums reproduce the OpenVINO operator and E4M3 reductions reproduce the original GGML storage conversions and CPU sums"
+
+[[id]]
+id = "VT-212"
+level = "build"
+suite = "native-backend"
+statement = "Integer repeat-back accumulates residues over four repeated axes and matches the original OpenVINO signed reduction across widths"
+
+[[id]]
+id = "VT-213"
+level = "build"
+suite = "native-backend"
+statement = "Stored repeat-back decodes repeated blocks, folds binary32 rows in GGML order and encodes the resulting tensor with its original storage"
+
+[[id]]
+id = "VT-211"
+level = "build"
+suite = "native-backend"
+statement = "Packed sine decodes GGML rows, evaluates the Verdant reference sine and reproduces the original GGML encoded results"
+
+[[id]]
+id = "VT-214"
+level = "build"
+suite = "native-backend"
+statement = "Binary64 repeat-back accumulates binary64 words in GGML traversal order and reproduces the original SoftFloat sums"
+
+[[id]]
+id = "VT-217"
+level = "build"
+suite = "native-backend"
+statement = "Row ranking decodes stored GGML keys and selects the original ordering or top-k values across dense and strided rows"
