@@ -99,6 +99,7 @@ jobs:
       - name: apply a change to the API's own sources, then export it again with Lean (propose-command only)
         if: inputs.args == 'propose-command'
         env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
           INPUT: ${{ inputs.input }}
         run: |
           set -euo pipefail
@@ -148,6 +149,9 @@ jobs:
               print('::notice::VS-' + str(n).zfill(2) + ' is already on main, so this change registers it as VS-' + str(ren[n]).zfill(2))
           PY
           # git apply drops a file whose binary patch is corrupt, says so on one error line and still exits 0, so any error line stops the run here, before the export.
+          # Contract and strata keep their entries on one line, so a change that only adds entries there is merged
+          # into main by entry, and never conflicts with another change that adds others (merge-entries.py).
+          python3 .github/scripts/merge-entries.py patch target/input/change.patch
           : > target/apply.err
           if grep -q '^diff --git' target/input/change.patch; then git apply --exclude=studio/lexlean.lock --exclude=readers/lexlean.lock --exclude=readers/xml/lexlean.lock --exclude=admit/lexlean.lock target/input/change.patch 2> target/apply.err || { sed 's/^/::error::/' target/apply.err; exit 1; }; fi
           if grep -q '^error' target/apply.err; then sed 's/^/::error::the patch did not apply whole: /' target/apply.err; exit 1; fi

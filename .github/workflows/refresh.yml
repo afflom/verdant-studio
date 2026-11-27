@@ -181,21 +181,27 @@ jobs:
             # readers/lexlean.lock and readers/xml/lexlean.lock are generated: the export below writes them again, so they are left out of the
             # change, and two reader pull requests never conflict on it.
             git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers admit lexlean-workspace.toml ':!readers/lexlean.lock' ':!readers/xml/lexlean.lock' ':!admit/lexlean.lock' > target/change.patch
-            # model/strata.json is one line, so two changes that each add a stratum row always
-            # conflict there. Its rows are keyed by path (VS-05), so the merge is main's rows, then
-            # each row the pull request adds whose path main does not have, in the pull request's order.
+            # app/src/Contract.lex.tex and model/strata.json each keep their entries on one line, so two changes
+            # that each add entries there always conflict. A conflict on those two files alone is merged by entry
+            # (merge-entries.py): main's file, then each entry the pull request adds that main does not have.
             # git apply drops a file whose binary patch is corrupt and still exits 0, so that error counts as not applying.
             applied=yes
             git apply --3way target/change.patch 2> target/apply.err || applied=no
             if grep -q '^error: corrupt' target/apply.err; then applied=no; fi
             if [ "$applied" = no ]; then
-              if [ "$(git diff --name-only --diff-filter=U)" = model/strata.json ]; then
+              merged=no
+              if [ -n "$(git diff --name-only --diff-filter=U)" ] && [ -z "$(git diff --name-only --diff-filter=U | grep -v -x -e app/src/Contract.lex.tex -e model/strata.json || true)" ]; then
+                merged=yes
                 base=$(git merge-base origin/main "origin/$branch")
-                git show "$base:model/strata.json" > target/strata-base.json
-                git show "origin/$branch:model/strata.json" > target/strata-pr.json
-                git show origin/main:model/strata.json | jq -c --slurpfile pr target/strata-pr.json --slurpfile base target/strata-base.json '(map(.path)) as $have | ($base[0] | map(.path)) as $old | . + [$pr[0][] | select(.path as $p | (($have | index($p)) == null) and (($old | index($p)) == null))]' > model/strata.json
-                git add model/strata.json
-                echo "::notice::#${pr}: merged its stratum rows into main's by path"
+                for f in $(git diff --name-only --diff-filter=U); do
+                  git show "$base:$f" > target/entries-base
+                  git show "origin/$branch:$f" > target/entries-pr
+                  git show "origin/main:$f" > target/entries-main
+                  if python3 .github/scripts/merge-entries.py merge target/entries-base target/entries-pr target/entries-main "$f" > target/entries-merged; then cp target/entries-merged "$f"; git add "$f"; else merged=no; fi
+                done
+              fi
+              if [ "$merged" = yes ]; then
+                echo "::notice::#${pr}: merged the entries it adds to Contract and strata into main's by entry"
               else
                 sed 's/^/::error::#'"$pr"' does not apply to main: /' target/apply.err | head -20
                 git reset -q --hard origin/main
