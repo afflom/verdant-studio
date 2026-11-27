@@ -165,6 +165,7 @@ structure{
   fields: [
     {name: names, type: Names},
     {name: admissions, type: (List Studio.Schema::Value)},
+    {name: requirements, type: (List Studio.Schema::Value)},
     {name: strata, type: (List Studio.Schema::Value)},
     {name: locked, type: (List Bytes)},
     {name: modules, type: (List Bytes)}
@@ -183,6 +184,23 @@ definition{
 }
 
 definition{
+  name: unboundConstraint,
+  parameters: [names : Names, items : (List Studio.Schema::Value)],
+  result: (Option Bytes),
+  body: (match items
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons head rest => (match (Studio.Schema::field head (Studio.Doc::lit "evidence"))
+      | Option.none => (unboundConstraint names rest)
+      | Option.some evidence => (match (Studio.Schema::field evidence (Studio.Doc::lit "constraint"))
+        | Option.none => (unboundConstraint names rest)
+        | Option.some constraint => (if (Studio.Doc::memberBytes (Studio.Schema::str constraint (Studio.Doc::lit "authority")) (project names authorities)) then (match (Studio.Schema::strOf (Studio.Schema::field constraint (Studio.Doc::lit "row")))
+          | Option.none => (unboundConstraint names rest)
+          | Option.some row => (if (Studio.Doc::memberBytes row (project names rows)) then (unboundConstraint names rest) else (ctor Option.some [Bytes] (Studio.Schema::str head (Studio.Doc::lit "id"))))) else (ctor Option.some [Bytes] (Studio.Schema::str head (Studio.Doc::lit "id"))))))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
   name: verdict,
   parameters: [inputs : Inputs],
   result: (Bool * Bytes),
@@ -194,7 +212,9 @@ definition{
         | Option.some twice => (false, (Studio.Doc::cat (cons (Studio.Doc::lit "construct admitted twice: ") (cons twice (cons 0x0a (nil Bytes))))))
         | Option.none => (match (firstRepeat declaredPaths (nil Bytes))
           | Option.some twice => (false, (Studio.Doc::cat (cons (Studio.Doc::lit "module with two stratum rows: ") (cons twice (cons 0x0a (nil Bytes))))))
-          | Option.none => (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admitted: ") (cons (LexLeanStd.Text::joinWith (cons (Studio.Doc::lit "constructs") (nil Bytes)) 0x) (cons 0x0a (nil Bytes))))))))) else (false, (Studio.Doc::lit "ungrounded module: every module needs one stratum row and every row one module\n")))))))),
+          | Option.none => (match (unboundConstraint names (project inputs requirements))
+            | Option.some requirement => (false, (Studio.Doc::cat (cons (Studio.Doc::lit "unbound constraint: ") (cons requirement (cons (Studio.Doc::lit " cites an authority or catalog row that is not bound\n") (nil Bytes))))))
+            | Option.none => (true, (Studio.Doc::cat (cons (Studio.Doc::lit "admitted: ") (cons (LexLeanStd.Text::joinWith (cons (Studio.Doc::lit "constructs") (nil Bytes)) 0x) (cons 0x0a (nil Bytes)))))))))) else (false, (Studio.Doc::lit "ungrounded module: every module needs one stratum row and every row one module\n")))))))),
   executable: true
 }
 \end{semanticmodule}
