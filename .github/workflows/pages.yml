@@ -48,7 +48,7 @@ jobs:
         if: steps.command.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
-          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; cargo install --locked --version 0.4.3 lexlean --root target/lexlean; }
+          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; rustup toolchain install 1.97.0 --profile minimal; RUSTFLAGS="--remap-path-prefix=${CARGO_HOME:-$HOME/.cargo}=cargo-home" cargo +1.97.0 install --locked --version 0.4.3 lexlean --root target/lexlean; }
           target/lexlean/bin/lexlean production verify-artifact certified
           cargo build --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
           # The reader operations are a second LexLean project with its own bundle, so that each export stays under its limits.
@@ -119,6 +119,8 @@ jobs:
           if [ -n "$(git status --porcelain -- certified certified-readers)" ]; then
             echo "::error::operate's propose-command step ran, but its export did not reproduce certified/:"
             git status --short -- certified certified-readers | head -20
+            attested=$(git show HEAD:certified/evidence/attestation.json | jq -r .lexlean.executable_sha256); used=$(sha256sum target/lexlean/bin/lexlean | cut -c1-64)
+            [ "$attested" = "$used" ] || echo "::error::the export ran with lexlean $used, but certified/ attests lexlean $attested. lexlean is built with rust 1.97.0 and its cargo home remapped, so a different hash means the toolchain or the runner image changed"
             exit 1
           fi
           echo "propose-command applied the fixture, exported again with Lean and reproduced certified/ byte for byte"
