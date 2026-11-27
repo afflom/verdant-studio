@@ -1531,6 +1531,16 @@ structure{
   ]
 }
 
+inductive{
+  name: GPUColor,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: doubleSequence, fields: [(List (Int * Int))]},
+    {name: gPUColorDict, fields: [GPUColorDict]}
+  ]
+}
+
 structure{
   name: GPUOrigin2DDict,
   type_parameters: [],
@@ -1538,6 +1548,16 @@ structure{
   fields: [
     {name: x, type: GPUIntegerCoordinate},
     {name: y, type: GPUIntegerCoordinate}
+  ]
+}
+
+inductive{
+  name: GPUOrigin2D,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUIntegerCoordinateSequence, fields: [(List GPUIntegerCoordinate)]},
+    {name: gPUOrigin2DDict, fields: [GPUOrigin2DDict]}
   ]
 }
 
@@ -1552,6 +1572,16 @@ structure{
   ]
 }
 
+inductive{
+  name: GPUOrigin3D,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUIntegerCoordinateSequence, fields: [(List GPUIntegerCoordinate)]},
+    {name: gPUOrigin3DDict, fields: [GPUOrigin3DDict]}
+  ]
+}
+
 structure{
   name: GPUExtent3DDict,
   type_parameters: [],
@@ -1560,6 +1590,33 @@ structure{
     {name: depthOrArrayLayers, type: GPUIntegerCoordinate},
     {name: height, type: GPUIntegerCoordinate},
     {name: width, type: GPUIntegerCoordinate}
+  ]
+}
+
+inductive{
+  name: GPUExtent3D,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUIntegerCoordinateSequence, fields: [(List GPUIntegerCoordinate)]},
+    {name: gPUExtent3DDict, fields: [GPUExtent3DDict]}
+  ]
+}
+
+structure{
+  name: GPUTextureDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: dimension, type: GPUTextureDimension},
+    {name: format, type: GPUTextureFormat},
+    {name: mipLevelCount, type: GPUIntegerCoordinate},
+    {name: sampleCount, type: GPUSize32},
+    {name: size, type: GPUExtent3D},
+    {name: textureBindingViewDimension, type: (Option GPUTextureViewDimension)},
+    {name: usage, type: GPUTextureUsageFlags},
+    {name: viewFormats, type: (List GPUTextureFormat)}
   ]
 }
 
@@ -1600,6 +1657,18 @@ structure{
     {name: isTrusted, type: Bool},
     {name: timeStamp, type: DOMHighResTimeStamp},
     {name: error, type: GPUError}
+  ]
+}
+
+inductive{
+  name: PredefinedColorSpace,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: srgb, fields: []},
+    {name: srgbLinear, fields: []},
+    {name: displayP3, fields: []},
+    {name: displayP3Linear, fields: []}
   ]
 }
 
@@ -1679,6 +1748,239 @@ structure{
     {name: languages, type: (List (List Nat))},
     {name: onLine, type: Bool},
     {name: hardwareConcurrency, type: Nat}
+  ]
+}
+
+inductive{
+  name: GPUSize64OrUndefined,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUSize64, fields: [GPUSize64]},
+    {name: undefined, fields: []}
+  ]
+}
+
+structure{
+  name: GPUDeviceDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: defaultQueue, type: GPUQueueDescriptor},
+    {name: requiredFeatures, type: (List GPUFeatureName)},
+    {name: requiredLimits, type: (List ((List Nat) * GPUSize64OrUndefined))}
+  ]
+}
+
+inductive{
+  name: GPUTextureViewDimensionOrUndefined,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUTextureViewDimension, fields: [GPUTextureViewDimension]},
+    {name: undefined, fields: []}
+  ]
+}
+
+structure{
+  name: GPUTexture,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: width, type: GPUIntegerCoordinateOut},
+    {name: height, type: GPUIntegerCoordinateOut},
+    {name: depthOrArrayLayers, type: GPUIntegerCoordinateOut},
+    {name: mipLevelCount, type: GPUIntegerCoordinateOut},
+    {name: sampleCount, type: GPUSize32Out},
+    {name: dimension, type: GPUTextureDimension},
+    {name: format, type: GPUTextureFormat},
+    {name: usage, type: GPUFlagsConstant},
+    {name: textureBindingViewDimension, type: GPUTextureViewDimensionOrUndefined},
+    {name: label, type: Bytes}
+  ]
+}
+
+inductive{
+  name: GPUBindingResource,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUSampler, fields: [GPUSampler]},
+    {name: gPUTexture, fields: [GPUTexture]},
+    {name: gPUTextureView, fields: [GPUTextureView]},
+    {name: gPUBuffer, fields: [GPUBuffer]},
+    {name: gPUBufferBinding, fields: [GPUBufferBinding]},
+    {name: gPUExternalTexture, fields: [GPUExternalTexture]}
+  ]
+}
+
+structure{
+  name: GPUBindGroupEntry,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: binding, type: GPUIndex32},
+    {name: resource, type: GPUBindingResource}
+  ]
+}
+
+structure{
+  name: GPUBindGroupDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: entries, type: (List GPUBindGroupEntry)},
+    {name: layout, type: GPUBindGroupLayout}
+  ]
+}
+
+structure{
+  name: GPUTexelCopyTextureInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: aspect, type: GPUTextureAspect},
+    {name: mipLevel, type: GPUIntegerCoordinate},
+    {name: origin, type: GPUOrigin3D},
+    {name: texture, type: GPUTexture}
+  ]
+}
+
+structure{
+  name: GPUCopyExternalImageDestInfo,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: aspect, type: GPUTextureAspect},
+    {name: mipLevel, type: GPUIntegerCoordinate},
+    {name: origin, type: GPUOrigin3D},
+    {name: texture, type: GPUTexture},
+    {name: colorSpace, type: PredefinedColorSpace},
+    {name: premultipliedAlpha, type: Bool}
+  ]
+}
+
+inductive{
+  name: GPUPipelineLayoutOrGPUAutoLayoutMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUPipelineLayout, fields: [GPUPipelineLayout]},
+    {name: gPUAutoLayoutMode, fields: [GPUAutoLayoutMode]}
+  ]
+}
+
+structure{
+  name: GPUShaderModuleCompilationHint,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: entryPoint, type: Bytes},
+    {name: layout, type: (Option GPUPipelineLayoutOrGPUAutoLayoutMode)}
+  ]
+}
+
+structure{
+  name: GPUShaderModuleDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: code, type: Bytes},
+    {name: compilationHints, type: (List GPUShaderModuleCompilationHint)}
+  ]
+}
+
+structure{
+  name: GPUPipelineDescriptorBase,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: layout, type: GPUPipelineLayoutOrGPUAutoLayoutMode}
+  ]
+}
+
+structure{
+  name: GPUComputePipelineDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: layout, type: GPUPipelineLayoutOrGPUAutoLayoutMode},
+    {name: compute, type: GPUProgrammableStage}
+  ]
+}
+
+structure{
+  name: GPURenderPipelineDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: layout, type: GPUPipelineLayoutOrGPUAutoLayoutMode},
+    {name: depthStencil, type: (Option GPUDepthStencilState)},
+    {name: fragment, type: (Option GPUFragmentState)},
+    {name: multisample, type: GPUMultisampleState},
+    {name: primitive, type: GPUPrimitiveState},
+    {name: vertex, type: GPUVertexState}
+  ]
+}
+
+inductive{
+  name: GPUTextureOrGPUTextureView,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gPUTexture, fields: [GPUTexture]},
+    {name: gPUTextureView, fields: [GPUTextureView]}
+  ]
+}
+
+structure{
+  name: GPURenderPassColorAttachment,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clearValue, type: (Option GPUColor)},
+    {name: depthSlice, type: (Option GPUIntegerCoordinate)},
+    {name: loadOp, type: GPULoadOp},
+    {name: resolveTarget, type: (Option GPUTextureOrGPUTextureView)},
+    {name: storeOp, type: GPUStoreOp},
+    {name: view, type: GPUTextureOrGPUTextureView}
+  ]
+}
+
+structure{
+  name: GPURenderPassDepthStencilAttachment,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: depthClearValue, type: (Option (Int * Int))},
+    {name: depthLoadOp, type: (Option GPULoadOp)},
+    {name: depthReadOnly, type: Bool},
+    {name: depthStoreOp, type: (Option GPUStoreOp)},
+    {name: stencilClearValue, type: GPUStencilValue},
+    {name: stencilLoadOp, type: (Option GPULoadOp)},
+    {name: stencilReadOnly, type: Bool},
+    {name: stencilStoreOp, type: (Option GPUStoreOp)},
+    {name: view, type: GPUTextureOrGPUTextureView}
+  ]
+}
+
+structure{
+  name: GPURenderPassDescriptor,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes},
+    {name: colorAttachments, type: (List (Option GPURenderPassColorAttachment))},
+    {name: depthStencilAttachment, type: (Option GPURenderPassDepthStencilAttachment)},
+    {name: maxDrawCount, type: GPUSize64},
+    {name: occlusionQuerySet, type: (Option GPUQuerySet)},
+    {name: timestampWrites, type: (Option GPURenderPassTimestampWrites)}
   ]
 }
 \end{semanticmodule}
