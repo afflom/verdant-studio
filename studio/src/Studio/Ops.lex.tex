@@ -3877,21 +3877,31 @@ definition{
   name: routeOther,
   parameters: [op : Bytes, path : Bytes, more : (List Bytes), seen : Seen],
   result: Plan,
-  body: (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else
-    (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else
-    (if (Studio.Doc::same op (Studio.Doc::lit "admit-registry")) then (planAdmitRegistry seen path more) else
+  body: (if ((Studio.Doc::same op (Studio.Doc::lit "admit")) || ((Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) || ((Studio.Doc::same op (Studio.Doc::lit "admit-registry")) || ((Studio.Doc::same op (Studio.Doc::lit "admit-translated")) || (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")))))) then (ctor Plan.refuse (Studio.Doc::lit "admit, admit-encoding, admit-registry, admit-translated and propose-encoding run in verdant_admit, the command of the admission project (admit)\n")) else
     (if (Studio.Doc::same op (Studio.Doc::lit "ingest-authority")) then (planIngestAuthority seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "ingest-index")) then (planIngestIndex seen path) else
     (if (Studio.Doc::same op (Studio.Doc::lit "merge-gate")) then (planMergeGate seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "record-error")) then (planRecordError seen path more) else
+    (ctor Plan.refuse (usage)))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: routeAdmit,
+  parameters: [op : Bytes, path : Bytes, more : (List Bytes), seen : Seen],
+  result: Plan,
+  body: (if (Studio.Doc::same op (Studio.Doc::lit "admit")) then (planAdmit seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "admit-encoding")) then (planAdmitEncoding seen path) else
+    (if (Studio.Doc::same op (Studio.Doc::lit "admit-registry")) then (planAdmitRegistry seen path more) else
     (if (Studio.Doc::same op (Studio.Doc::lit "propose-encoding")) then (match more
       | List.nil => (ctor Plan.refuse (usage))
       | List.cons name citation => (planProposeEncoding seen path name citation)) else
     (if (Studio.Doc::same op (Studio.Doc::lit "admit-translated")) then (match more
       | List.nil => (ctor Plan.refuse (usage))
       | List.cons name rest => (planAdmitTranslated seen path name rest)) else
-    (if (Studio.Doc::same op (Studio.Doc::lit "record-decision")) then (planRecordDecision seen path) else
-    (if (Studio.Doc::same op (Studio.Doc::lit "record-error")) then (planRecordError seen path more) else
-    (ctor Plan.refuse (usage)))))))))))),
+    (ctor Plan.refuse (Studio.Doc::lit "verdant_admit runs admit, admit-encoding, admit-registry, admit-translated and propose-encoding; every other operation runs in verdant_studio\n"))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -3986,6 +3996,19 @@ definition{
   parameters: [args : (List Bytes), seen : Seen],
   result: Plan,
   body: (guarded (route args seen)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: admitPlan,
+  parameters: [args : (List Bytes), seen : Seen],
+  result: Plan,
+  body: (match args
+    | List.nil => (ctor Plan.refuse (usage))
+    | List.cons op rest => (match rest
+      | List.nil => (ctor Plan.refuse (usage))
+      | List.cons path more => (guarded (routeAdmit op path more seen)))),
   axioms: [Quot.sound, propext],
   executable: true
 }
