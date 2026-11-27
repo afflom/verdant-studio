@@ -12,16 +12,20 @@ phases="$log.phases"
 ( while :; do ps -eo etimes=,args= | awk '$2 == "lean" && $3 == "-R" { m = $NF; sub(".*-src/", "", m); print $1, m }' >> "$phases.raw" || true; sleep 1; done ) &
 watch=$!
 status=0
-# Each LexLean project exports in parallel under its own limits: studio, readers, readers/xml and admit when they exist.
+# Each LexLean project exports under its own limits: studio, readers, admit and readers/xml when they exist, largest first.
 # Lean's proof of a project grows with the square of its function count, so the readers are split by family and admission is its own project.
-pids=""
-for project in studio readers readers/xml admit; do
+# Each export runs two Lean phases at once, so at most half as many exports as cores run together: more slows every phase.
+slots=$(( $(nproc) / 2 ))
+if [ "$slots" -lt 1 ]; then slots=1; fi
+running=0
+for project in studio readers admit readers/xml; do
   if [ -f "$project/lexlean.toml" ]; then
+    if [ "$running" -ge "$slots" ]; then wait -n || status=$?; running=$((running - 1)); fi
     (cd "$project" && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > "$log.${project//\//-}" 2>&1 &
-    pids="$pids $!"
+    running=$((running + 1))
   fi
 done
-for pid in $pids; do wait "$pid" || status=$?; done
+while [ "$running" -gt 0 ]; do wait -n || status=$?; running=$((running - 1)); done
 cat "$log.studio" > "$log"
 if [ -f "$log.readers" ]; then cat "$log.readers" >> "$log"; fi
 if [ -f "$log.readers-xml" ]; then cat "$log.readers-xml" >> "$log"; fi
