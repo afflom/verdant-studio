@@ -1,0 +1,1 @@
+{"citation":["std","UNICODE-MF2-ABNF-LDML48.2","N02"],"name":"Mf2DeclarationKeyword","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from UNICODE-MF2-ABNF-LDML48.2 message.abnf: the keyword rules (.input, .local, .match).","enum":[".input",".local",".match"],"title":"MessageFormat 2 keyword"}}
