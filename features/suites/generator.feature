@@ -33,3 +33,10 @@ Feature: generator
     Then the file opens with RIFF, WAVE and a 646-byte bext chunk of version 2 whose description is the features and whose coding history is A=PCM,F=48000,W=16,M=mono,T=Verdant Studio
     And a one-sample file of 700 bytes carries version 2 at byte 366, the coding history at byte 622, then the fmt chunk and a data chunk holding that sample
     And prism-code build replays the BWF request with no features and the feature café, answered with the refusals of the MIDI generator
+
+  @VS-20 @build @rejects
+  Scenario: The BWF generator refuses a Prism of more than 349 features before it reads them, since a BWF file of at most 16 MiB holds 349 half-second notes, and admits every Prism of at most 349
+    Given the BWF generator in app/src/Studio/Generator/AudioFile/Bwf.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Generator.AudioFile.Bwf.admits_exactly_the_capacity, Studio.Generator.AudioFile.Bwf.admits_the_capacity, Studio.Generator.AudioFile.Bwf.refuses_one_past_the_capacity and Studio.Generator.AudioFile.Bwf.refuses_a_prism_past_the_capacity
+    Then 349 features are admitted, and 350 features of E are answered with the capacity refusal
+    And prism-code build replays the BWF request for 350 features, the first of them é, answered with that refusal, so that no shorter request the build derives from it is synthesized
