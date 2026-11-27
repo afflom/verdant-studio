@@ -19,21 +19,21 @@ definition{
   name: formRefusal,
   parameters: [],
   result: Bytes,
-  body: 0x726566757365643a20657665727920666f726d206973206b696e6420544142206368616e6e656c205441422066656174757265205441422072656365697665642054414220706c617965722054414220746578742c207468656e206f7074696f6e616c6c792054414220696d6d6564696174652c20746865206b696e6420666565646261636b2c20636f6d706c61696e74206f7220696e636964656e742c20746865206368616e6e656c20666f726d206f722070726f6d70742c20726563656976656420696e20646563696d616c207365636f6e64732c20776974682061206665617475726520616e64206120706c61796572
+  body: 0x726566757365643a20657665727920666f726d206973206b696e6420544142206368616e6e656c205441422066656174757265205441422072656365697665642054414220706c617965722054414220746578742c20746865206b696e6420666565646261636b2c20636f6d706c61696e74206f7220696e636964656e742c20746865206368616e6e656c20666f726d206f722070726f6d70742c20726563656976656420696e20646563696d616c207365636f6e64732c20776974682061206665617475726520616e64206120706c61796572
 }
 
 definition{
   name: single,
-  parameters: [form : Studio.Feedback.Intake::Form],
+  parameters: [assessed : (List Bytes), form : Studio.Feedback.Intake::Form],
   result: Bool,
-  body: ((Studio.Feedback.Incident::actsAlone form) || (Studio.Feedback.Assessment::immediate form))
+  body: ((Studio.Feedback.Incident::actsAlone form) || (Studio.Feedback.Assessment::immediate assessed form))
 }
 
 definition{
   name: admitted,
   parameters: [form : Studio.Feedback.Intake::Form],
   result: Bool,
-  body: ((Studio.Feedback.Incident::knownKind (project form kind)) && ((Studio.Feedback.Solicitation::knownChannel (project form channel)) && (Studio.Feedback.Assessment::knownAssessment (project form assessment))))
+  body: ((Studio.Feedback.Incident::knownKind (project form kind)) && (Studio.Feedback.Solicitation::knownChannel (project form channel)))
 }
 
 definition{
@@ -63,11 +63,11 @@ definition{
 
 definition{
   name: feedbackOn,
-  parameters: [forms : (List Studio.Feedback.Intake::Form), feature : Bytes, onlyPrompted : Bool],
+  parameters: [assessed : (List Bytes), forms : (List Studio.Feedback.Intake::Form), feature : Bytes, onlyPrompted : Bool],
   result: (List Studio.Feedback.Intake::Form),
   body: (match forms
     | List.nil => (nil Studio.Feedback.Intake::Form)
-    | List.cons form rest => (if (((not (single form)) && (Studio.Feedback.Intake::same (project form feature) feature)) && ((not onlyPrompted) || (Studio.Feedback.Solicitation::prompted form))) then (cons form (feedbackOn rest feature onlyPrompted)) else (feedbackOn rest feature onlyPrompted))),
+    | List.cons form rest => (if (((not (single assessed form)) && (Studio.Feedback.Intake::same (project form feature) feature)) && ((not onlyPrompted) || (Studio.Feedback.Solicitation::prompted form))) then (cons form (feedbackOn assessed rest feature onlyPrompted)) else (feedbackOn assessed rest feature onlyPrompted))),
   recursive_argument: forms
 }
 
@@ -123,9 +123,9 @@ definition{
 
 definition{
   name: consensusLine,
-  parameters: [quorum : Nat, forms : (List Studio.Feedback.Intake::Form), feature : Bytes],
+  parameters: [quorum : Nat, assessed : (List Bytes), forms : (List Studio.Feedback.Intake::Form), feature : Bytes],
   result: Bytes,
-  body: (let group : (List Studio.Feedback.Intake::Form) := (feedbackOn forms feature false); (tab (tab (tab (tab (tab (if (consensus quorum (players group)) then 0x636f6e73656e737573 else 0x70656e64696e67) (Studio.Feedback.Intake::feedbackTerm)) feature) (Studio.Feedback.Intake::decimalOf (players group))) (Studio.Feedback.Intake::decimalOf (players (feedbackOn forms feature true)))) (Studio.Feedback.Intake::decimalOf (earliest group))))
+  body: (let group : (List Studio.Feedback.Intake::Form) := (feedbackOn assessed forms feature false); (tab (tab (tab (tab (tab (if (consensus quorum (players group)) then 0x636f6e73656e737573 else 0x70656e64696e67) (Studio.Feedback.Intake::feedbackTerm)) feature) (Studio.Feedback.Intake::decimalOf (players group))) (Studio.Feedback.Intake::decimalOf (players (feedbackOn assessed forms feature true)))) (Studio.Feedback.Intake::decimalOf (earliest group))))
 }
 
 definition{
@@ -137,11 +137,11 @@ definition{
 
 definition{
   name: distillFrom,
-  parameters: [quorum : Nat, all : (List Studio.Feedback.Intake::Form), forms : (List Studio.Feedback.Intake::Form), seen : (List Bytes)],
+  parameters: [quorum : Nat, assessed : (List Bytes), all : (List Studio.Feedback.Intake::Form), forms : (List Studio.Feedback.Intake::Form), seen : (List Bytes)],
   result: (List Bytes),
   body: (match forms
     | List.nil => (nil Bytes)
-    | List.cons form rest => (if (single form) then (cons (singleLine form) (distillFrom quorum all rest seen)) else (if (memberBytes (project form feature) seen) then (distillFrom quorum all rest seen) else (cons (consensusLine quorum all (project form feature)) (distillFrom quorum all rest (cons (project form feature) seen)))))),
+    | List.cons form rest => (if (single assessed form) then (cons (singleLine form) (distillFrom quorum assessed all rest seen)) else (if (memberBytes (project form feature) seen) then (distillFrom quorum assessed all rest seen) else (cons (consensusLine quorum assessed all (project form feature)) (distillFrom quorum assessed all rest (cons (project form feature) seen)))))),
   recursive_argument: forms
 }
 
@@ -159,9 +159,9 @@ definition{
 
 definition{
   name: distill,
-  parameters: [quorum : Nat, forms : (List Studio.Feedback.Intake::Form)],
+  parameters: [quorum : Nat, assessed : (List Bytes), forms : (List Studio.Feedback.Intake::Form)],
   result: Bytes,
-  body: (joinLines (distillFrom quorum forms forms (nil Bytes)))
+  body: (joinLines (distillFrom quorum assessed forms forms (nil Bytes)))
 }
 
 definition{
@@ -170,11 +170,13 @@ definition{
   result: Bytes,
   body: (match (Studio.Feedback.Intake::split value 10)
     | List.nil => (quorumRefusal)
-    | List.cons header lines => (match (Studio.Feedback.Intake::decimal header)
-      | Option.none => (quorumRefusal)
-      | Option.some quorum => (if (quorum <? 2) then (quorumRefusal) else (match (formsOf lines)
-        | Option.none => (formRefusal)
-        | Option.some forms => (distill quorum forms))))),
+    | List.cons header lines => (match (Studio.Feedback.Intake::split header 9)
+      | List.nil => (quorumRefusal)
+      | List.cons count assessed => (match (Studio.Feedback.Intake::decimal count)
+        | Option.none => (quorumRefusal)
+        | Option.some quorum => (if (quorum <? 2) then (quorumRefusal) else (match (formsOf lines)
+          | Option.none => (formRefusal)
+          | Option.some forms => (distill quorum assessed forms)))))),
   axioms: [Quot.sound, propext]
 }
 
@@ -218,9 +220,9 @@ theorem{
   axioms: [Quot.sound, propext]
 }
 theorem{
-  name: an_immediate_request_acts_alone,
+  name: a_request_the_creator_assessed_acts_alone,
   parameters: [],
-  statement: (((catalog 0x320a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7020666f7220703309696d6d6564696174650a666565646261636b09666f726d09636f6f70093609703409636f2d6f70) = 0x73696e676c6509666565646261636b09636f6f7009666f726d09350961646420636f2d6f7020666f72202a0a70656e64696e6709666565646261636b09636f6f70093109300936) /\ ((catalog 0x320a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7009757267656e74) = (formRefusal))),
+  statement: (((catalog 0x3209636f6f700a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7020666f722070330a666565646261636b09666f726d096a756d70093609703409686967686572) = 0x73696e676c6509666565646261636b09636f6f7009666f726d09350961646420636f2d6f7020666f72202a0a70656e64696e6709666565646261636b096a756d70093109300936) /\ (((catalog 0x320a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7020666f72207033) = 0x70656e64696e6709666565646261636b09636f6f70093109300935) /\ ((catalog 0x320a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7020666f7220703309696d6d656469617465) = (formRefusal)))),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }
