@@ -450,3 +450,5 @@ Each construct and the citation that admits it.
 - `Studio.Generator.Runtime`: std VTENSOR-IDS-280A1A4
 - `model/registries/AGONES-1.62.0-INSTALL.jsonl`: std AGONES-1.62.0-INSTALL row K11
 - `model/registries/ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0.jsonl`: std ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 row G12
+- `Studio.Generator.Guest`: std W3C-WASM-CORE-3.0
+- `Studio.Generator.Host`: std W3C-WASM-JS-API-2
