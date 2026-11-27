@@ -1,0 +1,6 @@
+name = "VerdantXmlCli"
+version = "0.1.0"
+defaultTargets = ["VerdantXmlCli"]
+
+[[lean_lib]]
+name = "VerdantXmlCli"
