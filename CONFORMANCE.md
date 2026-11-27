@@ -530,6 +530,10 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-WASM-WEB-API-2` | Streaming compilation and the application/wasm media type for WebAssembly on the Web; the browser delivery of a Verdant Prism's WebAssembly (REQ-PRISM-GENERATION). |  |
 | `VTENSOR-IDS-280A1A4` | vTensor's registered capability IDs (VT-01 onward): a GGML device backend whose only tensor-compute substrate is Verdant Tensor, matching the GGML CPU oracle byte for byte, so any GGML application can run a Verdant Prism generator deterministically (REQ-PRISM-GENERATION, REQ-ENGINE-FIDELITY). |  |
 | `W3C-WEBREF-IDL-PERMISSIONS-A0114B8` | The Web IDL fragments of Permissions, extracted by Reffy into W3C webref (Source: Permissions (https://www.w3.org/TR/permissions/)). Read by read-webidl as an import for index row G14, which defines PermissionDescriptor and PermissionStatus. |  |
+| `SDXS-512-Q8-0-3144D89` | The one-step distilled diffusion weights for image synthesis (SDXS UNet with its TAESD decoder), the image expert VerdantUI runs on vTensor (VerdantUI DEC-014); pinned so an accepted Prism's raster artwork can be regenerated (REQ-PRISM-GENERATION, REQ-ENGINE-RASTER-IMAGE). |  |
+| `SMOLVLM2-256M-MMPROJ-Q8-0-A48F519` | The image-to-token projector that the SmolVLM2 vision expert loads with its weights (SMOLVLM2-256M-Q8-0-A48F519); pinned with them (REQ-PRISM-GENERATION). |  |
+| `SMOLVLM2-256M-Q8-0-A48F519` | The vision-language weights, the vision expert VerdantUI runs on vTensor for its closed-loop critique (VerdantUI DEC-014); pinned so a Prism's visual artifacts are validated against its intent reproducibly (REQ-PRISM-GENERATION, ISO/IEC/IEEE 15288 validation). |  |
+| `WHISPER-TINY-EN-Q8-0-5359861` | The English speech recognition weights, the speech expert VerdantUI runs on vTensor (VerdantUI DEC-014); pinned so a Prism's spoken audio can be verified by transcription (REQ-PRISM-GENERATION). |  |
 
 ## Claims that are not conformance IDs
 
