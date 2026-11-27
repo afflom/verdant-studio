@@ -1,0 +1,41 @@
+\begin{lexlean}{Catalog.FmodStudioObject}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: FmodStudioObjectBusKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: groupBus, fields: []},
+    {name: returnBus, fields: []},
+    {name: portBus, fields: []},
+    {name: masterBus, fields: []}
+  ]
+}
+
+inductive{
+  name: FmodStudioObjectKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: event, fields: []},
+    {name: snapshot, fields: []},
+    {name: parameter, fields: []},
+    {name: bus, fields: []},
+    {name: vCA, fields: []},
+    {name: bank, fields: []}
+  ]
+}
+
+structure{
+  name: FmodStudioObject,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: busKind, type: (Option FmodStudioObjectBusKind)},
+    {name: kind, type: FmodStudioObjectKind}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -108,7 +108,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G03** Metal (Rendering, graphics APIs, color, and display): exactMatch APPLE-MSL-4.1 (staged)
 - **G04** OpenGL / OpenGL ES / WebGL (Rendering, graphics APIs, color, and display): narrowMatch KHRONOS-OPENGL-REGISTRY-GLXML (staged); narrowMatch KHRONOS-WEBGL-1.0-IDL (staged); narrowMatch KHRONOS-WEBGL-2.0-IDL (staged)
 - **G05** WebGPU and WGSL (Rendering, graphics APIs, color, and display): narrowMatch W3C-WEBREF-IDL-WEBGPU-A0114B8 (derived from its citation); narrowMatch W3C-WEBGPU-20261116 (staged); narrowMatch W3C-WGSL-20261106 (staged)
-- **G06** Console graphics APIs (GNM/AGC, NVN) (Rendering, graphics APIs, color, and display), not reached from any origin: no mapping yet
+- **G06** Console graphics APIs (GNM/AGC, NVN) (Rendering, graphics APIs, color, and display): narrowMatch WIKIPEDIA-NINTENDO-SWITCH (derived from its citation); narrowMatch WIKIPEDIA-LIST-OF-RENDERING-APIS (derived from its citation); narrowMatch WIKIPEDIA-PLAYSTATION-5 (derived from its citation)
 - **G07** sRGB (IEC 61966-2-1) (Rendering, graphics APIs, color, and display): exactMatch IEC-61966-2-1-1999 (staged)
 - **G08** ITU-R BT.709, BT.2020, BT.2100 (PQ/HLG) (Rendering, graphics APIs, color, and display): narrowMatch ITU-R-BT-2100-3 (staged)
 - **G09** SMPTE ST 2084 (PQ) and HDR10 / HDR10+ / Dolby Vision (Rendering, graphics APIs, color, and display): narrowMatch SMPTE-ST-2084-2014 (staged)
@@ -137,16 +137,16 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **H16** Platform SDK minimums: Google Play target API level; Apple minimum SDK/Xcode requirements (Engine, runtime, languages, and software engineering): narrowMatch APPLE-UPCOMING-REQUIREMENTS (staged); narrowMatch GOOGLE-PLAY-TARGET-API-LEVEL (staged)
 - **I01** ITU-R BS.1770 loudness measurement (LUFS/LKFS) (Audio, music, and voice): exactMatch ITU-R-BS-1770-5 (derived from its citation)
 - **I02** EBU R 128 (Audio, music, and voice): exactMatch EBU-R128-2023 (derived from its citation)
-- **I03** ASWG-R001 loudness recommendation for console games (Audio, music, and voice), not reached from any origin: no mapping yet
-- **I04** Audio middleware: Audiokinetic Wwise, FMOD Studio (Audio, music, and voice), not reached from any origin: no mapping yet
+- **I03** ASWG-R001 loudness recommendation for console games (Audio, music, and voice): exactMatch SONY-ASWG-R001 (derived from its citation)
+- **I04** Audio middleware: Audiokinetic Wwise, FMOD Studio (Audio, music, and voice): exactMatch FMOD-STUDIO-2.03-GLOSSARY (derived from its citation)
 - **I05** Interactive music techniques: horizontal resequencing, vertical layering, stingers (Audio, music, and voice): exactMatch COLLINS-GAME-SOUND-2008 (staged)
 - **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice): exactMatch MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE (derived from its citation)
 - **I07** AES69 (SOFA) HRTF format (Audio, music, and voice): exactMatch SOFA-SIMPLEFREEFIELDHRIR-1.0 (staged)
 - **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): narrowMatch AMBIX-AMBISONICS-FORMAT-2011 (staged)
 - **I09** Broadcast Wave Format (EBU Tech 3285) (Audio, music, and voice): exactMatch EBU-TECH-3285-2 (derived from its citation)
 - **I10** Ogg Vorbis / Opus (RFC 6716) (Audio, music, and voice): narrowMatch IETF-RFC-3533 (staged); narrowMatch IETF-RFC-6716 (staged); narrowMatch IETF-RFC-7845 (staged); narrowMatch XIPH-VORBIS-I (staged)
-- **I11** IASIG 3D audio guidelines (I3DL1/I3DL2) (Audio, music, and voice), not reached from any origin: no mapping yet
-- **I12** Music licensing and performing rights (sync, master, PRO registration) (Audio, music, and voice), not reached from any origin: no mapping yet
+- **I11** IASIG 3D audio guidelines (I3DL1/I3DL2) (Audio, music, and voice): exactMatch MS-XAUDIO2FX-REVERB-I3DL2-PARAMETERS (derived from its citation)
+- **I12** Music licensing and performing rights (sync, master, PRO registration) (Audio, music, and voice): exactMatch USCO-COPYRIGHT-AND-THE-MUSIC-MARKETPLACE-2015 (derived from its citation)
 - **J01** Finite state machines / hierarchical FSMs (NPC, agent, and game AI models): exactMatch MILLINGTON-AI-FOR-GAMES-3E-2019 (staged)
 - **J02** Behavior Trees (NPC, agent, and game AI models): exactMatch ARXIV-1709.00084-V6 (derived from its citation)
 - **J03** Goal-Oriented Action Planning (GOAP) (NPC, agent, and game AI models): exactMatch ORKIN-FEAR-GDC-2006 (derived from its citation)
@@ -165,7 +165,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **J16** NIST AI Risk Management Framework (AI RMF 1.0) (NPC, agent, and game AI models): exactMatch NIST-AI-RMF-PLAYBOOK (staged)
 - **J17** C2PA Content Credentials (NPC, agent, and game AI models): exactMatch C2PA-SPEC-2.3 (staged)
 - **J18** Steam AI content disclosure (NPC, agent, and game AI models): exactMatch STEAM-AI-CONTENT-DISCLOSURE-2024 (derived from its citation)
-- **K01** Client-server with client-side prediction and lag compensation (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
+- **K01** Client-server with client-side prediction and lag compensation (Networking, multiplayer, and online services): exactMatch GAMBETTA-FAST-PACED-MULTIPLAYER-LAG-COMPENSATION (derived from its citation)
 - **K02** Deterministic lockstep (Networking, multiplayer, and online services): exactMatch BETTNER-TERRANO-1500-ARCHERS-2001 (staged)
 - **K03** Rollback netcode (GGPO) (Networking, multiplayer, and online services): exactMatch GGPO-GGPONET-H (derived from its citation)
 - **K04** Tribes networking model (Networking, multiplayer, and online services): exactMatch TRIBES-ENGINE-NETWORKING-MODEL (derived from its citation)
@@ -209,7 +209,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **N09** MQM (Multidimensional Quality Metrics) / ASTM F2575 (Localization, internationalization, and culturalization): narrowMatch MQM-FULL-TYPOLOGY-2024-03-07 (staged)
 - **N10** Culturalization practice (Localization, internationalization, and culturalization): exactMatch IGDA-LOCSIG-BEST-PRACTICES-V22 (derived from its citation)
 - **N11** OpenType (ISO/IEC 14496-22) (Localization, internationalization, and culturalization): exactMatch OPENTYPE-1.9.1 (derived from its citation)
-- **N12** GB 18030 Chinese character set (Localization, internationalization, and culturalization), not reached from any origin: exactMatch SAC-GB-18030-2022 (staged)
+- **N12** GB 18030 Chinese character set (Localization, internationalization, and culturalization): narrowMatch WHATWG-ENCODING-ENCODINGS-JSON (derived from its citation); exactMatch SAC-GB-18030-2022 (staged)
 - **O01** ISO/IEC 25010:2023 Product quality model (SQuaRE) (Quality assurance, testing, and software quality): narrowMatch ISO-IEC-25010-2023-PREVIEW (derived from its citation); exactMatch ISO-IEC-25010-2023 (staged)
 - **O02** ISO/IEC 25022/25023 quality-in-use and product-quality measures (Quality assurance, testing, and software quality): narrowMatch ISO-IEC-25022-2016-PREVIEW (derived from its citation); narrowMatch ISO-IEC-25023-2016-PREVIEW (derived from its citation); narrowMatch ISO-IEC-25022-2016 (staged); narrowMatch ISO-IEC-25023-2016 (staged)
 - **O03** ISO/IEC/IEEE 29119 Software testing (parts 1-5) (Quality assurance, testing, and software quality): narrowMatch ISO-IEC-IEEE-29119-1-2022-PREVIEW (derived from its citation); narrowMatch ISO-IEC-IEEE-29119-5-2024-PREVIEW (derived from its citation); narrowMatch ISO-IEC-IEEE-29119-3-2021-PREVIEW (derived from its citation); narrowMatch ISO-IEC-IEEE-29119-2-2021-PREVIEW (derived from its citation); narrowMatch ISO-IEC-IEEE-29119-4-2021-PREVIEW (derived from its citation); narrowMatch ISO-IEC-IEEE-29119-1-2022 (staged); narrowMatch ISO-IEC-IEEE-29119-2-2021 (staged); narrowMatch ISO-IEC-IEEE-29119-3-2021 (staged); narrowMatch ISO-IEC-IEEE-29119-4-2021 (staged); narrowMatch ISO-IEC-IEEE-29119-5-2024 (staged)

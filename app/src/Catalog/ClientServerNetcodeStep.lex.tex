@@ -1,0 +1,50 @@
+\begin{lexlean}{Catalog.ClientServerNetcodeStep}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: ClientServerNetcodeStepClientStep,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: clientSendsInputAndSimulatesTheirEffectsLocally, fields: []},
+    {name: syncsPredictedStateToAuthoritativeState, fields: []},
+    {name: interpolatesKnownPastStatesForOtherEntities, fields: []}
+  ]
+}
+
+inductive{
+  name: ClientServerNetcodeStepServerStep,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: serverGetsInputsFromAllTheClientsWithTimestamps, fields: []},
+    {name: serverProcessesInputsAndUpdatesWorldStatus, fields: []},
+    {name: serverSendsRegularWorldSnapshotsToAllClients, fields: []}
+  ]
+}
+
+inductive{
+  name: ClientServerNetcodeStepTechnique,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: clientServerGameArchitecture, fields: []},
+    {name: clientSidePredictionAndServerReconciliation, fields: []},
+    {name: entityInterpolation, fields: []},
+    {name: lagCompensation, fields: []}
+  ]
+}
+
+structure{
+  name: ClientServerNetcodeStep,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: clientStep, type: (Option ClientServerNetcodeStepClientStep)},
+    {name: serverStep, type: (Option ClientServerNetcodeStepServerStep)},
+    {name: technique, type: ClientServerNetcodeStepTechnique}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

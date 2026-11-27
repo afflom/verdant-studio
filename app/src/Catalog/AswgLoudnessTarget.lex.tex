@@ -1,0 +1,57 @@
+\begin{lexlean}{Catalog.AswgLoudnessTarget}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AswgLoudnessTargetDescriptor,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: averageLoudnessLevel, fields: []},
+    {name: loudnessRange, fields: []},
+    {name: truePeakLevel, fields: []}
+  ]
+}
+
+inductive{
+  name: AswgLoudnessTargetMaximumTruePeak,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1DBTP, fields: []}
+  ]
+}
+
+inductive{
+  name: AswgLoudnessTargetPlatform,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: homeBasedSCEPlatforms, fields: []},
+    {name: portableSCEPlatforms, fields: []}
+  ]
+}
+
+inductive{
+  name: AswgLoudnessTargetTargetLevel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: u002Du0032u0034u0020u0028u00B1u0032u0029u0020u004Cu004Bu0046u0053, fields: []},
+    {name: u002Du0031u0038u0020u0028u00B1u0032u0029u0020u004Cu004Bu0046u0053, fields: []}
+  ]
+}
+
+structure{
+  name: AswgLoudnessTarget,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: descriptor, type: (Option AswgLoudnessTargetDescriptor)},
+    {name: maximumTruePeak, type: AswgLoudnessTargetMaximumTruePeak},
+    {name: platform, type: AswgLoudnessTargetPlatform},
+    {name: targetLevel, type: AswgLoudnessTargetTargetLevel}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Inferred (all-source, Alex 2026-11-24) from WIKIPEDIA-NINTENDO-SWITCH: the Nvidia chipset has a custom API known as \"NVN\". The SDK documentation is under NDA.","enum":["NVN"],"title":"Nintendo Switch graphics API"}
