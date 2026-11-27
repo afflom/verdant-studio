@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.JiraDefaultPriority}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: JiraDefaultPriorityPriority,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: highest, fields: []},
+    {name: high, fields: []},
+    {name: medium, fields: []},
+    {name: low, fields: []},
+    {name: lowest, fields: []}
+  ]
+}
+
+structure{
+  name: JiraDefaultPriority,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: priority, type: JiraDefaultPriorityPriority}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

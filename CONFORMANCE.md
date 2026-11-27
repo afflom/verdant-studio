@@ -539,6 +539,10 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `LOLESPORTS-COMMUNITY-COMPETITION-GUIDELINES` | Riot's global community competition license and guidelines for League of Legends, which supersede the North America Community Competition Guidelines (the superseded page points here). Index row S10. |  |
 | `SPN-ARL-FAIR-USE-CODE-2018-UVA-LIBRA` | The full text of the Code bound as SPN-ARL-FAIR-USE-SOFTWARE-PRESERVATION-2018, whose bound SAA page only describes it; arl.org and cmsimpact.org refuse automated fetches. Index row Y10. |  |
 | `STEAMWORKS-ANTICHEAT-GAME-BANS` | Valve's documentation of the Steam anti-cheat services and Game Bans: best practices, permissions, gift restrictions and what a game ban does to the user. Index row T11. |  |
+| `ECMA-334-7` | The C# language specification (identical in content to ISO/IEC 23270). Index row H02. |  |
+| `GRAHAM-GAMEAIPRO-UTILITY-THEORY-2013` | Utility-based action selection: response curves (linear, quadratic, logistic, piecewise linear) and picking an action; the published chapter behind the utility AI practice the row names (Dave Mark's IAUS talks are cited by it as [Mark 09]). Index row J05. |  |
+| `ISO-IEC-14882-N4950` | The WG 21 working draft from which ISO/IEC 14882:2024 (C++23) was published, used as the public text of the paywalled standard. Index row H01. |  |
+| `VALVE-STEAMWORKS-ISTEAMMATCHMAKING` | Steamworks lobby and matchmaking interface, including the ELobbyType visibility of a lobby. The page changes on every load, so no sha256 is pinned. Index row K12. |  |
 
 ## Claims that are not conformance IDs
 

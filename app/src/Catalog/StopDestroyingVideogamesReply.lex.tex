@@ -1,0 +1,46 @@
+\begin{lexlean}{Catalog.StopDestroyingVideogamesReply}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: StopDestroyingVideogamesReplyCommitment,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: drawUpAnIndustryCodeOfConductOnManagingVideoGamesEndOfLife, fields: []},
+    {name: raiseAwarenessAboutTheApplicableRightsThatProtectConsumers, fields: []},
+    {name: reportOnTheApplicationOfTheDirectiveOnDigitalContentAndDigitalServices, fields: []}
+  ]
+}
+
+inductive{
+  name: StopDestroyingVideogamesReplyLegislativeProposal,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cannotProposeALegalObligationToKeepVideoGamesPlayable, fields: []}
+  ]
+}
+
+inductive{
+  name: StopDestroyingVideogamesReplyReason,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: existingIntellectualPropertyRights, fields: []},
+    {name: existingEUConsumerLawAlreadyProvidesForImportantSafeguards, fields: []}
+  ]
+}
+
+structure{
+  name: StopDestroyingVideogamesReply,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: commitment, type: StopDestroyingVideogamesReplyCommitment},
+    {name: legislativeProposal, type: (Option StopDestroyingVideogamesReplyLegislativeProposal)},
+    {name: reason, type: (Option StopDestroyingVideogamesReplyReason)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

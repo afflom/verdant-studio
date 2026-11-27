@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from IETF-RFC-6455 Section 5.2, Opcode: the defined values (reserved ranges omitted).","enum":["continuation","text","binary","connection close","ping","pong"],"title":"WebSocket opcode"}

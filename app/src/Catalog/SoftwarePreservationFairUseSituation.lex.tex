@@ -1,0 +1,49 @@
+\begin{lexlean}{Catalog.SoftwarePreservationFairUseSituation}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SoftwarePreservationFairUseSituationAppendix,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: theFairUseDoctrineAndPreservationPractice, fields: []},
+    {name: otherCopyrightRelatedIssues, fields: []}
+  ]
+}
+
+inductive{
+  name: SoftwarePreservationFairUseSituationPart,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: pRINCIPLE, fields: []},
+    {name: lIMITATIONS, fields: []}
+  ]
+}
+
+inductive{
+  name: SoftwarePreservationFairUseSituationSituation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: accessioningStabilizingEvaluatingAndDescribingDigitalObjects, fields: []},
+    {name: documentingSoftwareInOperationAndMakingThatDocumentationAvailable, fields: []},
+    {name: providingAccessToSoftwareForUseInResearchTeachingAndLearning, fields: []},
+    {name: providingBroaderNetworkedAccessToSoftwareMaintainedAndSharedAcrossMultipleCollectionsOrInstitutions, fields: []},
+    {name: preservingFilesExpressedInSourceCodeAndOtherHumanReadableFormats, fields: []}
+  ]
+}
+
+structure{
+  name: SoftwarePreservationFairUseSituation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: appendix, type: (Option SoftwarePreservationFairUseSituationAppendix)},
+    {name: part, type: (Option SoftwarePreservationFairUseSituationPart)},
+    {name: situation, type: SoftwarePreservationFairUseSituationSituation}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

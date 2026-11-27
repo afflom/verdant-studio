@@ -1,0 +1,40 @@
+\begin{lexlean}{Catalog.SteamGameBan}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SteamGameBanBanEffect,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: theAccountCannotJoinSecureServersForTheAppIDsTheyAreBanned, fields: []},
+    {name: theBanIsPubliclyDisplayedOnTheirSteamCommunityProfile, fields: []},
+    {name: theUserWillNotBeEligibleForAnAutomaticRefund, fields: []}
+  ]
+}
+
+inductive{
+  name: SteamGameBanSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: gameBans, fields: []},
+    {name: bestPractices, fields: []},
+    {name: requiredPermissionsForEditingAntiCheatPolicies, fields: []},
+    {name: giftRestrictions, fields: []}
+  ]
+}
+
+structure{
+  name: SteamGameBan,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: banApi, type: (Option Bytes)},
+    {name: banEffect, type: (Option SteamGameBanBanEffect)},
+    {name: requiredPermission, type: (Option Bytes)},
+    {name: section, type: SteamGameBanSection}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
