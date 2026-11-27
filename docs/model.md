@@ -634,3 +634,9 @@ Each construct and the citation that admits it.
 - `Studio.Project.IdentityLink`: std W3C-PROV-O
 - `Studio.Project.Isolation`: der pattern from Studio.Project, Studio.ContentBoundary.Differentiation, Studio.Runtime
 - `Studio.Project.Authority`: std VERDANT-ENGINE-IDS-2.22.4
+- `Studio.Generator.Music.Midi.File`: std MIDI-SMF-RP-001-1.0-PAGE row I06
+- `Studio.Generator.Music.Midi.MediaType`: std WHATWG-MIMESNIFF-BA4B3C3
+- `Studio.Generator.AudioFile.Bwf.MediaType`: std WHATWG-MIMESNIFF-BA4B3C3
+- `Studio.Generator.AudioFile.Synthesis`: std MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE row I06
+- `Studio.Generator.AudioFile.Synthesis.SampleRate`: std ITU-R-BS-1770-5 row I01
+- `Studio.Generator.AudioFile.Synthesis.Level`: std EBU-R128-2023 row I02

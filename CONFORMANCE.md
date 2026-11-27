@@ -578,6 +578,8 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WIKIPEDIA-NINTENDO-SWITCH` | Nintendo Switch, whose Nvidia chipset has a custom API known as NVN; the console SDK documentation is under NDA. Index row G06. |  |
 | `WIKIPEDIA-PLAYSTATION-5` | PlayStation 5, whose GPU is programmed via Sony's graphics API AGC; the console SDK documentation is under NDA. Index row G06. |  |
 | `PRISM-CODE-CORE-WASM-0.11.6` | The Core-Wasm guest contract: an import-free wasm32 core module exporting exactly memory, holo_alloc (i32 to i32) and holo_run (i32, i32 to i64), run on a fresh instance per request; the ABI of every Verdant Prism generator guest (REQ-PRISM-GENERATION). |  |
+| `MIDI-SMF-RP-001-1.0-PAGE` | The issuer's page for the Standard MIDI Files Specification (RP-001_v1-0_Standard_MIDI_Files_Specification_96-1-4.pdf), the file format that carries MIDI 1.0 messages: an MThd header chunk (format, track count, division) and MTrk chunks of delta-timed events. The PDF itself needs a midi.org login. Index row I06. |  |
+| `WHATWG-MIMESNIFF-BA4B3C3` | The MIME Sniffing Standard's source: the byte patterns that identify a resource's MIME type, including audio/midi for a Standard MIDI File (MThd header) and audio/wave for a RIFF WAVE file, the declared types of the MIDI and BWF artifacts of a Verdant Prism, which IANA does not register (REQ-ENGINE-MUSIC, REQ-ENGINE-AUDIO-FILE). |  |
 
 ## Claims that are not conformance IDs
 
