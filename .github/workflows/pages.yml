@@ -34,7 +34,8 @@ jobs:
             target/release/verdant_studio
             target/release/verdant_readers
             target/release/verdant_xml
-          key: verdant-studio-${{ hashFiles('certified/**', 'certified-readers/**', 'certified-xml/**') }}
+            target/release/verdant_admit
+          key: verdant-studio-${{ hashFiles('certified/**', 'certified-readers/**', 'certified-xml/**', 'certified-admit/**') }}
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.npm
@@ -62,10 +63,15 @@ jobs:
             target/lexlean/bin/lexlean production verify-artifact certified-xml
             cargo build --release --manifest-path certified-xml/packages/rust-std/verdant_xml/Cargo.toml --target-dir target && rm -f certified-xml/packages/rust-std/verdant_xml/Cargo.lock
           fi
+          # The admission operations are a fourth project with their own bundle, for the same reason.
+          if [ -d certified-admit ]; then
+            target/lexlean/bin/lexlean production verify-artifact certified-admit
+            cargo build --release --manifest-path certified-admit/packages/rust-std/verdant_admit/Cargo.toml --target-dir target && rm -f certified-admit/packages/rust-std/verdant_admit/Cargo.lock
+          fi
           # Building may write only target/: a stray file in a bundle fails verify-artifact on the next run (LLV7102).
-          if [ -n "$(git status --porcelain -- certified certified-readers certified-xml)" ]; then
-            echo "::error::building the certified commands left files in certified/, certified-readers/ or certified-xml/:"
-            git status --short -- certified certified-readers certified-xml | head -20
+          if [ -n "$(git status --porcelain -- certified certified-readers certified-xml certified-admit)" ]; then
+            echo "::error::building the certified commands left files in certified/, certified-readers/, certified-xml/ or certified-admit/:"
+            git status --short -- certified certified-readers certified-xml certified-admit | head -20
             exit 1
           fi
       - name: check, build and publish through the API
@@ -123,9 +129,10 @@ jobs:
           } > target/fixture.patch
           INPUT="$(cat target/fixture.patch)" bash target/propose.sh
           rm -f features/suites/e2e.fixture
-          # certified-xml/ joins the comparison once main holds it: the export that first writes it is the one that adds it.
+          # certified-xml/ and certified-admit/ join the comparison once main holds them: the export that first writes it is the one that adds it.
           bundles="certified certified-readers"
           if [ -n "$(git ls-files certified-xml | head -n 1)" ]; then bundles="$bundles certified-xml"; fi
+          if [ -n "$(git ls-files certified-admit | head -n 1)" ]; then bundles="$bundles certified-admit"; fi
           if [ -n "$(git status --porcelain -- $bundles)" ]; then
             echo "::error::operate's propose-command step ran, but its export did not reproduce certified/:"
             git status --short -- $bundles | head -20
