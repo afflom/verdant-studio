@@ -1,0 +1,304 @@
+\begin{lexlean}{Studio.Generator.RasterImage.Png}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: allBytes,
+  parameters: [],
+  result: Bytes,
+  body: 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
+}
+
+definition{
+  name: byteOf,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (match (prim slice (allBytes) (prim remainder value 256 0 : Nat) 1 : (Option Bytes))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: bigEndian32,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (prim append (byteOf (prim quotient value 16777216 0 : Nat)) (byteOf (prim quotient value 65536 0 : Nat)) : Bytes) (prim append (byteOf (prim quotient value 256 0 : Nat)) (byteOf value) : Bytes) : Bytes)
+}
+
+definition{
+  name: littleEndian16,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (byteOf value) (byteOf (prim quotient value 256 0 : Nat)) : Bytes)
+}
+
+definition{
+  name: byteNat,
+  parameters: [value : Bytes, offset : Nat],
+  result: Nat,
+  body: (match (prim index value offset : (Option UInt8))
+    | Option.none => 0
+    | Option.some byte => (prim to_nat byte : Nat))
+}
+
+definition{
+  name: readBigEndian32,
+  parameters: [value : Bytes, offset : Nat],
+  result: Nat,
+  body: ((prim multiply (byteNat value offset) 16777216 : Nat) + ((prim multiply (byteNat value (offset + 1)) 65536 : Nat) + ((prim multiply (byteNat value (offset + 2)) 256 : Nat) + (byteNat value (offset + 3)))))
+}
+
+definition{
+  name: littleEndian32,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (prim append (byteOf value) (byteOf (prim quotient value 256 0 : Nat)) : Bytes) (prim append (byteOf (prim quotient value 65536 0 : Nat)) (byteOf (prim quotient value 16777216 0 : Nat)) : Bytes) : Bytes)
+}
+
+definition{
+  name: crcTablePart,
+  parameters: [part : Nat],
+  result: Bytes,
+  body: (if (part <? 8) then (if (part <? 4) then (if (part <? 2) then (if (part <? 1) then 0x00000000963007772c610eeeba51099919c46d078ff46a7035a563e9a395649e3288db0ea4b8dc791ee9d5e088d9d2972b4cb609bd7cb17e072db8e7911dbf90 else 0x6410b71df220b06a4871b9f3de41be847dd4da1aebe4dd6d51b5d4f4c785d38356986c13c0a86b647af962fdecc9658a4f5c0114d96c0663633d0ffaf50d088d) else (if (part <? 3) then 0xc8206e3b5e10694ce44160d5727167a2d1e4033c47d4044bfd850dd26bb50aa5faa8b5356c98b242d6c9bbdb40f9bcace36cd832755cdf45cf0dd6dc593dd1ab else 0xac30d9263a00de518051d7c81661d0bfb5f4b42123c4b3569995bacf0fa5bdb89eb802280888055fb2d90cc624e90bb1877c6f2f114c6858ab1d61c13d2d66b6)) else (if (part <? 6) then (if (part <? 5) then 0x9041dc760671db01bc20d2982a10d5ef8985b1711fb5b606a5e4bf9f33d4b8e8a2c9077834f9000f8ea8099618980ee1bb0d6a7f2d3d6d08976c6491015c63e6 else 0xf4516b6b62616c1cd83065854e0062f2ed95066c7ba5011bc1f4088257c40ff5c6d9b06550e9b712eab8be8b7c88b9fcdf1ddd62492dda15f37cd38c654cd4fb) else (if (part <? 7) then 0x5861b24dce51b53a7400bca3e230bbd441a5df4ad795d83d6dc4d1a4fbf4d6d36ae96943fcd96e34468867add0b860da732d0444e51d03335f4c0aaac97c0ddd else 0x3c710550aa41022710100bbe86200cc925b56857b3856f2009d466b99fe461ce0ef9de5e98c9d9292298d0b0b4a8d7c7173db359810db42e3b5cbdb7ad6cbac0))) else (if (part <? 12) then (if (part <? 10) then (if (part <? 9) then 0x2083b8edb6b3bf9a0ce2b6039ad2b1743947d5eaaf77d29d1526db048316dc73120b63e3843b64943e6a6d0da85a6a7a0bcf0ee49dff099327ae000ab19e077d else 0x44930ff0d2a3088768f2011efec206695d5762f7cb67658071366c19e7066b6e761bd4fee02bd3895a7ada10cc4add676fdfb9f9f9efbe8e43beb717d58eb060) else (if (part <? 11) then 0xe8a3d6d67e93d1a1c4c2d83852f2df4ff167bbd16757bca6dd06b53f4b36b248da2b0dd84c1b0aaff64a0336607a0441c3ef60df55df67a8ef8e6e3179be6946 else 0x8cb361cb1a8366bca0d26f2536e2685295770ccc03470bbbb91602222f260555be3bbac5280bbdb2925ab42b046ab35ca7ffd7c231cfd0b58b9ed92c1daede5b)) else (if (part <? 14) then (if (part <? 13) then 0xb0c2649b26f263ec9ca36a750a936d02a906099c3f360eeb8567077213570005824abf95147ab8e2ae2bb17b381bb60c9b8ed2920dbed5e5b7efdc7c21dfdb0b else 0xd4d2d38642e2d4f1f8b3dd686e83da1fcd16be815b26b9f6e177b06f7747b718e65a0888706a0fffca3b06665c0b0111ff9e658f69ae62f8d3ff6b6145cf6c16) else (if (part <? 15) then 0x78e20aa0eed20dd75483044ec2b30339612667a7f71660d04d476949db776e3e4a6ad1aedc5ad6d9660bdf40f03bd83753aebca9c59ebbde7fcfb247e9ffb530 else 0x1cf2bdbd8ac2baca3093b353a6a3b4240536d0ba9306d7cd2957de54bf67d9232e7a66b3b84a61c4021b685d942b6f2a37be0bb4a18e0cc31bdf055a8def022d))))
+}
+
+definition{
+  name: tableByte,
+  parameters: [offset : Nat],
+  result: UInt8,
+  body: (match (prim index (crcTablePart (prim quotient offset 64 0 : Nat)) (prim remainder offset 64 0 : Nat) : (Option UInt8))
+    | Option.none => (0 : UInt8)
+    | Option.some byte => byte)
+}
+
+definition{
+  name: halve,
+  parameters: [word : UInt32],
+  result: UInt32,
+  body: (match (prim shift_right word (1 : UInt32) : (Option UInt32))
+    | Option.none => (0 : UInt32)
+    | Option.some shifted => shifted)
+}
+
+definition{
+  name: crcShiftWord,
+  parameters: [word : UInt32, steps : Nat],
+  result: UInt32,
+  body: (match steps
+    | Nat.zero => word
+    | Nat.succ rest => (if (prim equal (prim bit_and word (1 : UInt32) : UInt32) (1 : UInt32) : Bool) then (crcShiftWord (prim bit_xor (3988292384 : UInt32) (halve word) : UInt32) rest) else (crcShiftWord (halve word) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: nextWord,
+  parameters: [word : UInt32],
+  result: UInt32,
+  body: (match (prim checked_add word (1 : UInt32) : (Option UInt32))
+    | Option.none => (0 : UInt32)
+    | Option.some next => next)
+}
+
+definition{
+  name: tableEntryFrom,
+  parameters: [entry : Nat, word : UInt32, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (if (((prim to_nat (tableByte (prim multiply entry 4 : Nat)) : Nat) + ((prim multiply (prim to_nat (tableByte ((prim multiply entry 4 : Nat) + 1)) : Nat) 256 : Nat) + ((prim multiply (prim to_nat (tableByte ((prim multiply entry 4 : Nat) + 2)) : Nat) 65536 : Nat) + (prim multiply (prim to_nat (tableByte ((prim multiply entry 4 : Nat) + 3)) : Nat) 16777216 : Nat)))) =? (prim to_nat (crcShiftWord word 8) : Nat)) then (tableEntryFrom (entry + 1) (nextWord word) rest) else false)),
+  recursive_argument: remaining
+}
+
+theorem{
+  name: crc_table_is_the_standard_table,
+  parameters: [],
+  statement: ((tableEntryFrom 0 (0 : UInt32) 256) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+
+definition{
+  name: crcFinal,
+  parameters: [r0 : UInt8, r1 : UInt8, r2 : UInt8, r3 : UInt8],
+  result: Bytes,
+  body: (prim append (prim append (byteOf (prim to_nat (prim bit_not r3 : UInt8) : Nat)) (byteOf (prim to_nat (prim bit_not r2 : UInt8) : Nat)) : Bytes) (prim append (byteOf (prim to_nat (prim bit_not r1 : UInt8) : Nat)) (byteOf (prim to_nat (prim bit_not r0 : UInt8) : Nat)) : Bytes) : Bytes)
+}
+
+definition{
+  name: crcFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, r0 : UInt8, r1 : UInt8, r2 : UInt8, r3 : UInt8],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => (crcFinal r0 r1 r2 r3)
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => (crcFinal r0 r1 r2 r3)
+      | Option.some byte => (let entry : Nat := (prim multiply (prim to_nat (prim bit_xor r0 byte : UInt8) : Nat) 4 : Nat); (crcFrom value (offset + 1) rest (prim bit_xor (tableByte entry) r1 : UInt8) (prim bit_xor (tableByte (entry + 1)) r2 : UInt8) (prim bit_xor (tableByte (entry + 2)) r3 : UInt8) (tableByte (entry + 3)))))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: crc32,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (crcFrom value 0 (prim length value : Nat) (255 : UInt8) (255 : UInt8) (255 : UInt8) (255 : UInt8))
+}
+
+theorem{
+  name: crc_of_iend_is_the_standard_value,
+  parameters: [],
+  statement: ((crc32 0x49454e44) = 0xae426082),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: adlerFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, low : Nat, high : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => ((prim multiply high 65536 : Nat) + low)
+    | Nat.succ rest => (adlerFrom value (offset + 1) rest (prim remainder (low + (byteNat value offset)) 65521 0 : Nat) (prim remainder (high + (prim remainder (low + (byteNat value offset)) 65521 0 : Nat)) 65521 0 : Nat))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: adler32,
+  parameters: [value : Bytes],
+  result: Nat,
+  body: (adlerFrom value 0 (prim length value : Nat) 1 0)
+}
+
+definition{
+  name: storedFrom,
+  parameters: [value : Bytes, offset : Nat, blocks : Nat, out : Bytes],
+  result: Bytes,
+  body: (match blocks
+    | Nat.zero => out
+    | Nat.succ rest => (if ((prim subtract (prim length value : Nat) offset : Nat) <=? 65535) then (prim append out (prim append (prim append 0x01 (littleEndian16 (prim subtract (prim length value : Nat) offset : Nat)) : Bytes) (prim append (littleEndian16 (prim subtract 65535 (prim subtract (prim length value : Nat) offset : Nat) : Nat)) (match (prim slice value offset (prim subtract (prim length value : Nat) offset : Nat) : (Option Bytes))
+      | Option.none => 0x
+      | Option.some piece => piece) : Bytes) : Bytes) : Bytes) else (storedFrom value (offset + 65535) rest (prim append out (prim append 0x00ffff0000 (match (prim slice value offset 65535 : (Option Bytes))
+      | Option.none => 0x
+      | Option.some piece => piece) : Bytes) : Bytes)))),
+  recursive_argument: blocks
+}
+
+definition{
+  name: zlibStored,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x7801 (storedFrom value 0 ((prim quotient (prim length value : Nat) 65535 0 : Nat) + 1) 0x) : Bytes) (bigEndian32 (adler32 value)) : Bytes)
+}
+
+definition{
+  name: chunk,
+  parameters: [kind : Bytes, data : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (bigEndian32 (prim length data : Nat)) (prim append kind data : Bytes) : Bytes) (crc32 (prim append kind data : Bytes)) : Bytes)
+}
+
+definition{
+  name: scanlinesFrom,
+  parameters: [samples : Bytes, rowBytes : Nat, row : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (scanlinesFrom samples rowBytes (row + 1) rest (prim append out (prim append 0x00 (match (prim slice samples (prim multiply row rowBytes : Nat) rowBytes : (Option Bytes))
+      | Option.none => 0x
+      | Option.some piece => piece) : Bytes) : Bytes))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: header,
+  parameters: [width : Nat, height : Nat, depth : Nat],
+  result: Bytes,
+  body: (prim append (prim append (bigEndian32 width) (bigEndian32 height) : Bytes) (prim append (byteOf depth) 0x06000000 : Bytes) : Bytes)
+}
+
+definition{
+  name: encode,
+  parameters: [width : Nat, height : Nat, depth : Nat, samples : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x89504e470d0a1a0a (chunk 0x49484452 (header width height depth)) : Bytes) (prim append (chunk 0x49444154 (zlibStored (scanlinesFrom samples (prim multiply width (prim quotient (prim multiply 4 depth : Nat) 8 0 : Nat) : Nat) 0 height 0x))) (chunk 0x49454e44 0x) : Bytes) : Bytes)
+}
+
+definition{
+  name: headerRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a2061206672616d65206973206120342d6279746520776964746820616e64206865696768742066726f6d203120746f20323134373438333634372c207468656e206269742064657074682038206f72203136
+}
+
+definition{
+  name: samplesRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a207468652073616d706c657320646f206e6f742066696c6c20746865206672616d65
+}
+
+definition{
+  name: dimensionValid,
+  parameters: [value : Nat],
+  result: Bool,
+  body: ((1 <=? value) && (value <=? 2147483647))
+}
+
+definition{
+  name: headerValid,
+  parameters: [frame : Bytes],
+  result: Bool,
+  body: ((9 <=? (prim length frame : Nat)) && ((dimensionValid (readBigEndian32 frame 0)) && ((dimensionValid (readBigEndian32 frame 4)) && (((byteNat frame 8) =? 8) || ((byteNat frame 8) =? 16)))))
+}
+
+definition{
+  name: sampleCount,
+  parameters: [frame : Bytes],
+  result: Nat,
+  body: (prim multiply (prim multiply (readBigEndian32 frame 0) (readBigEndian32 frame 4) : Nat) (prim quotient (prim multiply 4 (byteNat frame 8) : Nat) 8 0 : Nat) : Nat)
+}
+
+definition{
+  name: generate,
+  parameters: [frame : Bytes],
+  result: Bytes,
+  body: (if (headerValid frame) then (if ((prim subtract (prim length frame : Nat) 9 : Nat) =? (sampleCount frame)) then (match (prim slice frame 9 (prim subtract (prim length frame : Nat) 9 : Nat) : (Option Bytes))
+    | Option.none => (samplesRefusal)
+    | Option.some samples => (encode (readBigEndian32 frame 0) (readBigEndian32 frame 4) (byteNat frame 8) samples)) else (samplesRefusal)) else (headerRefusal))
+}
+
+theorem{
+  name: refuses_an_empty_frame,
+  parameters: [],
+  statement: ((generate 0x) = (headerRefusal)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_short_frame,
+  parameters: [],
+  statement: ((generate 0x000000010000000108ff) = (samplesRefusal)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: leadingBytes,
+  parameters: [value : Bytes, count : Nat],
+  result: Bytes,
+  body: (match (prim slice value 0 count : (Option Bytes))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+theorem{
+  name: begins_with_the_png_signature,
+  parameters: [],
+  statement: ((leadingBytes (generate 0x000000010000000108ff000080) 8) = 0x89504e470d0a1a0a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

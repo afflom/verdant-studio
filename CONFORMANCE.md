@@ -57,6 +57,21 @@ The three honesty levels (R2):
 | `VS-18` | `build` | The synthesis, Studio.Generator.AudioFile.Synthesis, renders the Standard MIDI File the MIDI generator writes as 16-bit PCM at 48 kHz: each sounding key a sine at its MIDI tuning frequency, key 69 at 440 Hz, peaking at 3281, the level at which a 997 Hz tone reads -23 LUFS | `Studio.Generator.AudioFile.Synthesis.key_69_steps_at_440_hertz`, `Studio.Generator.AudioFile.Synthesis.sine_starts_at_zero`, `Studio.Generator.AudioFile.Synthesis.sine_peaks_at_the_level`, `Studio.Generator.AudioFile.Synthesis.sine_troughs_at_the_negated_level` |
 | `VS-19` | `build` | The BWF generator, Studio.Generator.AudioFile.Bwf, writes a Prism's features as a Broadcast Wave Format version 2 file, RIFF WAVE with bext, fmt (PCM, mono, 48 kHz, 16-bit) and data chunks in that order, carrying the synthesis of the MIDI generator's file | `Studio.Generator.AudioFile.Bwf.le32_is_little_endian`, `Studio.Generator.AudioFile.Bwf.format_is_pcm_mono_48000_16`, `Studio.Generator.AudioFile.Bwf.extension_is_version_2_with_coding_history`, `Studio.Generator.AudioFile.Bwf.wave_orders_bext_fmt_data`, `Studio.Generator.AudioFile.Bwf.wave_carries_version_2`, `Studio.Generator.AudioFile.Bwf.wave_carries_the_coding_history`, `Studio.Generator.AudioFile.Bwf.wave_carries_fmt_then_data`, `Studio.Generator.AudioFile.Bwf.wave_ends_with_the_samples` |
 
+## png
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-11` | `build` | The PNG generator refuses by name a frame whose header is not a 4-byte width and height from 1 to 2147483647 and a bit depth of 8 or 16 | `Studio.Generator.RasterImage.Png.refuses_an_empty_frame`, refuses with `refused: a frame is a 4-byte width and height from 1 to 2147483647, then bit depth 8 or 16` |
+| `VS-12` | `build` | The PNG generator refuses by name a frame whose samples do not fill its width, height and bit depth | `Studio.Generator.RasterImage.Png.refuses_a_short_frame`, refuses with `refused: the samples do not fill the frame` |
+| `VS-13` | `build` | The PNG generator writes PNG's own datastream: its CRC-32 table is the table PNG's algorithm computes, the CRC of IEND is AE426082, and every image begins with the PNG signature | `Studio.Generator.RasterImage.Png.crc_table_is_the_standard_table`, `Studio.Generator.RasterImage.Png.crc_of_iend_is_the_standard_value`, `Studio.Generator.RasterImage.Png.begins_with_the_png_signature` |
+
+## svg
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-14` | `build` | The SVG generator refuses by name an empty seed | `Studio.Generator.VectorImage.Svg.refuses_the_empty_seed`, refuses with `refused: the seed is empty` |
+| `VS-15` | `build` | The SVG generator writes only XML text: it escapes & < and >, accepts UTF-8 text, and refuses by name a seed with a control character, a surrogate, a noncharacter or a malformed sequence | `Studio.Generator.VectorImage.Svg.escapes_markup`, `Studio.Generator.VectorImage.Svg.accepts_utf8_text`, `Studio.Generator.VectorImage.Svg.refuses_a_control_character`, `Studio.Generator.VectorImage.Svg.refuses_a_surrogate_and_a_noncharacter`, refuses with `refused: the seed is not XML text, so it is UTF-8 with no control character but tab, line feed and carriage return` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
