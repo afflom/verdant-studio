@@ -452,3 +452,7 @@ Each construct and the citation that admits it.
 - `model/registries/ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0.jsonl`: std ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 row G12
 - `Studio.Generator.Guest`: std W3C-WASM-CORE-3.0
 - `Studio.Generator.Host`: std W3C-WASM-JS-API-2
+- `Studio.Generator.Expert.Image`: std SDXS-512-Q8-0-3144D89
+- `Studio.Generator.Expert.Speech`: std WHISPER-TINY-EN-Q8-0-5359861
+- `Studio.Generator.Expert.Vision`: std SMOLVLM2-256M-Q8-0-A48F519
+- `Studio.Generator.Expert.Vision.Projector`: std SMOLVLM2-256M-MMPROJ-Q8-0-A48F519
