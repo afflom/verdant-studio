@@ -8991,3 +8991,20 @@ statement = "The .ZIP file format, version 6.3.3, which ISO/IEC 21320-1:2015 nor
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "MCP-SCHEMA-2026-07-28"
+name = "Model Context Protocol specification, revision 2026-07-28, TypeScript-derived JSON Schema"
+issuer = "Model Context Protocol (Linux Foundation)"
+edition = "2026-07-28"
+canonical_id = "https://modelcontextprotocol.io/specification/2026-07-28"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.json"
+media_type = "application/json"
+license = "Apache-2.0 (specification contributions; earlier contributions MIT)"
+redistribution = "redistributable"
+statement = "The official machine-readable schema (JSON Schema 2020-12) of MCP 2026-07-28 at tag 2026-07-28: JSON-RPC 2.0 messages, server/discover, tools (Tool with a JSON Schema inputSchema, CallToolRequest), resources and resource templates, subscriptions, prompts, completion and errors. Cited by the implementing agent's interface to Verdant Studio (REQ-AGENT-INTERFACE)."
+artifact = "authorities/MCP-SCHEMA-2026-07-28/schema.json"
+checksum = "ef70b61f99b6d2e5e3b46863822eab08dff6a45bedc7a08914e0e5b133f40203"
+realized_by = []
