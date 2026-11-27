@@ -1,0 +1,26 @@
+\begin{lexlean}{Catalog.ArticyExportRuleset}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: ArticyExportRulesetPackagesItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: (Option Bytes)},
+    {name: objects, type: (List Bytes)}
+  ]
+}
+
+structure{
+  name: ArticyExportRuleset,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: dataLayout, type: (List Bytes)},
+    {name: name, type: Bytes},
+    {name: packages, type: (List ArticyExportRulesetPackagesItem)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
