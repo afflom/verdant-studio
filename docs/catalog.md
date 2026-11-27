@@ -218,9 +218,9 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **O06** Crash reporting: Breakpad/Crashpad, Windows minidump format (Quality assurance, testing, and software quality): exactMatch BREAKPAD-MINIDUMP-FORMAT (staged)
 - **O07** Automated game testing frameworks (Unreal Gauntlet/Automation, Unity Test Framework, GameDriver) (Quality assurance, testing, and software quality): narrowMatch EPIC-UE-GAUNTLET (staged); narrowMatch UNITY-TEST-FRAMEWORK-1.4.6 (staged)
 - **O08** Compatibility programs: Steam Deck Verified, Xbox Play Anywhere, Windows on Arm (Quality assurance, testing, and software quality): narrowMatch STEAMWORKS-DECK-COMPAT (staged)
-- **P01** PlayStation Technical Requirements Checklist (TRC) (Platform certification and storefront requirements), not reached from any origin: no mapping yet
+- **P01** PlayStation Technical Requirements Checklist (TRC) (Platform certification and storefront requirements): exactMatch HOOPER-AUT-CROSS-PLATFORM-TESTING-2017 (derived from its citation)
 - **P02** Xbox Requirements (XR) / Xbox Certification (Platform certification and storefront requirements): exactMatch MS-XBOX-REQUIREMENTS-CERT-TESTED-16.10 (derived from its citation)
-- **P03** Nintendo guidelines and Lotcheck (Platform certification and storefront requirements), not reached from any origin: no mapping yet
+- **P03** Nintendo guidelines and Lotcheck (Platform certification and storefront requirements): exactMatch NINTENDO-DEVELOPER-PORTAL-THE-PROCESS (derived from its citation)
 - **P04** Steamworks documentation and store/page rules (Platform certification and storefront requirements): exactMatch STEAMWORKS-DOCUMENTATION (staged)
 - **P05** Apple App Review Guidelines (Platform certification and storefront requirements): exactMatch APPLE-APP-REVIEW-GUIDELINES (derived from its citation)
 - **P06** Google Play Developer Policy Center (Platform certification and storefront requirements): exactMatch GOOGLE-PLAY-DEVELOPER-POLICY-CENTER (staged)
@@ -280,7 +280,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **U06** Probability disclosure rules (China 2017; Korea 2024; Apple; Google) (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
 - **U07** FTC enforcement on dark patterns (Epic Games 2022 order) (Monetization, consumer protection, and virtual economies): exactMatch US-FTC-EPIC-CONSENT-88FR354 (staged)
 - **U08** Revenue recognition: ASC 606 / IFRS 15 (Monetization, consumer protection, and virtual economies): narrowMatch IFRS-15 (staged)
-- **U09** Free-to-play and virtual economy design canon (Monetization, consumer protection, and virtual economies), not reached from any origin: no mapping yet
+- **U09** Free-to-play and virtual economy design canon (Monetization, consumer protection, and virtual economies): exactMatch LOVELL-PYRAMID-GAME-DESIGN-2018-CHAPTERS (derived from its citation)
 - **U10** Advertising in games: IAB Tech Lab Intrinsic In-Game measurement guidelines (with MRC); OpenRTB; VAST; MRAID (Monetization, consumer protection, and virtual economies): narrowMatch IAB-OPENRTB-2.6 (staged); narrowMatch IAB-VAST-4.2 (staged)
 - **U11** Digital Content Directive (Directive (EU) 2019/770) (Monetization, consumer protection, and virtual economies): exactMatch EU-DIR-2019-770 (staged)
 - **V01** ESRB Advertising Review Council principles / PEGI Code of Conduct (advertising) (Launch, marketing, and branding): narrowMatch PEGI-CODE-OF-CONDUCT (staged)
@@ -298,7 +298,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **W07** Live-service KPIs (DAU/MAU, retention D1/D7/D30, ARPDAU, LTV, conversion, churn) (Live operations, reliability, support, and analytics): exactMatch GAMEANALYTICS-METRICS-DOC (derived from its citation)
 - **W08** Mobile attribution: Apple SKAdNetwork / AdAttributionKit; Android Privacy Sandbox (Live operations, reliability, support, and analytics): narrowMatch APPLE-ADATTRIBUTIONKIT (staged); narrowMatch APPLE-SKADNETWORK (staged); narrowMatch GOOGLE-PRIVACY-SANDBOX-ANDROID-ATTRIBUTION (staged)
 - **W09** ISO 10002 complaints handling; ISO 18295 customer contact centres (Live operations, reliability, support, and analytics): narrowMatch ISO-10002-2018-PREVIEW (derived from its citation); narrowMatch ISO-18295-1-2017-PREVIEW (derived from its citation); narrowMatch ISO-18295-2-2017-PREVIEW (derived from its citation); narrowMatch ISO-10002-2018 (staged); narrowMatch ISO-18295-1-2017 (staged); narrowMatch ISO-18295-2-2017 (staged)
-- **W10** Games-as-a-service / live-ops models (Live operations, reliability, support, and analytics), not reached from any origin: no mapping yet
+- **W10** Games-as-a-service / live-ops models (Live operations, reliability, support, and analytics): exactMatch DUBOIS-WESTSTAR-GAAS-2021-ABSTRACT (derived from its citation)
 - **W11** Recommended game events schema (Google Analytics 4 / Firebase) (Live operations, reliability, support, and analytics): exactMatch GOOGLE-GA4-RECOMMENDED-EVENTS (derived from its citation)
 - **W12** Platform patching and content delivery rules (patch size, delta patching, day-one patch policies) (Live operations, reliability, support, and analytics): narrowMatch STEAMWORKS-UPLOADING (staged)
 - **X01** Berne Convention / copyright law; WIPO guide on video games (Business, IP, labor, and sustainability): narrowMatch WIPO-BERNE-1979 (staged); narrowMatch WIPO-LEGAL-STATUS-VIDEO-GAMES-2013 (staged)
@@ -309,9 +309,9 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **X06** Playing for the Planet Alliance (Business, IP, labor, and sustainability): exactMatch PLAYING-FOR-THE-PLANET-HOME (derived from its citation)
 - **X07** Software Carbon Intensity (ISO/IEC 21031:2024) (Business, IP, labor, and sustainability): exactMatch GSF-SCI-1.1 (derived from its citation)
 - **X08** GHG Protocol / ISO 14064 (Business, IP, labor, and sustainability): narrowMatch GHG-PROTOCOL-CORPORATE-REVISED (staged)
-- **X09** Industry associations and their codes (ESA, Video Games Europe, Ukie, JOGA, CESA) (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
+- **X09** Industry associations and their codes (ESA, Video Games Europe, Ukie, JOGA, CESA) (Business, IP, labor, and sustainability): exactMatch ESA-TRUST-SAFETY-CODES-OF-CONDUCT (derived from its citation)
 - **X10** EU Product Liability Directive (Directive (EU) 2024/2853) (Business, IP, labor, and sustainability): exactMatch EU-DIR-2024-2853 (staged)
-- **X11** Chain of title and IP clearance practice (Business, IP, labor, and sustainability), not reached from any origin: no mapping yet
+- **X11** Chain of title and IP clearance practice (Business, IP, labor, and sustainability): exactMatch USCO-CIRCULAR-12-RECORDATION (derived from its citation)
 - **Y01** OAIS reference model (ISO 14721) (End of life, preservation, and archiving): exactMatch CCSDS-650.0-M-3 (derived from its citation)
 - **Y02** PREMIS and METS (End of life, preservation, and archiving): narrowMatch LOC-METS-1.12.1 (staged); narrowMatch LOC-PREMIS-3.0 (staged)
 - **Y03** Library of Congress Recommended Formats Statement: software and video games (End of life, preservation, and archiving): exactMatch LOC-RFS-2025-2026 (staged)
@@ -320,5 +320,5 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **Y06** Software Heritage and Emulation-as-a-Service (EaaSI) (End of life, preservation, and archiving): narrowMatch SWHID-1.2-SYNTAX (staged)
 - **Y07** US DMCA Section 1201 exemptions for video game preservation (End of life, preservation, and archiving): exactMatch US-CFR-37-201.40-2025 (staged)
 - **Y08** 'Stop Destroying Videogames' European Citizens' Initiative and Commission reply (June 2026) (End of life, preservation, and archiving): narrowMatch EC-IP-26-1369-STOP-DESTROYING-VIDEOGAMES (derived from its citation); narrowMatch EC-ECI-STOP-DESTROYING-VIDEOGAMES-REPLY-2026 (staged)
-- **Y09** Video Game History Foundation / Embracer Games Archive practices (End of life, preservation, and archiving), not reached from any origin: no mapping yet
+- **Y09** Video Game History Foundation / Embracer Games Archive practices (End of life, preservation, and archiving): exactMatch VGHF-DIGITAL-ARCHIVE (derived from its citation)
 - **Y10** Software Preservation Network / Code of Best Practices in Fair Use for Software Preservation (End of life, preservation, and archiving): narrowMatch SPN-ARL-FAIR-USE-CODE-2018-UVA-LIBRA (derived from its citation); exactMatch SPN-ARL-FAIR-USE-SOFTWARE-PRESERVATION-2018 (staged)

@@ -1,0 +1,42 @@
+\begin{lexlean}{Catalog.VghfArchiveMaterialClass}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: VghfArchiveMaterialClassMaterialClass,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: commercialGameMaterials, fields: []},
+    {name: developmentAndProductionMaterials, fields: []},
+    {name: eventGuidesAndEphemera, fields: []},
+    {name: gamingCulturalEphemera, fields: []},
+    {name: magazineLibrary, fields: []},
+    {name: pressMaterials, fields: []},
+    {name: promotionalMaterials, fields: []},
+    {name: researchAndReports, fields: []}
+  ]
+}
+
+inductive{
+  name: VghfArchiveMaterialClassMission,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: preserving, fields: []},
+    {name: celebrating, fields: []},
+    {name: teaching, fields: []}
+  ]
+}
+
+structure{
+  name: VghfArchiveMaterialClass,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: materialClass, type: VghfArchiveMaterialClassMaterialClass},
+    {name: mission, type: (Option VghfArchiveMaterialClassMission)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

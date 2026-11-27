@@ -1,0 +1,42 @@
+\begin{lexlean}{Catalog.IndustryCodeOfConductPrinciple}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IndustryCodeOfConductPrincipleMemberCode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: activisionBlizzard, fields: []},
+    {name: electronicArts, fields: []},
+    {name: microsoft, fields: []},
+    {name: nintendo, fields: []},
+    {name: riotGames, fields: []},
+    {name: roblox, fields: []},
+    {name: ubisoft, fields: []}
+  ]
+}
+
+inductive{
+  name: IndustryCodeOfConductPrinciplePrinciple,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: settingClearExpectationsForAcceptableOnlineBehavior, fields: []},
+    {name: beingTransparentWithCommunityStandards, fields: []},
+    {name: consistentlyEnforcingTheOfCodesOfConduct, fields: []},
+    {name: harnessingPoliciesAndTrainedTeamsToDetermineAppropriateConsequencesForUnacceptableBehavior, fields: []}
+  ]
+}
+
+structure{
+  name: IndustryCodeOfConductPrinciple,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: memberCode, type: (Option IndustryCodeOfConductPrincipleMemberCode)},
+    {name: principle, type: IndustryCodeOfConductPrinciplePrinciple}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

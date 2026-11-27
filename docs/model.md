@@ -559,3 +559,10 @@ Each construct and the citation that admits it.
 - `Catalog.UnrealIkRig`: std EPIC-UE-5.9-IK-RIG row E08
 - `Catalog.UnrealSequencerElement`: std EPIC-UE-5.9-CINEMATICS row F07
 - `Catalog.UtilityConsideration`: std GRAHAM-GAMEAIPRO-UTILITY-THEORY-2013 row J05
+- `Catalog.ConsoleCertificationTestCase`: std HOOPER-AUT-CROSS-PLATFORM-TESTING-2017 row P01
+- `Catalog.CopyrightTransferRecordation`: std USCO-CIRCULAR-12-RECORDATION row X11
+- `Catalog.GamesAsAServiceServitization`: std DUBOIS-WESTSTAR-GAAS-2021-ABSTRACT row W10
+- `Catalog.IndustryCodeOfConductPrinciple`: std ESA-TRUST-SAFETY-CODES-OF-CONDUCT row X09
+- `Catalog.NintendoDeveloperProcessStep`: std NINTENDO-DEVELOPER-PORTAL-THE-PROCESS row P03
+- `Catalog.PyramidOfGameDesignLayer`: std LOVELL-PYRAMID-GAME-DESIGN-2018-CHAPTERS row U09
+- `Catalog.VghfArchiveMaterialClass`: std VGHF-DIGITAL-ARCHIVE row Y09

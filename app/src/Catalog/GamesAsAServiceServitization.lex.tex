@@ -1,0 +1,47 @@
+\begin{lexlean}{Catalog.GamesAsAServiceServitization}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GamesAsAServiceServitizationBusinessModel,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: serviceAndSubscriptionsModels, fields: []}
+  ]
+}
+
+inductive{
+  name: GamesAsAServiceServitizationIdentityDimension,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: skillsAndMindSet, fields: []},
+    {name: relationshipsWithPeersAndPlayers, fields: []},
+    {name: internalAndExternalReputation, fields: []},
+    {name: developmentPrinciplesAndValues, fields: []}
+  ]
+}
+
+inductive{
+  name: GamesAsAServiceServitizationLogic,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: product, fields: []},
+    {name: serviceDominantLogic, fields: []}
+  ]
+}
+
+structure{
+  name: GamesAsAServiceServitization,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: businessModel, type: (Option GamesAsAServiceServitizationBusinessModel)},
+    {name: identityDimension, type: (Option GamesAsAServiceServitizationIdentityDimension)},
+    {name: logic, type: GamesAsAServiceServitizationLogic}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

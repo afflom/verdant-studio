@@ -1,0 +1,51 @@
+\begin{lexlean}{Catalog.CopyrightTransferRecordation}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: CopyrightTransferRecordationBenefit,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: establishesLegalPriorityBetweenConflictingTransfers, fields: []},
+    {name: establishesAPublicRecordOfTheContentsOfTheTransferOrDocument, fields: []},
+    {name: constructiveNotice, fields: []}
+  ]
+}
+
+inductive{
+  name: CopyrightTransferRecordationRecordationStep,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: receivingCopyrightRelatedDocumentsFromRemittersForRecordation, fields: []},
+    {name: reviewingTheDocumentsToEnsureTheyAreEligibleForRecordation, fields: []},
+    {name: indexingInformationContainedInTheDocuments, fields: []},
+    {name: makingCopiesOfTheDocuments, fields: []},
+    {name: returningDocumentsMarkedAsRecordedToRemitters, fields: []}
+  ]
+}
+
+inductive{
+  name: CopyrightTransferRecordationTransfer,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: assignment, fields: []},
+    {name: grantOfAnExclusiveLicense, fields: []},
+    {name: transferByWillOrIntestateSuccession, fields: []}
+  ]
+}
+
+structure{
+  name: CopyrightTransferRecordation,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: benefit, type: (Option CopyrightTransferRecordationBenefit)},
+    {name: recordationStep, type: (Option CopyrightTransferRecordationRecordationStep)},
+    {name: transfer, type: CopyrightTransferRecordationTransfer}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

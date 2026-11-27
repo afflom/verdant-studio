@@ -1,0 +1,62 @@
+\begin{lexlean}{Catalog.NintendoDeveloperProcessStep}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: NintendoDeveloperProcessStepPostLaunch,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: downloadableContent, fields: []},
+    {name: updatesToTheGameToFixIssues, fields: []},
+    {name: pricePromotions, fields: []}
+  ]
+}
+
+inductive{
+  name: NintendoDeveloperProcessStepPrepareToSell,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: signAPublishingAgreement, fields: []},
+    {name: obtainAnAgeRating, fields: []},
+    {name: submitYourGameForReviewByNintendo, fields: []}
+  ]
+}
+
+inductive{
+  name: NintendoDeveloperProcessStepReviewPurpose,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: ensureThatTheGameCanBeSafelyPlayedAndConformsToNintendoProductionStandards, fields: []}
+  ]
+}
+
+inductive{
+  name: NintendoDeveloperProcessStepStep,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: createYourAccount, fields: []},
+    {name: prepareForNintendoDevelopment, fields: []},
+    {name: createYourGame, fields: []},
+    {name: prepareToSellYourGame, fields: []},
+    {name: submitYourPRMaterials, fields: []},
+    {name: sellYourGame, fields: []}
+  ]
+}
+
+structure{
+  name: NintendoDeveloperProcessStep,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: postLaunch, type: (Option NintendoDeveloperProcessStepPostLaunch)},
+    {name: prepareToSell, type: (Option NintendoDeveloperProcessStepPrepareToSell)},
+    {name: reviewPurpose, type: (Option NintendoDeveloperProcessStepReviewPurpose)},
+    {name: step, type: NintendoDeveloperProcessStepStep}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

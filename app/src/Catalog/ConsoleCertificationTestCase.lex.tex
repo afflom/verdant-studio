@@ -1,0 +1,51 @@
+\begin{lexlean}{Catalog.ConsoleCertificationTestCase}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: ConsoleCertificationTestCaseFocus,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: videoGraphicsAndUserInterfaceElements, fields: []}
+  ]
+}
+
+inductive{
+  name: ConsoleCertificationTestCaseProgram,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: technicalRequirementsChecklistSony, fields: []},
+    {name: lotCheckNintendo, fields: []},
+    {name: technicalCertificationRequirementsMicrosoft, fields: []}
+  ]
+}
+
+inductive{
+  name: ConsoleCertificationTestCaseTestCase,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: splashScreenLogosMustBeDisplayedForAtLeastTwoSeconds, fields: []},
+    {name: inGameTextMustFitWithinTheScreenSafeOrGuardBandArea, fields: []},
+    {name: namingOfFunctionalityAndConsoleSpecificFeaturesMustBeConsistent, fields: []},
+    {name: ifAGameIsPausedForMoreThanFiveSecondsItMustPresentAnOnScreenAnimation, fields: []},
+    {name: warningsMustBeDisplayedWhenDealingWithExternalStorageOrDataCorruption, fields: []},
+    {name: whenAControllerIsUnpluggedTheGameMustPause, fields: []},
+    {name: overallGamePerformanceMustEnsureRobustness, fields: []}
+  ]
+}
+
+structure{
+  name: ConsoleCertificationTestCase,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: focus, type: (Option ConsoleCertificationTestCaseFocus)},
+    {name: program, type: (Option ConsoleCertificationTestCaseProgram)},
+    {name: testCase, type: ConsoleCertificationTestCaseTestCase}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
