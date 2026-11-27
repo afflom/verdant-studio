@@ -1,0 +1,48 @@
+\begin{lexlean}{Catalog.EcsDesign}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: EcsDesignEntitiesItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: components, type: (List Bytes)},
+    {name: id, type: Nat}
+  ]
+}
+
+inductive{
+  name: EcsDesignImplementation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: archetypes, fields: []},
+    {name: sparseSetECS, fields: []},
+    {name: bitsetBasedECS, fields: []},
+    {name: reactiveECS, fields: []}
+  ]
+}
+
+structure{
+  name: EcsDesignSystemsItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: components, type: (List Bytes)},
+    {name: name, type: Bytes}
+  ]
+}
+
+structure{
+  name: EcsDesign,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: entities, type: (List EcsDesignEntitiesItem)},
+    {name: implementation, type: EcsDesignImplementation},
+    {name: systems, type: (List EcsDesignSystemsItem)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

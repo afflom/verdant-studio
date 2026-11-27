@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from LUA-5.5.1 src/lua.h: the LUA_T* basic type tags (#define LUA_TNIL 0 ...), in tag order, without LUA_TNONE (-1, no value).","enum":["LUA_TNIL","LUA_TBOOLEAN","LUA_TLIGHTUSERDATA","LUA_TNUMBER","LUA_TSTRING","LUA_TTABLE","LUA_TFUNCTION","LUA_TUSERDATA","LUA_TTHREAD"],"title":"Lua basic type"}
