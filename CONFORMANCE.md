@@ -543,6 +543,13 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `GRAHAM-GAMEAIPRO-UTILITY-THEORY-2013` | Utility-based action selection: response curves (linear, quadratic, logistic, piecewise linear) and picking an action; the published chapter behind the utility AI practice the row names (Dave Mark's IAUS talks are cited by it as [Mark 09]). Index row J05. |  |
 | `ISO-IEC-14882-N4950` | The WG 21 working draft from which ISO/IEC 14882:2024 (C++23) was published, used as the public text of the paywalled standard. Index row H01. |  |
 | `VALVE-STEAMWORKS-ISTEAMMATCHMAKING` | Steamworks lobby and matchmaking interface, including the ELobbyType visibility of a lobby. The page changes on every load, so no sha256 is pinned. Index row K12. |  |
+| `DUBOIS-WESTSTAR-GAAS-2021-ABSTRACT` | The abstract of the most cited open study of games-as-a-service as a production model: servitization, the transition from a product to a service-dominant logic, and the identity dimensions it disrupts. Index row W10. |  |
+| `ESA-TRUST-SAFETY-CODES-OF-CONDUCT` | The ESA's statement of the principles its member companies commit to for codes of conduct, and the member codes it lists. Index row X09. |  |
+| `HOOPER-AUT-CROSS-PLATFORM-TESTING-2017` | Open thesis that states, from published sources (Kenwright 2014; Levy and Novak 2010; Manton and Wilson), what console certification such as Sony's Technical Requirements Checklist tests; the TRC itself is under NDA. Index row P01. |  |
+| `LOVELL-PYRAMID-GAME-DESIGN-2018-CHAPTERS` | The publisher's Crossref chapter records of Lovell's book, which give its structure (the base, retention and superfan layers of the pyramid); the book is paywalled. Crossref result order varies, so no sha256 is pinned. Index row U09. |  |
+| `NINTENDO-DEVELOPER-PORTAL-THE-PROCESS` | Nintendo's public statement of the developer process, including submitting a game to Nintendo for review against its production standards (Lotcheck) before release; the guidelines themselves are under NDA. Index row P03. |  |
+| `USCO-CIRCULAR-12-RECORDATION` | The Copyright Office's statement of how transfers of copyright ownership are recorded under 17 U.S.C. 205, the public record from which a chain of title is established. Index row X11. |  |
+| `VGHF-DIGITAL-ARCHIVE` | The Video Game History Foundation's digital archive portal: its mission and the classes of material it preserves. Index row Y09. |  |
 
 ## Claims that are not conformance IDs
 
