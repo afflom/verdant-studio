@@ -95,6 +95,16 @@ The three honesty levels (R2):
 | `VS-30` | `build` | The Prism generation refuses by name a media type the Prism has no facet of, and an artifact is not taken for another media type | `Studio.PrismGeneration.refuses_a_facet_it_has_not`, refuses with `refused: the Prism has no facet of media type text/plain, and its facets are audio/midi, audio/wave and image/svg+xml` |
 | `VS-31` | `build` | The Prism generation refuses by name a request that is not a media type, a tab, then the seed | `Studio.PrismGeneration.refuses_a_request_with_no_seed`, refuses with `refused: a Prism request is a media type, a tab, then the seed, and an empty media type asks for the Prism's facets` |
 
+## runtime
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-33` | `build` | The release cut of Studio's runtime, Studio.Runtime, increments a SemVer 2.0.0 normal version X.Y.Z as its rules 6 to 8 say: a major increment resets minor and patch to 0, a minor increment resets patch to 0, and every increment gives the new version a higher precedence than the old one by rule 11, so a release is cut from every revision on which each gate passed | `Studio.Runtime.next_has_higher_precedence`, `Studio.Runtime.next_resets_the_lower_numbers`, `Studio.Runtime.cuts_a_minor_release_when_every_gate_passed`, `Studio.Runtime.a_major_release_resets_minor_and_patch` |
+| `VS-34` | `build` | The release cut refuses a revision on which a gate did not pass, naming the gate and the revision, so that no release is cut from a revision that fails any check | `Studio.Runtime.refuses_a_failed_gate`, refuses with `refused: the gate export:failed did not pass on revision c587c01, so no release is cut` |
+| `VS-35` | `build` | The release cut refuses a revision on which no gate ran, since every gate passing is only established by a gate that ran | `Studio.Runtime.refuses_a_revision_no_gate_ran_on`, refuses with `refused: no gate ran on revision c587c01, so no release is cut` |
+| `VS-36` | `build` | The release cut refuses a current version that is not a SemVer 2.0.0 normal version X.Y.Z of non-negative integers with no leading zeroes, naming it | `Studio.Runtime.refuses_a_leading_zero`, refuses with `refused: a normal version takes the form X.Y.Z of non-negative integers with no leading zeroes (SemVer 2.0.0, rule 2), and 01.1.0 does not` |
+| `VS-37` | `build` | The release cut refuses an increment that is not major, minor or patch, the three increments of SemVer 2.0.0, naming it | `Studio.Runtime.refuses_an_unknown_increment`, refuses with `refused: a release increments the major, minor or patch version (SemVer 2.0.0, rules 6 to 8), and feature is none of them` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

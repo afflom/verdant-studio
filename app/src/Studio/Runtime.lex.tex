@@ -1,0 +1,388 @@
+\begin{lexlean}{Studio.Runtime}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Foundation.Bytes}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Version,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: major, type: Nat}, {name: minor, type: Nat}, {name: patch, type: Nat}]
+}
+
+definition{
+  name: changePatch,
+  parameters: [],
+  result: Nat,
+  body: 0
+}
+
+definition{
+  name: changeMinor,
+  parameters: [],
+  result: Nat,
+  body: 1
+}
+
+definition{
+  name: changeMajor,
+  parameters: [],
+  result: Nat,
+  body: 2
+}
+
+definition{
+  name: nextMajor,
+  parameters: [major : Nat, change : Nat],
+  result: Nat,
+  body: (if (change =? (changeMajor)) then (major + 1) else major)
+}
+
+definition{
+  name: nextMinor,
+  parameters: [minor : Nat, change : Nat],
+  result: Nat,
+  body: (if (change =? (changeMajor)) then 0 else (if (change =? (changeMinor)) then (minor + 1) else minor))
+}
+
+definition{
+  name: nextPatch,
+  parameters: [patch : Nat, change : Nat],
+  result: Nat,
+  body: (if (change =? (changeMajor)) then 0 else (if (change =? (changeMinor)) then 0 else (patch + 1)))
+}
+
+definition{
+  name: next,
+  parameters: [current : Version, change : Nat],
+  result: Version,
+  body: (record Version {major := (nextMajor (project current major) change), minor := (nextMinor (project current minor) change), patch := (nextPatch (project current patch) change)})
+}
+
+definition{
+  name: precedesBy,
+  parameters: [leftMajor : Nat, leftMinor : Nat, leftPatch : Nat, rightMajor : Nat, rightMinor : Nat, rightPatch : Nat],
+  result: Bool,
+  body: ((leftMajor <? rightMajor) || ((leftMajor =? rightMajor) && ((leftMinor <? rightMinor) || ((leftMinor =? rightMinor) && (leftPatch <? rightPatch)))))
+}
+
+definition{
+  name: precedes,
+  parameters: [left : Version, right : Version],
+  result: Bool,
+  body: (precedesBy (project left major) (project left minor) (project left patch) (project right major) (project right minor) (project right patch))
+}
+
+definition{
+  name: breaksIncrease,
+  parameters: [major : Nat, minor : Nat, patch : Nat, change : Nat],
+  result: Bool,
+  body: (not (precedesBy major minor patch (nextMajor major change) (nextMinor minor change) (nextPatch patch change)))
+}
+
+theorem{
+  name: next_has_higher_precedence,
+  parameters: [major : Nat, minor : Nat, patch : Nat, change : Nat],
+  statement: ((breaksIncrease major minor patch change) = false),
+  proof: linear_arithmetic{definitions: [breaksIncrease, changeMajor, changeMinor, nextMajor, nextMinor, nextPatch, precedesBy]},
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: breaksReset,
+  parameters: [minor : Nat, patch : Nat, change : Nat],
+  result: Bool,
+  body: (((change =? (changeMajor)) && (not (((nextMinor minor change) =? 0) && ((nextPatch patch change) =? 0)))) || ((change =? (changeMinor)) && (not ((nextPatch patch change) =? 0))))
+}
+
+theorem{
+  name: next_resets_the_lower_numbers,
+  parameters: [minor : Nat, patch : Nat, change : Nat],
+  statement: ((breaksReset minor patch change) = false),
+  proof: linear_arithmetic{definitions: [breaksReset, changeMajor, changeMinor, nextMinor, nextPatch]},
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: sameFrom,
+  parameters: [left : Bytes, right : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index left offset : (Option UInt8))
+      | Option.none => true
+      | Option.some l => (match (prim index right offset : (Option UInt8))
+        | Option.none => false
+        | Option.some r => (if ((prim to_nat l : Nat) =? (prim to_nat r : Nat)) then (sameFrom left right (offset + 1) rest) else false)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: same,
+  parameters: [left : Bytes, right : Bytes],
+  result: Bool,
+  body: (((prim length left : Nat) =? (prim length right : Nat)) && (sameFrom left right 0 (prim length left : Nat))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: fieldAt,
+  parameters: [value : Bytes, start : Nat, stop : Nat],
+  result: Bytes,
+  body: (match (Foundation.Bytes::sliceBytes value start (prim subtract stop start : Nat))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: fields,
+  parameters: [value : Bytes, separator : Nat, offset : Nat, start : Nat, remaining : Nat],
+  result: (List Bytes),
+  body: (match remaining
+    | Nat.zero => (cons (fieldAt value start offset) (nil Bytes))
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => (cons (fieldAt value start offset) (nil Bytes))
+      | Option.some raw => (if ((prim to_nat raw : Nat) =? separator) then (cons (fieldAt value start offset) (fields value separator (offset + 1) (offset + 1) rest)) else (fields value separator (offset + 1) start rest)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: split,
+  parameters: [value : Bytes, separator : Nat],
+  result: (List Bytes),
+  body: (fields value separator 0 0 (prim length value : Nat)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: digitsFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, total : Nat],
+  result: (Option Nat),
+  body: (match remaining
+    | Nat.zero => (ctor Option.some [Nat] total)
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => (ctor Option.some [Nat] total)
+      | Option.some raw => (if ((48 <=? (prim to_nat raw : Nat)) && ((prim to_nat raw : Nat) <=? 57)) then (digitsFrom value (offset + 1) rest ((prim multiply total 10 : Nat) + (prim subtract (prim to_nat raw : Nat) 48 : Nat))) else (ctor Option.none [Nat])))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: leadingZero,
+  parameters: [value : Bytes],
+  result: Bool,
+  body: ((1 <? (prim length value : Nat)) && (match (prim index value 0 : (Option UInt8))
+    | Option.none => false
+    | Option.some raw => ((prim to_nat raw : Nat) =? 48))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: number,
+  parameters: [value : Bytes],
+  result: (Option Nat),
+  body: (if (((prim length value : Nat) =? 0) || (leadingZero value)) then (ctor Option.none [Nat]) else (digitsFrom value 0 (prim length value : Nat) 0)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: parseVersion,
+  parameters: [value : Bytes],
+  result: (Option Version),
+  body: (match (split value 46)
+    | List.nil => (ctor Option.none [Version])
+    | List.cons x more => (match more
+      | List.nil => (ctor Option.none [Version])
+      | List.cons y more2 => (match more2
+        | List.nil => (ctor Option.none [Version])
+        | List.cons z more3 => (match more3
+          | List.cons extra others => (ctor Option.none [Version])
+          | List.nil => (match (number x)
+            | Option.none => (ctor Option.none [Version])
+            | Option.some majorNumber => (match (number y)
+              | Option.none => (ctor Option.none [Version])
+              | Option.some minorNumber => (match (number z)
+                | Option.none => (ctor Option.none [Version])
+                | Option.some patchNumber => (ctor Option.some [Version] (record Version {major := majorNumber, minor := minorNumber, patch := patchNumber}))))))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: parseChange,
+  parameters: [value : Bytes],
+  result: (Option Nat),
+  body: (if (same value 0x6d616a6f72) then (ctor Option.some [Nat] (changeMajor)) else (if (same value 0x6d696e6f72) then (ctor Option.some [Nat] (changeMinor)) else (if (same value 0x7061746368) then (ctor Option.some [Nat] (changePatch)) else (ctor Option.none [Nat])))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: digit,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (match (prim slice 0x30313233343536373839 (prim remainder value 10 0 : Nat) 1 : (Option Bytes))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: decimalFrom,
+  parameters: [value : Nat, fuel : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (if ((prim quotient value 10 0 : Nat) =? 0) then (prim append (digit value) out : Bytes) else (decimalFrom (prim quotient value 10 0 : Nat) rest (prim append (digit value) out : Bytes)))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: render,
+  parameters: [version : Version, fuel : Nat],
+  result: Bytes,
+  body: (prim append (prim append (decimalFrom (project version major) fuel 0x) 0x2e : Bytes) (prim append (prim append (decimalFrom (project version minor) fuel 0x) 0x2e : Bytes) (decimalFrom (project version patch) fuel 0x) : Bytes) : Bytes)
+}
+
+definition{
+  name: passedSuffix,
+  parameters: [],
+  result: Bytes,
+  body: 0x3a706173736564
+}
+
+definition{
+  name: passed,
+  parameters: [gate : Bytes],
+  result: Bool,
+  body: ((7 <=? (prim length gate : Nat)) && (match (prim slice gate (prim subtract (prim length gate : Nat) 7 : Nat) 7 : (Option Bytes))
+    | Option.none => false
+    | Option.some tail => (same tail (passedSuffix)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: firstFailed,
+  parameters: [gates : (List Bytes)],
+  result: (Option Bytes),
+  body: (match gates
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons gate rest => (if (passed gate) then (firstFailed rest) else (ctor Option.some [Bytes] gate))),
+  recursive_argument: gates,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: versionRefusal,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (prim append 0x726566757365643a2061206e6f726d616c2076657273696f6e2074616b65732074686520666f726d20582e592e5a206f66206e6f6e2d6e6567617469766520696e7465676572732077697468206e6f206c656164696e67207a65726f6573202853656d56657220322e302e302c2072756c652032292c20616e6420 (prim append value 0x20646f6573206e6f74 : Bytes) : Bytes)
+}
+
+definition{
+  name: changeRefusal,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (prim append 0x726566757365643a20612072656c6561736520696e6372656d656e747320746865206d616a6f722c206d696e6f72206f722070617463682076657273696f6e202853656d56657220322e302e302c2072756c6573203620746f2038292c20616e6420 (prim append value 0x206973206e6f6e65206f66207468656d : Bytes) : Bytes)
+}
+
+definition{
+  name: noGateRefusal,
+  parameters: [revision : Bytes],
+  result: Bytes,
+  body: (prim append 0x726566757365643a206e6f20676174652072616e206f6e207265766973696f6e20 (prim append revision 0x2c20736f206e6f2072656c6561736520697320637574 : Bytes) : Bytes)
+}
+
+definition{
+  name: gateRefusal,
+  parameters: [revision : Bytes, gate : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a20746865206761746520 gate : Bytes) (prim append (prim append 0x20646964206e6f742070617373206f6e207265766973696f6e20 revision : Bytes) 0x2c20736f206e6f2072656c6561736520697320637574 : Bytes) : Bytes)
+}
+
+definition{
+  name: cut,
+  parameters: [revision : Bytes, released : Version, fuel : Nat],
+  result: Bytes,
+  body: (prim append (prim append 0x72656c6561736520 (render released fuel) : Bytes) (prim append 0x206f66207265766973696f6e20 revision : Bytes) : Bytes)
+}
+
+definition{
+  name: judge,
+  parameters: [revision : Bytes, current : Bytes, increment : Bytes, gates : (List Bytes), fuel : Nat],
+  result: Bytes,
+  body: (match (parseVersion current)
+    | Option.none => (versionRefusal current)
+    | Option.some released => (match (parseChange increment)
+      | Option.none => (changeRefusal increment)
+      | Option.some step => (match gates
+        | List.nil => (noGateRefusal revision)
+        | List.cons first others => (match (firstFailed gates)
+          | Option.some failed => (gateRefusal revision failed)
+          | Option.none => (cut revision (next released step) fuel))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: release,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (split value 9)
+    | List.cons revision more => (match more
+      | List.cons current more2 => (match more2
+        | List.cons increment gates => (judge revision current increment gates ((prim length value : Nat) + 1))
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: cuts_a_minor_release_when_every_gate_passed,
+  parameters: [],
+  statement: ((release 0x6335383763303109302e312e30096d696e6f7209636865636b3a706173736564096275696c643a706173736564) = 0x72656c6561736520302e322e30206f66207265766973696f6e2063353837633031),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: a_major_release_resets_minor_and_patch,
+  parameters: [],
+  statement: ((release 0x6335383763303109312e392e39096d616a6f7209636865636b3a706173736564) = 0x72656c6561736520322e302e30206f66207265766973696f6e2063353837633031),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_failed_gate,
+  parameters: [],
+  statement: ((release 0x6335383763303109302e312e3009706174636809636865636b3a706173736564096578706f72743a6661696c6564) = (gateRefusal 0x63353837633031 0x6578706f72743a6661696c6564)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_revision_no_gate_ran_on,
+  parameters: [],
+  statement: ((release 0x6335383763303109302e312e30097061746368) = (noGateRefusal 0x63353837633031)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_leading_zero,
+  parameters: [],
+  statement: ((release 0x633538376330310930312e312e3009706174636809636865636b3a706173736564) = (versionRefusal 0x30312e312e30)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_an_unknown_increment,
+  parameters: [],
+  statement: ((release 0x6335383763303109302e312e30096665617475726509636865636b3a706173736564) = (changeRefusal 0x66656174757265)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}

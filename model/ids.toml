@@ -301,3 +301,46 @@ level = "build"
 suite = "feedback"
 statement = "A single request that its initial assessment (ISO 10002) marks for immediate action, such as a special request of significant value, is actioned on its own without consensus, and any other assessment is refused"
 theorems = ["Studio.Feedback.Assessment.knows_no_assessment_and_immediate_action", "Studio.Feedback.an_immediate_request_acts_alone"]
+
+[[id]]
+id = "VS-33"
+level = "build"
+suite = "runtime"
+statement = "The release cut of Studio's runtime, Studio.Runtime, increments a SemVer 2.0.0 normal version X.Y.Z as its rules 6 to 8 say: a major increment resets minor and patch to 0, a minor increment resets patch to 0, and every increment gives the new version a higher precedence than the old one by rule 11, so a release is cut from every revision on which each gate passed"
+theorems = ["Studio.Runtime.next_has_higher_precedence", "Studio.Runtime.next_resets_the_lower_numbers", "Studio.Runtime.cuts_a_minor_release_when_every_gate_passed", "Studio.Runtime.a_major_release_resets_minor_and_patch"]
+
+[[id]]
+id = "VS-34"
+level = "build"
+suite = "runtime"
+statement = "The release cut refuses a revision on which a gate did not pass, naming the gate and the revision, so that no release is cut from a revision that fails any check"
+theorems = ["Studio.Runtime.refuses_a_failed_gate"]
+failure = "refused: the gate export:failed did not pass on revision c587c01, so no release is cut"
+negative = "VS-34"
+
+[[id]]
+id = "VS-35"
+level = "build"
+suite = "runtime"
+statement = "The release cut refuses a revision on which no gate ran, since every gate passing is only established by a gate that ran"
+theorems = ["Studio.Runtime.refuses_a_revision_no_gate_ran_on"]
+failure = "refused: no gate ran on revision c587c01, so no release is cut"
+negative = "VS-35"
+
+[[id]]
+id = "VS-36"
+level = "build"
+suite = "runtime"
+statement = "The release cut refuses a current version that is not a SemVer 2.0.0 normal version X.Y.Z of non-negative integers with no leading zeroes, naming it"
+theorems = ["Studio.Runtime.refuses_a_leading_zero"]
+failure = "refused: a normal version takes the form X.Y.Z of non-negative integers with no leading zeroes (SemVer 2.0.0, rule 2), and 01.1.0 does not"
+negative = "VS-36"
+
+[[id]]
+id = "VS-37"
+level = "build"
+suite = "runtime"
+statement = "The release cut refuses an increment that is not major, minor or patch, the three increments of SemVer 2.0.0, naming it"
+theorems = ["Studio.Runtime.refuses_an_unknown_increment"]
+failure = "refused: a release increments the major, minor or patch version (SemVer 2.0.0, rules 6 to 8), and feature is none of them"
+negative = "VS-37"
