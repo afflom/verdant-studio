@@ -18,18 +18,30 @@ status=0
 slots=$(( $(nproc) / 2 ))
 if [ "$slots" -lt 1 ]; then slots=1; fi
 running=0
+exported=' '
 for project in studio readers admit readers/xml; do
   if [ -f "$project/lexlean.toml" ]; then
+    # A project whose semantic id is the one its committed bundle was exported from, under the same lexlean, is not
+    # exported again: the studio check compares exactly these ids, so its bundle stays the bundle of its sources.
+    case "$project" in studio) bundle=certified;; readers/xml) bundle=certified-xml;; *) bundle="certified-$project";; esac
+    if [ -f "$bundle/result.json" ] && git diff --quiet HEAD -- .github/lexlean.pin; then
+      now=$(cd "$project" && "$ll" lock >/dev/null && "$ll" check | sed -n 's/.*semantic \([0-9a-f]*\)).*/\1/p')
+      if [ -n "$now" ] && [ "$now" = "$(jq -r .source.semantic_id "$bundle/result.json")" ]; then
+        echo "$project is unchanged since $bundle was exported (semantic $now), so it is not exported again"
+        continue
+      fi
+    fi
+    exported="$exported$project "
     if [ "$running" -ge "$slots" ]; then wait -n || status=$?; running=$((running - 1)); fi
     (cd "$project" && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > "$log.${project//\//-}" 2>&1 &
     running=$((running + 1))
   fi
 done
 while [ "$running" -gt 0 ]; do wait -n || status=$?; running=$((running - 1)); done
-cat "$log.studio" > "$log"
-if [ -f "$log.readers" ]; then cat "$log.readers" >> "$log"; fi
-if [ -f "$log.readers-xml" ]; then cat "$log.readers-xml" >> "$log"; fi
-if [ -f "$log.admit" ]; then cat "$log.admit" >> "$log"; fi
+: > "$log"
+for part in studio readers readers-xml admit; do
+  if [ -f "$log.$part" ]; then cat "$log.$part" >> "$log"; fi
+done
 kill "$watch" 2> "$phases.err" || true
 awk '{ if ($1 > t[$2]) t[$2] = $1 } END { for (m in t) print t[m], m }' "$phases.raw" | sort -rn > "$phases"
 echo "Lean phases by wall time in seconds, longest first (the limit is 300, and the export fails at 240):"
@@ -40,23 +52,25 @@ if [ -n "$worst" ] && [ "$worst" -ge 240 ]; then
   echo "::error::a Lean phase took ${worst} s, within 20 percent of the 300 s limit: make its declarations cheaper to prove before adding more"
   exit 1
 fi
-rm -rf certified
-cp -r studio/.lexlean/production/*/ certified
-rm -f certified/packages/rust-std/verdant_studio/Cargo.lock
-"$ll" production verify-artifact certified
-if [ -f readers/lexlean.toml ]; then
+if [[ "$exported" == *" studio "* ]]; then
+  rm -rf certified
+  cp -r studio/.lexlean/production/*/ certified
+  rm -f certified/packages/rust-std/verdant_studio/Cargo.lock
+  "$ll" production verify-artifact certified
+fi
+if [[ "$exported" == *" readers "* ]]; then
   rm -rf certified-readers
   cp -r readers/.lexlean/production/*/ certified-readers
   rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock
   "$ll" production verify-artifact certified-readers
 fi
-if [ -f readers/xml/lexlean.toml ]; then
+if [[ "$exported" == *" readers/xml "* ]]; then
   rm -rf certified-xml
   cp -r readers/xml/.lexlean/production/*/ certified-xml
   rm -f certified-xml/packages/rust-std/verdant_xml/Cargo.lock
   "$ll" production verify-artifact certified-xml
 fi
-if [ -f admit/lexlean.toml ]; then
+if [[ "$exported" == *" admit "* ]]; then
   rm -rf certified-admit
   cp -r admit/.lexlean/production/*/ certified-admit
   rm -f certified-admit/packages/rust-std/verdant_admit/Cargo.lock

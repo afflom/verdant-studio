@@ -83,7 +83,7 @@ jobs:
           # The lexlean cache is keyed by .github/lexlean.pin, so after the pin moves the replay above may have been skipped with no binary restored.
           cmp -s .github/lexlean.pin target/lexlean/pin || { rm -rf target/lexlean; rustup toolchain install 1.97.0 --profile minimal; RUSTFLAGS="--remap-path-prefix=${CARGO_HOME:-$HOME/.cargo}=cargo-home" cargo +1.97.0 install --locked $(cat .github/lexlean.pin) lexlean --root target/lexlean; cp .github/lexlean.pin target/lexlean/pin; }
           ll="$PWD/target/lexlean/bin/lexlean"
-          for pair in studio:certified readers:certified-readers readers/xml:certified-xml; do
+          for pair in studio:certified readers:certified-readers readers/xml:certified-xml admit:certified-admit; do
             project=$(cut -d : -f 1 <<< "$pair")
             bundle=$(cut -d : -f 2 <<< "$pair")
             if [ ! -f "$project/lexlean.toml" ]; then continue; fi
