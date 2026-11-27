@@ -1,0 +1,116 @@
+\begin{lexlean}{Catalog.BlockoutGameplayMetric}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: BlockoutGameplayMetricDefaultUnits,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: meters, fields: []},
+    {name: centimeters, fields: []},
+    {name: inches, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricDoor,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n125X25M, fields: []},
+    {name: n110X220Cm, fields: []},
+    {name: n56X112In, fields: []},
+    {name: n36X80In, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricEngine,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: unity, fields: []},
+    {name: unreal, fields: []},
+    {name: quakeHalfLifeSourceEngine, fields: []},
+    {name: uSRealLife, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricEyeHeight,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n15M17M, fields: []},
+    {name: n152Cm8864, fields: []},
+    {name: n64In, fields: []},
+    {name: n66In, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricInteriorWall,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n01X30M, fields: []},
+    {name: n20X300Cm, fields: []},
+    {name: n16X128In, fields: []},
+    {name: n6X96In, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricMinimumHallWidth,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n20M, fields: []},
+    {name: n150Cm, fields: []},
+    {name: n64In, fields: []},
+    {name: n48In, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricPlayerBoundingBox,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n10X18MOr10X20M, fields: []},
+    {name: n60X176CmHalfHeight88, fields: []},
+    {name: n32X72In, fields: []},
+    {name: n20X69InAverageAdult, fields: []}
+  ]
+}
+
+inductive{
+  name: BlockoutGameplayMetricStep,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n01X015m, fields: []},
+    {name: n15X25Cm, fields: []},
+    {name: n8X12In, fields: []},
+    {name: n7X11In711, fields: []}
+  ]
+}
+
+structure{
+  name: BlockoutGameplayMetric,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: defaultUnits, type: (Option BlockoutGameplayMetricDefaultUnits)},
+    {name: door, type: (Option BlockoutGameplayMetricDoor)},
+    {name: engine, type: BlockoutGameplayMetricEngine},
+    {name: eyeHeight, type: (Option BlockoutGameplayMetricEyeHeight)},
+    {name: interiorWall, type: (Option BlockoutGameplayMetricInteriorWall)},
+    {name: minimumHallWidth, type: (Option BlockoutGameplayMetricMinimumHallWidth)},
+    {name: playerBoundingBox, type: (Option BlockoutGameplayMetricPlayerBoundingBox)},
+    {name: step, type: (Option BlockoutGameplayMetricStep)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

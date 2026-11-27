@@ -1,0 +1,57 @@
+\begin{lexlean}{Catalog.NintendoGameContentMonetization}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: NintendoGameContentMonetizationCovers,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: uploads, fields: []},
+    {name: livestreams, fields: []}
+  ]
+}
+
+inductive{
+  name: NintendoGameContentMonetizationPlatform,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: facebookMETA, fields: []},
+    {name: niconicoDougaNiconicoLive, fields: []},
+    {name: twitch, fields: []},
+    {name: xTwitter, fields: []},
+    {name: youTube, fields: []},
+    {name: twitCasting, fields: []},
+    {name: n17LIVE, fields: []},
+    {name: instagram, fields: []}
+  ]
+}
+
+inductive{
+  name: NintendoGameContentMonetizationProgram,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: partnerMonetization, fields: []},
+    {name: niconicoCreatorsProgram, fields: []},
+    {name: twitchAffiliateProgram, fields: []},
+    {name: twitchPartnerProgram, fields: []},
+    {name: youTubePartnerProgram, fields: []},
+    {name: monetizationProgram, fields: []},
+    {name: bonusProgram, fields: []}
+  ]
+}
+
+structure{
+  name: NintendoGameContentMonetization,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: covers, type: (Option NintendoGameContentMonetizationCovers)},
+    {name: platform, type: NintendoGameContentMonetizationPlatform},
+    {name: program, type: (Option NintendoGameContentMonetizationProgram)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

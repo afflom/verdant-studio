@@ -1,0 +1,48 @@
+\begin{lexlean}{Catalog.PegiCodeOfConductArticle}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: PegiCodeOfConductArticleAnnex,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bREACHESOFTHECODEOFCONDUCTANDRELATEDSANCTIONS, fields: []},
+    {name: pEGIRETAILCODE, fields: []}
+  ]
+}
+
+inductive{
+  name: PegiCodeOfConductArticleArticle,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sCOPE, fields: []},
+    {name: pURPOSE, fields: []},
+    {name: iNSTRUMENTS, fields: []},
+    {name: pEGIsCOMMITMENTTOTHECODE, fields: []},
+    {name: gENERALOBLIGATIONSOFSIGNATORIES, fields: []},
+    {name: lEGALANDREGULATORYENVIRONMENT, fields: []},
+    {name: pEGISYSTEMFORAGERATINGS, fields: []},
+    {name: iNGAMEMONETISATION, fields: []},
+    {name: sTANDARDSFORSAFEONLINEGAMEPLAY, fields: []},
+    {name: lABELLING, fields: []},
+    {name: aDVERTISINGANDPROMOTION, fields: []},
+    {name: pEGICOUNCILLEGALCOMMITTEEANDEXPERTSGROUP, fields: []},
+    {name: cOMPLAINTSBOARD, fields: []},
+    {name: eNFORCEMENTCOMMITTEE, fields: []},
+    {name: iNFRINGEMENTCORRECTIVEACTIONSANCTIONSANDARBITRATION, fields: []}
+  ]
+}
+
+structure{
+  name: PegiCodeOfConductArticle,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: annex, type: (Option PegiCodeOfConductArticleAnnex)},
+    {name: article, type: PegiCodeOfConductArticleArticle}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

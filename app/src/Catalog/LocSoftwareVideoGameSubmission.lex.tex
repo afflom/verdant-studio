@@ -1,0 +1,86 @@
+\begin{lexlean}{Catalog.LocSoftwareVideoGameSubmission}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: LocSoftwareVideoGameSubmissionAspect,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: content, fields: []},
+    {name: operatingSystem, fields: []},
+    {name: platform, fields: []},
+    {name: relatedMaterials, fields: []},
+    {name: deliveryMethod, fields: []},
+    {name: metadata, fields: []},
+    {name: technologicalMeasures, fields: []}
+  ]
+}
+
+inductive{
+  name: LocSoftwareVideoGameSubmissionDistributionRelease,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: mediaBasedRelease, fields: []},
+    {name: internetBasedRelease, fields: []}
+  ]
+}
+
+inductive{
+  name: LocSoftwareVideoGameSubmissionMetadata,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: operatingSystem, fields: []},
+    {name: versionNumber, fields: []},
+    {name: buildNumberOfTheCompilerSoftware, fields: []},
+    {name: title, fields: []},
+    {name: creator, fields: []},
+    {name: creationDate, fields: []},
+    {name: placeOfPublication, fields: []},
+    {name: publisherProducerDistributor, fields: []},
+    {name: contactInformationForPublisher, fields: []},
+    {name: languageOfWork, fields: []},
+    {name: subjectDescriptors, fields: []},
+    {name: abstracts, fields: []}
+  ]
+}
+
+inductive{
+  name: LocSoftwareVideoGameSubmissionPackaging,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: bagIt, fields: []},
+    {name: tapeArchiveTar, fields: []},
+    {name: zIP, fields: []},
+    {name: aXFObject, fields: []}
+  ]
+}
+
+inductive{
+  name: LocSoftwareVideoGameSubmissionPreferredContent,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: uncompiledSourceCode, fields: []},
+    {name: goldMasterBuild, fields: []},
+    {name: distributionFile, fields: []}
+  ]
+}
+
+structure{
+  name: LocSoftwareVideoGameSubmission,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: aspect, type: LocSoftwareVideoGameSubmissionAspect},
+    {name: distributionRelease, type: (Option LocSoftwareVideoGameSubmissionDistributionRelease)},
+    {name: metadata, type: (Option LocSoftwareVideoGameSubmissionMetadata)},
+    {name: packaging, type: (Option LocSoftwareVideoGameSubmissionPackaging)},
+    {name: preferredContent, type: (Option LocSoftwareVideoGameSubmissionPreferredContent)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

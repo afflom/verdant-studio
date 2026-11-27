@@ -1,0 +1,28 @@
+\begin{lexlean}{Catalog.LevelDesignBookPart}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: LevelDesignBookPartPart,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: whatIsLevelDesign, fields: []},
+    {name: howToMakeALevel, fields: []},
+    {name: studies, fields: []},
+    {name: tools, fields: []},
+    {name: assetsResources, fields: []},
+    {name: notesForEducators, fields: []}
+  ]
+}
+
+structure{
+  name: LevelDesignBookPart,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: part, type: LevelDesignBookPartPart}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,52 @@
+\begin{lexlean}{Catalog.SkAdNetworkTopic}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SkAdNetworkTopicAdKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: storeKitRenderedAds, fields: []},
+    {name: viewThroughAds, fields: []},
+    {name: attributableWebAds, fields: []}
+  ]
+}
+
+inductive{
+  name: SkAdNetworkTopicInfoPlistKey,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sKAdNetworkItems, fields: []},
+    {name: nSAdvertisingAttributionReportEndpoint, fields: []}
+  ]
+}
+
+inductive{
+  name: SkAdNetworkTopicTopic,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: essentials, fields: []},
+    {name: registeringAdNetworksAndConfiguringApps, fields: []},
+    {name: signingStoreKitRenderedAds, fields: []},
+    {name: signingViewThroughAds, fields: []},
+    {name: providingConversionInformation, fields: []},
+    {name: verifyingPostbacks, fields: []},
+    {name: testingAdAttributionsAndPostbacks, fields: []}
+  ]
+}
+
+structure{
+  name: SkAdNetworkTopic,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: adKind, type: (Option SkAdNetworkTopicAdKind)},
+    {name: infoPlistKey, type: (Option SkAdNetworkTopicInfoPlistKey)},
+    {name: topic, type: SkAdNetworkTopicTopic}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

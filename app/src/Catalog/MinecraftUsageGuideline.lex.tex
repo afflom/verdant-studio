@@ -1,0 +1,49 @@
+\begin{lexlean}{Catalog.MinecraftUsageGuideline}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: MinecraftUsageGuidelineCommercialUse,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: inGeneral, fields: []},
+    {name: domainNamesAndWebsites, fields: []},
+    {name: constructedPromotions, fields: []},
+    {name: videosStreamsAndScreenshots, fields: []},
+    {name: liveInGameEvents, fields: []},
+    {name: inPersonEvents, fields: []},
+    {name: musicAndAudio, fields: []},
+    {name: serversAndHosting, fields: []},
+    {name: extendedFunctionalityAndModifications, fields: []},
+    {name: booksAndOtherPublications, fields: []},
+    {name: handCraftedProducts, fields: []}
+  ]
+}
+
+inductive{
+  name: MinecraftUsageGuidelineSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: purpose, fields: []},
+    {name: allUses, fields: []},
+    {name: essentialGuidelines, fields: []},
+    {name: namingGuidelines, fields: []},
+    {name: personalUse, fields: []},
+    {name: commercialUse, fields: []},
+    {name: inSummary, fields: []}
+  ]
+}
+
+structure{
+  name: MinecraftUsageGuideline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: commercialUse, type: (Option MinecraftUsageGuidelineCommercialUse)},
+    {name: section, type: MinecraftUsageGuidelineSection}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

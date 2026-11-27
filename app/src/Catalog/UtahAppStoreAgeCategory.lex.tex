@@ -1,0 +1,43 @@
+\begin{lexlean}{Catalog.UtahAppStoreAgeCategory}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: UtahAppStoreAgeCategoryAgeCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: child, fields: []},
+    {name: youngerTeenager, fields: []},
+    {name: olderTeenager, fields: []},
+    {name: adult, fields: []}
+  ]
+}
+
+inductive{
+  name: UtahAppStoreAgeCategoryCodeSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: n1375101, fields: []},
+    {name: n1375201, fields: []},
+    {name: n1375202, fields: []},
+    {name: n1375301, fields: []},
+    {name: n1375401, fields: []},
+    {name: n1375402, fields: []},
+    {name: n1375403, fields: []},
+    {name: n1375404, fields: []}
+  ]
+}
+
+structure{
+  name: UtahAppStoreAgeCategory,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: ageCategory, type: UtahAppStoreAgeCategoryAgeCategory},
+    {name: codeSection, type: (Option UtahAppStoreAgeCategoryCodeSection)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

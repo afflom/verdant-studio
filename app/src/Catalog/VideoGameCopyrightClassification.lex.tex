@@ -1,0 +1,75 @@
+\begin{lexlean}{Catalog.VideoGameCopyrightClassification}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: VideoGameCopyrightClassificationClassification,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: multimediaWork, fields: []},
+    {name: audiovisualWork, fields: []},
+    {name: computerProgram, fields: []},
+    {name: distributiveClassification, fields: []}
+  ]
+}
+
+inductive{
+  name: VideoGameCopyrightClassificationDistributiveClassification,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: belgium, fields: []},
+    {name: brazil, fields: []},
+    {name: denmark, fields: []},
+    {name: egypt, fields: []},
+    {name: france, fields: []},
+    {name: germany, fields: []},
+    {name: india, fields: []},
+    {name: japan, fields: []},
+    {name: southAfrica, fields: []},
+    {name: sweden, fields: []},
+    {name: theUnitedStatesOfAmerica, fields: []}
+  ]
+}
+
+inductive{
+  name: VideoGameCopyrightClassificationPart,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: audiovisualElements, fields: []},
+    {name: software, fields: []}
+  ]
+}
+
+inductive{
+  name: VideoGameCopyrightClassificationPredominantlyComputerProgram,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: argentina, fields: []},
+    {name: canada, fields: []},
+    {name: china, fields: []},
+    {name: israel, fields: []},
+    {name: italy, fields: []},
+    {name: theRussianFederation, fields: []},
+    {name: singapore, fields: []},
+    {name: spain, fields: []},
+    {name: uruguay, fields: []}
+  ]
+}
+
+structure{
+  name: VideoGameCopyrightClassification,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: classification, type: VideoGameCopyrightClassificationClassification},
+    {name: distributiveClassification, type: (Option VideoGameCopyrightClassificationDistributiveClassification)},
+    {name: part, type: (Option VideoGameCopyrightClassificationPart)},
+    {name: predominantlyComputerProgram, type: (Option VideoGameCopyrightClassificationPredominantlyComputerProgram)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,38 @@
+\begin{lexlean}{Catalog.Ifrs15RevenueRecognitionStep}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: Ifrs15RevenueRecognitionStepSatisfaction,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: atAPointInTime, fields: []},
+    {name: overTime, fields: []}
+  ]
+}
+
+inductive{
+  name: Ifrs15RevenueRecognitionStepStep,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: identifyTheContractsWithACustomer, fields: []},
+    {name: identifyThePerformanceObligationsInTheContract, fields: []},
+    {name: determineTheTransactionPrice, fields: []},
+    {name: allocateTheTransactionPriceToEachPerformanceObligation, fields: []},
+    {name: recogniseRevenueWhenAPerformanceObligationIsSatisfied, fields: []}
+  ]
+}
+
+structure{
+  name: Ifrs15RevenueRecognitionStep,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: satisfaction, type: (Option Ifrs15RevenueRecognitionStepSatisfaction)},
+    {name: step, type: Ifrs15RevenueRecognitionStepStep}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

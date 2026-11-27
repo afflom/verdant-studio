@@ -1,0 +1,51 @@
+\begin{lexlean}{Catalog.UnityTestFrameworkTest}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: UnityTestFrameworkTestKnownLimitation,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: theUnityTestAttributeDoesNotSupportWSAPlatform, fields: []},
+    {name: theUnityTestAttributeDoesNotSupportParameterizedTestsExceptForValueSource, fields: []},
+    {name: theUnityTestAttributeDoesNotSupportTheNUnitRepeatAttribute, fields: []},
+    {name: nestedTestFixtureCannotRunFromTheEditorUI, fields: []},
+    {name: whenUsingTheNUnitRetryAttributeInPlayModeTestsItThrowsInvalidCastException, fields: []}
+  ]
+}
+
+inductive{
+  name: UnityTestFrameworkTestMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: editMode, fields: []},
+    {name: playMode, fields: []}
+  ]
+}
+
+inductive{
+  name: UnityTestFrameworkTestTargetPlatform,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: standalone, fields: []},
+    {name: android, fields: []},
+    {name: iOS, fields: []}
+  ]
+}
+
+structure{
+  name: UnityTestFrameworkTest,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: knownLimitation, type: (Option UnityTestFrameworkTestKnownLimitation)},
+    {name: mode, type: UnityTestFrameworkTestMode},
+    {name: packageName, type: (Option Bytes)},
+    {name: targetPlatform, type: (Option UnityTestFrameworkTestTargetPlatform)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
