@@ -1,0 +1,57 @@
+\begin{lexlean}{Catalog.LolCommunityCompetitionGuideline}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: LolCommunityCompetitionGuidelineGameMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: summonersRift, fields: []},
+    {name: aRAM, fields: []},
+    {name: arena, fields: []},
+    {name: leagueOfLegendsClassic, fields: []}
+  ]
+}
+
+inductive{
+  name: LolCommunityCompetitionGuidelineQuestion,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: whatKindOfCompetitionsCanIOrganize, fields: []},
+    {name: canIChargeEntryFeesOrMakeSponsorshipAgreementsForMyTournament, fields: []},
+    {name: canIUseLoLAssetsToPromoteMyTournament, fields: []},
+    {name: whereCanIBroadcastMyTournament, fields: []},
+    {name: canRiotUseMyTournament, fields: []},
+    {name: whatShouldIAvoidDoingAsATournamentOrganizer, fields: []},
+    {name: doINeedToTellRiotAboutMyTournament, fields: []},
+    {name: whatTypesOfSponsorsShouldIAvoid, fields: []},
+    {name: whatDoesThisPageAllowOrganizersToDoInAFormalLicenseSense, fields: []}
+  ]
+}
+
+inductive{
+  name: LolCommunityCompetitionGuidelineRemovedCap,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: entryFees, fields: []},
+    {name: sponsorshipRevenue, fields: []},
+    {name: prizePools, fields: []},
+    {name: spectatorFees, fields: []}
+  ]
+}
+
+structure{
+  name: LolCommunityCompetitionGuideline,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: gameMode, type: (Option LolCommunityCompetitionGuidelineGameMode)},
+    {name: question, type: LolCommunityCompetitionGuidelineQuestion},
+    {name: removedCap, type: (Option LolCommunityCompetitionGuidelineRemovedCap)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

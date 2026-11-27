@@ -1,0 +1,17 @@
+\begin{lexlean}{Catalog.LockstepCommand}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: LockstepCommand,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: executionTurn, type: Nat},
+    {name: issuedTurn, type: Nat},
+    {name: simulationFramesPerTurn, type: (Option Nat)},
+    {name: turnLengthMs, type: (Option Nat)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

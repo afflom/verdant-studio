@@ -1,0 +1,19 @@
+\begin{lexlean}{Catalog.OpenMatchTicket}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: OpenMatchTicket,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: assignment, type: (Option Bytes)},
+    {name: createTime, type: (Option Bytes)},
+    {name: extensions, type: (Option (List (Bytes * Bytes)))},
+    {name: id, type: Bytes},
+    {name: persistentField, type: (Option (List (Bytes * Bytes)))},
+    {name: searchFields, type: (Option Bytes)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

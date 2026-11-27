@@ -8260,3 +8260,71 @@ statement = "Valve's documentation of the Steam anti-cheat services and Game Ban
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "ECMA-334-7"
+name = "C# Language Specification"
+issuer = "Ecma International (TC49)"
+edition = "ECMA-334 7th edition, December 2023"
+canonical_id = "https://ecma-international.org/wp-content/uploads/ECMA-334_7th_edition_december_2023.pdf"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://ecma-international.org/wp-content/uploads/ECMA-334_7th_edition_december_2023.pdf"
+media_type = "application/pdf"
+license = "Copyright Ecma International (copying and distribution of the unmodified document permitted)"
+redistribution = "citation-only"
+statement = "The C# language specification (identical in content to ISO/IEC 23270). Index row H02."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "GRAHAM-GAMEAIPRO-UTILITY-THEORY-2013"
+name = "An Introduction to Utility Theory"
+issuer = "David \"Rez\" Graham, in Game AI Pro (ed. Steve Rabin, CRC Press 2013), chapter 9"
+edition = "Game AI Pro chapter 9, free chapter PDF hosted by gameaipro.com"
+canonical_id = "http://www.gameaipro.com/GameAIPro/GameAIPro_Chapter09_An_Introduction_to_Utility_Theory.pdf"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "http://www.gameaipro.com/GameAIPro/GameAIPro_Chapter09_An_Introduction_to_Utility_Theory.pdf"
+media_type = "application/pdf"
+license = "Copyright CRC Press / the author (free chapter)"
+redistribution = "citation-only"
+statement = "Utility-based action selection: response curves (linear, quadratic, logistic, piecewise linear) and picking an action; the published chapter behind the utility AI practice the row names (Dave Mark's IAUS talks are cited by it as [Mark 09]). Index row J05."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "ISO-IEC-14882-N4950"
+name = "Working Draft, Standard for Programming Language C++"
+issuer = "ISO/IEC JTC 1/SC 22/WG 21"
+edition = "N4950, 2023-05-10 (the C++23 working draft; ISO/IEC 14882:2024 itself is paywalled)"
+canonical_id = "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/n4950.pdf"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/n4950.pdf"
+media_type = "application/pdf"
+license = "Copyright ISO/IEC (working draft, published by WG 21)"
+redistribution = "citation-only"
+statement = "The WG 21 working draft from which ISO/IEC 14882:2024 (C++23) was published, used as the public text of the paywalled standard. Index row H01."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "VALVE-STEAMWORKS-ISTEAMMATCHMAKING"
+name = "Steamworks API Reference: ISteamMatchmaking"
+issuer = "Valve Corporation"
+edition = "Steamworks documentation, retrieved 2026-11-27"
+canonical_id = "https://partner.steamgames.com/doc/api/ISteamMatchmaking"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://partner.steamgames.com/doc/api/ISteamMatchmaking"
+media_type = "text/html"
+license = "Copyright Valve Corporation"
+redistribution = "citation-only"
+statement = "Steamworks lobby and matchmaking interface, including the ELobbyType visibility of a lobby. The page changes on every load, so no sha256 is pinned. Index row K12."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []

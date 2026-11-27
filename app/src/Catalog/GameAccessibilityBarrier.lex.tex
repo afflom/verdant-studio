@@ -1,0 +1,39 @@
+\begin{lexlean}{Catalog.GameAccessibilityBarrier}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GameAccessibilityBarrierAddressedBy,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: byDefaultByDesign, fields: []},
+    {name: settings, fields: []}
+  ]
+}
+
+inductive{
+  name: GameAccessibilityBarrierGroup,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: vision, fields: []},
+    {name: speech, fields: []},
+    {name: hearing, fields: []},
+    {name: motor, fields: []},
+    {name: cognitive, fields: []}
+  ]
+}
+
+structure{
+  name: GameAccessibilityBarrier,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: addressedBy, type: GameAccessibilityBarrierAddressedBy},
+    {name: group, type: GameAccessibilityBarrierGroup},
+    {name: necessary, type: Bool}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

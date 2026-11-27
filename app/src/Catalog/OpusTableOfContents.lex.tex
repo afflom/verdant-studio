@@ -1,0 +1,42 @@
+\begin{lexlean}{Catalog.OpusTableOfContents}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: OpusTableOfContentsBandwidth,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: nB, fields: []},
+    {name: mB, fields: []},
+    {name: wB, fields: []},
+    {name: sWB, fields: []},
+    {name: fB, fields: []}
+  ]
+}
+
+inductive{
+  name: OpusTableOfContentsMode,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sILKOnly, fields: []},
+    {name: hybrid, fields: []},
+    {name: cELTOnly, fields: []}
+  ]
+}
+
+structure{
+  name: OpusTableOfContents,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: bandwidth, type: OpusTableOfContentsBandwidth},
+    {name: config, type: Nat},
+    {name: frameCountCode, type: Nat},
+    {name: mode, type: OpusTableOfContentsMode},
+    {name: stereo, type: Bool}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
