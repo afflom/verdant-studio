@@ -1,0 +1,37 @@
+\begin{lexlean}{Catalog.TrustedPartnerNetworkOffering}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: TrustedPartnerNetworkOfferingOffering,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: fixItOrRiskIt, fields: []},
+    {name: mPAContentSecurityBestPractices, fields: []},
+    {name: annualMembership, fields: []},
+    {name: tPNAccreditedAssessors, fields: []}
+  ]
+}
+
+inductive{
+  name: TrustedPartnerNetworkOfferingProgram,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: tPN, fields: []},
+    {name: aCE, fields: []}
+  ]
+}
+
+structure{
+  name: TrustedPartnerNetworkOffering,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: offering, type: TrustedPartnerNetworkOfferingOffering},
+    {name: program, type: (Option TrustedPartnerNetworkOfferingProgram)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

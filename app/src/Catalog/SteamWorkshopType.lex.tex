@@ -1,0 +1,36 @@
+\begin{lexlean}{Catalog.SteamWorkshopType}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: SteamWorkshopTypeLaunchTopic,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: necessaryMarketingMaterials, fields: []},
+    {name: launchAnnouncementTiming, fields: []},
+    {name: runningAPrivateBeta, fields: []}
+  ]
+}
+
+inductive{
+  name: SteamWorkshopTypeType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: readyToUseWorkshop, fields: []},
+    {name: curatedWorkshop, fields: []}
+  ]
+}
+
+structure{
+  name: SteamWorkshopType,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: launchTopic, type: (Option SteamWorkshopTypeLaunchTopic)},
+    {name: type, type: SteamWorkshopTypeType}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

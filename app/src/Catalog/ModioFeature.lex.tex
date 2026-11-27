@@ -1,0 +1,60 @@
+\begin{lexlean}{Catalog.ModioFeature}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: ModioFeatureFeature,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: authentication, fields: []},
+    {name: cloudCooking, fields: []},
+    {name: collections, fields: []},
+    {name: contentDiscovery, fields: []},
+    {name: dependencies, fields: []},
+    {name: discord, fields: []},
+    {name: embedHub, fields: []},
+    {name: inGameUI, fields: []},
+    {name: metrics, fields: []},
+    {name: moderation, fields: []},
+    {name: monetization, fields: []},
+    {name: multiplayer, fields: []}
+  ]
+}
+
+inductive{
+  name: ModioFeatureIntegration,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: unreal, fields: []},
+    {name: unity, fields: []},
+    {name: cSDK, fields: []},
+    {name: rESTAPI, fields: []}
+  ]
+}
+
+inductive{
+  name: ModioFeaturePlatform,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: pC, fields: []},
+    {name: console, fields: []},
+    {name: vR, fields: []},
+    {name: mobile, fields: []}
+  ]
+}
+
+structure{
+  name: ModioFeature,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: feature, type: (Option ModioFeatureFeature)},
+    {name: integration, type: (Option ModioFeatureIntegration)},
+    {name: platform, type: (Option ModioFeaturePlatform)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

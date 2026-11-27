@@ -1,0 +1,46 @@
+\begin{lexlean}{Catalog.AndroidAttributionReport}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AndroidAttributionReportRegistration,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: attributionSource, fields: []},
+    {name: trigger, fields: []}
+  ]
+}
+
+inductive{
+  name: AndroidAttributionReportReport,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: eventLevelReports, fields: []},
+    {name: aggregatableReports, fields: []}
+  ]
+}
+
+inductive{
+  name: AndroidAttributionReportSourceEvent,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: click, fields: []},
+    {name: view, fields: []}
+  ]
+}
+
+structure{
+  name: AndroidAttributionReport,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: registration, type: (Option AndroidAttributionReportRegistration)},
+    {name: report, type: AndroidAttributionReportReport},
+    {name: sourceEvent, type: (Option AndroidAttributionReportSourceEvent)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

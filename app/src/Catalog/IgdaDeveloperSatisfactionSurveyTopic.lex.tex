@@ -1,0 +1,72 @@
+\begin{lexlean}{Catalog.IgdaDeveloperSatisfactionSurveyTopic}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: IgdaDeveloperSatisfactionSurveyTopicSection,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iNTRODUCTION, fields: []},
+    {name: oVERVIEW, fields: []},
+    {name: dEMOGRAPHICS, fields: []},
+    {name: eQUITYDIVERSITYINCLUSION, fields: []},
+    {name: eMPLOYMENTOVERVIEWOFGAMEDEVELOPERS, fields: []},
+    {name: cREDITINGPRACTICES, fields: []},
+    {name: eMPLOYMENTRELATIONSOVERVIEW, fields: []},
+    {name: aPROFILEOFEMPLOYEES, fields: []},
+    {name: aPROFILEOFFREELANCERSINDEPENDENTCONTRACTORS, fields: []},
+    {name: aPROFILEOFTHESELFEMPLOYED, fields: []},
+    {name: cONCLUSION, fields: []}
+  ]
+}
+
+inductive{
+  name: IgdaDeveloperSatisfactionSurveyTopicSnapshot,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: age, fields: []},
+    {name: educationalBackground, fields: []},
+    {name: genderAndSexualOrientation, fields: []},
+    {name: maritalStatusChildren, fields: []},
+    {name: ethnicityAncestry, fields: []},
+    {name: countryOfWork, fields: []},
+    {name: disability, fields: []},
+    {name: attitudesTowardDiversity, fields: []},
+    {name: diversityPrograms, fields: []},
+    {name: discrimination, fields: []},
+    {name: employmentStatus, fields: []},
+    {name: theUnemployed, fields: []},
+    {name: gamesAsPrimaryBusiness, fields: []},
+    {name: employmentVolatility, fields: []},
+    {name: hoursOfWork, fields: []},
+    {name: labourManagementRelations, fields: []},
+    {name: unionMembership, fields: []},
+    {name: unionFormation, fields: []},
+    {name: demographics, fields: []},
+    {name: industryExperienceAndJobSecurity, fields: []},
+    {name: companyType, fields: []},
+    {name: jobRole, fields: []},
+    {name: companyAndTeamSize, fields: []},
+    {name: salaries, fields: []},
+    {name: incentivesAndOvertime, fields: []},
+    {name: benefitsAndTimeOff, fields: []},
+    {name: careerAdvancement, fields: []},
+    {name: jobExperienceAndJobSecurity, fields: []},
+    {name: companySizeAndComposition, fields: []},
+    {name: careerPath, fields: []}
+  ]
+}
+
+structure{
+  name: IgdaDeveloperSatisfactionSurveyTopic,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: section, type: IgdaDeveloperSatisfactionSurveyTopicSection},
+    {name: snapshot, type: (Option IgdaDeveloperSatisfactionSurveyTopicSnapshot)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

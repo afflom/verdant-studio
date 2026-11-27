@@ -1,0 +1,46 @@
+\begin{lexlean}{Catalog.DisruptionHarmExpression}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: DisruptionHarmExpressionElement,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: expression, fields: []},
+    {name: deliveryChannel, fields: []},
+    {name: impact, fields: []},
+    {name: rootCause, fields: []}
+  ]
+}
+
+inductive{
+  name: DisruptionHarmExpressionExpression,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: unintendedDisruption, fields: []},
+    {name: aggravation, fields: []},
+    {name: antisocialActions, fields: []},
+    {name: abuseOfPlayAntagonisticPlay, fields: []},
+    {name: cheating, fields: []},
+    {name: inappropriateSharing, fields: []},
+    {name: hate, fields: []},
+    {name: harassment, fields: []},
+    {name: dangerousSpeech, fields: []},
+    {name: extremism, fields: []},
+    {name: criminalOrPredatoryConduct, fields: []}
+  ]
+}
+
+structure{
+  name: DisruptionHarmExpression,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: element, type: DisruptionHarmExpressionElement},
+    {name: expression, type: (Option DisruptionHarmExpressionExpression)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

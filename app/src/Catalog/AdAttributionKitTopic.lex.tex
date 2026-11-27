@@ -1,0 +1,55 @@
+\begin{lexlean}{Catalog.AdAttributionKitTopic}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AdAttributionKitTopicAppRole,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: publisherApp, fields: []},
+    {name: advertisedApp, fields: []}
+  ]
+}
+
+inductive{
+  name: AdAttributionKitTopicTopic,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: essentials, fields: []},
+    {name: adNetworkRegistrationAndConfiguration, fields: []},
+    {name: adAttributionTesting, fields: []},
+    {name: signatures, fields: []},
+    {name: appImpressions, fields: []},
+    {name: postbacks, fields: []},
+    {name: postbackVerificationAndParameterIdentification, fields: []},
+    {name: errors, fields: []}
+  ]
+}
+
+inductive{
+  name: AdAttributionKitTopicType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: appImpression, fields: []},
+    {name: postback, fields: []},
+    {name: postbackUpdate, fields: []},
+    {name: coarseConversionValue, fields: []},
+    {name: adAttributionKitError, fields: []}
+  ]
+}
+
+structure{
+  name: AdAttributionKitTopic,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: appRole, type: (Option AdAttributionKitTopicAppRole)},
+    {name: topic, type: AdAttributionKitTopicTopic},
+    {name: type, type: (Option AdAttributionKitTopicType)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

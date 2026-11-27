@@ -1,0 +1,81 @@
+\begin{lexlean}{Catalog.RobloxCommunityStandard}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: RobloxCommunityStandardCivility,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: realWorldSensitiveEvents, fields: []},
+    {name: violentContentAndGore, fields: []},
+    {name: romanticAndSexualContent, fields: []},
+    {name: illegalAndRegulatedGoodsAndActivities, fields: []},
+    {name: profanity, fields: []},
+    {name: politicalFiguresAndEntities, fields: []}
+  ]
+}
+
+inductive{
+  name: RobloxCommunityStandardIntegrity,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: cheatingAndScams, fields: []},
+    {name: repetitiveAndMisleadingContent, fields: []},
+    {name: intellectualPropertyViolations, fields: []},
+    {name: advertising, fields: []},
+    {name: robloxEconomy, fields: []}
+  ]
+}
+
+inductive{
+  name: RobloxCommunityStandardPillar,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: safety, fields: []},
+    {name: civility, fields: []},
+    {name: integrity, fields: []},
+    {name: security, fields: []}
+  ]
+}
+
+inductive{
+  name: RobloxCommunityStandardSafety,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: childExploitation, fields: []},
+    {name: terrorismAndViolentExtremism, fields: []},
+    {name: harassmentAndDiscrimination, fields: []},
+    {name: suicideSelfInjuryAndHarmfulBehavior, fields: []},
+    {name: harmfulOffPlatformSpeechOrBehavior, fields: []}
+  ]
+}
+
+inductive{
+  name: RobloxCommunityStandardSecurity,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sharingPersonalInformation, fields: []},
+    {name: directingUsersOffPlatform, fields: []},
+    {name: misusingRobloxSystems, fields: []}
+  ]
+}
+
+structure{
+  name: RobloxCommunityStandard,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: civility, type: (Option RobloxCommunityStandardCivility)},
+    {name: integrity, type: (Option RobloxCommunityStandardIntegrity)},
+    {name: pillar, type: RobloxCommunityStandardPillar},
+    {name: safety, type: (Option RobloxCommunityStandardSafety)},
+    {name: security, type: (Option RobloxCommunityStandardSecurity)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

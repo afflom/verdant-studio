@@ -1,0 +1,37 @@
+\begin{lexlean}{Catalog.UkLootBoxProtectionTheme}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: UkLootBoxProtectionThemeMeasure,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: technologicalControls, fields: []},
+    {name: ageAssurance, fields: []},
+    {name: refunds, fields: []},
+    {name: publicInformationCampaign, fields: []}
+  ]
+}
+
+inductive{
+  name: UkLootBoxProtectionThemeTheme,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: preventingChildrenFromPurchasingLootBoxesWithoutParentalConsent, fields: []},
+    {name: spendingControlsAndTransparentInformationForAllPlayers, fields: []}
+  ]
+}
+
+structure{
+  name: UkLootBoxProtectionTheme,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: measure, type: (Option UkLootBoxProtectionThemeMeasure)},
+    {name: theme, type: UkLootBoxProtectionThemeTheme}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
