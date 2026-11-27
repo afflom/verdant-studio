@@ -128,3 +128,7 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ## REQ-AGENT-CONTRIBUTOR, REQ-VERDANT-COORDINATION (afflom, 2026-11-27T16:42:52Z)
 
 > This makes sense. you can have a prism id and be linked to my prism id. We'll then move our communication and coordination over to Verdant, so all of our interactions will be through the Verdant Studio UI. Let's continue to refine this.
+
+## REQ-STUDIO-GUI, REQ-AGENT-INTERFACE (afflom, 2026-11-27T21:33:11Z)
+
+> We are likely ready to start including the GUI/UX of Verdant Studio in the plan, since it will be my primary interface with you, verdant-studio, and github going forward when it is available. You will also need your own interface; mcp?
