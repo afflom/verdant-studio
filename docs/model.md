@@ -606,3 +606,11 @@ Each construct and the citation that admits it.
 - `Catalog.NintendoSwitchGraphicsApi`: std WIKIPEDIA-NINTENDO-SWITCH row G06
 - `Catalog.PlayStation4GraphicsApi`: std WIKIPEDIA-LIST-OF-RENDERING-APIS row G06
 - `Catalog.PlayStation5GraphicsApi`: std WIKIPEDIA-PLAYSTATION-5 row G06
+- `Studio.Generator.Music`: req REQ-ENGINE-MUSIC
+- `Studio.Generator.Music.Midi`: std MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE row I06
+- `Studio.Generator.AudioFile`: req REQ-ENGINE-AUDIO-FILE
+- `Studio.Generator.AudioFile.Bwf`: std EBU-TECH-3285-2 row I09
+- `Studio.Generator.RasterImage`: req REQ-ENGINE-RASTER-IMAGE
+- `Studio.Generator.RasterImage.Png`: std W3C-PNG-3
+- `Studio.Generator.VectorImage`: req REQ-ENGINE-VECTOR-IMAGE
+- `Studio.Generator.VectorImage.Svg`: std W3C-SVG-2
