@@ -120,7 +120,7 @@ jobs:
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: target/lexlean
-          key: lexlean-0.4.3-rust-1.97.0
+          key: lexlean-${{ hashFiles('.github/lexlean.pin') }}-rust-1.97.0
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.npm
@@ -145,7 +145,7 @@ jobs:
           fi
           export PATH="$HOME/.elan/bin:$PATH"
           test -d "$HOME/.elan/toolchains/leanprover--lean4---v4.32.2" || elan toolchain install leanprover/lean4:v4.32.2
-          [ "$(sha256sum target/lexlean/bin/lexlean 2>/dev/null | cut -c1-64)" = "$(jq -r .lexlean.executable_sha256 certified/evidence/attestation.json)" ] || { rm -rf target/lexlean; rustup toolchain install 1.97.0 --profile minimal; RUSTFLAGS="--remap-path-prefix=${CARGO_HOME:-$HOME/.cargo}=cargo-home" cargo +1.97.0 install --locked --version 0.4.3 lexlean --root target/lexlean; }
+          cmp -s .github/lexlean.pin target/lexlean/pin || { rm -rf target/lexlean; rustup toolchain install 1.97.0 --profile minimal; RUSTFLAGS="--remap-path-prefix=${CARGO_HOME:-$HOME/.cargo}=cargo-home" cargo +1.97.0 install --locked $(cat .github/lexlean.pin) lexlean --root target/lexlean; cp .github/lexlean.pin target/lexlean/pin; }
           ll="$PWD/target/lexlean/bin/lexlean"
           id=$(gh api "users/${SLUG}[bot]" --jq .id)
           failed=''
