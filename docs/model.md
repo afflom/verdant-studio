@@ -615,3 +615,5 @@ Each construct and the citation that admits it.
 - `Studio.Generator.VectorImage`: req REQ-ENGINE-VECTOR-IMAGE
 - `Studio.Generator.VectorImage.Svg`: std W3C-SVG-2
 - `Studio.Generator.Guest.Contract`: std PRISM-CODE-CORE-WASM-0.11.6
+- `Studio.Mechanical`: req REQ-MECHANICAL
+- `Studio.SelfHosted`: req REQ-SELF-HOSTED
