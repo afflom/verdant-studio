@@ -115,6 +115,18 @@ The three honesty levels (R2):
 | `VS-41` | `build` | Studio.Project hands an access request to its own project on to Verdant Engine's signing-request and admin-approval scheme, VE-70, as the typed request that names the requester, the project and the scope for its maintainers to approve or reject, and decides none of it itself | `Studio.Project.hands_an_access_request_to_the_engine` |
 | `VS-42` | `open` | Verdant Engine's VE-70 signing-request and admin-approval scheme is callable from Verdant Studio, so that the signing request Studio.Project hands on for an access request is decided by the engine; REQ-PROJECT-INSTANCE depends on it, and until the engine exposes it Studio holds the request it would send |  |
 
+## instance
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-43` | `build` | Studio.Instance hands a hosting plan with a host other than the mirror on to Verdant Engine's multi-gateway hosting, VE-77, as the typed request naming the Prism ID whose instances it hosts, with GitHub a mirror only | `Studio.Instance.hands_a_hosting_plan_with_a_runtime_host_to_the_engine` |
+| `VS-44` | `build` | GitHub is only a mirror, never a runtime, so Studio.Instance refuses a hosting plan whose only host is github, naming the Prism ID | `Studio.Instance.refuses_a_hosting_plan_on_the_mirror_alone`, refuses with `refused: GitHub is only a mirror, never a runtime, so the instances of prism:alex need a host other than github, such as a browser or a phone` |
+| `VS-45` | `build` | Studio.Instance hands a synchronization of two instances under one Prism ID on to Verdant Engine's Prism ID signed input journal batches, VE-24, naming that Prism ID | `Studio.Instance.hands_a_sync_under_one_prism_id_to_the_engine` |
+| `VS-46` | `build` | Instances synchronize only under one Prism ID, so Studio.Instance refuses to synchronize instances of two Prism IDs, naming both and the catalog through which shared content crosses | `Studio.Instance.refuses_a_sync_across_prism_ids`, refuses with `refused: an instance of prism:bob never synchronizes with an instance of prism:alex, so content crosses Prism IDs only when it is shared through a catalog` |
+| `VS-47` | `build` | A person's data is readable by their own Prism ID, and by any Prism ID once shared, by Studio.Instance under the ISO/IEC 29100 principle of consent and choice | `Studio.Instance.the_owner_reads_its_own_data`, `Studio.Instance.anyone_reads_shared_data` |
+| `VS-48` | `build` | A person's data is private to their Prism ID until they share it, so Studio.Instance refuses another Prism ID's read of unshared data, naming both (ISO/IEC 29100 consent and choice) | `Studio.Instance.refuses_to_read_private_data_of_another_prism_id`, refuses with `refused: the data of prism:alex is private to prism:alex until it is shared, so prism:bob may not read it` |
+| `VS-49` | `open` | Verdant Engine's VE-77 multi-gateway hosting and VE-24 Prism ID signed journal synchronization are callable from Verdant Studio, so that the requests Studio.Instance hands on are carried out by the engine; REQ-DISTRIBUTED-INSTANCES depends on them, and until the engine exposes them Studio holds the requests it would send |  |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

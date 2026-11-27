@@ -382,3 +382,57 @@ id = "VS-42"
 level = "open"
 suite = "project"
 statement = "Verdant Engine's VE-70 signing-request and admin-approval scheme is callable from Verdant Studio, so that the signing request Studio.Project hands on for an access request is decided by the engine; REQ-PROJECT-INSTANCE depends on it, and until the engine exposes it Studio holds the request it would send"
+
+[[id]]
+id = "VS-43"
+level = "build"
+suite = "instance"
+statement = "Studio.Instance hands a hosting plan with a host other than the mirror on to Verdant Engine's multi-gateway hosting, VE-77, as the typed request naming the Prism ID whose instances it hosts, with GitHub a mirror only"
+theorems = ["Studio.Instance.hands_a_hosting_plan_with_a_runtime_host_to_the_engine"]
+
+[[id]]
+id = "VS-44"
+level = "build"
+suite = "instance"
+statement = "GitHub is only a mirror, never a runtime, so Studio.Instance refuses a hosting plan whose only host is github, naming the Prism ID"
+theorems = ["Studio.Instance.refuses_a_hosting_plan_on_the_mirror_alone"]
+failure = "refused: GitHub is only a mirror, never a runtime, so the instances of prism:alex need a host other than github, such as a browser or a phone"
+negative = "VS-44"
+
+[[id]]
+id = "VS-45"
+level = "build"
+suite = "instance"
+statement = "Studio.Instance hands a synchronization of two instances under one Prism ID on to Verdant Engine's Prism ID signed input journal batches, VE-24, naming that Prism ID"
+theorems = ["Studio.Instance.hands_a_sync_under_one_prism_id_to_the_engine"]
+
+[[id]]
+id = "VS-46"
+level = "build"
+suite = "instance"
+statement = "Instances synchronize only under one Prism ID, so Studio.Instance refuses to synchronize instances of two Prism IDs, naming both and the catalog through which shared content crosses"
+theorems = ["Studio.Instance.refuses_a_sync_across_prism_ids"]
+failure = "refused: an instance of prism:bob never synchronizes with an instance of prism:alex, so content crosses Prism IDs only when it is shared through a catalog"
+negative = "VS-46"
+
+[[id]]
+id = "VS-47"
+level = "build"
+suite = "instance"
+statement = "A person's data is readable by their own Prism ID, and by any Prism ID once shared, by Studio.Instance under the ISO/IEC 29100 principle of consent and choice"
+theorems = ["Studio.Instance.the_owner_reads_its_own_data", "Studio.Instance.anyone_reads_shared_data"]
+
+[[id]]
+id = "VS-48"
+level = "build"
+suite = "instance"
+statement = "A person's data is private to their Prism ID until they share it, so Studio.Instance refuses another Prism ID's read of unshared data, naming both (ISO/IEC 29100 consent and choice)"
+theorems = ["Studio.Instance.refuses_to_read_private_data_of_another_prism_id"]
+failure = "refused: the data of prism:alex is private to prism:alex until it is shared, so prism:bob may not read it"
+negative = "VS-48"
+
+[[id]]
+id = "VS-49"
+level = "open"
+suite = "instance"
+statement = "Verdant Engine's VE-77 multi-gateway hosting and VE-24 Prism ID signed journal synchronization are callable from Verdant Studio, so that the requests Studio.Instance hands on are carried out by the engine; REQ-DISTRIBUTED-INSTANCES depends on them, and until the engine exposes them Studio holds the requests it would send"
