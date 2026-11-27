@@ -98,6 +98,20 @@ jobs:
           if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites, README.md, readers and lexlean-workspace.toml, not: $outside"; exit 1; fi
           # readers/lexlean.lock is generated, and the export below writes it again.
           git apply --exclude=readers/lexlean.lock target/input/change.patch
+          # The owner reads this pull request, so its body leads with the proposer's own account (the prose
+          # before the first diff), then the definitions it changes. Checked before the export, which takes minutes.
+          awk 'index($0, "diff --git") == 1 { exit } { print }' target/input/change.patch > target/summary.md
+          if ! grep -q '[[:alnum:]]' target/summary.md; then
+            echo "::error::propose-command needs a plain-language account before the patch: what changes and why, the requirement or decision it serves, what it unblocks, and the risk and how it was verified"
+            exit 1
+          fi
+          # The export refuses Lean output holding an absolute path (LLV7006) only at its end, so refuse an added
+          # string literal with a slash at a token boundary before a name character here, in seconds.
+          if grep '^+[^+]' target/input/change.patch | grep '"' | grep -E "(^|[[:space:]\"'\`([{<,;=])/[[:alnum:]_.]" > target/absolute.txt; then
+            echo "::error::LLV7006: these added lines put a slash at a token boundary, which the export refuses as an absolute path (write >/dev/null with no space):"
+            cat target/absolute.txt
+            exit 1
+          fi
           if [ ! -x "$HOME/.elan/bin/elan" ]; then
             curl -sSfL -o target/elan.tgz https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz
             echo "f81c2e48c1588d4612cd2c8851947898a45ac8d72748a07dff3a5694f1cf589b  target/elan.tgz" | sha256sum -c -
@@ -112,13 +126,6 @@ jobs:
           if ! bash .github/scripts/export.sh "$ll" target/export.log; then
             grep -m 20 'error' target/export.log | sed 's/^/::error::/' || echo "::error::the Lean export failed without an error line; its last lines follow"
             tail -n 40 target/export.log
-            exit 1
-          fi
-          # The owner reads this pull request, so its body leads with the proposer's own
-          # account (the prose before the first diff), then the definitions it changes.
-          awk 'index($0, "diff --git") == 1 { exit } { print }' target/input/change.patch > target/summary.md
-          if ! grep -q '[[:alnum:]]' target/summary.md; then
-            echo "::error::propose-command needs a plain-language account before the patch: what changes and why, the requirement or decision it serves, what it unblocks, and the risk and how it was verified"
             exit 1
           fi
           git diff -U0 -- studio/src app/src/Contract.lex.tex app/src/Studio readers/src | awk 'index($0, "+++ b") == 1 { file = substr($0, 7) } index($0, "@@") == 1 { parts = split($3, at, ","); start = substr(at[1], 2); count = (parts > 1) ? at[2] : 1; print file " " ((count > 0) ? start + count - 1 : start) }' > target/hunks.txt

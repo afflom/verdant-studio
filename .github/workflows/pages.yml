@@ -43,7 +43,7 @@ jobs:
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: target/lexlean
-          key: lexlean-0.4.3
+          key: lexlean-0.4.3-rust-1.97.0
       - name: replay the certified bundle, then build its command (only when certified/ changed)
         if: steps.command.outputs.cache-hit != 'true'
         run: |
