@@ -85,6 +85,26 @@ jobs:
               gh pr ready "$pr" --repo "$GITHUB_REPOSITORY" || true
             fi
           done
+          # A change operate left without auto-merge, behind an older API change, gets it here once no
+          # propose-command pull request keeps its auto-merge with a studio check that has not failed: oldest
+          # first, up to and including the first API change, so API changes still merge one at a time in order.
+          gh api "repos/${GITHUB_REPOSITORY}/rules/branches/main" > "$RUNNER_TEMP/rules.json"
+          if [ "$(jq '[.[] | select(.type == "required_status_checks") | .parameters.required_status_checks[]?.context] | index("studio") != null' "$RUNNER_TEMP/rules.json")" = true ]; then
+            armed=''
+            for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq ".[] | select(.user.login == \"${SLUG}[bot]\" and (.title | startswith(\"verdant_studio propose-command\")) and .auto_merge != null) | .number"); do
+              sha=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .head.sha)
+              if [ "$(gh api "repos/${GITHUB_REPOSITORY}/commits/${sha}/check-runs?check_name=studio" --jq '[.check_runs[] | select(.conclusion == "failure")] | length')" = 0 ]; then armed="$armed #${pr}"; fi
+            done
+            if [ -z "$armed" ]; then
+              for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq "sort_by(.number) | .[] | select(.user.login == \"${SLUG}[bot]\" and .auto_merge == null and (.draft | not)) | .number"); do
+                if [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.mergeable | tostring')" = true ]; then
+                  gh pr merge "$pr" --auto --squash --delete-branch --repo "$GITHUB_REPOSITORY" || true
+                  echo "#${pr}: auto-merge set"
+                  if [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.title | startswith("verdant_studio propose-command")')" = true ]; then break; fi
+                fi
+              done
+            fi
+          fi
           if [ -n "$auto" ]; then stale=" $auto$stale"; fi
           echo "stale=$stale" >> "$GITHUB_OUTPUT"
           echo "auto=$auto" >> "$GITHUB_OUTPUT"

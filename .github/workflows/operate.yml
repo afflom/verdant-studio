@@ -36,9 +36,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  operate:
+  # The wait is its own job under its own limit, so time spent waiting never comes out of the 30 minutes the operation has.
+  wait:
+    if: ${{ !startsWith(inputs.args, 'revert-merge ') }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 12
     steps:
       - id: app
         uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
@@ -52,7 +54,6 @@ jobs:
       # most 10 minutes, so neither queue stalls. A new propose-command waits too, so it never merges ahead of an
       # older change that is being regenerated; revert-merge, the repair of a broken path, never waits.
       - name: wait for the API changes that are next to merge (every operation but revert-merge)
-        if: ${{ !startsWith(inputs.args, 'revert-merge ') }}
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
         run: |
@@ -68,6 +69,17 @@ jobs:
             sleep 30
           done
           echo "::warning::${next# } still open after 10 minutes, so this run goes on"
+  operate:
+    needs: wait
+    if: ${{ !cancelled() && (needs.wait.result == 'success' || needs.wait.result == 'skipped') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - id: app
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        with:
+          app-id: ${{ vars.VERDANT_STUDIO_APP_ID }}
+          private-key: ${{ secrets.VERDANT_STUDIO_APP_KEY }}
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app.outputs.token }}
@@ -392,7 +404,22 @@ jobs:
           # A change to the API itself (propose-command, revert-merge) merges as every App pull request does:
           # the owner automated these approvals (2026-11-26), so the studio check, which runs the API's own
           # end-to-end propose run, is its gate. refresh keeps its auto-merge while it regenerates it.
-          if [ "$(target/release/verdant_studio merge-gate target/rules.json)" = merge ]; then
+          # An API change merges before every change opened after it, however long each check takes: #478 and
+          # #479 merged ahead of #474 after the wait above gave up, and each pushed it behind main again.
+          # So while an older propose-command pull request keeps its auto-merge and its studio check has not
+          # failed, this one is left ready without auto-merge, and refresh sets it once that one merges.
+          # revert-merge, the repair of a broken path, never waits.
+          ahead=''
+          if [ "${ARGS#revert-merge }" = "$ARGS" ]; then
+            for older in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq ".[] | select(.user.type == \"Bot\" and (.title | startswith(\"verdant_studio propose-command\")) and .auto_merge != null and .number < ${pr}) | .number"); do
+              sha=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${older}" --jq .head.sha)
+              if [ "$(gh api "repos/${GITHUB_REPOSITORY}/commits/${sha}/check-runs?check_name=studio" --jq '[.check_runs[] | select(.conclusion == "failure")] | length')" = 0 ]; then ahead="$ahead #${older}"; fi
+            done
+          fi
+          gate=$(target/release/verdant_studio merge-gate target/rules.json)
+          if [ "$gate" = merge ] && [ -n "$ahead" ]; then
+            echo "::notice::#${pr} merges after${ahead}: refresh sets its auto-merge once they merge"
+          elif [ "$gate" = merge ]; then
             gh pr merge "$pr" --auto --squash --delete-branch
           else
             echo "::notice::main does not require the studio check, so this pull request waits for the owner's merge"
