@@ -661,6 +661,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WHATWG-MIMESNIFF-BA4B3C3` | The MIME Sniffing Standard's source: the byte patterns that identify a resource's MIME type, including audio/midi for a Standard MIDI File (MThd header) and audio/wave for a RIFF WAVE file, the declared types of the MIDI and BWF artifacts of a Verdant Prism, which IANA does not register (REQ-ENGINE-MUSIC, REQ-ENGINE-AUDIO-FILE). |  |
 | `ISO-IEC-21320-1-2015` | The Document Container File: a ZIP archive as PKWARE APPNOTE 6.3.3 defines it, restricted to stored or deflated entries without encryption or multiple volumes. The serialization of a Verdant Prism bundle (BagIt, RFC 8493, defines no serialization). |  |
 | `PKWARE-APPNOTE-6.3.3` | The .ZIP file format, version 6.3.3, which ISO/IEC 21320-1:2015 normatively references: local file headers, the central directory and the end of central directory record. Its notice forbids redistribution, so it is cited only; the text retrieved on 2026-11-27 has SHA-256 bda77700f9cfdd20c2034248e721a02ecb9b003b0c31a00edfe8a10100ce3091. |  |
+| `MCP-SCHEMA-2026-07-28` | The official machine-readable schema (JSON Schema 2020-12) of MCP 2026-07-28 at tag 2026-07-28: JSON-RPC 2.0 messages, server/discover, tools (Tool with a JSON Schema inputSchema, CallToolRequest), resources and resource templates, subscriptions, prompts, completion and errors. Cited by the implementing agent's interface to Verdant Studio (REQ-AGENT-INTERFACE). |  |
 
 ## Claims that are not conformance IDs
 
