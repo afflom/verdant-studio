@@ -1,0 +1,176 @@
+\begin{lexlean}{Studio.Agent.Contributor}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.Project}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: linkedTo,
+  parameters: [agent : Bytes, maintainer : Bytes, links : (List Bytes)],
+  result: Bool,
+  body: (match links
+    | List.nil => false
+    | List.cons link rest => (if ((Studio.Runtime::same (Studio.Project::linkedPrismId link) agent) && (Studio.Runtime::same (Studio.Project::linkedLogin link) maintainer)) then true else (linkedTo agent maintainer rest))),
+  recursive_argument: links,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: ownIdRefusal,
+  parameters: [agent : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a20 agent : Bytes) 0x20697320746865206d61696e7461696e65722773206f776e20507269736d2049442c20616e64206120636f6e7472696275746f72206163747320756e646572206120507269736d204944206f6620697473206f776e : Bytes)
+}
+
+definition{
+  name: unlinkedRefusal,
+  parameters: [agent : Bytes, maintainer : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 agent : Bytes) (prim append 0x206973206e6f74206c696e6b656420746f20 maintainer : Bytes) : Bytes) 0x2c20736f206974206973206e6f20636f6e7472696275746f72206f662074686174206d61696e7461696e6572 : Bytes)
+}
+
+definition{
+  name: contributor,
+  parameters: [agent : Bytes, maintainer : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x636f6e7472696275746f723a20 agent : Bytes) (prim append 0x2061637473206f6e20626568616c66206f6620 maintainer : Bytes) : Bytes) 0x20756e6465722056657264616e7420456e67696e65277320676f7665726e616e6365 : Bytes)
+}
+
+definition{
+  name: standing,
+  parameters: [agent : Bytes, maintainer : Bytes, links : (List Bytes)],
+  result: (Option Bytes),
+  body: (if (Studio.Runtime::same agent maintainer) then (ctor Option.some [Bytes] (ownIdRefusal agent)) else (if (linkedTo agent maintainer links) then (ctor Option.none [Bytes]) else (ctor Option.some [Bytes] (unlinkedRefusal agent maintainer)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: act,
+  parameters: [agent : Bytes, maintainer : Bytes, links : (List Bytes)],
+  result: Bytes,
+  body: (match (standing agent maintainer links)
+    | Option.some refusal => refusal
+    | Option.none => (contributor agent maintainer)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: hexDigit,
+  parameters: [byte : UInt8],
+  result: Bool,
+  body: (((not ((prim to_nat byte : Nat) <? 48)) && ((prim to_nat byte : Nat) <? 58)) || ((not ((prim to_nat byte : Nat) <? 97)) && ((prim to_nat byte : Nat) <? 103))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: hexFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => false
+      | Option.some byte => ((hexDigit byte) && (hexFrom value (offset + 1) rest)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: addressPrefix,
+  parameters: [],
+  result: Bytes,
+  body: 0x626c616b65333a
+}
+
+definition{
+  name: contentAddress,
+  parameters: [digest : Bytes],
+  result: Bool,
+  body: (((prim length digest : Nat) =? 71) && ((Studio.Runtime::sameFrom digest (addressPrefix) 0 7) && (hexFrom digest 7 64))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: addressRefusal,
+  parameters: [digest : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a20 digest : Bytes) 0x206973206e6f20636f6e74656e7420616464726573732c20736f207468652072657175657374206e616d6573206e6f20636f6e74656e743b206e616d6520697420617320626c616b65333a20616e642036342068657820646967697473 : Bytes)
+}
+
+definition{
+  name: handOff,
+  parameters: [agent : Bytes, maintainer : Bytes, scope : Bytes, digest : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append 0x7369676e696e67207265717565737420666f7220 (Studio.Project::engineCapability) : Bytes) (prim append 0x3a20636f6e7472696275746f7220 agent : Bytes) : Bytes) (prim append 0x2061736b7320 maintainer : Bytes) : Bytes) (prim append (prim append 0x20666f7220 scope : Bytes) (prim append 0x206f6e20 (prim append digest 0x2c20666f7220746865206d61696e7461696e657220746f206772616e74206f722072656a656374 : Bytes) : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: permission,
+  parameters: [agent : Bytes, maintainer : Bytes, scope : Bytes, digest : Bytes, links : (List Bytes)],
+  result: Bytes,
+  body: (match (standing agent maintainer links)
+    | Option.some refusal => refusal
+    | Option.none => (if (contentAddress digest) then (handOff agent maintainer scope digest) else (addressRefusal digest))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons agent more2 => (match more2
+        | List.cons maintainer more3 => (if (Studio.Runtime::same verb 0x616374) then (act agent maintainer more3) else (if (Studio.Runtime::same verb 0x7065726d697373696f6e) then (match more3
+          | List.cons scope more4 => (match more4
+            | List.cons digest links => (permission agent maintainer scope digest links)
+            | List.nil => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374) else 0x696e76616c69642072657175657374))
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_linked_agent_contributes,
+  parameters: [],
+  statement: ((request 0x61637409707269736d3a6167656e7409707269736d3a616c657809707269736d3a6f746865723d707269736d3a626f6209707269736d3a6167656e743d707269736d3a616c6578) = (contributor 0x707269736d3a6167656e74 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_an_agent_not_linked_to_the_maintainer,
+  parameters: [],
+  statement: ((request 0x61637409707269736d3a6167656e7409707269736d3a616c657809707269736d3a6f746865723d707269736d3a626f62) = (unlinkedRefusal 0x707269736d3a6167656e74 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_the_maintainers_own_prism_id_as_the_agent,
+  parameters: [],
+  statement: ((request 0x61637409707269736d3a616c657809707269736d3a616c657809707269736d3a6f746865723d707269736d3a626f6209707269736d3a6167656e743d707269736d3a616c6578) = (ownIdRefusal 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: hands_a_contributors_permission_request_to_the_engine,
+  parameters: [],
+  statement: ((request 0x7065726d697373696f6e09707269736d3a6167656e7409707269736d3a616c6578096170702f73726309626c616b65333a3235663236333334363136353063643332346231353762663636333365366461393031373663653237323938316232636237373137616335373933333633373809707269736d3a6f746865723d707269736d3a626f6209707269736d3a6167656e743d707269736d3a616c6578) = (handOff 0x707269736d3a6167656e74 0x707269736d3a616c6578 0x6170702f737263 0x626c616b65333a32356632363333343631363530636433323462313537626636363333653664613930313736636532373239383162326362373731376163353739333336333738)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_permission_request_without_a_content_address,
+  parameters: [],
+  statement: ((request 0x7065726d697373696f6e09707269736d3a6167656e7409707269736d3a616c6578096170702f737263096c617465737409707269736d3a6f746865723d707269736d3a626f6209707269736d3a6167656e743d707269736d3a616c6578) = (addressRefusal 0x6c6174657374)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
