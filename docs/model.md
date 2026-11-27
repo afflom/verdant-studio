@@ -448,3 +448,5 @@ Each construct and the citation that admits it.
 - `Studio.Prism.Closure`: der pattern from Studio.Generator, Studio.Prism.Seed, Studio.Catalog.Facet, Studio.Catalog.Mapping, D11
 - `Studio.Prism.Acceptance`: der pattern from Studio.Prism.Closure, Studio.Prism.Bundle, Studio.Prism.Validation, P5, P12
 - `Studio.Generator.Runtime`: std VTENSOR-IDS-280A1A4
+- `model/registries/AGONES-1.62.0-INSTALL.jsonl`: std AGONES-1.62.0-INSTALL row K11
+- `model/registries/ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0.jsonl`: std ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 row G12
