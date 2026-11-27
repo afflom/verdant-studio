@@ -5505,7 +5505,7 @@ pub fn f162() -> Bytes {
 }
 
 pub fn f163() -> Bytes {
-    f8(Str::lit("--version 0.4.3\u{a}"))
+    f8(Str::lit("--git https://github.com/UOR-Foundation/lexlean --rev 82a32815c45762ea8931c84cb9465a5aac902866\u{a}"))
 }
 
 pub fn f164(v0: Adt1) -> R<Bytes> {
