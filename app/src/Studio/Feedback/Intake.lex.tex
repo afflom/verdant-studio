@@ -1,0 +1,186 @@
+\begin{lexlean}{Studio.Feedback.Intake}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Foundation.Bytes}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Form,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: kind, type: Bytes},
+    {name: channel, type: Bytes},
+    {name: feature, type: Bytes},
+    {name: received, type: Nat},
+    {name: player, type: Bytes},
+    {name: text, type: Bytes}
+  ]
+}
+
+definition{
+  name: sameFrom,
+  parameters: [left : Bytes, right : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index left offset : (Option UInt8))
+      | Option.none => true
+      | Option.some x => (match (prim index right offset : (Option UInt8))
+        | Option.none => false
+        | Option.some y => ((prim equal x y : Bool) && (sameFrom left right (offset + 1) rest))))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: same,
+  parameters: [left : Bytes, right : Bytes],
+  result: Bool,
+  body: (((prim length left : Nat) =? (prim length right : Nat)) && (sameFrom left right 0 (prim length left : Nat)))
+}
+
+definition{
+  name: feedbackTerm,
+  parameters: [],
+  result: Bytes,
+  body: 0x666565646261636b
+}
+
+definition{
+  name: complaintTerm,
+  parameters: [],
+  result: Bytes,
+  body: 0x636f6d706c61696e74
+}
+
+definition{
+  name: pieceAt,
+  parameters: [value : Bytes, start : Nat, stop : Nat],
+  result: Bytes,
+  body: (match (Foundation.Bytes::sliceBytes value start (prim subtract stop start : Nat))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: splitFrom,
+  parameters: [value : Bytes, separator : Nat, offset : Nat, start : Nat, remaining : Nat],
+  result: (List Bytes),
+  body: (match remaining
+    | Nat.zero => (cons (pieceAt value start offset) (nil Bytes))
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => (cons (pieceAt value start offset) (nil Bytes))
+      | Option.some raw => (if ((prim to_nat raw : Nat) =? separator) then (cons (pieceAt value start offset) (splitFrom value separator (offset + 1) (offset + 1) rest)) else (splitFrom value separator (offset + 1) start rest)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: split,
+  parameters: [value : Bytes, separator : Nat],
+  result: (List Bytes),
+  body: (splitFrom value separator 0 0 (prim length value : Nat))
+}
+
+definition{
+  name: digitsFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => true
+      | Option.some raw => (((48 <=? (prim to_nat raw : Nat)) && ((prim to_nat raw : Nat) <=? 57)) && (digitsFrom value (offset + 1) rest)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: valueFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, sum : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => sum
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => sum
+      | Option.some raw => (valueFrom value (offset + 1) rest ((prim multiply sum 10 : Nat) + (prim subtract (prim to_nat raw : Nat) 48 : Nat))))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: decimal,
+  parameters: [value : Bytes],
+  result: (Option Nat),
+  body: (if ((0 <? (prim length value : Nat)) && (digitsFrom value 0 (prim length value : Nat))) then (ctor Option.some [Nat] (valueFrom value 0 (prim length value : Nat) 0)) else (ctor Option.none [Nat])),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: digit,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (match (prim slice 0x30313233343536373839 (prim remainder value 10 0 : Nat) 1 : (Option Bytes))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: decimalFrom,
+  parameters: [value : Nat, fuel : Nat],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => (digit value)
+    | Nat.succ rest => (if (value <? 10) then (digit value) else (prim append (decimalFrom (prim quotient value 10 0 : Nat) rest) (digit value) : Bytes))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: decimalOf,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (decimalFrom value value)
+}
+
+definition{
+  name: formOf,
+  parameters: [line : Bytes],
+  result: (Option Form),
+  body: (match (split line 9)
+    | List.cons kind more => (match more
+      | List.cons channel more2 => (match more2
+        | List.cons feature more3 => (match more3
+          | List.cons received more4 => (match more4
+            | List.cons player more5 => (match more5
+              | List.cons text more6 => (match more6
+                | List.nil => (match (decimal received)
+                  | Option.none => (ctor Option.none [Form])
+                  | Option.some at => (if ((0 <? (prim length feature : Nat)) && (0 <? (prim length player : Nat))) then (ctor Option.some [Form] (record Form {kind := kind, channel := channel, feature := feature, received := at, player := player, text := text})) else (ctor Option.none [Form])))
+                | List.cons extra others => (ctor Option.none [Form]))
+              | List.nil => (ctor Option.none [Form]))
+            | List.nil => (ctor Option.none [Form]))
+          | List.nil => (ctor Option.none [Form]))
+        | List.nil => (ctor Option.none [Form]))
+      | List.nil => (ctor Option.none [Form]))
+    | List.nil => (ctor Option.none [Form])),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: reads_a_decimal,
+  parameters: [],
+  statement: (((decimal 0x31373634323030303030) = (ctor Option.some [Nat] 1764200000)) /\ (((decimal 0x) = (ctor Option.none [Nat])) /\ ((decimal 0x3161) = (ctor Option.none [Nat])))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: writes_a_decimal,
+  parameters: [],
+  statement: (((decimalOf 0) = 0x30) /\ ((decimalOf 1764200000) = 0x31373634323030303030)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

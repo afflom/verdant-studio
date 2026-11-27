@@ -1,0 +1,78 @@
+\begin{lexlean}{Studio.Feedback.LeadTime}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Feedback.Intake}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: leadRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a2061206c6561642074696d6520697320726563656976656420544142207075626c69736865642c206561636820696e20646563696d616c207365636f6e64732c20616e6420612072656c65617365206973207075626c6973686564206e6f206561726c696572207468616e2074686520666565646261636b20697420616e737765727320776173207265636569766564
+}
+
+definition{
+  name: inOrder,
+  parameters: [received : Nat, published : Nat],
+  result: Bool,
+  body: (received <=? published)
+}
+
+definition{
+  name: elapsed,
+  parameters: [received : Nat, published : Nat],
+  result: Nat,
+  body: (prim subtract published received : Nat)
+}
+
+definition{
+  name: leadTime,
+  parameters: [received : Nat, published : Nat],
+  result: (Option Nat),
+  body: (if (inOrder received published) then (ctor Option.some [Nat] (elapsed received published)) else (ctor Option.none [Nat]))
+}
+
+definition{
+  name: breaksLeadTime,
+  parameters: [received : Nat, took : Nat],
+  result: Bool,
+  body: ((not (inOrder received (received + took))) || (not ((elapsed received (received + took)) =? took)))
+}
+
+definition{
+  name: leadAnswer,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Feedback.Intake::split value 9)
+    | List.cons start more => (match more
+      | List.cons stop more2 => (match more2
+        | List.nil => (match (Studio.Feedback.Intake::decimal start)
+          | Option.none => (leadRefusal)
+          | Option.some received => (match (Studio.Feedback.Intake::decimal stop)
+            | Option.none => (leadRefusal)
+            | Option.some published => (match (leadTime received published)
+              | Option.none => (leadRefusal)
+              | Option.some took => (Studio.Feedback.Intake::decimalOf took))))
+        | List.cons extra others => (leadRefusal))
+      | List.nil => (leadRefusal))
+    | List.nil => (leadRefusal)),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: lead_time_is_published_less_received,
+  parameters: [received : Nat, took : Nat],
+  statement: ((breaksLeadTime received took) = false),
+  proof: linear_arithmetic{definitions: [breaksLeadTime, elapsed, inOrder]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_release_before_its_feedback,
+  parameters: [],
+  statement: (((leadTime 10 9) = (ctor Option.none [Nat])) /\ ((leadAnswer 0x3130093039) = (leadRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
