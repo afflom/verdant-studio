@@ -5,6 +5,7 @@
 \importmodule{Studio.Feedback.Solicitation}
 \importmodule{Studio.Feedback.Masking}
 \importmodule{Studio.Feedback.Incident}
+\importmodule{Studio.Feedback.Assessment}
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
@@ -18,14 +19,21 @@ definition{
   name: formRefusal,
   parameters: [],
   result: Bytes,
-  body: 0x726566757365643a20657665727920666f726d206973206b696e6420544142206368616e6e656c205441422066656174757265205441422072656365697665642054414220706c617965722054414220746578742c20746865206b696e6420666565646261636b2c20636f6d706c61696e74206f7220696e636964656e742c20746865206368616e6e656c20666f726d206f722070726f6d70742c20726563656976656420696e20646563696d616c207365636f6e64732c20776974682061206665617475726520616e64206120706c61796572
+  body: 0x726566757365643a20657665727920666f726d206973206b696e6420544142206368616e6e656c205441422066656174757265205441422072656365697665642054414220706c617965722054414220746578742c207468656e206f7074696f6e616c6c792054414220696d6d6564696174652c20746865206b696e6420666565646261636b2c20636f6d706c61696e74206f7220696e636964656e742c20746865206368616e6e656c20666f726d206f722070726f6d70742c20726563656976656420696e20646563696d616c207365636f6e64732c20776974682061206665617475726520616e64206120706c61796572
+}
+
+definition{
+  name: single,
+  parameters: [form : Studio.Feedback.Intake::Form],
+  result: Bool,
+  body: ((Studio.Feedback.Incident::actsAlone form) || (Studio.Feedback.Assessment::immediate form))
 }
 
 definition{
   name: admitted,
   parameters: [form : Studio.Feedback.Intake::Form],
   result: Bool,
-  body: ((Studio.Feedback.Incident::knownKind (project form kind)) && (Studio.Feedback.Solicitation::knownChannel (project form channel)))
+  body: ((Studio.Feedback.Incident::knownKind (project form kind)) && ((Studio.Feedback.Solicitation::knownChannel (project form channel)) && (Studio.Feedback.Assessment::knownAssessment (project form assessment))))
 }
 
 definition{
@@ -59,7 +67,7 @@ definition{
   result: (List Studio.Feedback.Intake::Form),
   body: (match forms
     | List.nil => (nil Studio.Feedback.Intake::Form)
-    | List.cons form rest => (if (((not (Studio.Feedback.Incident::actsAlone form)) && (Studio.Feedback.Intake::same (project form feature) feature)) && ((not onlyPrompted) || (Studio.Feedback.Solicitation::prompted form))) then (cons form (feedbackOn rest feature onlyPrompted)) else (feedbackOn rest feature onlyPrompted))),
+    | List.cons form rest => (if (((not (single form)) && (Studio.Feedback.Intake::same (project form feature) feature)) && ((not onlyPrompted) || (Studio.Feedback.Solicitation::prompted form))) then (cons form (feedbackOn rest feature onlyPrompted)) else (feedbackOn rest feature onlyPrompted))),
   recursive_argument: forms
 }
 
@@ -133,7 +141,7 @@ definition{
   result: (List Bytes),
   body: (match forms
     | List.nil => (nil Bytes)
-    | List.cons form rest => (if (Studio.Feedback.Incident::actsAlone form) then (cons (singleLine form) (distillFrom quorum all rest seen)) else (if (memberBytes (project form feature) seen) then (distillFrom quorum all rest seen) else (cons (consensusLine quorum all (project form feature)) (distillFrom quorum all rest (cons (project form feature) seen)))))),
+    | List.cons form rest => (if (single form) then (cons (singleLine form) (distillFrom quorum all rest seen)) else (if (memberBytes (project form feature) seen) then (distillFrom quorum all rest seen) else (cons (consensusLine quorum all (project form feature)) (distillFrom quorum all rest (cons (project form feature) seen)))))),
   recursive_argument: forms
 }
 
@@ -206,6 +214,13 @@ theorem{
   name: refuses_an_unknown_kind_or_channel,
   parameters: [],
   statement: (((catalog 0x320a7261746509666f726d096a756d70093109703109) = (formRefusal)) /\ ((catalog 0x320a666565646261636b09656d61696c096a756d70093109703109) = (formRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+theorem{
+  name: an_immediate_request_acts_alone,
+  parameters: [],
+  statement: (((catalog 0x320a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7020666f7220703309696d6d6564696174650a666565646261636b09666f726d09636f6f70093609703409636f2d6f70) = 0x73696e676c6509666565646261636b09636f6f7009666f726d09350961646420636f2d6f7020666f72202a0a70656e64696e6709666565646261636b09636f6f70093109300936) /\ ((catalog 0x320a666565646261636b09666f726d09636f6f7009350970330961646420636f2d6f7009757267656e74) = (formRefusal))),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }

@@ -9,7 +9,7 @@ Feature: feedback
   answers feedback-lead-time TAB RECEIVED TAB PUBLISHED with the lead time.
 
   @VS-21 @build @rejects
-  Scenario: Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name
+  Scenario: Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, optionally TAB immediate, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name
     Given the feedback model in app/src/Studio/Feedback/Intake.lex.tex
     When prism-code check has Lean's kernel prove Studio.Feedback.Intake.reads_a_decimal, Studio.Feedback.Intake.writes_a_decimal and Studio.Feedback.refuses_an_unknown_kind_or_channel
     Then the decimal 1764200000 is read and written back, the empty text and 1a are no decimal, and a form of kind rate or channel email is answered with the form refusal
@@ -47,3 +47,10 @@ Feature: feedback
     When prism-code check has Lean's kernel prove Studio.Feedback.LeadTime.lead_time_is_published_less_received and Studio.Feedback.LeadTime.refuses_a_release_before_its_feedback
     Then for every received time and every duration took, a release published took seconds after its feedback has lead time took, and a release at 9 for feedback received at 10 is answered with the lead-time refusal
     And prism-code build replays feedback-lead-time TAB 100 TAB 3700, answered 3600, and feedback-lead-time TAB 10 TAB 9, answered with that refusal
+
+  @VS-32 @build
+  Scenario: A single request that its initial assessment (ISO 10002) marks for immediate action, such as a special request of significant value, is actioned on its own without consensus, and any other assessment is refused
+    Given the feedback model in app/src/Studio/Feedback/Assessment.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Feedback.Assessment.knows_no_assessment_and_immediate_action and Studio.Feedback.an_immediate_request_acts_alone
+    Then a feedback form assessed immediate is its own single line with its player masked, ahead of the pending feedback on the same feature, and an assessment of urgent is answered with the form refusal
+    And prism-code build replays the immediate request, answered with its single line
