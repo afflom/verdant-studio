@@ -8090,3 +8090,20 @@ statement = "vTensor's registered capability IDs (VT-01 onward): a GGML device b
 artifact = "authorities/VTENSOR-IDS-280A1A4/ids.toml"
 checksum = "bd91ff396cda0992f76e7ca7bacd23299d3e27f88878bac84e1bb91006aeb724"
 realized_by = []
+
+[[authority]]
+id = "W3C-WEBREF-IDL-PERMISSIONS-A0114B8"
+name = "Permissions IDL (webref extract)"
+issuer = "W3C"
+edition = "w3c/webref commit a0114b8f7f58, tr/idl/permissions.idl"
+canonical_id = "https://github.com/w3c/webref/blob/main/tr/idl/permissions.idl"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://raw.githubusercontent.com/w3c/webref/a0114b8f7f58e78dcfcd04b4412f172e8f160d91/tr/idl/permissions.idl"
+media_type = "text/plain"
+license = "MIT License (W3C webref)"
+redistribution = "redistributable"
+statement = "The Web IDL fragments of Permissions, extracted by Reffy into W3C webref (Source: Permissions (https://www.w3.org/TR/permissions/)). Read by read-webidl as an import for index row G14, which defines PermissionDescriptor and PermissionStatus."
+artifact = "authorities/W3C-WEBREF-IDL-PERMISSIONS-A0114B8/permissions.idl"
+checksum = "b075888a184acff979ee6fcb8900d940a8b09f9bba6e39006470378c1b14029b"
+realized_by = []
