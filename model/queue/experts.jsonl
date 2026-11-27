@@ -1,0 +1,4 @@
+{"construct": "Studio.Generator.Expert.Image", "std": {"authority": "SDXS-512-Q8-0-3144D89"}}
+{"construct": "Studio.Generator.Expert.Speech", "std": {"authority": "WHISPER-TINY-EN-Q8-0-5359861"}}
+{"construct": "Studio.Generator.Expert.Vision", "std": {"authority": "SMOLVLM2-256M-Q8-0-A48F519"}}
+{"construct": "Studio.Generator.Expert.Vision.Projector", "std": {"authority": "SMOLVLM2-256M-MMPROJ-Q8-0-A48F519"}}
