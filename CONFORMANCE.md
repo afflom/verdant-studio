@@ -84,6 +84,16 @@ The three honesty levels (R2):
 | `VS-25` | `build` | An incident or a complaint is actioned on its own, without consensus, as a single entry carrying its masked text | `Studio.Feedback.Incident.an_incident_or_a_complaint_acts_alone`, `Studio.Feedback.an_incident_acts_alone_and_masked` |
 | `VS-26` | `build` | The feedback-to-publish lead time (DORA change lead time) is the published time less the received time, and a release published before the feedback it answers is refused | `Studio.Feedback.LeadTime.lead_time_is_published_less_received`, `Studio.Feedback.LeadTime.refuses_a_release_before_its_feedback`, refuses with `refused: a lead time is received TAB published, each in decimal seconds, and a release is published no earlier than the feedback it answers was received` |
 
+## prism
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-27` | `build` | A Prism's seed, one word or sentence, is admitted when every generator of the Prism admits it, and a seed a generator refuses is refused with that generator's own refusal | `Studio.Prism.Seed.admits_a_word_and_a_sentence`, `Studio.Prism.Seed.refuses_a_seed_a_generator_refuses` |
+| `VS-28` | `build` | The Prism generation refuses by name an empty seed | `Studio.Prism.Seed.refuses_the_empty_seed`, `Studio.PrismGeneration.refuses_a_request_with_no_seed`, refuses with `refused: the seed is empty, so there is no Prism to generate` |
+| `VS-29` | `build` | The Prism generation lists a seed's facets by media type, answers each media type with the artifact its generator writes from the seed, and each artifact begins as its media type requires: audio/midi and audio/wave by their WHATWG MIME Sniffing patterns, image/svg+xml with an svg root in the SVG namespace | `Studio.PrismGeneration.lists_the_facets`, `Studio.PrismGeneration.routes_each_media_type_to_its_generator`, `Studio.PrismGeneration.each_facet_has_its_media_type` |
+| `VS-30` | `build` | The Prism generation refuses by name a media type the Prism has no facet of, and an artifact is not taken for another media type | `Studio.PrismGeneration.refuses_a_facet_it_has_not`, refuses with `refused: the Prism has no facet of media type text/plain, and its facets are audio/midi, audio/wave and image/svg+xml` |
+| `VS-31` | `build` | The Prism generation refuses by name a request that is not a media type, a tab, then the seed | `Studio.PrismGeneration.refuses_a_request_with_no_seed`, refuses with `refused: a Prism request is a media type, a tab, then the seed, and an empty media type asks for the Prism's facets` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
