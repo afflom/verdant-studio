@@ -1,0 +1,1 @@
+{"citation":["std","W3C-WEBRTC-2025","K07"],"name":"RtcPeerConnectionState","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from W3C-WEBRTC-2025 IDL enum RTCPeerConnectionState.","enum":["closed","failed","disconnected","new","connecting","connected"],"title":"RTCPeerConnectionState"}}
