@@ -3,13 +3,14 @@ Feature: feedback
   In-game player feedback (REQ-PLAYER-FEEDBACK), in app/src/Studio/Feedback.lex.tex
   and app/src/Studio/Feedback/. Players never sign in to Studio: the Prism they
   play sends its feedback forms, and the app answers feedback TAB QUORUM, then
+  TAB each feature the creator assessed for immediate action (ISO 10002), then
   one form per line, with the catalog: each incident or complaint as its own
   single line, and each feature's feedback as one consensus or pending line
   with its distinct players, prompted players and earliest received time. It
   answers feedback-lead-time TAB RECEIVED TAB PUBLISHED with the lead time.
 
   @VS-21 @build @rejects
-  Scenario: Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, optionally TAB immediate, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name
+  Scenario: Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name
     Given the feedback model in app/src/Studio/Feedback/Intake.lex.tex
     When prism-code check has Lean's kernel prove Studio.Feedback.Intake.reads_a_decimal, Studio.Feedback.Intake.writes_a_decimal and Studio.Feedback.refuses_an_unknown_kind_or_channel
     Then the decimal 1764200000 is read and written back, the empty text and 1a are no decimal, and a form of kind rate or channel email is answered with the form refusal
@@ -49,8 +50,8 @@ Feature: feedback
     And prism-code build replays feedback-lead-time TAB 100 TAB 3700, answered 3600, and feedback-lead-time TAB 10 TAB 9, answered with that refusal
 
   @VS-32 @build
-  Scenario: A single request that its initial assessment (ISO 10002) marks for immediate action, such as a special request of significant value, is actioned on its own without consensus, and any other assessment is refused
+  Scenario: A single request on a feature that the creator's initial assessment (ISO 10002) marks for immediate action, sent as feedback TAB QUORUM TAB FEATURE, is actioned on its own without consensus; a player cannot assess their own form, which is refused if it tries
     Given the feedback model in app/src/Studio/Feedback/Assessment.lex.tex
-    When prism-code check has Lean's kernel prove Studio.Feedback.Assessment.knows_no_assessment_and_immediate_action and Studio.Feedback.an_immediate_request_acts_alone
-    Then a feedback form assessed immediate is its own single line with its player masked, ahead of the pending feedback on the same feature, and an assessment of urgent is answered with the form refusal
-    And prism-code build replays the immediate request, answered with its single line
+    When prism-code check has Lean's kernel prove Studio.Feedback.Assessment.acts_on_only_the_features_the_creator_assessed and Studio.Feedback.a_request_the_creator_assessed_acts_alone
+    Then feedback on a feature the creator assessed is its own single line with its player masked, the same form without that assessment stays pending, and a form that carries its own assessment is answered with the form refusal
+    And prism-code build replays the assessed request, answered with its single line, and the self-assessed form, answered with the form refusal
