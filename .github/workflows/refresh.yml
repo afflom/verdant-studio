@@ -164,7 +164,8 @@ jobs:
             # model/strata.json is one line, so two changes that each add a stratum row always
             # conflict there. Its rows are keyed by path (VS-05), so the merge is main's rows, then
             # each row the pull request adds whose path main does not have, in the pull request's order.
-            if ! git apply --3way target/change.patch 2> target/apply.err; then
+            # git apply drops a file whose binary patch is corrupt and still exits 0, so that error counts as not applying.
+            if ! git apply --3way target/change.patch 2> target/apply.err || grep -q '^error: corrupt' target/apply.err; then
               if [ "$(git diff --name-only --diff-filter=U)" = model/strata.json ]; then
                 base=$(git merge-base origin/main "origin/$branch")
                 git show "$base:model/strata.json" > target/strata-base.json
