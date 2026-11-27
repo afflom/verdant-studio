@@ -1,0 +1,1 @@
+{"citation":["std","SCRUM-GUIDE-2020","A06"],"name":"ScrumValue","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from SCRUM-GUIDE-2020 (sha256 ed83eb23...b3ec), Scrum Values: the five values in the order stated.","enum":["Commitment","Focus","Openness","Respect","Courage"],"title":"Scrum value"}}

@@ -1,0 +1,1 @@
+{"citation":["std","SCRUM-GUIDE-2020","A06"],"name":"ScrumAccountability","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from SCRUM-GUIDE-2020 (sha256 ed83eb23...b3ec), Scrum Team: the three accountabilities within the Scrum Team, in section order.","enum":["Developers","Product Owner","Scrum Master"],"title":"Scrum accountability"}}
