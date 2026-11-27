@@ -152,7 +152,7 @@ jobs:
             git clean -fdq
             # readers/lexlean.lock and readers/xml/lexlean.lock are generated: the export below writes them again, so they are left out of the
             # change, and two reader pull requests never conflict on it.
-            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml ':!readers/lexlean.lock' ':!readers/xml/lexlean.lock' > target/change.patch
+            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers admit lexlean-workspace.toml ':!readers/lexlean.lock' ':!readers/xml/lexlean.lock' ':!admit/lexlean.lock' > target/change.patch
             # model/strata.json is one line, so two changes that each add a stratum row always
             # conflict there. Its rows are keyed by path (VS-05), so the merge is main's rows, then
             # each row the pull request adds whose path main does not have, in the pull request's order.
@@ -183,10 +183,11 @@ jobs:
               gh api --silent "repos/${GITHUB_REPOSITORY}/issues/${pr}/comments" -F body=@target/comment.md || true
               continue
             fi
-            rm -rf studio/.lexlean/production readers/.lexlean/production readers/xml/.lexlean/production
+            rm -rf studio/.lexlean/production readers/.lexlean/production readers/xml/.lexlean/production admit/.lexlean/production
             cargo build -q --release --manifest-path certified/packages/rust-std/verdant_studio/Cargo.toml --target-dir target
             if [ -d certified-readers ]; then cargo build -q --release --manifest-path certified-readers/packages/rust-std/verdant_readers/Cargo.toml --target-dir target && rm -f certified-readers/packages/rust-std/verdant_readers/Cargo.lock; fi
             if [ -d certified-xml ]; then cargo build -q --release --manifest-path certified-xml/packages/rust-std/verdant_xml/Cargo.toml --target-dir target && rm -f certified-xml/packages/rust-std/verdant_xml/Cargo.lock; fi
+            if [ -d certified-admit ]; then cargo build -q --release --manifest-path certified-admit/packages/rust-std/verdant_admit/Cargo.toml --target-dir target && rm -f certified-admit/packages/rust-std/verdant_admit/Cargo.lock; fi
             # The regenerated change re-derives the encodings whose reader output it changes, as propose-command does.
             if [ -x target/release/verdant_readers ]; then bash .github/scripts/readmit.sh target/release/verdant_readers; fi
             if [ -x target/release/verdant_xml ]; then bash .github/scripts/readmit.sh target/release/verdant_xml; fi
@@ -194,7 +195,7 @@ jobs:
             target/release/verdant_studio build
             target/release/verdant_studio publish
             git add -A
-            { echo "verdant_studio propose-command"; echo; echo "regenerated on main $(git rev-parse --short origin/main)"; git diff --cached --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers lexlean-workspace.toml; } > target/message.txt
+            { echo "verdant_studio propose-command"; echo; echo "regenerated on main $(git rev-parse --short origin/main)"; git diff --cached --stat -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers admit lexlean-workspace.toml; } > target/message.txt
             git -c user.name="${SLUG}[bot]" -c user.email="${id}+${SLUG}[bot]@users.noreply.github.com" commit -q -F target/message.txt
             git push -q --force-with-lease="${branch}:origin/${branch}" origin "HEAD:refs/heads/${branch}"
             gh pr ready "$pr" || true

@@ -12,10 +12,10 @@ phases="$log.phases"
 ( while :; do ps -eo etimes=,args= | awk '$2 == "lean" && $3 == "-R" { m = $NF; sub(".*-src/", "", m); print $1, m }' >> "$phases.raw" || true; sleep 1; done ) &
 watch=$!
 status=0
-# Each LexLean project exports in parallel under its own limits: studio, readers and readers/xml when they exist.
-# Lean's proof of a project grows with the square of its function count, so the readers are split by family.
+# Each LexLean project exports in parallel under its own limits: studio, readers, readers/xml and admit when they exist.
+# Lean's proof of a project grows with the square of its function count, so the readers are split by family and admission is its own project.
 pids=""
-for project in studio readers readers/xml; do
+for project in studio readers readers/xml admit; do
   if [ -f "$project/lexlean.toml" ]; then
     (cd "$project" && "$ll" lock && "$ll" check && "$ll" production build --request production-request.json) > "$log.${project//\//-}" 2>&1 &
     pids="$pids $!"
@@ -25,6 +25,7 @@ for pid in $pids; do wait "$pid" || status=$?; done
 cat "$log.studio" > "$log"
 if [ -f "$log.readers" ]; then cat "$log.readers" >> "$log"; fi
 if [ -f "$log.readers-xml" ]; then cat "$log.readers-xml" >> "$log"; fi
+if [ -f "$log.admit" ]; then cat "$log.admit" >> "$log"; fi
 kill "$watch" 2> "$phases.err" || true
 awk '{ if ($1 > t[$2]) t[$2] = $1 } END { for (m in t) print t[m], m }' "$phases.raw" | sort -rn > "$phases"
 echo "Lean phases by wall time in seconds, longest first (the limit is 300, and the export fails at 240):"
@@ -50,4 +51,10 @@ if [ -f readers/xml/lexlean.toml ]; then
   cp -r readers/xml/.lexlean/production/*/ certified-xml
   rm -f certified-xml/packages/rust-std/verdant_xml/Cargo.lock
   "$ll" production verify-artifact certified-xml
+fi
+if [ -f admit/lexlean.toml ]; then
+  rm -rf certified-admit
+  cp -r admit/.lexlean/production/*/ certified-admit
+  rm -f certified-admit/packages/rust-std/verdant_admit/Cargo.lock
+  "$ll" production verify-artifact certified-admit
 fi
