@@ -1,0 +1,71 @@
+\begin{lexlean}{Catalog.AcesOcioDisplayView}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AcesOcioDisplayViewDisplay,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: sRGBDisplay, fields: []},
+    {name: gamma22Rec709Display, fields: []},
+    {name: displayP3Display, fields: []},
+    {name: displayP3HDRDisplay, fields: []},
+    {name: p3D65Display, fields: []},
+    {name: rec1886Rec709Display, fields: []},
+    {name: rec2100HLGDisplay, fields: []},
+    {name: rec2100PQDisplay, fields: []},
+    {name: sT2084P3D65Display, fields: []}
+  ]
+}
+
+inductive{
+  name: AcesOcioDisplayViewView,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: raw, fields: []},
+    {name: aCES20SDR100NitsRec709, fields: []},
+    {name: aCES20SDR100NitsRec709D60InRec709D65, fields: []},
+    {name: unToneMapped, fields: []},
+    {name: videoColorimetric, fields: []},
+    {name: aCES20SDR100NitsP3D65, fields: []},
+    {name: aCES20SDR100NitsP3D60InP3D65, fields: []},
+    {name: aCES20HDR1000NitsP3D65, fields: []},
+    {name: aCES20HDR1000NitsP3D60InP3D65, fields: []},
+    {name: aCES20SDR100NitsRec709D60InP3D65, fields: []},
+    {name: aCES20HDR1000NitsP3D60InRec2020D65, fields: []},
+    {name: aCES20HDR500NitsP3D65, fields: []},
+    {name: aCES20HDR2000NitsP3D65, fields: []},
+    {name: aCES20HDR4000NitsP3D65, fields: []},
+    {name: aCES20HDR500NitsP3D60InRec2020D65, fields: []},
+    {name: aCES20HDR2000NitsP3D60InRec2020D65, fields: []},
+    {name: aCES20HDR4000NitsP3D60InRec2020D65, fields: []},
+    {name: aCES20HDR500NitsRec2020, fields: []},
+    {name: aCES20HDR1000NitsRec2020, fields: []},
+    {name: aCES20HDR2000NitsRec2020, fields: []},
+    {name: aCES20HDR4000NitsRec2020, fields: []},
+    {name: aCES20HDR500NitsRec2020D60InRec2020D65, fields: []},
+    {name: aCES20HDR1000NitsRec2020D60InRec2020D65, fields: []},
+    {name: aCES20HDR2000NitsRec2020D60InRec2020D65, fields: []},
+    {name: aCES20HDR4000NitsRec2020D60InRec2020D65, fields: []},
+    {name: aCES20SDR100NitsRec709D60InRec2020D65, fields: []},
+    {name: aCES20HDR108NitsP3D65, fields: []},
+    {name: aCES20HDR108NitsP3D60InP3D65, fields: []},
+    {name: aCES20HDR500NitsP3D60InP3D65, fields: []},
+    {name: aCES20HDR2000NitsP3D60InP3D65, fields: []},
+    {name: aCES20HDR4000NitsP3D60InP3D65, fields: []}
+  ]
+}
+
+structure{
+  name: AcesOcioDisplayView,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: display, type: AcesOcioDisplayViewDisplay},
+    {name: view, type: AcesOcioDisplayViewView}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

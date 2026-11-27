@@ -1,0 +1,29 @@
+\begin{lexlean}{Catalog.AppStoreSdkRequirement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: AppStoreSdkRequirementPlatform,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: iOS, fields: []},
+    {name: iPadOS, fields: []},
+    {name: tvOS, fields: []},
+    {name: visionOS, fields: []},
+    {name: watchOS, fields: []}
+  ]
+}
+
+structure{
+  name: AppStoreSdkRequirement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: platform, type: AppStoreSdkRequirementPlatform},
+    {name: sdkMajorVersion, type: Nat},
+    {name: xcodeMajorVersion, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

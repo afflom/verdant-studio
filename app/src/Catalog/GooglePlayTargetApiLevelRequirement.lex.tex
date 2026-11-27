@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.GooglePlayTargetApiLevelRequirement}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: GooglePlayTargetApiLevelRequirementAppCategory,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: newAppsAndAppUpdates, fields: []},
+    {name: wearOSAndAndroidAutomotiveOSApps, fields: []},
+    {name: androidTVAndAndroidXRApps, fields: []},
+    {name: existingApps, fields: []}
+  ]
+}
+
+structure{
+  name: GooglePlayTargetApiLevelRequirement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: appCategory, type: GooglePlayTargetApiLevelRequirementAppCategory},
+    {name: targetApiLevel, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

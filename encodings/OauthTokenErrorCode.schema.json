@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from IETF-RFC-6749 Section 5.2 Error Response, the error parameter values.","enum":["invalid_request","invalid_client","invalid_grant","unauthorized_client","unsupported_grant_type","invalid_scope"],"title":"OAuth 2.0 token error code"}
