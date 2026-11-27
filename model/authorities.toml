@@ -8175,3 +8175,88 @@ statement = "The English speech recognition weights, the speech expert VerdantUI
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "ATLASSIAN-JIRA-STATUSES-PRIORITIES-RESOLUTIONS"
+name = "What are work item statuses, priorities, and resolutions?"
+issuer = "Atlassian"
+edition = "Jira Cloud documentation, as retrieved 2026-11-27"
+canonical_id = "https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-statuses-priorities-and-resolutions/"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-statuses-priorities-and-resolutions/"
+media_type = "text/html"
+license = "Copyright Atlassian"
+redistribution = "citation-only"
+statement = "Atlassian's statement of the default Jira work item priorities and their meanings, the convention the row names (Jira workflows). Index row O05."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "EC-IP-26-1369-STOP-DESTROYING-VIDEOGAMES"
+name = "Commission will engage with industry following European Citizens' Initiative on the disabling of videogames by publishers"
+issuer = "European Commission"
+edition = "Press release IP/26/1369, Brussels, 16 June 2026"
+canonical_id = "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1369"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://ec.europa.eu/commission/presscorner/api/documents?reference=IP/26/1369&language=en"
+media_type = "application/json"
+license = "Copyright European Union (reuse authorised, Commission Decision 2011/833/EU)"
+redistribution = "citation-only"
+statement = "The Commission press release that states its reply to the 'Stop Destroying Videogames' citizens' initiative and the steps it commits to; served by the presscorner API, whose JSON is not byte-stable, so no sha256 is pinned. Index row Y08."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "LOLESPORTS-COMMUNITY-COMPETITION-GUIDELINES"
+name = "League of Legends Esports Community Competition Guidelines"
+issuer = "Riot Games"
+edition = "as retrieved 2026-11-27"
+canonical_id = "https://lolesports.com/en-GB/news/lol-esports-community-competition-guidelines"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://lolesports.com/en-GB/news/lol-esports-community-competition-guidelines"
+media_type = "text/html"
+license = "Copyright Riot Games"
+redistribution = "citation-only"
+statement = "Riot's global community competition license and guidelines for League of Legends, which supersede the North America Community Competition Guidelines (the superseded page points here). Index row S10."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "SPN-ARL-FAIR-USE-CODE-2018-UVA-LIBRA"
+name = "Code of Best Practices in Fair Use for Software Preservation (deposited copy)"
+issuer = "Patricia Aufderheide, Brandon Butler, Krista Cox and Peter Jaszi; Association of Research Libraries"
+edition = "September 2018, file 2019.2.28-software-preservation-code-revised.pdf, deposited in Libra (University of Virginia), DOI 10.18130/v3-kpcj-k283"
+canonical_id = "https://doi.org/10.18130/v3-kpcj-k283"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://libraopen.library.virginia.edu/bitstreams/2240d62f-deee-481a-b027-a2009106dbe7/download"
+media_type = "application/pdf"
+license = "Copyright the authors; the Code states: feel free to reproduce this work in its entirety"
+redistribution = "citation-only"
+statement = "The full text of the Code bound as SPN-ARL-FAIR-USE-SOFTWARE-PRESERVATION-2018, whose bound SAA page only describes it; arl.org and cmsimpact.org refuse automated fetches. Index row Y10."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "STEAMWORKS-ANTICHEAT-GAME-BANS"
+name = "Steamworks Documentation: Anti-cheat and Game Bans"
+issuer = "Valve"
+edition = "as retrieved 2026-11-27"
+canonical_id = "https://partner.steamgames.com/doc/features/anticheat"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://partner.steamgames.com/doc/features/anticheat"
+media_type = "text/html"
+license = "Copyright Valve Corporation"
+redistribution = "citation-only"
+statement = "Valve's documentation of the Steam anti-cheat services and Game Bans: best practices, permissions, gift restrictions and what a game ban does to the user. Index row T11."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
