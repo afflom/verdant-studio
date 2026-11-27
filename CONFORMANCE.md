@@ -141,6 +141,17 @@ The three honesty levels (R2):
 | `VS-57` | `build` | Studio.SharedCatalog finds a catalog through another catalog that lists it | `Studio.SharedCatalog.finds_a_catalog_through_one_that_lists_it` |
 | `VS-58` | `build` | Studio.SharedCatalog refuses to find a catalog through one that does not list it, naming both | `Studio.SharedCatalog.refuses_a_catalog_through_one_that_does_not_list_it`, refuses with `refused: the catalog other-catalog does not list creator-games, so creator-games is not found through it` |
 
+## contributor
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-59` | `build` | The implementing agent acts in Verdant Studio as a Contributor of the maintainer under its own Prism ID, by Studio.Agent.Contributor, when that Prism ID is linked to the maintainer's, each link a Prism ID acting on behalf of another as in W3C PROV-O actedOnBehalfOf | `Studio.Agent.Contributor.the_linked_agent_contributes` |
+| `VS-60` | `build` | Studio.Agent.Contributor refuses an agent whose Prism ID is not linked to the maintainer's, naming both | `Studio.Agent.Contributor.refuses_an_agent_not_linked_to_the_maintainer`, refuses with `refused: prism:agent is not linked to prism:alex, so it is no contributor of that maintainer` |
+| `VS-61` | `build` | The implementing agent has a Prism ID of its own, so Studio.Agent.Contributor refuses the maintainer's own Prism ID as a contributor | `Studio.Agent.Contributor.refuses_the_maintainers_own_prism_id_as_the_agent`, refuses with `refused: prism:alex is the maintainer's own Prism ID, and a contributor acts under a Prism ID of its own` |
+| `VS-62` | `build` | Studio.Agent.Contributor hands a linked contributor's permission request, scoped to what it may change and naming its content by a BLAKE3 content address, on to Verdant Engine's VE-70 signing-request scheme for the maintainer to grant or reject | `Studio.Agent.Contributor.hands_a_contributors_permission_request_to_the_engine` |
+| `VS-63` | `build` | A contributor's permission request is content-addressed, so Studio.Agent.Contributor refuses one whose content is not named by blake3: and 64 hex digits | `Studio.Agent.Contributor.refuses_a_permission_request_without_a_content_address`, refuses with `refused: latest is no content address, so the request names no content; name it as blake3: and 64 hex digits` |
+| `VS-64` | `open` | The implementing agent's changes reach Verdant Studio as the VE-70 permission requests its maintainer grants, superseding GitHub App pull requests and owner approval (REQ-AGENT-IDENTITY), with the GitHub App only pushing the mirror when a release is published; until VE-70 is callable from Studio (VS-42), the App pull requests carry them |  |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
