@@ -68,6 +68,24 @@ jobs:
             git status --short -- certified certified-readers certified-xml | head -20
             exit 1
           fi
+      # verify-artifact replays a bundle but does not compare it with the sources. So each LexLean project's
+      # semantic id must equal the one its bundle records. Lock-level ids move with every admission to app/,
+      # which readers depends on without using it, so they are not compared.
+      - name: the certified bundles were exported from these sources (semantic ids, no Lean)
+        run: |
+          set -euo pipefail
+          ll="$PWD/target/lexlean/bin/lexlean"
+          for pair in studio:certified readers:certified-readers readers/xml:certified-xml; do
+            project=$(cut -d : -f 1 <<< "$pair")
+            bundle=$(cut -d : -f 2 <<< "$pair")
+            if [ ! -f "$project/lexlean.toml" ]; then continue; fi
+            if [ ! -f "$bundle/result.json" ]; then echo "::warning::$project has no committed bundle $bundle, so nothing records what it was exported from"; continue; fi
+            now=$(cd "$project" && "$ll" lock >/dev/null && "$ll" check | sed -n 's/.*semantic \([0-9a-f]*\)).*/\1/p')
+            git checkout -q -- "$project/lexlean.lock"
+            was=$(jq -r .source.semantic_id "$bundle/result.json")
+            if [ "$now" != "$was" ]; then echo "::error::$project now has semantic id $now, but $bundle was exported from $was: export it again through propose-command"; exit 1; fi
+            echo "$project matches $bundle (semantic $now)"
+          done
       - name: check, build and publish through the API
         run: |
           set -euo pipefail

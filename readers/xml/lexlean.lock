@@ -1,0 +1,77 @@
+spec = "lexlean/lock/2"
+language = "1.2"
+compiler_semantics = "4b3ed2378d6c43bb32a41d466cf140337e8b1cedc5e1f345aaf3395f488f63a9"
+project_config_sha256 = "315417b31e03c929d4b0291f278120d93649efe8735d843421c07c6ed289af67"
+lean_toolchain = "leanprover/lean4:v4.32.2"
+
+[[workspace_file]]
+path = "lake-manifest.json"
+sha256 = "fb2c1426bff06e64913b8332a67ceeeaf571a5d37023c0674e8569d42a8dcf4a"
+
+[[workspace_file]]
+path = "lakefile.toml"
+sha256 = "ef9fc26679620e7309e3ac356461c7d701a20410636f7ac0d8daed76f5aa4413"
+
+[[workspace_file]]
+path = "lean-toolchain"
+sha256 = "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273"
+
+[[package]]
+id = "lexlean.core"
+version = "1.2.0"
+kind = "builtin"
+source = "embedded"
+revision = "compiler-semantics"
+tree_sha256 = "827317cae68c162f3a96c8a8de4e53ab348e7d3724fd2b834fa85ecde1a1b392"
+manifest_sha256 = "271079763d269cc873531f515e56da960cd6321393b9460ff0e617666fa01d71"
+imports = []
+
+[[package]]
+id = "lexlean.std.bool"
+version = "1.2.0"
+kind = "builtin"
+source = "embedded"
+revision = "compiler-semantics"
+tree_sha256 = "3bc0fb09d706ffa7d5a1363302ea87c049acc7c7dcafde63c62682620c11be9b"
+manifest_sha256 = "de58de2cf18a7a5a62d8c20649139d6dfe1f7b16b3130c75f150fbac5440a71e"
+imports = ["lexlean.core@1.2.0"]
+
+[[package]]
+id = "lexlean.std.nat"
+version = "1.2.0"
+kind = "builtin"
+source = "embedded"
+revision = "compiler-semantics"
+tree_sha256 = "e0db021e01b91d651c43921d66f6b0023c8efbf17cac2ec53192ce5305e4e1ac"
+manifest_sha256 = "6fb446b39e3c1c18a5f10cfa1f7aa2bd431837719eb0eb7489aadf452c9420a7"
+imports = ["lexlean.core@1.2.0", "lexlean.std.bool@1.2.0"]
+
+[[source_package]]
+id = "core"
+version = "0.1.0"
+kind = "path"
+source = "app"
+module_prefix = "VerdantStudio"
+tree_sha256 = "19d484d16b5c904583f7a6adb988c6e1dec792b5fffa0e24bf680f9282e573a4"
+manifest_sha256 = "02c1de92062cf30107e4d069bc528bdb614f509c076456db1feb23ae88f2d5fc"
+imports = []
+
+[[source_package]]
+id = "std"
+version = "1.0.0"
+kind = "path"
+source = "stdlib"
+module_prefix = "LexLeanStd"
+tree_sha256 = "e300215721c304bc9a029cecc23817cf6d9b88c5d9b2fe1bb46f10a29827d578"
+manifest_sha256 = "fa3c9469ad798c690c46cee22ece7a9e02b529ec455a473456057c4cc425c4c4"
+imports = []
+
+[[source_package]]
+id = "studio"
+version = "0.1.0"
+kind = "path"
+source = "studio"
+module_prefix = "VerdantStudioCli"
+tree_sha256 = "708429d3bce3e33cd8026f3f339c63e250a69f0d5a5da272330ee710317e22e1"
+manifest_sha256 = "0a0e0f56d766c0ce6b701e6e1abfa698e130495841f2b9506de2a4a40e708dcb"
+imports = ["core@0.1.0", "std@1.0.0"]
