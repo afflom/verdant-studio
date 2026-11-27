@@ -548,3 +548,5 @@ Each construct and the citation that admits it.
 - `Catalog.UsdSkelSchemaClass`: std OPENUSD-USDSKEL-SCHEMA-26.11.1 row E06
 - `Catalog.X3dHAnimNode`: std WEB3D-X3D-4.0-XSD row E04
 - `Catalog.YarnSpinnerParserRule`: std YARNSPINNER-PARSER-3.3.1 row C06
+- `Catalog.OslShaderType`: std ASWF-OSL-GRAMMAR-1.15.8.0 row D10
+- `Catalog.VrmcVrm`: std VRMC-VRM-1.0 row E05

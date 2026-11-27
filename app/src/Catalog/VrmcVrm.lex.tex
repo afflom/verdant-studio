@@ -1,0 +1,33 @@
+\begin{lexlean}{Catalog.VrmcVrm}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: JsonValue,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: null, fields: []},
+    {name: boolean, fields: [Bool]},
+    {name: number, fields: [(Int * Int)]},
+    {name: string, fields: [Bytes]},
+    {name: array, fields: [(List JsonValue)]},
+    {name: object, fields: [(List (Bytes * JsonValue))]}
+  ]
+}
+
+structure{
+  name: VrmcVrm,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: expressions, type: (Option (List (Bytes * JsonValue)))},
+    {name: firstPerson, type: (Option (List (Bytes * JsonValue)))},
+    {name: humanoid, type: (List (Bytes * JsonValue))},
+    {name: lookAt, type: (Option (List (Bytes * JsonValue)))},
+    {name: meta, type: (List (Bytes * JsonValue))},
+    {name: specVersion, type: Bytes}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
