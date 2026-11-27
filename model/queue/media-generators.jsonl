@@ -1,0 +1,8 @@
+{"construct":"Studio.Generator.Music","req":"REQ-ENGINE-MUSIC"}
+{"construct":"Studio.Generator.Music.Midi","std":{"authority":"MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE","row":"I06"}}
+{"construct":"Studio.Generator.AudioFile","req":"REQ-ENGINE-AUDIO-FILE"}
+{"construct":"Studio.Generator.AudioFile.Bwf","std":{"authority":"EBU-TECH-3285-2","row":"I09"}}
+{"construct":"Studio.Generator.RasterImage","req":"REQ-ENGINE-RASTER-IMAGE"}
+{"construct":"Studio.Generator.RasterImage.Png","std":{"authority":"W3C-PNG-3"}}
+{"construct":"Studio.Generator.VectorImage","req":"REQ-ENGINE-VECTOR-IMAGE"}
+{"construct":"Studio.Generator.VectorImage.Svg","std":{"authority":"W3C-SVG-2"}}
