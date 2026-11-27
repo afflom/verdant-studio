@@ -105,6 +105,16 @@ The three honesty levels (R2):
 | `VS-36` | `build` | The release cut refuses a current version that is not a SemVer 2.0.0 normal version X.Y.Z of non-negative integers with no leading zeroes, naming it | `Studio.Runtime.refuses_a_leading_zero`, refuses with `refused: a normal version takes the form X.Y.Z of non-negative integers with no leading zeroes (SemVer 2.0.0, rule 2), and 01.1.0 does not` |
 | `VS-37` | `build` | The release cut refuses an increment that is not major, minor or patch, the three increments of SemVer 2.0.0, naming it | `Studio.Runtime.refuses_an_unknown_increment`, refuses with `refused: a release increments the major, minor or patch version (SemVer 2.0.0, rules 6 to 8), and feature is none of them` |
 
+## project
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-38` | `build` | A Verdant Studio project's maintainer, by Studio.Project, is the Prism ID whose linked GitHub identity is the project's owner, each link a Prism ID attributed a GitHub login as in W3C PROV-O wasAttributedTo | `Studio.Project.the_owners_linked_prism_id_maintains_the_project` |
+| `VS-39` | `build` | Studio.Project refuses to name a maintainer for a project whose owner has no linked Prism ID, naming the owner and the project | `Studio.Project.refuses_a_project_whose_owner_has_no_linked_prism_id`, refuses with `refused: no Prism ID is linked to afflom, the owner of verdant-studio, so verdant-studio has no maintainer yet` |
+| `VS-40` | `build` | Each Verdant Studio project is its own isolated instance, so Studio.Project refuses a request about any other project, naming the instance that answers it | `Studio.Project.refuses_a_request_about_another_project`, refuses with `refused: this instance holds the project verdant-studio only, so a request about other-game is answered by the instance of other-game` |
+| `VS-41` | `build` | Studio.Project hands an access request to its own project on to Verdant Engine's signing-request and admin-approval scheme, VE-70, as the typed request that names the requester, the project and the scope for its maintainers to approve or reject, and decides none of it itself | `Studio.Project.hands_an_access_request_to_the_engine` |
+| `VS-42` | `open` | Verdant Engine's VE-70 signing-request and admin-approval scheme is callable from Verdant Studio, so that the signing request Studio.Project hands on for an access request is decided by the engine; REQ-PROJECT-INSTANCE depends on it, and until the engine exposes it Studio holds the request it would send |  |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
