@@ -19,11 +19,20 @@ inductive{
 }
 
 inductive{
+  name: IdlEntry,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: E, fields: [Bytes, Bytes, Bytes, (List Bytes)]}
+  ]
+}
+
+inductive{
   name: IdlType,
   type_parameters: [],
   parameters: [],
   constructors: [
-    {name: T, fields: [Nat, Bytes, (List Bytes), Bytes, Bytes]}
+    {name: T, fields: [Nat, Bytes, (List Bytes), Bytes, Bytes, (List IdlEntry)]}
   ]
 }
 
@@ -51,15 +60,6 @@ inductive{
   parameters: [],
   constructors: [
     {name: M, fields: [Bytes, IdlType, Nat]}
-  ]
-}
-
-inductive{
-  name: IdlEntry,
-  type_parameters: [],
-  parameters: [],
-  constructors: [
-    {name: E, fields: [Bytes, Bytes, Bytes, (List Bytes)]}
   ]
 }
 
@@ -379,7 +379,7 @@ definition{
   parameters: [value : IdlType],
   result: Nat,
   body: (match value
-    | IdlType.T f0 f1 f2 f3 f4 => f0),
+    | IdlType.T f0 f1 f2 f3 f4 f5 => f0),
   executable: true
 }
 
@@ -388,7 +388,7 @@ definition{
   parameters: [value : IdlType],
   result: Bytes,
   body: (match value
-    | IdlType.T f0 f1 f2 f3 f4 => f1),
+    | IdlType.T f0 f1 f2 f3 f4 f5 => f1),
   executable: true
 }
 
@@ -397,7 +397,7 @@ definition{
   parameters: [value : IdlType],
   result: (List Bytes),
   body: (match value
-    | IdlType.T f0 f1 f2 f3 f4 => f2),
+    | IdlType.T f0 f1 f2 f3 f4 f5 => f2),
   executable: true
 }
 
@@ -406,7 +406,7 @@ definition{
   parameters: [value : IdlType],
   result: Bytes,
   body: (match value
-    | IdlType.T f0 f1 f2 f3 f4 => f3),
+    | IdlType.T f0 f1 f2 f3 f4 f5 => f3),
   executable: true
 }
 
@@ -415,7 +415,27 @@ definition{
   parameters: [value : IdlType],
   result: Bytes,
   body: (match value
-    | IdlType.T f0 f1 f2 f3 f4 => f4),
+    | IdlType.T f0 f1 f2 f3 f4 f5 => f4),
+  executable: true
+}
+
+definition{
+  name: tyExtra,
+  parameters: [value : IdlType],
+  result: (List IdlEntry),
+  body: (match value
+    | IdlType.T f0 f1 f2 f3 f4 f5 => f5),
+  executable: true
+}
+
+definition{
+  name: appendEntries,
+  parameters: [left : (List IdlEntry), right : (List IdlEntry)],
+  result: (List IdlEntry),
+  body: (match left
+    | List.nil => right
+    | List.cons head rest => (cons head (appendEntries rest right))),
+  recursive_argument: left,
   executable: true
 }
 
@@ -486,7 +506,7 @@ definition{
   name: plain,
   parameters: [text : Bytes],
   result: IdlType,
-  body: (ctor IdlType.T 0 text (nil Bytes) 0x 0x),
+  body: (ctor IdlType.T 0 text (nil Bytes) 0x 0x (nil IdlEntry)),
   executable: true
 }
 
@@ -494,7 +514,7 @@ definition{
   name: ieee,
   parameters: [wide : Bool],
   result: IdlType,
-  body: (let name : Bytes := (if wide then (Studio.Schema::binary64Type) else (Studio.Schema::binary32Type)); (ctor IdlType.T 0 name (cons name (nil Bytes)) 0x name)),
+  body: (let name : Bytes := (if wide then (Studio.Schema::binary64Type) else (Studio.Schema::binary32Type)); (ctor IdlType.T 0 name (cons name (nil Bytes)) 0x name (nil IdlEntry))),
   executable: true
 }
 
@@ -502,7 +522,7 @@ definition{
   name: ieeeList,
   parameters: [wide : Bool],
   result: IdlType,
-  body: (let name : Bytes := (if wide then (Studio.Schema::binary64Type) else (Studio.Schema::binary32Type)); (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(List ") (cons name (cons (Studio.Doc::lit ")") (nil Bytes))))) (cons name (nil Bytes)) 0x 0x)),
+  body: (let name : Bytes := (if wide then (Studio.Schema::binary64Type) else (Studio.Schema::binary32Type)); (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(List ") (cons name (cons (Studio.Doc::lit ")") (nil Bytes))))) (cons name (nil Bytes)) 0x 0x (nil IdlEntry))),
   executable: true
 }
 
@@ -510,15 +530,15 @@ definition{
   name: untranslated,
   parameters: [reason : Bytes],
   result: IdlType,
-  body: (ctor IdlType.T 0 0x (nil Bytes) reason 0x),
+  body: (ctor IdlType.T 0 0x (nil Bytes) reason 0x (nil IdlEntry)),
   executable: true
 }
 
 definition{
-  name: anonymousUnion,
-  parameters: [],
-  result: Bytes,
-  body: (Studio.Doc::lit "a union type is translated only as the whole body of a typedef, whose identifier names its inductive (Web IDL 2.11 and 2.13.32)"),
+  name: labeled,
+  parameters: [value : IdlType, label : Bytes],
+  result: IdlType,
+  body: (ctor IdlType.T (tyKind value) (tyText value) (tyRefs value) (tyProblem value) label (tyExtra value)),
   executable: true
 }
 
@@ -526,7 +546,8 @@ definition{
   name: asField,
   parameters: [inner : IdlType],
   result: IdlType,
-  body: (if ((tyKind inner) =? 0) then inner else (ctor IdlType.T 0 0x (tyRefs inner) (if (Studio.Doc::same (tyProblem inner) 0x) then (anonymousUnion) else (tyProblem inner)) 0x)),
+  body: (if ((tyKind inner) =? 0) then inner else (if (if (Studio.Doc::same (tyProblem inner) 0x) then false else true) then (ctor IdlType.T 0 0x (tyRefs inner) (tyProblem inner) 0x (nil IdlEntry)) else (let name : Bytes := (Studio.Schema::typeName (tyLabel inner)); (ctor IdlType.T 0 name (cons name (tyRefs inner)) 0x (tyLabel inner) (cons (ctor IdlEntry.E name 0x (Studio.Schema::inductiveText name (cons (tyText inner) (nil Bytes))) (tyRefs inner)) (tyExtra inner)))))),
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -534,7 +555,8 @@ definition{
   name: wrapped,
   parameters: [prefix : String, inner : IdlType],
   result: IdlType,
-  body: (let field : IdlType := (asField inner); (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons (prim utf8_encode prefix : Bytes) (cons (Studio.Doc::lit " ") (cons (tyText field) (cons (Studio.Doc::lit ")") (nil Bytes))))))) (tyRefs field) (tyProblem field) 0x)),
+  body: (let field : IdlType := (asField inner); (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(") (cons (prim utf8_encode prefix : Bytes) (cons (Studio.Doc::lit " ") (cons (tyText field) (cons (Studio.Doc::lit ")") (nil Bytes))))))) (tyRefs field) (tyProblem field) 0x (tyExtra field))),
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -553,7 +575,7 @@ definition{
   name: keywordTable,
   parameters: [],
   result: (List (Bytes * IdlType)),
-  body: (cons ((Studio.Doc::lit "boolean"), (plain (Studio.Doc::lit "Bool"))) (cons ((Studio.Doc::lit "byte"), (plain (Studio.Doc::lit "Int"))) (cons ((Studio.Doc::lit "octet"), (plain (Studio.Doc::lit "Nat"))) (cons ((Studio.Doc::lit "bigint"), (plain (Studio.Doc::lit "Int"))) (cons ((Studio.Doc::lit "float"), (plain (Studio.Schema::numberType))) (cons ((Studio.Doc::lit "double"), (plain (Studio.Schema::numberType))) (cons ((Studio.Doc::lit "DOMString"), (plain (Studio.Doc::lit "(List Nat)"))) (cons ((Studio.Doc::lit "USVString"), (plain (Studio.Doc::lit "Bytes"))) (cons ((Studio.Doc::lit "ByteString"), (plain (Studio.Doc::lit "Bytes"))) (cons ((Studio.Doc::lit "ArrayBuffer"), (plain (Studio.Doc::lit "Bytes"))) (cons ((Studio.Doc::lit "SharedArrayBuffer"), (plain (Studio.Doc::lit "Bytes"))) (cons ((Studio.Doc::lit "DataView"), (plain (Studio.Doc::lit "Bytes"))) (cons ((Studio.Doc::lit "Int8Array"), (plain (Studio.Doc::lit "(List Int)"))) (cons ((Studio.Doc::lit "Int16Array"), (plain (Studio.Doc::lit "(List Int)"))) (cons ((Studio.Doc::lit "Int32Array"), (plain (Studio.Doc::lit "(List Int)"))) (cons ((Studio.Doc::lit "BigInt64Array"), (plain (Studio.Doc::lit "(List Int)"))) (cons ((Studio.Doc::lit "Uint8Array"), (plain (Studio.Doc::lit "(List Nat)"))) (cons ((Studio.Doc::lit "Uint16Array"), (plain (Studio.Doc::lit "(List Nat)"))) (cons ((Studio.Doc::lit "Uint32Array"), (plain (Studio.Doc::lit "(List Nat)"))) (cons ((Studio.Doc::lit "Uint8ClampedArray"), (plain (Studio.Doc::lit "(List Nat)"))) (cons ((Studio.Doc::lit "BigUint64Array"), (plain (Studio.Doc::lit "(List Nat)"))) (cons ((Studio.Doc::lit "Float16Array"), (untranslated (Studio.Doc::lit "Float16Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)"))) (cons ((Studio.Doc::lit "Float32Array"), (ieeeList false)) (cons ((Studio.Doc::lit "Float64Array"), (ieeeList true)) (cons ((Studio.Doc::lit "any"), (untranslated (Studio.Doc::lit "any is not translated, because it is the union of every Web IDL type and has no one LexLean type (Web IDL 2.13.1)"))) (cons ((Studio.Doc::lit "object"), (untranslated (Studio.Doc::lit "object is not translated, because its values are references to JavaScript objects of any shape, which no LexLean type holds (Web IDL 2.13.20)"))) (cons ((Studio.Doc::lit "symbol"), (untranslated (Studio.Doc::lit "symbol is not translated, because a symbol value has identity but no content that a LexLean type holds (Web IDL 2.13.21)"))) (cons ((Studio.Doc::lit "undefined"), (untranslated (Studio.Doc::lit "undefined is not translated, because it is the type of the absence of a value (Web IDL 2.13.2)"))) (nil (Bytes * IdlType)))))))))))))))))))))))))))))),
+  body: (cons ((Studio.Doc::lit "boolean"), (labeled (plain (Studio.Doc::lit "Bool")) (Studio.Doc::lit "Boolean"))) (cons ((Studio.Doc::lit "byte"), (labeled (plain (Studio.Doc::lit "Int")) (Studio.Doc::lit "Byte"))) (cons ((Studio.Doc::lit "octet"), (labeled (plain (Studio.Doc::lit "Nat")) (Studio.Doc::lit "Octet"))) (cons ((Studio.Doc::lit "bigint"), (labeled (plain (Studio.Doc::lit "Int")) (Studio.Doc::lit "BigInt"))) (cons ((Studio.Doc::lit "float"), (labeled (plain (Studio.Schema::numberType)) (Studio.Doc::lit "Float"))) (cons ((Studio.Doc::lit "double"), (labeled (plain (Studio.Schema::numberType)) (Studio.Doc::lit "Double"))) (cons ((Studio.Doc::lit "DOMString"), (labeled (plain (Studio.Doc::lit "(List Nat)")) (Studio.Doc::lit "String"))) (cons ((Studio.Doc::lit "USVString"), (labeled (plain (Studio.Doc::lit "Bytes")) (Studio.Doc::lit "USVString"))) (cons ((Studio.Doc::lit "ByteString"), (labeled (plain (Studio.Doc::lit "Bytes")) (Studio.Doc::lit "ByteString"))) (cons ((Studio.Doc::lit "ArrayBuffer"), (labeled (plain (Studio.Doc::lit "Bytes")) (Studio.Doc::lit "ArrayBuffer"))) (cons ((Studio.Doc::lit "SharedArrayBuffer"), (labeled (plain (Studio.Doc::lit "Bytes")) (Studio.Doc::lit "SharedArrayBuffer"))) (cons ((Studio.Doc::lit "DataView"), (labeled (plain (Studio.Doc::lit "Bytes")) (Studio.Doc::lit "DataView"))) (cons ((Studio.Doc::lit "Int8Array"), (labeled (plain (Studio.Doc::lit "(List Int)")) (Studio.Doc::lit "Int8Array"))) (cons ((Studio.Doc::lit "Int16Array"), (labeled (plain (Studio.Doc::lit "(List Int)")) (Studio.Doc::lit "Int16Array"))) (cons ((Studio.Doc::lit "Int32Array"), (labeled (plain (Studio.Doc::lit "(List Int)")) (Studio.Doc::lit "Int32Array"))) (cons ((Studio.Doc::lit "BigInt64Array"), (labeled (plain (Studio.Doc::lit "(List Int)")) (Studio.Doc::lit "BigInt64Array"))) (cons ((Studio.Doc::lit "Uint8Array"), (labeled (plain (Studio.Doc::lit "(List Nat)")) (Studio.Doc::lit "Uint8Array"))) (cons ((Studio.Doc::lit "Uint16Array"), (labeled (plain (Studio.Doc::lit "(List Nat)")) (Studio.Doc::lit "Uint16Array"))) (cons ((Studio.Doc::lit "Uint32Array"), (labeled (plain (Studio.Doc::lit "(List Nat)")) (Studio.Doc::lit "Uint32Array"))) (cons ((Studio.Doc::lit "Uint8ClampedArray"), (labeled (plain (Studio.Doc::lit "(List Nat)")) (Studio.Doc::lit "Uint8ClampedArray"))) (cons ((Studio.Doc::lit "BigUint64Array"), (labeled (plain (Studio.Doc::lit "(List Nat)")) (Studio.Doc::lit "BigUint64Array"))) (cons ((Studio.Doc::lit "Float16Array"), (labeled (untranslated (Studio.Doc::lit "Float16Array is not translated, because its elements are IEEE 754 numbers whose value space holds the infinities and NaN, which no exact LexLean number type holds (Web IDL 2.13.34)")) (Studio.Doc::lit "Float16Array"))) (cons ((Studio.Doc::lit "Float32Array"), (labeled (ieeeList false) (Studio.Doc::lit "Float32Array"))) (cons ((Studio.Doc::lit "Float64Array"), (labeled (ieeeList true) (Studio.Doc::lit "Float64Array"))) (cons ((Studio.Doc::lit "any"), (labeled (untranslated (Studio.Doc::lit "any is not translated, because it is the union of every Web IDL type and has no one LexLean type (Web IDL 2.13.1)")) (Studio.Doc::lit "Any"))) (cons ((Studio.Doc::lit "object"), (labeled (untranslated (Studio.Doc::lit "object is not translated, because its values are references to JavaScript objects of any shape, which no LexLean type holds (Web IDL 2.13.20)")) (Studio.Doc::lit "Object"))) (cons ((Studio.Doc::lit "symbol"), (labeled (untranslated (Studio.Doc::lit "symbol is not translated, because a symbol value has identity but no content that a LexLean type holds (Web IDL 2.13.21)")) (Studio.Doc::lit "Symbol"))) (cons ((Studio.Doc::lit "undefined"), (labeled (untranslated (Studio.Doc::lit "undefined is not translated, because it is the type of the absence of a value (Web IDL 2.13.2)")) (Studio.Doc::lit "Undefined"))) (nil (Bytes * IdlType)))))))))))))))))))))))))))))),
   executable: true
 }
 
@@ -598,7 +620,8 @@ definition{
   name: nullable,
   parameters: [value : IdlType, toks : (List IdlToken)],
   result: (Result IdlTyped Bytes),
-  body: (if (headIs toks "?") then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (wrapped "Option" value) (after toks))) else (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P value toks))),
+  body: (if (headIs toks "?") then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (labeled (wrapped "Option" value) (Studio.Doc::cat (cons (tyLabel value) (cons (Studio.Doc::lit "OrNull") (nil Bytes))))) (after toks))) else (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P value toks))),
+  axioms: [Quot.sound, propext],
   executable: true
 }
 
@@ -612,15 +635,27 @@ definition{
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok ts => (if (headIs ts "(") then (match (typeAt rest (after ts) 1)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
-    | Result.ok union => (if (headIs (typedRest union) "?") then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (ctor IdlType.T 0 0x (tyRefs (typedType union)) (Studio.Doc::lit "a nullable union type is not translated yet, because the typedef identifier names only the union (Web IDL 2.13.32)") 0x) (after (typedRest union)))) else (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (typedType union) (typedRest union))))) else (match ts
+    | Result.ok union => (if (headIs (typedRest union) "?") then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (labeled (wrapped "Option" (typedType union)) (Studio.Doc::cat (cons (tyLabel (typedType union)) (cons (Studio.Doc::lit "OrNull") (nil Bytes))))) (after (typedRest union)))) else (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (typedType union) (typedRest union))))) else (match ts
     | List.nil => (ctor Result.error [IdlTyped, Bytes] (expected "a type" ts))
-    | List.cons head others => (let word : Bytes := (tokText head); (if (if ((tokKind head) =? 0) then false else true) then (ctor Result.error [IdlTyped, Bytes] (expected "a type" ts)) else (if ((Studio.Doc::same word (Studio.Doc::lit "sequence")) || ((Studio.Doc::same word (Studio.Doc::lit "FrozenArray")) || (Studio.Doc::same word (Studio.Doc::lit "ObservableArray")))) then (match (expect others "<")
+    | List.cons head others => (let word : Bytes := (tokText head); (if (if ((tokKind head) =? 0) then false else true) then (ctor Result.error [IdlTyped, Bytes] (expected "a type" ts)) else (if (Studio.Doc::same word (Studio.Doc::lit "sequence")) then (match (expect others "<")
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok open => (match (typeAt rest open 0)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok inner => (match (expect (typedRest inner) ">")
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
-    | Result.ok close => (nullable (wrapped "List" (typedType inner)) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "async_sequence")) then (match (expect others "<")
+    | Result.ok close => (nullable (labeled (wrapped "List" (typedType inner)) (Studio.Doc::cat (cons (tyLabel (typedType inner)) (cons (Studio.Doc::lit "Sequence") (nil Bytes))))) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "FrozenArray")) then (match (expect others "<")
+    | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
+    | Result.ok open => (match (typeAt rest open 0)
+    | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
+    | Result.ok inner => (match (expect (typedRest inner) ">")
+    | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
+    | Result.ok close => (nullable (labeled (wrapped "List" (typedType inner)) (Studio.Doc::cat (cons (tyLabel (typedType inner)) (cons (Studio.Doc::lit "Array") (nil Bytes))))) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "ObservableArray")) then (match (expect others "<")
+    | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
+    | Result.ok open => (match (typeAt rest open 0)
+    | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
+    | Result.ok inner => (match (expect (typedRest inner) ">")
+    | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
+    | Result.ok close => (nullable (labeled (wrapped "List" (typedType inner)) (Studio.Doc::cat (cons (tyLabel (typedType inner)) (cons (Studio.Doc::lit "ObservableArray") (nil Bytes))))) close)))) else (if (Studio.Doc::same word (Studio.Doc::lit "async_sequence")) then (match (expect others "<")
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok open => (match (typeAt rest open 0)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
@@ -644,15 +679,17 @@ definition{
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
     | Result.ok close => (match (keywordType (tokText keyToken))
     | Option.none => (ctor Result.error [IdlTyped, Bytes] (expected "a string type" open))
-    | Option.some keyType => (let value : IdlType := (asField (typedType inner)); (nullable (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(List (") (cons (tyText keyType) (cons (Studio.Doc::lit " * ") (cons (tyText value) (cons (Studio.Doc::lit "))") (nil Bytes))))))) (tyRefs value) (tyProblem value) 0x) close)))))) else (ctor Result.error [IdlTyped, Bytes] (expected "DOMString, USVString or ByteString" open))))) else (if (Studio.Doc::same word (Studio.Doc::lit "unsigned")) then (if (headIs others "short") then (nullable (plain (Studio.Doc::lit "Nat")) (after others)) else (if (headIs others "long") then (let tail : (List IdlToken) := (after others); (nullable (plain (Studio.Doc::lit "Nat")) (if (headIs tail "long") then (after tail) else tail))) else (ctor Result.error [IdlTyped, Bytes] (expected "short or long" others)))) else (if (Studio.Doc::same word (Studio.Doc::lit "short")) then (nullable (plain (Studio.Doc::lit "Int")) others) else (if (Studio.Doc::same word (Studio.Doc::lit "long")) then (nullable (plain (Studio.Doc::lit "Int")) (if (headIs others "long") then (after others) else others)) else (if (Studio.Doc::same word (Studio.Doc::lit "unrestricted")) then (if (headIs others "float") then (nullable (ieee false) (after others)) else (if (headIs others "double") then (nullable (ieee true) (after others)) else (ctor Result.error [IdlTyped, Bytes] (expected "float or double" others)))) else (match (keywordType word)
-    | Option.none => (let named : Bytes := (identifierValue word); (nullable (ctor IdlType.T 0 (Studio.Schema::typeName named) (cons named (nil Bytes)) 0x named) others))
-    | Option.some known => (nullable known others))))))))))))))) else (match (typeAt rest toks 0)
+    | Option.some keyType => (let value : IdlType := (asField (typedType inner)); (nullable (ctor IdlType.T 0 (Studio.Doc::cat (cons (Studio.Doc::lit "(List (") (cons (tyText keyType) (cons (Studio.Doc::lit " * ") (cons (tyText value) (cons (Studio.Doc::lit "))") (nil Bytes))))))) (tyRefs value) (tyProblem value) (Studio.Doc::cat (cons (tyLabel keyType) (cons (tyLabel (typedType inner)) (cons (Studio.Doc::lit "Record") (nil Bytes))))) (tyExtra value)) close)))))) else (ctor Result.error [IdlTyped, Bytes] (expected "DOMString, USVString or ByteString" open))))) else (if (Studio.Doc::same word (Studio.Doc::lit "unsigned")) then (if (headIs others "short") then (nullable (labeled (plain (Studio.Doc::lit "Nat")) (Studio.Doc::lit "UnsignedShort")) (after others)) else (if (headIs others "long") then (let tail : (List IdlToken) := (after others); (if (headIs tail "long") then (nullable (labeled (plain (Studio.Doc::lit "Nat")) (Studio.Doc::lit "UnsignedLongLong")) (after tail)) else (nullable (labeled (plain (Studio.Doc::lit "Nat")) (Studio.Doc::lit "UnsignedLong")) tail))) else (ctor Result.error [IdlTyped, Bytes] (expected "short or long" others)))) else (if (Studio.Doc::same word (Studio.Doc::lit "short")) then (nullable (labeled (plain (Studio.Doc::lit "Int")) (Studio.Doc::lit "Short")) others) else (if (Studio.Doc::same word (Studio.Doc::lit "long")) then (if (headIs others "long") then (nullable (labeled (plain (Studio.Doc::lit "Int")) (Studio.Doc::lit "LongLong")) (after others)) else (nullable (labeled (plain (Studio.Doc::lit "Int")) (Studio.Doc::lit "Long")) others)) else (if (Studio.Doc::same word (Studio.Doc::lit "unrestricted")) then (if (headIs others "float") then (nullable (labeled (ieee false) (Studio.Doc::lit "UnrestrictedFloat")) (after others)) else (if (headIs others "double") then (nullable (labeled (ieee true) (Studio.Doc::lit "UnrestrictedDouble")) (after others)) else (ctor Result.error [IdlTyped, Bytes] (expected "float or double" others)))) else (match (keywordType word)
+    | Option.none => (let named : Bytes := (identifierValue word); (nullable (ctor IdlType.T 0 (Studio.Schema::typeName named) (cons named (nil Bytes)) 0x named (nil IdlEntry)) others))
+    | Option.some known => (nullable known others))))))))))))))))) else (match (typeAt rest toks 0)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
-    | Result.ok parsed => (let member : IdlType := (typedType parsed); (let piece : IdlType := (if ((tyKind member) =? 0) then (if (Studio.Doc::same (tyProblem member) 0x) then (if (Studio.Doc::same (tyLabel member) 0x) then (ctor IdlType.T 1 0x (tyRefs member) (Studio.Doc::lit "a union member type that is not a named definition gives its constructor no name, so the union is not translated yet (Web IDL 2.13.32)") 0x) else (match (Studio.Schema::nameAs false (tyLabel member))
-    | Option.none => (ctor IdlType.T 1 0x (tyRefs member) (Studio.Doc::cat (cons (Studio.Doc::lit "the union member ") (cons (tyLabel member) (cons (Studio.Doc::lit " has no constructor name") (nil Bytes))))) 0x)
-    | Option.some spelled => (ctor IdlType.T 1 (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", fields: [") (cons (tyText member) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (tyRefs member) 0x 0x))) else (ctor IdlType.T 1 0x (tyRefs member) (tyProblem member) 0x)) else member); (if (headIs (typedRest parsed) "or") then (match (typeAt rest (after (typedRest parsed)) 2)
+    | Result.ok parsed => (let member : IdlType := (typedType parsed); (let piece : IdlType := (if (((tyKind member) =? 0) && ((Studio.Doc::same (tyLabel member) (Studio.Doc::lit "Undefined")) && (Studio.Doc::same (tyProblem member) (Studio.Doc::lit "undefined is not translated, because it is the type of the absence of a value (Web IDL 2.13.2)")))) then (match (Studio.Schema::nameAs false (tyLabel member))
+    | Option.none => (ctor IdlType.T 1 0x (nil Bytes) (Studio.Doc::lit "the union member undefined has no constructor name") (tyLabel member) (nil IdlEntry))
+    | Option.some spelled => (ctor IdlType.T 1 (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", fields: []}") (nil Bytes))))) (nil Bytes) 0x (tyLabel member) (nil IdlEntry))) else (if ((tyKind member) =? 0) then (if (Studio.Doc::same (tyProblem member) 0x) then (if (Studio.Doc::same (tyLabel member) 0x) then (ctor IdlType.T 1 0x (tyRefs member) (Studio.Doc::lit "a union member type that is not a named definition gives its constructor no name, so the union is not translated yet (Web IDL 2.13.32)") (tyLabel member) (nil IdlEntry)) else (match (Studio.Schema::nameAs false (tyLabel member))
+    | Option.none => (ctor IdlType.T 1 0x (tyRefs member) (Studio.Doc::cat (cons (Studio.Doc::lit "the union member ") (cons (tyLabel member) (cons (Studio.Doc::lit " has no constructor name") (nil Bytes))))) (tyLabel member) (nil IdlEntry))
+    | Option.some spelled => (ctor IdlType.T 1 (Studio.Doc::cat (cons (Studio.Doc::lit "    {name: ") (cons spelled (cons (Studio.Doc::lit ", fields: [") (cons (tyText member) (cons (Studio.Doc::lit "]}") (nil Bytes))))))) (tyRefs member) 0x (tyLabel member) (tyExtra member)))) else (ctor IdlType.T 1 0x (tyRefs member) (tyProblem member) (tyLabel member) (nil IdlEntry))) else member)); (if (headIs (typedRest parsed) "or") then (match (typeAt rest (after (typedRest parsed)) 2)
     | Result.error reason => (ctor Result.error [IdlTyped, Bytes] reason)
-    | Result.ok more => (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (ctor IdlType.T 1 (if (Studio.Doc::same (tyText piece) 0x) then (tyText (typedType more)) else (if (Studio.Doc::same (tyText (typedType more)) 0x) then (tyText piece) else (Studio.Doc::cat (cons (tyText piece) (cons (Studio.Doc::lit ",\n") (cons (tyText (typedType more)) (nil Bytes))))))) (appendBytes (tyRefs piece) (tyRefs (typedType more))) (if (Studio.Doc::same (tyProblem piece) 0x) then (tyProblem (typedType more)) else (tyProblem piece)) 0x) (typedRest more)))) else (if ((mode =? 2) && (headIs (typedRest parsed) ")")) then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P piece (after (typedRest parsed)))) else (ctor Result.error [IdlTyped, Bytes] (if (mode =? 1) then (expected "or" (typedRest parsed)) else (expected "or or )" (typedRest parsed))))))))))),
+    | Result.ok more => (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P (ctor IdlType.T 1 (if (Studio.Doc::same (tyText piece) 0x) then (tyText (typedType more)) else (if (Studio.Doc::same (tyText (typedType more)) 0x) then (tyText piece) else (Studio.Doc::cat (cons (tyText piece) (cons (Studio.Doc::lit ",\n") (cons (tyText (typedType more)) (nil Bytes))))))) (appendBytes (tyRefs piece) (tyRefs (typedType more))) (if (Studio.Doc::same (tyProblem piece) 0x) then (tyProblem (typedType more)) else (tyProblem piece)) (Studio.Doc::cat (cons (tyLabel piece) (cons (Studio.Doc::lit "Or") (cons (tyLabel (typedType more)) (nil Bytes))))) (appendEntries (tyExtra piece) (tyExtra (typedType more)))) (typedRest more)))) else (if ((mode =? 2) && (headIs (typedRest parsed) ")")) then (ctor Result.ok [IdlTyped, Bytes] (ctor IdlTyped.P piece (after (typedRest parsed)))) else (ctor Result.error [IdlTyped, Bytes] (if (mode =? 1) then (expected "or" (typedRest parsed)) else (expected "or or )" (typedRest parsed))))))))))),
   recursive_argument: fuel,
   axioms: [Quot.sound, propext],
   executable: true
@@ -1094,6 +1131,39 @@ definition{
 }
 
 definition{
+  name: memberExtras,
+  parameters: [items : (List IdlMember)],
+  result: (List IdlEntry),
+  body: (match items
+    | List.nil => (nil IdlEntry)
+    | List.cons head rest => (appendEntries (tyExtra (memType head)) (memberExtras rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: allExtras,
+  parameters: [items : (List IdlDef)],
+  result: (List IdlEntry),
+  body: (match items
+    | List.nil => (nil IdlEntry)
+    | List.cons head rest => (appendEntries (memberExtras (defMembers head)) (appendEntries (tyExtra (defBody head)) (allExtras rest)))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
+  name: distinctEntries,
+  parameters: [items : (List IdlEntry), seen : (List Bytes)],
+  result: (List IdlEntry),
+  body: (match items
+    | List.nil => (nil IdlEntry)
+    | List.cons head rest => (if (Studio.Doc::memberBytes (entName head) seen) then (distinctEntries rest seen) else (cons head (distinctEntries rest (cons (entName head) seen))))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
   name: entryFor,
   parameters: [items : (List IdlEntry), name : Bytes],
   result: (Option IdlEntry),
@@ -1271,7 +1341,7 @@ definition{
     | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] (Studio.Doc::cat (cons (Studio.Doc::lit "not Web IDL: ") (cons reason (nil Bytes)))))
     | Result.ok primary => (match (readAll imports)
     | Result.error reason => (ctor Result.error [(Nat * Bytes), Bytes] reason)
-    | Result.ok imported => (let all : (List IdlDef) := (appendDefs primary imported); (let lookup : (List IdlEntry) := (settled ((prim length all : Nat) + 2) (cons (ctor IdlEntry.E (Studio.Schema::binary32Type) 0x (Studio.Schema::binaryDeclaration false) (nil Bytes)) (cons (ctor IdlEntry.E (Studio.Schema::binary64Type) 0x (Studio.Schema::binaryDeclaration true) (nil Bytes)) (entriesOf all all)))); (let wanted : (List Bytes) := (closure ((prim length lookup : Nat) + 1) (seeds primary) (nil Bytes) lookup); (let pending : (List (Bytes * ((List Bytes) * Bytes))) := (pendingOf lookup wanted); (let result : ((List Bytes) * (List (Bytes * ((List Bytes) * Bytes)))) := (ordered ((prim length pending : Nat) + 1) pending (nil Bytes) (nil Bytes)); (ctor Result.ok [(Nat * Bytes), Bytes] ((prim length (first result) : Nat), (Studio.Doc::cat (cons (Studio.Doc::cat (notes primary lookup all)) (cons (Studio.Doc::cat (cycleNote (second result))) (cons (Studio.Doc::lit "-- operations, constants and the other members that are not attributes are behavior, not data, and are not translated (Web IDL 2.5)\n") (cons (Studio.Schema::joinWith (Studio.Xsd::reversed (first result) (nil Bytes)) (Studio.Doc::lit "\n")) (nil Bytes))))))))))))))),
+    | Result.ok imported => (let all : (List IdlDef) := (appendDefs primary imported); (let lookup : (List IdlEntry) := (settled ((prim length all : Nat) + 2) (cons (ctor IdlEntry.E (Studio.Schema::binary32Type) 0x (Studio.Schema::binaryDeclaration false) (nil Bytes)) (cons (ctor IdlEntry.E (Studio.Schema::binary64Type) 0x (Studio.Schema::binaryDeclaration true) (nil Bytes)) (distinctEntries (appendEntries (entriesOf all all) (allExtras all)) (nil Bytes))))); (let wanted : (List Bytes) := (closure ((prim length lookup : Nat) + 1) (seeds primary) (nil Bytes) lookup); (let pending : (List (Bytes * ((List Bytes) * Bytes))) := (pendingOf lookup wanted); (let result : ((List Bytes) * (List (Bytes * ((List Bytes) * Bytes)))) := (ordered ((prim length pending : Nat) + 1) pending (nil Bytes) (nil Bytes)); (ctor Result.ok [(Nat * Bytes), Bytes] ((prim length (first result) : Nat), (Studio.Doc::cat (cons (Studio.Doc::cat (notes primary lookup all)) (cons (Studio.Doc::cat (cycleNote (second result))) (cons (Studio.Doc::lit "-- operations, constants and the other members that are not attributes are behavior, not data, and are not translated (Web IDL 2.5)\n") (cons (Studio.Schema::joinWith (Studio.Xsd::reversed (first result) (nil Bytes)) (Studio.Doc::lit "\n")) (nil Bytes))))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
