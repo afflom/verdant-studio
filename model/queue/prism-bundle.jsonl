@@ -1,0 +1,2 @@
+{"construct": "Studio.Prism.Bundle.Digest", "std": {"authority": "NIST-FIPS-180-4"}}
+{"construct": "Studio.Prism.Bundle.Archive", "std": {"authority": "ISO-IEC-21320-1-2015"}}
