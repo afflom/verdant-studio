@@ -548,3 +548,14 @@ Each construct and the citation that admits it.
 - `Catalog.UsdSkelSchemaClass`: std OPENUSD-USDSKEL-SCHEMA-26.11.1 row E06
 - `Catalog.X3dHAnimNode`: std WEB3D-X3D-4.0-XSD row E04
 - `Catalog.YarnSpinnerParserRule`: std YARNSPINNER-PARSER-3.3.1 row C06
+- `Catalog.AlembicGeomSchema`: std ALEMBIC-1.8.9 row D04
+- `Catalog.ColladaLibrary`: std KHRONOS-COLLADA-1.5.0 row D15
+- `Catalog.GdseLifeCyclePhase`: std ARXIV-1711.08527-V1 row A02
+- `Catalog.OmiGltfExtension`: std OMI-GLTF-EXTENSIONS row D17
+- `Catalog.OslShaderType`: std ASWF-OSL-GRAMMAR-1.15.8.0 row D10
+- `Catalog.SteamLobbyType`: std VALVE-STEAMWORKS-ISTEAMMATCHMAKING row K12
+- `Catalog.UnityReleaseType`: std UNITY-6-RELEASES-SUPPORT row A23
+- `Catalog.UnrealIkRig`: std EPIC-UE-5.9-IK-RIG row E08
+- `Catalog.UnrealSequencerElement`: std EPIC-UE-5.9-CINEMATICS row F07
+- `Catalog.UtilityConsideration`: std GRAHAM-GAMEAIPRO-UTILITY-THEORY-2013 row J05
+- `Catalog.VrmcVrm`: std VRMC-VRM-1.0 row E05

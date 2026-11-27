@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from ASWF-OSL-GRAMMAR-1.15.8.0 oslgram.y, rule typespec_or_shadertype: the shader type names it accepts, in test order ('shader' is the generic type OSL 2.0 promotes).","enum":["shader","surface","displacement","volume"],"title":"OSL shader type"}

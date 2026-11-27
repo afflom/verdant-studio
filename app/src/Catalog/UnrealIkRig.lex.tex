@@ -1,0 +1,27 @@
+\begin{lexlean}{Catalog.UnrealIkRig}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: UnrealIkRigSolverStackItem,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: goal, type: (Option Bytes)},
+    {name: root, type: (Option Bytes)},
+    {name: solver, type: Bytes}
+  ]
+}
+
+structure{
+  name: UnrealIkRig,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: goals, type: (Option (List Bytes))},
+    {name: retargetChains, type: (Option (List Bytes))},
+    {name: solverStack, type: (List UnrealIkRigSolverStackItem)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

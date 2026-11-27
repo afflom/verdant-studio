@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from VALVE-STEAMWORKS-ISTEAMMATCHMAKING (retrieved 2026-11-27), enum ELobbyType: its constants in value order (0 to 3).","enum":["k_ELobbyTypePrivate","k_ELobbyTypeFriendsOnly","k_ELobbyTypePublic","k_ELobbyTypeInvisible"],"title":"Steam ELobbyType"}
