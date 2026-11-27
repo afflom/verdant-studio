@@ -1,0 +1,152 @@
+\begin{lexlean}{Studio.Project}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: linkSeparator,
+  parameters: [],
+  result: Nat,
+  body: 61
+}
+
+definition{
+  name: linkedPrismId,
+  parameters: [link : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split link (linkSeparator))
+    | List.nil => 0x
+    | List.cons prismId rest => prismId)
+}
+
+definition{
+  name: linkedLogin,
+  parameters: [link : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split link (linkSeparator))
+    | List.nil => 0x
+    | List.cons prismId rest => (match rest
+      | List.nil => 0x
+      | List.cons login more => (match more
+        | List.nil => login
+        | List.cons extra others => 0x)))
+}
+
+definition{
+  name: maintainerOf,
+  parameters: [owner : Bytes, links : (List Bytes)],
+  result: (Option Bytes),
+  body: (match links
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons link rest => (if ((Studio.Runtime::same (linkedLogin link) owner) && (not ((prim length (linkedPrismId link) : Nat) =? 0))) then (ctor Option.some [Bytes] (linkedPrismId link)) else (maintainerOf owner rest))),
+  recursive_argument: links,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: noMaintainerRefusal,
+  parameters: [studioProject : Bytes, owner : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a206e6f20507269736d204944206973206c696e6b656420746f20 owner : Bytes) (prim append (prim append 0x2c20746865206f776e6572206f6620 studioProject : Bytes) (prim append 0x2c20736f20 (prim append studioProject 0x20686173206e6f206d61696e7461696e657220796574 : Bytes) : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: maintainerAnswer,
+  parameters: [studioProject : Bytes, prismId : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x6d61696e7461696e6572206f6620 studioProject : Bytes) (prim append 0x3a20 prismId : Bytes) : Bytes)
+}
+
+definition{
+  name: maintainer,
+  parameters: [studioProject : Bytes, owner : Bytes, links : (List Bytes)],
+  result: Bytes,
+  body: (match (maintainerOf owner links)
+    | Option.none => (noMaintainerRefusal studioProject owner)
+    | Option.some prismId => (maintainerAnswer studioProject prismId)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: isolationRefusal,
+  parameters: [studioProject : Bytes, target : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a207468697320696e7374616e636520686f6c6473207468652070726f6a65637420 studioProject : Bytes) (prim append (prim append 0x206f6e6c792c20736f206120726571756573742061626f757420 target : Bytes) (prim append 0x20697320616e7377657265642062792074686520696e7374616e6365206f6620 target : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: engineCapability,
+  parameters: [],
+  result: Bytes,
+  body: 0x56452d3730
+}
+
+definition{
+  name: handOff,
+  parameters: [studioProject : Bytes, requester : Bytes, scope : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x7369676e696e67207265717565737420666f7220 (engineCapability) : Bytes) (prim append 0x3a20 requester : Bytes) : Bytes) (prim append (prim append 0x2061736b7320 studioProject : Bytes) (prim append 0x20666f7220 (prim append scope 0x2c20666f7220746865206d61696e7461696e657273206f66207468652070726f6a65637420746f20617070726f7665206f722072656a656374 : Bytes) : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: access,
+  parameters: [studioProject : Bytes, target : Bytes, requester : Bytes, scope : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same studioProject target) then (handOff studioProject requester scope) else (isolationRefusal studioProject target)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons studioProject more2 => (match more2
+        | List.cons subject more3 => (if (Studio.Runtime::same verb 0x6d61696e7461696e6572) then (maintainer studioProject subject more3) else (if (Studio.Runtime::same verb 0x616363657373) then (match more3
+          | List.cons requester more4 => (match more4
+            | List.cons scope more5 => (match more5
+              | List.nil => (access studioProject subject requester scope)
+              | List.cons extra others => 0x696e76616c69642072657175657374)
+            | List.nil => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374) else 0x696e76616c69642072657175657374))
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_owners_linked_prism_id_maintains_the_project,
+  parameters: [],
+  statement: ((request 0x6d61696e7461696e65720976657264616e742d73747564696f096166666c6f6d09707269736d3a6167656e743d636c6175646509707269736d3a616c65783d6166666c6f6d) = (maintainerAnswer 0x76657264616e742d73747564696f 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_project_whose_owner_has_no_linked_prism_id,
+  parameters: [],
+  statement: ((request 0x6d61696e7461696e65720976657264616e742d73747564696f096166666c6f6d09707269736d3a6167656e743d636c61756465) = (noMaintainerRefusal 0x76657264616e742d73747564696f 0x6166666c6f6d)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_request_about_another_project,
+  parameters: [],
+  statement: ((request 0x6163636573730976657264616e742d73747564696f096f746865722d67616d6509707269736d3a6167656e7409636f6e74726962757465) = (isolationRefusal 0x76657264616e742d73747564696f 0x6f746865722d67616d65)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: hands_an_access_request_to_the_engine,
+  parameters: [],
+  statement: ((request 0x6163636573730976657264616e742d73747564696f0976657264616e742d73747564696f09707269736d3a6167656e7409636f6e74726962757465) = (handOff 0x76657264616e742d73747564696f 0x707269736d3a6167656e74 0x636f6e74726962757465)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
