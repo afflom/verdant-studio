@@ -8957,3 +8957,37 @@ statement = "The MIME Sniffing Standard's source: the byte patterns that identif
 artifact = "authorities/WHATWG-MIMESNIFF-BA4B3C3/mimesniff.bs"
 checksum = "7b05b5ecd55535d2bbcfb42459f27c06871fe0518469e31b9f34381266c9178d"
 realized_by = []
+
+[[authority]]
+id = "ISO-IEC-21320-1-2015"
+name = "Information technology - Document Container File - Part 1: Core"
+issuer = "ISO/IEC JTC 1/SC 34"
+edition = "ISO/IEC 21320-1:2015, edition 1"
+canonical_id = "ISO/IEC 21320-1:2015"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://www.iso.org/standard/60101.html"
+media_type = "text/html"
+license = "ISO copyright"
+redistribution = "citation-only"
+statement = "The Document Container File: a ZIP archive as PKWARE APPNOTE 6.3.3 defines it, restricted to stored or deflated entries without encryption or multiple volumes. The serialization of a Verdant Prism bundle (BagIt, RFC 8493, defines no serialization)."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "PKWARE-APPNOTE-6.3.3"
+name = ".ZIP File Format Specification"
+issuer = "PKWARE Inc."
+edition = "APPNOTE.TXT version 6.3.3, revised September 1, 2012"
+canonical_id = "https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.3.3.TXT"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.3.3.TXT"
+media_type = "text/plain"
+license = "PKWARE copyright (reproduction prohibited)"
+redistribution = "citation-only"
+statement = "The .ZIP file format, version 6.3.3, which ISO/IEC 21320-1:2015 normatively references: local file headers, the central directory and the end of central directory record. Its notice forbids redistribution, so it is cited only; the text retrieved on 2026-11-27 has SHA-256 bda77700f9cfdd20c2034248e721a02ecb9b003b0c31a00edfe8a10100ce3091."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []

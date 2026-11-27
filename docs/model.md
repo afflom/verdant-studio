@@ -660,3 +660,5 @@ Each construct and the citation that admits it.
 - `Studio.Coordination`: req REQ-VERDANT-COORDINATION
 - `Studio.Coordination.Channel`: std VERDANT-ENGINE-IDS-2.22.4
 - `Studio.Feedback.Assessment`: std ISO-10002-2018 row W09
+- `Studio.Prism.Bundle.Digest`: std NIST-FIPS-180-4
+- `Studio.Prism.Bundle.Archive`: std ISO-IEC-21320-1-2015
