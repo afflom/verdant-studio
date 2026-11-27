@@ -447,3 +447,4 @@ Each construct and the citation that admits it.
 - `Studio.Generator`: der pattern from Studio.PrismGeneration, Studio.Engine.Capability, Studio.Engine.Fidelity, Studio.Prism.Artifact, Studio.Prism.Provenance, P5, P11
 - `Studio.Prism.Closure`: der pattern from Studio.Generator, Studio.Prism.Seed, Studio.Catalog.Facet, Studio.Catalog.Mapping, D11
 - `Studio.Prism.Acceptance`: der pattern from Studio.Prism.Closure, Studio.Prism.Bundle, Studio.Prism.Validation, P5, P12
+- `Studio.Generator.Runtime`: std VTENSOR-IDS-280A1A4

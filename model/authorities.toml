@@ -8073,3 +8073,20 @@ statement = "Streaming compilation and the application/wasm media type for WebAs
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "VTENSOR-IDS-280A1A4"
+name = "vTensor capability register"
+issuer = "afflom/vtensor"
+edition = "commit 280a1a43a856928c729d0abe1a3373b3ac3b4c75 (2026-11-25)"
+canonical_id = "https://github.com/afflom/vtensor"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://raw.githubusercontent.com/afflom/vtensor/280a1a43a856928c729d0abe1a3373b3ac3b4c75/model/ids.toml"
+media_type = "application/toml"
+license = "MIT OR Apache-2.0"
+redistribution = "redistributable"
+statement = "vTensor's registered capability IDs (VT-01 onward): a GGML device backend whose only tensor-compute substrate is Verdant Tensor, matching the GGML CPU oracle byte for byte, so any GGML application can run a Verdant Prism generator deterministically (REQ-PRISM-GENERATION, REQ-ENGINE-FIDELITY)."
+artifact = "authorities/VTENSOR-IDS-280A1A4/ids.toml"
+checksum = "bd91ff396cda0992f76e7ca7bacd23299d3e27f88878bac84e1bb91006aeb724"
+realized_by = []
