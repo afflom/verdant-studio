@@ -104,3 +104,15 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 >
 >
 > The best way that we can enable fast feedback loops between players and creators is to focus on completing the Verdant Studio, so that its generative features enhance its automations, so that we are reducing the time from feedback to publishing.  the feedback loop from the player to the creator will make use of this same generative acceleration, so that the feedback can be cataloged and distilled into future releases. Player feedback needs to be masked and analyzed with other feedback, instead of catering to bespoke feedback; game features must based on consensus instead of single-interests. There also needs to be a way of identifying and actioning  single-feedback that merits action without consensus, such as identifying bugs or special requests that would add significant value to the referenced game or app.
+
+## REQ-SELF-RUNTIME (afflom, 2026-11-27T14:06:11Z)
+
+> I'm considering that github PRs are not how we want to be running Verdant Studio. Instead, we can just keep everything we are doing in Verdant Studio in its runtime, so that the Verdant Studio workspace API is running its own processes instead of in github or elsewhere. Then when the APi publishes a release, the API can push its repo changes and tags and other metadata to github. I'm considering that we can deploy the github pages straight from Verdant Studio, so that we can eliminate our use of GitHub actions. Let's discuss.
+
+## REQ-SELF-RUNTIME (afflom, 2026-11-27T14:07:41Z)
+
+> Let's extrapolate the solution from github.com/afflom/verdant-engine . Verdant Engine has been undergoing a similar lift.
+
+## REQ-SELF-RUNTIME, REQ-PROJECT-INSTANCE (afflom, 2026-11-27T14:42:10Z)
+
+> You and I can share a runtime using the Verdant Studio github page using my github identity to link them. Then if another party accesses the Verdant Studio GitHub page, they can link their own github id to their own instance. This would establish that I am a stakeholder of Verdant Studio with permissions to manage the Verdant Studio Verdant Prism; so I am the maintainer of Verdant Studio. Verdant Engine already proposes a scheme for users to request permissions to Verdant Studio projects. Verdant Studio is just one instance of many Verdant Studio projects; so Verdant Studio manages Verdant Studio, but keeps verdant studio project details isolated to its own project, so that Verdant Studio projects can have their own strong identity as stand-alone Verdant Engine applications (Verdant Prisms/vApps?)
