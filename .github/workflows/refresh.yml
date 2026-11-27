@@ -65,6 +65,14 @@ jobs:
               if [ "$mergeable" != null ]; then break; fi
               sleep 10
             done
+            # One that changes .github is exported again by the studio check, byte for byte, so it also fails
+            # when main changed its export inputs since it was exported, even without a conflict: readers
+            # depends on app, so admissions merged during its export (#357 and #361 under #362) turn it red.
+            if [ "$mergeable" = true ] && [ "$(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${pr}/files" --jq '.[].filename' | grep -c '^\.github/' || true)" != 0 ]; then
+              base=$(gh api "repos/${GITHUB_REPOSITORY}/compare/main...$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq .head.sha)" --jq .merge_base_commit.sha)
+              moved=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${base}...main" --jq '[.files[]?.filename | select(test("^(app|stdlib|studio|readers)/"))] | length')
+              if [ "$moved" != 0 ]; then echo "#${pr}: main changed ${moved} of its export inputs since it was exported"; mergeable=false; fi
+            fi
             if [ "$mergeable" = false ] && [ "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${pr}" --jq '.auto_merge != null')" = true ]; then
               # Drafting would drop its auto-merge, so it stays ready. A later one waits: it is
               # regenerated once this one merges, when it would conflict again anyway.
