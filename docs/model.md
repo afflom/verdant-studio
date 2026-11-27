@@ -491,3 +491,13 @@ Each construct and the citation that admits it.
 - `Catalog.UnityTestFrameworkTest`: std UNITY-TEST-FRAMEWORK-1.4.6 row O07
 - `Catalog.UtahAppStoreAgeCategory`: std US-UT-SB-142-2025 row R12
 - `Catalog.VideoGameCopyrightClassification`: std WIPO-LEGAL-STATUS-VIDEO-GAMES-2013 row X01
+- `Catalog.AcesOcioDisplayView`: std ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 row G11
+- `Catalog.D3d12CommandListType`: std MICROSOFT-D3D12-IDL-1.721.2 row G02
+- `Catalog.EcsDesign`: std FLECS-ECS-FAQ row H07
+- `Catalog.GlErrorCode`: std KHRONOS-OPENGL-REGISTRY-GLXML row G04
+- `Catalog.LuaBasicType`: std LUA-5.5.1 row H05
+- `Catalog.MetalAddressSpace`: std APPLE-MSL-4.1 row G03
+- `Catalog.OpenxrResult`: std KHRONOS-OPENXR-REGISTRY-1.1.65 row G13
+- `Catalog.SpirvExecutionModel`: std KHRONOS-SPIRV-GRAMMAR-1.4.363.0 row G01
+- `Catalog.VulkanResult`: std KHRONOS-VULKAN-REGISTRY-1.4.369 row G01
+- `Catalog.WebglPowerPreference`: std KHRONOS-WEBGL-1.0-IDL row G04
