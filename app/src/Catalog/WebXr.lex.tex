@@ -177,5 +177,84 @@ structure{
     {name: w, type: Binary64}
   ]
 }
+
+inductive{
+  name: WebGLPowerPreference,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: default, fields: []},
+    {name: lowPower, fields: []},
+    {name: highPerformance, fields: []}
+  ]
+}
+
+structure{
+  name: WebGLContextAttributes,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: alpha, type: Bool},
+    {name: antialias, type: Bool},
+    {name: depth, type: Bool},
+    {name: desynchronized, type: Bool},
+    {name: failIfMajorPerformanceCaveat, type: Bool},
+    {name: powerPreference, type: WebGLPowerPreference},
+    {name: premultipliedAlpha, type: Bool},
+    {name: preserveDrawingBuffer, type: Bool},
+    {name: stencil, type: Bool},
+    {name: xrCompatible, type: Bool}
+  ]
+}
+
+structure{
+  name: WebGLFramebuffer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: label, type: Bytes}
+  ]
+}
+
+structure{
+  name: XRWebGLLayer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: antialias, type: Bool},
+    {name: ignoreDepthValues, type: Bool},
+    {name: fixedFoveation, type: (Option (Int * Int))},
+    {name: framebuffer, type: (Option WebGLFramebuffer)},
+    {name: framebufferWidth, type: Nat},
+    {name: framebufferHeight, type: Nat}
+  ]
+}
+
+structure{
+  name: XRRenderStateInit,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: baseLayer, type: (Option (Option XRWebGLLayer))},
+    {name: depthFar, type: (Option (Int * Int))},
+    {name: depthNear, type: (Option (Int * Int))},
+    {name: inlineVerticalFieldOfView, type: (Option (Int * Int))},
+    {name: layers, type: (Option (Option (List XRLayer)))},
+    {name: passthroughFullyObscured, type: (Option Bool)}
+  ]
+}
+
+structure{
+  name: XRRenderState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: depthNear, type: (Int * Int)},
+    {name: depthFar, type: (Int * Int)},
+    {name: passthroughFullyObscured, type: (Option Bool)},
+    {name: inlineVerticalFieldOfView, type: (Option (Int * Int))},
+    {name: baseLayer, type: (Option XRWebGLLayer)}
+  ]
+}
 \end{semanticmodule}
 \end{lexlean}
