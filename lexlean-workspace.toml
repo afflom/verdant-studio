@@ -1,2 +1,2 @@
 spec = "lexlean/workspace/1"
-members = ["app", "readers", "stdlib", "studio"]
+members = ["app", "readers", "readers/xml", "stdlib", "studio"]
