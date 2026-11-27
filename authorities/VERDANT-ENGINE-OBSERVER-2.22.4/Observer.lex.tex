@@ -1,0 +1,564 @@
+\begin{lexlean}{Observer}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{Foundation.Ontology.V1.Model}
+\importmodule{Subsystems}
+\title{Verdant Engine runtime subsystems}
+\begin{semanticmodule}
+structure{
+  name: ObserverHolonSpec,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: index, type: Nat},
+    {name: organCount, type: Nat},
+    {name: organBasisProduct, type: Nat},
+    {name: stakeholderModelCount, type: Nat},
+    {name: channelKindCount, type: Nat},
+    {name: intentRouteCount, type: Nat},
+    {name: verdantRuntimeExclusive, type: Bool},
+    {name: name, type: String},
+    {name: text, type: String}
+  ]
+}
+
+structure{
+  name: ObserverOrganSpec,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: index, type: Nat},
+    {name: basisPrime, type: Nat},
+    {name: hostsAllModels, type: Bool},
+    {name: zeroExternalRuntime, type: Bool},
+    {name: name, type: String},
+    {name: text, type: String}
+  ]
+}
+
+structure{
+  name: StakeholderPrismModelSpec,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: index, type: Nat},
+    {name: workspaceIndex, type: Nat},
+    {name: basisPrime, type: Nat},
+    {name: organGrantCount, type: Nat},
+    {name: observedByHolon, type: Bool},
+    {name: name, type: String},
+    {name: text, type: String}
+  ]
+}
+
+structure{
+  name: CommunicationChannelSpec,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: index, type: Nat},
+    {name: prismSigned, type: Bool},
+    {name: sosaObserved, type: Bool},
+    {name: mutatesConservedState, type: Bool},
+    {name: name, type: String},
+    {name: text, type: String}
+  ]
+}
+
+definition{name: observerOrganCount, parameters: [], result: Nat, body: (Subsystems::sFive)}
+
+definition{
+  name: stakeholderPrismModelCount,
+  parameters: [],
+  result: Nat,
+  body: (Subsystems::sSeven)
+}
+
+definition{name: communicationChannelCount, parameters: [], result: Nat, body: (Subsystems::sFive)}
+
+definition{name: verdantIntentRouteCount, parameters: [], result: Nat, body: (Subsystems::sSixteen)}
+
+definition{name: isoDialogueActCount, parameters: [], result: Nat, body: (Subsystems::sEight)}
+
+definition{name: isoAbstainActCode, parameters: [], result: Nat, body: (Subsystems::sSeven)}
+
+definition{name: isoRequestActCode, parameters: [], result: Nat, body: (Subsystems::sThree)}
+
+definition{name: isoOfferActCode, parameters: [], result: Nat, body: (Subsystems::sFour)}
+
+definition{
+  name: observerOrganBasisProduct,
+  parameters: [],
+  result: Nat,
+  body: (prim multiply (prim multiply (prim multiply (prim multiply (Subsystems::sTwo) (Subsystems::sThree) : Nat) (Subsystems::sFive) : Nat) (Subsystems::sSeven) : Nat) (Subsystems::sEleven) : Nat)
+}
+
+definition{
+  name: dmnModelRouteAdmitted,
+  parameters: [
+    notHalted : Bool,
+    sourceLocked : Bool,
+    verdantFormatOnly : Bool,
+    routeGranted : Bool,
+    runtimeMatches : Bool,
+    weightsMatch : Bool
+  ],
+  result: Bool,
+  body: (notHalted && (sourceLocked && (verdantFormatOnly && (routeGranted && (runtimeMatches && weightsMatch)))))
+}
+
+definition{
+  name: epistemicDialogueTurnValid,
+  parameters: [
+    actCode : Nat,
+    matchedEvidenceFacts : Nat,
+    abstainedUnknown : Bool,
+    worldMutated : Bool
+  ],
+  result: Bool,
+  body: ((actCode <? (isoDialogueActCount)) && ((if (matchedEvidenceFacts =? 0) then (abstainedUnknown && ((actCode =? (isoAbstainActCode)) && (not worldMutated))) else (not abstainedUnknown)) && ((not worldMutated) || ((actCode =? (isoRequestActCode)) || (actCode =? (isoOfferActCode))))))
+}
+
+definition{
+  name: observedChannelEnvelopeValid,
+  parameters: [
+    channelKind : Nat,
+    prismSignatureValid : Bool,
+    sosaObservationRecorded : Bool,
+    provAcyclic : Bool
+  ],
+  result: Bool,
+  body: ((channelKind <? (communicationChannelCount)) && ((sosaObservationRecorded && provAcyclic) && ((not ((channelKind =? 1) || (channelKind =? (Subsystems::sTwo)))) || prismSignatureValid)))
+}
+
+definition{
+  name: arbitraryPrismModelValid,
+  parameters: [
+    kappaBytes : Nat,
+    schemaClasses : Nat,
+    organOwnerIndex : Nat,
+    verdantRuntimeOnly : Bool,
+    oracleVerified : Bool
+  ],
+  result: Bool,
+  body: (((kappaBytes =? (Subsystems::sThirtyTwo)) && ((1 <=? schemaClasses) && (organOwnerIndex <? (observerOrganCount)))) && (verdantRuntimeOnly && oracleVerified))
+}
+
+definition{
+  name: observerRootHolon,
+  parameters: [],
+  result: ObserverHolonSpec,
+  body: (record ObserverHolonSpec {index := 0, organCount := (observerOrganCount), organBasisProduct := (observerOrganBasisProduct), stakeholderModelCount := (stakeholderPrismModelCount), channelKindCount := (communicationChannelCount), intentRouteCount := (verdantIntentRouteCount), verdantRuntimeExclusive := true, name := "ObserverRootHolon", text := "Self-observing second-order Prism holon composing its five platform organs, seven stakeholder Prism models, character profiles, and observed communication channels."})
+}
+
+definition{
+  name: observerOrganEngine,
+  parameters: [],
+  result: ObserverOrganSpec,
+  body: (record ObserverOrganSpec {index := 0, basisPrime := (Subsystems::sTwo), hostsAllModels := true, zeroExternalRuntime := true, name := "ObserverOrganEngine", text := "Dedicated WebAssembly and Rust 3D model runtime hosting uor-matmul tensor contractions, UORC streaming, swept collision, and native language reasoning."})
+}
+
+definition{
+  name: observerOrganStudio,
+  parameters: [],
+  result: ObserverOrganSpec,
+  body: (record ObserverOrganSpec {index := 1, basisPrime := (Subsystems::sThree), hostsAllModels := false, zeroExternalRuntime := true, name := "ObserverOrganStudio", text := "Seven-workspace browser authoring workbench coupling role-specific inspectors, catalog domain switching, and live Observer communication telemetry."})
+}
+
+definition{
+  name: observerOrganCatalogs,
+  parameters: [],
+  result: ObserverOrganSpec,
+  body: (record ObserverOrganSpec {index := (Subsystems::sTwo), basisPrime := (Subsystems::sFive), hostsAllModels := false, zeroExternalRuntime := true, name := "ObserverOrganCatalogs", text := "SHA-256-locked registry of Schema.org, W3C SOSA and PROV-O, Khronos glTF 2.0, ISO 24617-2, OMG DMN 1.5, and multi-domain world packs."})
+}
+
+definition{
+  name: observerOrganDemo,
+  parameters: [],
+  result: ObserverOrganSpec,
+  body: (record ObserverOrganSpec {index := (Subsystems::sThree), basisPrime := (Subsystems::sSeven), hostsAllModels := false, zeroExternalRuntime := true, name := "ObserverOrganDemo", text := "Catalog-instantiated multi-domain showcase worlds featuring possessed 22-joint characters, Sabine acoustics, and conserved item quests."})
+}
+
+definition{
+  name: observerOrganReference,
+  parameters: [],
+  result: ObserverOrganSpec,
+  body: (record ObserverOrganSpec {index := (Subsystems::sFour), basisPrime := (Subsystems::sEleven), hostsAllModels := false, zeroExternalRuntime := true, name := "ObserverOrganReference", text := "Executable Diataxis tutorials, how-to guides, architecture explanations, API references, and live cold-boot WebAssembly embeds."})
+}
+
+definition{
+  name: observerOrgans,
+  parameters: [],
+  result: (List ObserverOrganSpec),
+  body: (cons (observerOrganEngine) (cons (observerOrganStudio) (cons (observerOrganCatalogs) (cons (observerOrganDemo) (cons (observerOrganReference) (nil ObserverOrganSpec))))))
+}
+
+definition{
+  name: stakeholderModelGameDeveloper,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := 0, workspaceIndex := 1, basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive (Subsystems::sFive)), organGrantCount := (Subsystems::sFive), observedByHolon := true, name := "StakeholderModelGameDeveloper", text := "Full Prism model of the game developer authoring Rust and WebAssembly 3D worlds, scaffolding cataloged starter domains, and verifying deterministic physics."})
+}
+
+definition{
+  name: stakeholderModelTechnicalArtist,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := 1, workspaceIndex := (Subsystems::sThree), basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive (Subsystems::sSix)), organGrantCount := (Subsystems::sSix), observedByHolon := true, name := "StakeholderModelTechnicalArtist", text := "Full Prism model of the technical artist curating Khronos glTF 2.0 HD PBR materials, 22-joint humanoid rigs, WebGL2 shaders, and progressive UORC streams."})
+}
+
+definition{
+  name: stakeholderModelSystemsEngineer,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := (Subsystems::sTwo), workspaceIndex := 0, basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive (Subsystems::sSeven)), organGrantCount := (Subsystems::sFive), observedByHolon := true, name := "StakeholderModelSystemsEngineer", text := "Full Prism model of the engine systems engineer governing uor-matmul semiring kernels, W5H telos frame budgets, CSR tile rasterization, and zero-constant code."})
+}
+
+definition{
+  name: stakeholderModelBrowserPlayer,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := (Subsystems::sThree), workspaceIndex := (Subsystems::sSix), basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive (Subsystems::sEight)), organGrantCount := (Subsystems::sEight), observedByHolon := true, name := "StakeholderModelBrowserPlayer", text := "Full Prism model of the browser player inhabiting possessed characters, conversing with grounded NPCs, and steering mutual-attention world salience."})
+}
+
+definition{
+  name: stakeholderModelSecurityAuditor,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := (Subsystems::sFour), workspaceIndex := (Subsystems::sFive), basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive ((Subsystems::sEight) + 1)), organGrantCount := (Subsystems::sFive), observedByHolon := true, name := "StakeholderModelSecurityAuditor", text := "Full Prism model of the security auditor enforcing OMG DMN 1.5 Verdant-only runtime admission, FK-07 denial-wins grants, and SHA-256 authority locks."})
+}
+
+definition{
+  name: stakeholderModelUiComplianceArchitect,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := (Subsystems::sFive), workspaceIndex := (Subsystems::sTwo), basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive ((Subsystems::sEight) + (Subsystems::sTwo))), organGrantCount := (Subsystems::sFive), observedByHolon := true, name := "StakeholderModelUiComplianceArchitect", text := "Full Prism model of the UI and compliance architect proving tropical max-plus widget layouts, 48px touch targets, W3C DTCG tokens, and WCAG 2.2 AA contrast."})
+}
+
+definition{
+  name: stakeholderModelMultiplayerCitizen,
+  parameters: [],
+  result: StakeholderPrismModelSpec,
+  body: (record StakeholderPrismModelSpec {index := (Subsystems::sSix), workspaceIndex := (Subsystems::sFour), basisPrime := (Foundation.Ontology.V1.Model::nthPrimeConstructive (Subsystems::sEleven)), organGrantCount := ((Subsystems::sEight) + (Subsystems::sTwo)), observedByHolon := true, name := "StakeholderModelMultiplayerCitizen", text := "Full Prism model of the multiplayer citizen exchanging Prism ID signed peer messages, spatial audio cues, and 2-of-3 Stitch parity world shards."})
+}
+
+definition{
+  name: stakeholderPrismModels,
+  parameters: [],
+  result: (List StakeholderPrismModelSpec),
+  body: (cons (stakeholderModelGameDeveloper) (cons (stakeholderModelTechnicalArtist) (cons (stakeholderModelSystemsEngineer) (cons (stakeholderModelBrowserPlayer) (cons (stakeholderModelSecurityAuditor) (cons (stakeholderModelUiComplianceArchitect) (cons (stakeholderModelMultiplayerCitizen) (nil StakeholderPrismModelSpec))))))))
+}
+
+definition{
+  name: channelOrganToOrgan,
+  parameters: [],
+  result: CommunicationChannelSpec,
+  body: (record CommunicationChannelSpec {index := 0, prismSigned := false, sosaObserved := true, mutatesConservedState := false, name := "ChannelOrganToOrgan", text := "Observed inter-organ message channel coupling Engine, Studio, Catalogs, Demo, and Reference states under W3C SOSA and PROV-O lineage."})
+}
+
+definition{
+  name: channelPlayerToPlayer,
+  parameters: [],
+  result: CommunicationChannelSpec,
+  body: (record CommunicationChannelSpec {index := 1, prismSigned := true, sosaObserved := true, mutatesConservedState := false, name := "ChannelPlayerToPlayer", text := "Prism ID signed peer-to-peer communication channel between human players and citizens synchronized over BroadcastChannel and Stitch rollback journals."})
+}
+
+definition{
+  name: channelPlayerToAgent,
+  parameters: [],
+  result: CommunicationChannelSpec,
+  body: (record CommunicationChannelSpec {index := (Subsystems::sTwo), prismSigned := true, sosaObserved := true, mutatesConservedState := true, name := "ChannelPlayerToAgent", text := "Prism ID signed ISO 24617-2 dialogue channel from a human player to a cataloged NPC or coding agent evaluated natively in Verdant Engine."})
+}
+
+definition{
+  name: channelAgentToPlayer,
+  parameters: [],
+  result: CommunicationChannelSpec,
+  body: (record CommunicationChannelSpec {index := (Subsystems::sThree), prismSigned := false, sosaObserved := true, mutatesConservedState := false, name := "ChannelAgentToPlayer", text := "Passage-grounded response channel from an NPC or agent to a player returning cited world facts or deterministic Unknown abstention."})
+}
+
+definition{
+  name: channelAgentToAgent,
+  parameters: [],
+  result: CommunicationChannelSpec,
+  body: (record CommunicationChannelSpec {index := (Subsystems::sFour), prismSigned := false, sosaObserved := true, mutatesConservedState := true, name := "ChannelAgentToAgent", text := "Observed multi-agent coordination channel between cataloged NPCs steering A-star NavMesh patrols and conserved item handoffs."})
+}
+
+definition{
+  name: communicationChannels,
+  parameters: [],
+  result: (List CommunicationChannelSpec),
+  body: (cons (channelOrganToOrgan) (cons (channelPlayerToPlayer) (cons (channelPlayerToAgent) (cons (channelAgentToPlayer) (cons (channelAgentToAgent) (nil CommunicationChannelSpec))))))
+}
+
+definition{
+  name: organsValid,
+  parameters: [pos : Nat, items : (List ObserverOrganSpec)],
+  result: Bool,
+  body: (match items
+    | List.nil => true
+    | List.cons item rest => (if (((project item index) =? pos) && (((project item basisPrime) =? (Foundation.Ontology.V1.Model::nthPrimeConstructive pos)) && (project item zeroExternalRuntime))) then (organsValid (pos + 1) rest) else false)),
+  recursive_argument: items
+}
+
+definition{
+  name: stakeholdersValid,
+  parameters: [pos : Nat, items : (List StakeholderPrismModelSpec)],
+  result: Bool,
+  body: (match items
+    | List.nil => true
+    | List.cons item rest => (if (((project item index) =? pos) && (((project item workspaceIndex) <? (stakeholderPrismModelCount)) && (((project item basisPrime) =? (Foundation.Ontology.V1.Model::nthPrimeConstructive (pos + (Subsystems::sFive)))) && ((project item observedByHolon) && (0 <? (project item organGrantCount)))))) then (stakeholdersValid (pos + 1) rest) else false)),
+  recursive_argument: items
+}
+
+definition{
+  name: channelsValid,
+  parameters: [pos : Nat, items : (List CommunicationChannelSpec)],
+  result: Bool,
+  body: (match items
+    | List.nil => true
+    | List.cons item rest => (if (((project item index) =? pos) && (project item sosaObserved)) then (channelsValid (pos + 1) rest) else false)),
+  recursive_argument: items
+}
+
+definition{
+  name: observerHolonDirect,
+  parameters: [],
+  result: Bool,
+  body: (if (((observerOrganCount) =? (Subsystems::sFive)) && (((observerOrganBasisProduct) =? (prim multiply (prim multiply (Subsystems::sSix) (Subsystems::sThirtyFive) : Nat) (Subsystems::sEleven) : Nat)) && (((stakeholderPrismModelCount) =? (Subsystems::sSeven)) && (((communicationChannelCount) =? (Subsystems::sFive)) && ((verdantIntentRouteCount) =? (Subsystems::sSixteen)))))) then (((dmnModelRouteAdmitted true true true true true true) && ((not (dmnModelRouteAdmitted true true false true true true)) && (not (dmnModelRouteAdmitted false true true true true true)))) && (((epistemicDialogueTurnValid 0 (Subsystems::sTwo) false false) && ((epistemicDialogueTurnValid (isoAbstainActCode) 0 true false) && ((not (epistemicDialogueTurnValid 0 0 false false)) && ((not (epistemicDialogueTurnValid 1 (Subsystems::sTwo) false true)) && (epistemicDialogueTurnValid (isoRequestActCode) 1 false true))))) && (((observedChannelEnvelopeValid 1 true true true) && ((not (observedChannelEnvelopeValid 1 false true true)) && (not (observedChannelEnvelopeValid 0 true true false)))) && ((arbitraryPrismModelValid (Subsystems::sThirtyTwo) (Subsystems::sThree) 0 true true) && ((not (arbitraryPrismModelValid (Subsystems::sThirtyTwo) (Subsystems::sThree) 0 false true)) && (not (arbitraryPrismModelValid 0 (Subsystems::sThree) 0 true true))))))) else false)
+}
+
+theorem{
+  name: observerHolonAndStakeholdersVerified,
+  parameters: [],
+  statement: ((if ((observerHolonDirect) && (((project (observerRootHolon) index) =? 0) && (((project (observerRootHolon) verdantRuntimeExclusive) && (organsValid 0 (observerOrgans))) && ((stakeholdersValid 0 (stakeholderPrismModels)) && (channelsValid 0 (communicationChannels)))))) then (if (((project (observerOrganEngine) hostsAllModels) && ((project (observerOrganStudio) index) =? 1)) && (((project (observerOrganCatalogs) index) =? (Subsystems::sTwo)) && (((project (observerOrganDemo) index) =? (Subsystems::sThree)) && ((project (observerOrganReference) index) =? (Subsystems::sFour))))) then (if (((project (stakeholderModelGameDeveloper) workspaceIndex) =? 1) && (((project (stakeholderModelTechnicalArtist) workspaceIndex) =? (Subsystems::sThree)) && (((project (stakeholderModelSystemsEngineer) workspaceIndex) =? 0) && (((project (stakeholderModelBrowserPlayer) workspaceIndex) =? (Subsystems::sSix)) && (((project (stakeholderModelSecurityAuditor) workspaceIndex) =? (Subsystems::sFive)) && (((project (stakeholderModelUiComplianceArchitect) workspaceIndex) =? (Subsystems::sTwo)) && ((project (stakeholderModelMultiplayerCitizen) workspaceIndex) =? (Subsystems::sFour)))))))) then (((project (channelOrganToOrgan) index) =? 0) && ((project (channelPlayerToPlayer) prismSigned) && ((project (channelPlayerToAgent) mutatesConservedState) && (((project (channelAgentToPlayer) index) =? (Subsystems::sThree)) && ((project (channelAgentToAgent) mutatesConservedState) && ((project (channelAgentToAgent) index) =? (Subsystems::sFour))))))) else false) else false) else false) = true),
+  proof: decide{},
+  axioms: []
+}
+
+definition{
+  name: stitchBoundaryEnvelopeValid,
+  parameters: [
+    isPrivate : Bool,
+    aeadWrapped : Bool,
+    keyAdmitted : Bool,
+    revoked : Bool,
+    epochMonotonic : Bool,
+    kShards : Nat,
+    nShards : Nat
+  ],
+  result: Bool,
+  body: (((1 <=? kShards) && (kShards <=? nShards)) && (epochMonotonic && ((not isPrivate) || (aeadWrapped && (keyAdmitted && (not revoked))))))
+}
+
+definition{
+  name: framePinHydrationValid,
+  parameters: [
+    blake3Ok : Bool,
+    prismSigOk : Bool,
+    acceptanceOk : Bool,
+    epochMonotonic : Bool,
+    cspHashed : Bool
+  ],
+  result: Bool,
+  body: (blake3Ok && (prismSigOk && (acceptanceOk && (epochMonotonic && cspHashed))))
+}
+
+definition{
+  name: zeroAccountStakeholderValid,
+  parameters: [
+    requiresExternalAccount : Bool,
+    hasLocalPrismId : Bool,
+    hasLocalOpfsBackup : Bool,
+    kOfNProtected : Bool
+  ],
+  result: Bool,
+  body: ((not requiresExternalAccount) && (hasLocalPrismId && (hasLocalOpfsBackup && kOfNProtected)))
+}
+
+definition{
+  name: stitchSelfHostingDirect,
+  parameters: [],
+  result: Bool,
+  body: (((stitchBoundaryEnvelopeValid true true true false true (Subsystems::sFour) (Subsystems::sEight)) && ((stitchBoundaryEnvelopeValid false false false false true (Subsystems::sTwo) (Subsystems::sThree)) && ((not (stitchBoundaryEnvelopeValid true false true false true (Subsystems::sFour) (Subsystems::sEight))) && ((not (stitchBoundaryEnvelopeValid true true true true true (Subsystems::sFour) (Subsystems::sEight))) && ((not (stitchBoundaryEnvelopeValid true true true false false (Subsystems::sFour) (Subsystems::sEight))) && (not (stitchBoundaryEnvelopeValid true true true false true (Subsystems::sEight) (Subsystems::sFour)))))))) && (((framePinHydrationValid true true true true true) && ((not (framePinHydrationValid false true true true true)) && (not (framePinHydrationValid true true true false true)))) && ((zeroAccountStakeholderValid false true true true) && (not (zeroAccountStakeholderValid true true true true)))))
+}
+
+theorem{
+  name: stitchSelfHostingContractsVerified,
+  parameters: [],
+  statement: ((stitchSelfHostingDirect) = true),
+  proof: decide{},
+  axioms: []
+}
+
+definition{
+  name: changeReleaseBumpCode,
+  parameters: [
+    ratchetApplied : Bool,
+    gatesPassed : Bool,
+    isMajor : Bool,
+    isMinor : Bool,
+    isPatch : Bool
+  ],
+  result: Nat,
+  body: (if (ratchetApplied && gatesPassed) then (if isMajor then (Subsystems::sThree) else (if isMinor then (Subsystems::sTwo) else (if isPatch then 1 else 0))) else 0)
+}
+
+definition{
+  name: allPrismFacetsManaged,
+  parameters: [
+    ownedFacets : Nat,
+    requiredFacets : Nat,
+    knowledgeManaged : Bool,
+    changeManaged : Bool,
+    securityManaged : Bool,
+    roadmapManaged : Bool
+  ],
+  result: Bool,
+  body: (((requiredFacets <=? ownedFacets) && (1 <=? requiredFacets)) && (knowledgeManaged && (changeManaged && (securityManaged && roadmapManaged))))
+}
+
+definition{
+  name: observerKpiAndRoadmapReady,
+  parameters: [kpisPassed : Nat, kpisTotal : Nat, minorClosed : Bool, gatesPassed : Bool],
+  result: Bool,
+  body: (((kpisTotal <=? kpisPassed) && (1 <=? kpisTotal)) && (minorClosed && gatesPassed))
+}
+
+definition{
+  name: observerChangeAndKpiDirect,
+  parameters: [],
+  result: Bool,
+  body: ((((changeReleaseBumpCode true true true false false) =? (Subsystems::sThree)) && (((changeReleaseBumpCode true true false true false) =? (Subsystems::sTwo)) && (((changeReleaseBumpCode true true false false true) =? 1) && (((changeReleaseBumpCode false true true true true) =? 0) && ((changeReleaseBumpCode true false true true true) =? 0))))) && ((allPrismFacetsManaged (Subsystems::sNine) (Subsystems::sNine) true true true true) && ((not (allPrismFacetsManaged (Subsystems::sEight) (Subsystems::sNine) true true true true)) && ((not (allPrismFacetsManaged (Subsystems::sNine) (Subsystems::sNine) false true true true)) && ((observerKpiAndRoadmapReady (Subsystems::sEight) (Subsystems::sEight) true true) && (not (observerKpiAndRoadmapReady (Subsystems::sSeven) (Subsystems::sEight) true true)))))))
+}
+
+theorem{
+  name: observerChangeAndKpiGovernanceVerified,
+  parameters: [],
+  statement: ((observerChangeAndKpiDirect) = true),
+  proof: decide{},
+  axioms: []
+}
+
+definition{
+  name: selfHostedSourceLoopValid,
+  parameters: [
+    unliftedModules : Nat,
+    survivedShards : Nat,
+    minQuorumShards : Nat,
+    parentEpoch : Nat,
+    childEpoch : Nat,
+    prevKappaBound : Bool,
+    ratchetApplied : Bool,
+    gatesPassed : Bool
+  ],
+  result: Bool,
+  body: (((unliftedModules =? 0) && (minQuorumShards <=? survivedShards)) && (((parentEpoch + 1) <=? childEpoch) && (prevKappaBound && (ratchetApplied && gatesPassed))))
+}
+
+definition{
+  name: selfHostedSourceLoopDirect,
+  parameters: [],
+  result: Bool,
+  body: ((selfHostedSourceLoopValid 0 (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFive) true true true) && ((not (selfHostedSourceLoopValid 1 (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFive) true true true)) && ((not (selfHostedSourceLoopValid 0 (Subsystems::sThree) (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFive) true true true)) && ((not (selfHostedSourceLoopValid 0 (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFive) (Subsystems::sFive) true true true)) && (not (selfHostedSourceLoopValid 0 (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFour) (Subsystems::sFive) true false true))))))
+}
+
+theorem{
+  name: selfHostedSourceLoopVerified,
+  parameters: [],
+  statement: ((selfHostedSourceLoopDirect) = true),
+  proof: decide{},
+  axioms: []
+}
+
+definition{
+  name: autonomousRatchetLiftValid,
+  parameters: [
+    unliftedUi : Nat,
+    unverifiedFrame : Nat,
+    externalAccounts : Nat,
+    unliftedWorkspace : Nat,
+    generatedByVerdant : Bool,
+    sealBound : Bool,
+    erasureVerified : Bool
+  ],
+  result: Bool,
+  body: (((unliftedUi =? 0) && ((unverifiedFrame =? 0) && ((externalAccounts =? 0) && (unliftedWorkspace =? 0)))) && (generatedByVerdant && (sealBound && erasureVerified)))
+}
+
+definition{
+  name: autonomousRatchetLiftDirect,
+  parameters: [],
+  result: Bool,
+  body: ((autonomousRatchetLiftValid 0 0 0 0 true true true) && ((not (autonomousRatchetLiftValid 1 0 0 0 true true true)) && ((not (autonomousRatchetLiftValid 0 1 0 0 true true true)) && ((not (autonomousRatchetLiftValid 0 0 1 0 true true true)) && ((not (autonomousRatchetLiftValid 0 0 0 1 true true true)) && (not (autonomousRatchetLiftValid 0 0 0 0 false true true)))))))
+}
+
+theorem{
+  name: autonomousRatchetLiftVerified,
+  parameters: [],
+  statement: ((autonomousRatchetLiftDirect) = true),
+  proof: decide{},
+  axioms: []
+}
+
+definition{
+  name: multiOriginResilienceValid,
+  parameters: [
+    independentOrigins : Nat,
+    minRequiredOrigins : Nat,
+    survivingOrigins : Nat,
+    peerCreditShards : Nat,
+    requestedShards : Nat,
+    zeroAccount : Bool
+  ],
+  result: Bool,
+  body: (((minRequiredOrigins <=? independentOrigins) && (1 <=? survivingOrigins)) && ((requestedShards <=? peerCreditShards) && zeroAccount))
+}
+
+definition{
+  name: multiOriginStitchResilienceDirect,
+  parameters: [],
+  result: Bool,
+  body: ((multiOriginResilienceValid (Subsystems::sTwo) (Subsystems::sTwo) 1 (Subsystems::sFour) (Subsystems::sFour) true) && ((not (multiOriginResilienceValid 1 (Subsystems::sTwo) 1 (Subsystems::sFour) (Subsystems::sFour) true)) && ((not (multiOriginResilienceValid (Subsystems::sTwo) (Subsystems::sTwo) 0 (Subsystems::sFour) (Subsystems::sFour) true)) && ((not (multiOriginResilienceValid (Subsystems::sTwo) (Subsystems::sTwo) 1 (Subsystems::sThree) (Subsystems::sFour) true)) && (not (multiOriginResilienceValid (Subsystems::sTwo) (Subsystems::sTwo) 1 (Subsystems::sFour) (Subsystems::sFour) false))))))
+}
+
+theorem{
+  name: multiOriginStitchResilienceVerified,
+  parameters: [],
+  statement: ((multiOriginStitchResilienceDirect) = true),
+  proof: decide{},
+  axioms: []
+}
+
+definition{
+  name: studioVcsAndUhdWorkloadValid,
+  parameters: [
+    vcsAcyclic : Bool,
+    holoVerified : Bool,
+    zeroAccountPin : Bool,
+    peakRamPages : Nat,
+    maxRamPages : Nat,
+    frameUs : Nat,
+    budgetUs : Nat
+  ],
+  result: Bool,
+  body: ((vcsAcyclic && (holoVerified && zeroAccountPin)) && ((peakRamPages <=? maxRamPages) && (frameUs <=? budgetUs)))
+}
+
+definition{
+  name: studioZeroAccountAuthoringAndUhdDirect,
+  parameters: [],
+  result: Bool,
+  body: ((studioVcsAndUhdWorkloadValid true true true (Subsystems::sSix) (Subsystems::sEight) (Subsystems::sEight) (Subsystems::sSixteen)) && ((not (studioVcsAndUhdWorkloadValid false true true (Subsystems::sSix) (Subsystems::sEight) (Subsystems::sEight) (Subsystems::sSixteen))) && ((not (studioVcsAndUhdWorkloadValid true true true (Subsystems::sNine) (Subsystems::sEight) (Subsystems::sEight) (Subsystems::sSixteen))) && (not (studioVcsAndUhdWorkloadValid true true false (Subsystems::sSix) (Subsystems::sEight) (Subsystems::sEight) (Subsystems::sSixteen))))))
+}
+
+theorem{
+  name: studioZeroAccountAuthoringAndUhdVerified,
+  parameters: [],
+  statement: ((studioZeroAccountAuthoringAndUhdDirect) = true),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
