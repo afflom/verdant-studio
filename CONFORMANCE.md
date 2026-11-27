@@ -534,6 +534,11 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `SMOLVLM2-256M-MMPROJ-Q8-0-A48F519` | The image-to-token projector that the SmolVLM2 vision expert loads with its weights (SMOLVLM2-256M-Q8-0-A48F519); pinned with them (REQ-PRISM-GENERATION). |  |
 | `SMOLVLM2-256M-Q8-0-A48F519` | The vision-language weights, the vision expert VerdantUI runs on vTensor for its closed-loop critique (VerdantUI DEC-014); pinned so a Prism's visual artifacts are validated against its intent reproducibly (REQ-PRISM-GENERATION, ISO/IEC/IEEE 15288 validation). |  |
 | `WHISPER-TINY-EN-Q8-0-5359861` | The English speech recognition weights, the speech expert VerdantUI runs on vTensor (VerdantUI DEC-014); pinned so a Prism's spoken audio can be verified by transcription (REQ-PRISM-GENERATION). |  |
+| `ATLASSIAN-JIRA-STATUSES-PRIORITIES-RESOLUTIONS` | Atlassian's statement of the default Jira work item priorities and their meanings, the convention the row names (Jira workflows). Index row O05. |  |
+| `EC-IP-26-1369-STOP-DESTROYING-VIDEOGAMES` | The Commission press release that states its reply to the 'Stop Destroying Videogames' citizens' initiative and the steps it commits to; served by the presscorner API, whose JSON is not byte-stable, so no sha256 is pinned. Index row Y08. |  |
+| `LOLESPORTS-COMMUNITY-COMPETITION-GUIDELINES` | Riot's global community competition license and guidelines for League of Legends, which supersede the North America Community Competition Guidelines (the superseded page points here). Index row S10. |  |
+| `SPN-ARL-FAIR-USE-CODE-2018-UVA-LIBRA` | The full text of the Code bound as SPN-ARL-FAIR-USE-SOFTWARE-PRESERVATION-2018, whose bound SAA page only describes it; arl.org and cmsimpact.org refuse automated fetches. Index row Y10. |  |
+| `STEAMWORKS-ANTICHEAT-GAME-BANS` | Valve's documentation of the Steam anti-cheat services and Game Bans: best practices, permissions, gift restrictions and what a game ban does to the user. Index row T11. |  |
 
 ## Claims that are not conformance IDs
 
