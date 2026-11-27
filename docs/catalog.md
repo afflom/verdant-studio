@@ -27,7 +27,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **A22** Co-development and external development practice (Lifecycle and process reference models), not reached from any origin: no mapping yet
 - **A23** Engine long-term-support release models (Unity LTS, Unreal hotfix branches) (Lifecycle and process reference models): narrowMatch UNITY-6-RELEASES-SUPPORT (staged)
 - **B01** MDA: Mechanics, Dynamics, Aesthetics (Game design theory and conceptual models): exactMatch HUNICKE-MDA-2004 (derived from its citation)
-- **B02** DDE: Design, Dynamics, Experience (Game design theory and conceptual models), not reached from any origin: exactMatch WALK-GORLICH-BARRETT-DDE-2017 (staged)
+- **B02** DDE: Design, Dynamics, Experience (Game design theory and conceptual models): exactMatch WALK-GORLICH-BARRETT-DDE-2017 (staged)
 - **B03** Elemental Tetrad and Lenses (Game design theory and conceptual models): exactMatch SCHELL-ART-OF-GAME-DESIGN-3E-2019 (staged)
 - **B04** Formal and dramatic elements of games (Game design theory and conceptual models): exactMatch FULLERTON-GDW-5E-2024 (staged)
 - **B05** Rules of Play: rules, play, culture schemas (Game design theory and conceptual models): exactMatch PELLETIER-ROP-REVIEW-2005 (derived from its citation)
@@ -59,7 +59,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **C05** ink narrative scripting language (Narrative, writing, and interactive story): exactMatch INKLE-INK-JSON-1.2.1 (staged)
 - **C06** Yarn Spinner (Narrative, writing, and interactive story): exactMatch YARNSPINNER-PARSER-3.3.1 (staged)
 - **C07** Twee 3 specification (Narrative, writing, and interactive story): exactMatch IFTF-TWEE-3.0.2 (staged)
-- **C08** articy:draft data model (Narrative, writing, and interactive story), not reached from any origin: exactMatch ARTICY-DRAFT-X-JSON-EXPORT (staged)
+- **C08** articy:draft data model (Narrative, writing, and interactive story): exactMatch ARTICY-DRAFT-X-JSON-EXPORT (staged)
 - **C09** Screenplay format (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C10** IGDA Game Writing SIG resources (Narrative, writing, and interactive story), not reached from any origin: no mapping yet
 - **C11** Game design as narrative architecture (environmental storytelling) (Narrative, writing, and interactive story): exactMatch JENKINS-NARRATIVE-ARCHITECTURE-2004 (derived from its citation)
