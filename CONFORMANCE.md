@@ -568,6 +568,15 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WIKIPEDIA-VIDEO-GAME-DEVELOPMENT` | Video game development: roles, the pre-production, production and milestone stages (first playable, alpha, code freeze, beta, code release, gold master), and external development. Index rows A04 and A22. |  |
 | `WIKIPEDIA-VIDEO-GAME-WRITING` | Video game writing: writers and the types of writing work. Index row C10. |  |
 | `WIKIPEDIA-VIRTUAL-PRODUCTION` | Virtual production: its terminology and technology. Index row F08. |  |
+| `FMOD-STUDIO-2.03-GLOSSARY` | FMOD Studio's definitions of its data model: events, snapshots, parameters, buses, VCAs and banks. The page renders only with JavaScript, so no sha256 is pinned; Audiokinetic's Wwise pages refuse automated fetches (403), so Wwise is not covered. Index row I04. |  |
+| `GAMBETTA-FAST-PACED-MULTIPLAYER-LAG-COMPENSATION` | The summary of the authoritative client-server model with client-side prediction, server reconciliation, entity interpolation and lag compensation (the model of Bernier's GDC 2001 paper; the Valve Developer Wiki refuses automated fetches). Index row K01. |  |
+| `MS-XAUDIO2FX-REVERB-I3DL2-PARAMETERS` | Microsoft's structure that describes I3DL2 (Interactive 3D Audio Rendering Guidelines Level 2.0) reverb parameters; the IASIG guideline text itself is not on any reachable host. Index row I11. |  |
+| `SONY-ASWG-R001` | Sony's recommendation for the average loudness (ITU-R BS.1770-3, LKFS), loudness range (EBU Tech 3342) and true peak of audio content in titles for home-based and portable SCE platforms. Index row I03. |  |
+| `USCO-COPYRIGHT-AND-THE-MUSIC-MARKETPLACE-2015` | The Copyright Office's account of US music licensing: musical works versus sound recordings, mechanical and public performance rights, the performing rights organizations, and synchronization rights for video games. PRS, GEMA and other national societies are not covered. Index row I12. |  |
+| `WHATWG-ENCODING-ENCODINGS-JSON` | The machine-readable list of the Encoding Standard's encodings and labels, including gb18030 (GB 18030) and GBK; the GB 18030-2022 text is only in a read-only viewer. Index row N12. |  |
+| `WIKIPEDIA-LIST-OF-RENDERING-APIS` | List of rendering APIs, including the vendor-specific PlayStation 4 APIs LibGNM (low level) and GNMX (high level); the console SDK documentation is under NDA. Index row G06. |  |
+| `WIKIPEDIA-NINTENDO-SWITCH` | Nintendo Switch, whose Nvidia chipset has a custom API known as NVN; the console SDK documentation is under NDA. Index row G06. |  |
+| `WIKIPEDIA-PLAYSTATION-5` | PlayStation 5, whose GPU is programmed via Sony's graphics API AGC; the console SDK documentation is under NDA. Index row G06. |  |
 
 ## Claims that are not conformance IDs
 
