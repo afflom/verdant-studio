@@ -550,6 +550,24 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `NINTENDO-DEVELOPER-PORTAL-THE-PROCESS` | Nintendo's public statement of the developer process, including submitting a game to Nintendo for review against its production standards (Lotcheck) before release; the guidelines themselves are under NDA. Index row P03. |  |
 | `USCO-CIRCULAR-12-RECORDATION` | The Copyright Office's statement of how transfers of copyright ownership are recorded under 17 U.S.C. 205, the public record from which a chain of title is established. Index row X11. |  |
 | `VGHF-DIGITAL-ARCHIVE` | The Video Game History Foundation's digital archive portal: its mission and the classes of material it preserves. Index row Y09. |  |
+| `WIKIPEDIA-180-DEGREE-RULE` | The 180-degree rule of film grammar. Index row F01. |  |
+| `WIKIPEDIA-BUSINESS-MODEL-CANVAS` | The business model canvas: its nine building blocks in four groups. Index row A20. |  |
+| `WIKIPEDIA-CMMI` | CMMI: its models, core process areas with category and maturity level, and the v2.0 changes. Index row A15. |  |
+| `WIKIPEDIA-FBX` | FBX: its history, limitations and file format versions. Index row D03. |  |
+| `WIKIPEDIA-GAME-BALANCE` | Game balance: its terms and essential concepts of balancing. Index row B17. |  |
+| `WIKIPEDIA-HEROS-JOURNEY` | The hero's journey: Campbell's seventeen stages and Vogler's twelve. Index row C01. |  |
+| `WIKIPEDIA-KANBAN-DEVELOPMENT` | Kanban for knowledge work: board definitions and its three practices. Index row A06 (the Kanban that agile game development adapts). |  |
+| `WIKIPEDIA-PERSONA-USER-EXPERIENCE` | Personas in user-centered design: their benefits and what a persona contains. Index row A21. |  |
+| `WIKIPEDIA-PMBOK` | The PMBOK Guide: its editions, five process groups and ten knowledge areas. Index row A10. |  |
+| `WIKIPEDIA-PREVISUALIZATION` | Previsualization: what it lets a production try before shooting, its origins and digital previs. Index row F08. |  |
+| `WIKIPEDIA-PRINCE2` | PRINCE2: its seven principles, seven practices and seven processes. Index row A11. |  |
+| `WIKIPEDIA-SAG-AFTRA-VIDEO-GAME-STRIKE-2024` | The 2024–2025 SAG-AFTRA video game strike and the Interactive Media Agreement ratified on July 9, 2025, with its digital replica terms. Index row E10. |  |
+| `WIKIPEDIA-SCALED-AGILE-FRAMEWORK` | SAFe: its ten underlying principles and its four configurations. Index row A09. |  |
+| `WIKIPEDIA-SCREENPLAY` | The screenplay: its format and style, slug lines, action and dialogue. Index row C09. |  |
+| `WIKIPEDIA-SHOT-FILMMAKING` | The shot: categories by field size, camera placement and other criteria. Index row F01. |  |
+| `WIKIPEDIA-VIDEO-GAME-DEVELOPMENT` | Video game development: roles, the pre-production, production and milestone stages (first playable, alpha, code freeze, beta, code release, gold master), and external development. Index rows A04 and A22. |  |
+| `WIKIPEDIA-VIDEO-GAME-WRITING` | Video game writing: writers and the types of writing work. Index row C10. |  |
+| `WIKIPEDIA-VIRTUAL-PRODUCTION` | Virtual production: its terminology and technology. Index row F08. |  |
 
 ## Claims that are not conformance IDs
 
