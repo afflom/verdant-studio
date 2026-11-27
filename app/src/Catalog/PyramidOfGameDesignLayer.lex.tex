@@ -1,0 +1,50 @@
+\begin{lexlean}{Catalog.PyramidOfGameDesignLayer}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+inductive{
+  name: PyramidOfGameDesignLayerChapter,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: thePyramid, fields: []},
+    {name: theBaseLayer, fields: []},
+    {name: theRetentionLayer, fields: []},
+    {name: theCoreLoopAndTheGearbox, fields: []},
+    {name: theSessionAndTheOnRamp, fields: []},
+    {name: theSessionPlaytimeTheOffRampAndReturnHook, fields: []},
+    {name: theSuperfanLayer, fields: []},
+    {name: whatWillPeoplePayFor, fields: []},
+    {name: productionCentricVersusDesignCentric, fields: []},
+    {name: howToDevelopAServiceGame, fields: []},
+    {name: howToPrototypeAndWhenToPivot, fields: []},
+    {name: production, fields: []},
+    {name: managingCreativity, fields: []},
+    {name: marketingYourLaunch, fields: []},
+    {name: metrics, fields: []},
+    {name: ethics, fields: []}
+  ]
+}
+
+inductive{
+  name: PyramidOfGameDesignLayerLayer,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: theBaseLayer, fields: []},
+    {name: theRetentionLayer, fields: []},
+    {name: theSuperfanLayer, fields: []}
+  ]
+}
+
+structure{
+  name: PyramidOfGameDesignLayer,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: chapter, type: (Option PyramidOfGameDesignLayerChapter)},
+    {name: layer, type: PyramidOfGameDesignLayerLayer}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}
