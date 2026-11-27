@@ -123,3 +123,33 @@ statement = "stage-bindings refuses a redistributable binding whose source.url e
 theorems = ["Studio.Stage.stage_refuses_an_unnamed_artifact"]
 failure = "binding W3C-XML-1.0-5E: a redistributable source.url must name a file, because ingest-authority saves the download under the last segment of its path, and this URL ends in /\n"
 negative = "VS-10"
+
+[[id]]
+id = "VS-16"
+level = "build"
+suite = "generator"
+statement = "The MIDI generator, Studio.Generator.Music.Midi, writes a Prism's features as a format 0 Standard MIDI File with one track at 96 ticks per quarter note, each feature byte a MIDI 1.0 key number sounded as one quarter note on channel 1"
+theorems = ["Studio.Generator.Music.Midi.word32_is_big_endian", "Studio.Generator.Music.Midi.writes_a_format_0_file", "Studio.Generator.Music.Midi.writes_one_note_per_feature"]
+
+[[id]]
+id = "VS-17"
+level = "build"
+suite = "generator"
+statement = "The MIDI generator refuses a Prism with no features, and names a feature that is not ASCII text, since every byte it writes from a feature is a MIDI 1.0 data byte"
+theorems = ["Studio.Generator.Music.Midi.refuses_no_features", "Studio.Generator.Music.Midi.refuses_a_feature_by_name", "Studio.Guard.guard_refuses_exactly_non_ascii"]
+failure = "refused: the Prism has no features, so there is nothing to compose"
+negative = "VS-17"
+
+[[id]]
+id = "VS-18"
+level = "build"
+suite = "generator"
+statement = "The synthesis, Studio.Generator.AudioFile.Synthesis, renders the Standard MIDI File the MIDI generator writes as 16-bit PCM at 48 kHz: each sounding key a sine at its MIDI tuning frequency, key 69 at 440 Hz, peaking at 3281, the level at which a 997 Hz tone reads -23 LUFS"
+theorems = ["Studio.Generator.AudioFile.Synthesis.key_69_steps_at_440_hertz", "Studio.Generator.AudioFile.Synthesis.sine_starts_at_zero", "Studio.Generator.AudioFile.Synthesis.sine_peaks_at_the_level", "Studio.Generator.AudioFile.Synthesis.sine_troughs_at_the_negated_level"]
+
+[[id]]
+id = "VS-19"
+level = "build"
+suite = "generator"
+statement = "The BWF generator, Studio.Generator.AudioFile.Bwf, writes a Prism's features as a Broadcast Wave Format version 2 file, RIFF WAVE with bext, fmt (PCM, mono, 48 kHz, 16-bit) and data chunks in that order, carrying the synthesis of the MIDI generator's file"
+theorems = ["Studio.Generator.AudioFile.Bwf.le32_is_little_endian", "Studio.Generator.AudioFile.Bwf.format_is_pcm_mono_48000_16", "Studio.Generator.AudioFile.Bwf.extension_is_version_2_with_coding_history", "Studio.Generator.AudioFile.Bwf.wave_orders_bext_fmt_data", "Studio.Generator.AudioFile.Bwf.wave_carries_version_2", "Studio.Generator.AudioFile.Bwf.wave_carries_the_coding_history", "Studio.Generator.AudioFile.Bwf.wave_carries_fmt_then_data", "Studio.Generator.AudioFile.Bwf.wave_ends_with_the_samples"]
