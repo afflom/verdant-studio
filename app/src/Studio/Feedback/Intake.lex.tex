@@ -14,8 +14,7 @@ structure{
     {name: feature, type: Bytes},
     {name: received, type: Nat},
     {name: player, type: Bytes},
-    {name: text, type: Bytes},
-    {name: assessment, type: Bytes}
+    {name: text, type: Bytes}
   ]
 }
 
@@ -145,16 +144,6 @@ definition{
 }
 
 definition{
-  name: formFrom,
-  parameters: [kind : Bytes, channel : Bytes, feature : Bytes, received : Bytes, player : Bytes, text : Bytes, assessment : Bytes],
-  result: (Option Form),
-  body: (match (decimal received)
-    | Option.none => (ctor Option.none [Form])
-    | Option.some at => (if ((0 <? (prim length feature : Nat)) && (0 <? (prim length player : Nat))) then (ctor Option.some [Form] (record Form {kind := kind, channel := channel, feature := feature, received := at, player := player, text := text, assessment := assessment})) else (ctor Option.none [Form]))),
-  axioms: [Quot.sound, propext]
-}
-
-definition{
   name: formOf,
   parameters: [line : Bytes],
   result: (Option Form),
@@ -165,10 +154,10 @@ definition{
           | List.cons received more4 => (match more4
             | List.cons player more5 => (match more5
               | List.cons text more6 => (match more6
-                | List.nil => (formFrom kind channel feature received player text 0x)
-                | List.cons assessment others => (match others
-                  | List.nil => (formFrom kind channel feature received player text assessment)
-                  | List.cons extra rest => (ctor Option.none [Form])))
+                | List.nil => (match (decimal received)
+                  | Option.none => (ctor Option.none [Form])
+                  | Option.some at => (if ((0 <? (prim length feature : Nat)) && (0 <? (prim length player : Nat))) then (ctor Option.some [Form] (record Form {kind := kind, channel := channel, feature := feature, received := at, player := player, text := text})) else (ctor Option.none [Form])))
+                | List.cons extra others => (ctor Option.none [Form]))
               | List.nil => (ctor Option.none [Form]))
             | List.nil => (ctor Option.none [Form]))
           | List.nil => (ctor Option.none [Form]))

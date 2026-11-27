@@ -5,30 +5,26 @@
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
-  name: immediateTerm,
-  parameters: [],
-  result: Bytes,
-  body: 0x696d6d656469617465
-}
-
-definition{
-  name: knownAssessment,
-  parameters: [assessment : Bytes],
+  name: assessedOn,
+  parameters: [feature : Bytes, assessed : (List Bytes)],
   result: Bool,
-  body: (((prim length assessment : Nat) =? 0) || (Studio.Feedback.Intake::same assessment (immediateTerm)))
+  body: (match assessed
+    | List.nil => false
+    | List.cons head rest => ((Studio.Feedback.Intake::same head feature) || (assessedOn feature rest))),
+  recursive_argument: assessed
 }
 
 definition{
   name: immediate,
-  parameters: [form : Studio.Feedback.Intake::Form],
+  parameters: [assessed : (List Bytes), form : Studio.Feedback.Intake::Form],
   result: Bool,
-  body: (Studio.Feedback.Intake::same (project form assessment) (immediateTerm))
+  body: (assessedOn (project form feature) assessed)
 }
 
 theorem{
-  name: knows_no_assessment_and_immediate_action,
+  name: acts_on_only_the_features_the_creator_assessed,
   parameters: [],
-  statement: (((knownAssessment 0x) = true) /\ (((knownAssessment 0x696d6d656469617465) = true) /\ ((knownAssessment 0x757267656e74) = false))),
+  statement: (((assessedOn 0x636f6f70 (cons 0x6a756d70 (cons 0x636f6f70 (nil Bytes)))) = true) /\ (((assessedOn 0x636f6f70 (cons 0x6a756d70 (nil Bytes))) = false) /\ ((assessedOn 0x636f6f70 (nil Bytes)) = false))),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }

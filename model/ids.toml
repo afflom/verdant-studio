@@ -210,9 +210,9 @@ negative = "VS-20"
 id = "VS-21"
 level = "build"
 suite = "feedback"
-statement = "Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, optionally TAB immediate, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name"
+statement = "Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name"
 theorems = ["Studio.Feedback.Intake.reads_a_decimal", "Studio.Feedback.Intake.writes_a_decimal", "Studio.Feedback.refuses_an_unknown_kind_or_channel"]
-failure = "refused: every form is kind TAB channel TAB feature TAB received TAB player TAB text, then optionally TAB immediate, the kind feedback, complaint or incident, the channel form or prompt, received in decimal seconds, with a feature and a player"
+failure = "refused: every form is kind TAB channel TAB feature TAB received TAB player TAB text, the kind feedback, complaint or incident, the channel form or prompt, received in decimal seconds, with a feature and a player"
 negative = "VS-21"
 
 [[id]]
@@ -299,8 +299,8 @@ negative = "VS-31"
 id = "VS-32"
 level = "build"
 suite = "feedback"
-statement = "A single request that its initial assessment (ISO 10002) marks for immediate action, such as a special request of significant value, is actioned on its own without consensus, and any other assessment is refused"
-theorems = ["Studio.Feedback.Assessment.knows_no_assessment_and_immediate_action", "Studio.Feedback.an_immediate_request_acts_alone"]
+statement = "A single request on a feature that the creator's initial assessment (ISO 10002) marks for immediate action, sent as feedback TAB QUORUM TAB FEATURE, is actioned on its own without consensus; a player cannot assess their own form, which is refused if it tries"
+theorems = ["Studio.Feedback.Assessment.acts_on_only_the_features_the_creator_assessed", "Studio.Feedback.a_request_the_creator_assessed_acts_alone"]
 
 [[id]]
 id = "VS-33"
