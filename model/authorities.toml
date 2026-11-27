@@ -8923,3 +8923,37 @@ statement = "The Core-Wasm guest contract: an import-free wasm32 core module exp
 artifact = "authorities/PRISM-CODE-CORE-WASM-0.11.6/core-wasm.wit"
 checksum = "a566c87a359cadf98f652747f1b3574aa307ff5f652a190c6d99c350db9cf369"
 realized_by = []
+
+[[authority]]
+id = "MIDI-SMF-RP-001-1.0-PAGE"
+name = "Standard MIDI Files Specification"
+issuer = "The MIDI Association"
+edition = "RP-001 v1.0, Standard MIDI Files Specification 96-1-4"
+canonical_id = "https://midi.org/standard-midi-files-specification"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://midi.org/standard-midi-files-specification"
+media_type = "text/html"
+license = "Copyright The MIDI Association"
+redistribution = "citation-only"
+statement = "The issuer's page for the Standard MIDI Files Specification (RP-001_v1-0_Standard_MIDI_Files_Specification_96-1-4.pdf), the file format that carries MIDI 1.0 messages: an MThd header chunk (format, track count, division) and MTrk chunks of delta-timed events. The PDF itself needs a midi.org login. Index row I06."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "WHATWG-MIMESNIFF-BA4B3C3"
+name = "MIME Sniffing Standard"
+issuer = "WHATWG"
+edition = "MIME Sniffing Living Standard, whatwg/mimesniff commit ba4b3c3"
+canonical_id = "https://mimesniff.spec.whatwg.org/"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://raw.githubusercontent.com/whatwg/mimesniff/ba4b3c385b9765ddfe4a994e2bb89e0ab96068e2/mimesniff.bs"
+media_type = "text/plain"
+license = "CC BY 4.0 (WHATWG)"
+redistribution = "redistributable"
+statement = "The MIME Sniffing Standard's source: the byte patterns that identify a resource's MIME type, including audio/midi for a Standard MIDI File (MThd header) and audio/wave for a RIFF WAVE file, the declared types of the MIDI and BWF artifacts of a Verdant Prism, which IANA does not register (REQ-ENGINE-MUSIC, REQ-ENGINE-AUDIO-FILE)."
+artifact = "authorities/WHATWG-MIMESNIFF-BA4B3C3/mimesniff.bs"
+checksum = "7b05b5ecd55535d2bbcfb42459f27c06871fe0518469e31b9f34381266c9178d"
+realized_by = []

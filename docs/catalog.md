@@ -140,7 +140,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **I03** ASWG-R001 loudness recommendation for console games (Audio, music, and voice): exactMatch SONY-ASWG-R001 (derived from its citation)
 - **I04** Audio middleware: Audiokinetic Wwise, FMOD Studio (Audio, music, and voice): exactMatch FMOD-STUDIO-2.03-GLOSSARY (derived from its citation)
 - **I05** Interactive music techniques: horizontal resequencing, vertical layering, stingers (Audio, music, and voice): exactMatch COLLINS-GAME-SOUND-2008 (staged)
-- **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice): exactMatch MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE (derived from its citation)
+- **I06** MIDI 1.0 / MIDI 2.0 (Audio, music, and voice): narrowMatch MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE (derived from its citation); narrowMatch MIDI-SMF-RP-001-1.0-PAGE (derived from its citation)
 - **I07** AES69 (SOFA) HRTF format (Audio, music, and voice): exactMatch SOFA-SIMPLEFREEFIELDHRIR-1.0 (staged)
 - **I08** Ambisonics (AmbiX) and Dolby Atmos for games (Audio, music, and voice): narrowMatch AMBIX-AMBISONICS-FORMAT-2011 (staged)
 - **I09** Broadcast Wave Format (EBU Tech 3285) (Audio, music, and voice): exactMatch EBU-TECH-3285-2 (derived from its citation)
