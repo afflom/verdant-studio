@@ -114,7 +114,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **G09** SMPTE ST 2084 (PQ) and HDR10 / HDR10+ / Dolby Vision (Rendering, graphics APIs, color, and display): narrowMatch SMPTE-ST-2084-2014 (staged)
 - **G10** HGIG HDR gaming guidelines (Rendering, graphics APIs, color, and display): exactMatch HGIG-HDR-GAMING-BEST-PRACTICE-1.1 (derived from its citation)
 - **G11** ACES (Academy Color Encoding System) 2.0 (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch AMPAS-ACES-2.0-OUTPUT-TRANSFORM (staged)
-- **G12** OpenColorIO (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 (staged)
+- **G12** OpenColorIO (Rendering, graphics APIs, color, and display): exactMatch ASWF-OCIO-ACES-STUDIO-CONFIG-4.0.0 (staged)
 - **G13** OpenXR (Rendering, graphics APIs, color, and display), not reached from any origin: exactMatch KHRONOS-OPENXR-REGISTRY-1.1.65 (staged)
 - **G14** WebXR Device API (Rendering, graphics APIs, color, and display): narrowMatch W3C-WEBREF-IDL-WEBXR-A0114B8 (derived from its citation); exactMatch W3C-WEBXR-20261109 (staged)
 - **G15** ISO 9241-392 Ergonomics of stereoscopic images (visual fatigue) (Rendering, graphics APIs, color, and display): exactMatch ISO-9241-392-2015 (staged)
@@ -175,7 +175,7 @@ Each index row with its SKOS mappings. A mapping derived from a citation is exac
 - **K08** Elo / Glicko-2 (Networking, multiplayer, and online services): narrowMatch GLICKMAN-GLICKO-2-2022 (staged)
 - **K09** TrueSkill / TrueSkill 2 (Networking, multiplayer, and online services): narrowMatch MSR-TRUESKILL-NIPS-2006 (staged)
 - **K10** Open Match (Networking, multiplayer, and online services), not reached from any origin: exactMatch OPEN-MATCH-1.8.1-MESSAGES (staged)
-- **K11** Agones (Networking, multiplayer, and online services), not reached from any origin: exactMatch AGONES-1.62.0-INSTALL (staged)
+- **K11** Agones (Networking, multiplayer, and online services): exactMatch AGONES-1.62.0-INSTALL (staged)
 - **K12** Platform online service requirements (PSN, Xbox network, Nintendo Switch Online, Steamworks, Epic Online Services) (Networking, multiplayer, and online services), not reached from any origin: no mapping yet
 - **K13** OAuth 2.0 (RFC 6749) and OpenID Connect (Networking, multiplayer, and online services), not reached from any origin: narrowMatch IETF-RFC-6749 (staged); narrowMatch OIDF-OPENID-CONNECT-CORE-1.0 (staged)
 - **L01** ISO 9241-210 Human-centred design for interactive systems (Player experience, UX, and games user research): exactMatch ISO-9241-210-2019 (staged)
