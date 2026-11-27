@@ -659,3 +659,4 @@ Each construct and the citation that admits it.
 - `Studio.Agent.Permission`: der pattern from Studio.Agent.Contributor, Studio.Project.AccessRequest, Studio.Project.Maintainer
 - `Studio.Coordination`: req REQ-VERDANT-COORDINATION
 - `Studio.Coordination.Channel`: std VERDANT-ENGINE-IDS-2.22.4
+- `Studio.Feedback.Assessment`: std ISO-10002-2018 row W09
