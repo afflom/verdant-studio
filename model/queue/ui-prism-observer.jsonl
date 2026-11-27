@@ -1,0 +1,19 @@
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-UI-PRISM", "stakeholder": "afflom", "statement": "The Verdant Studio UI is planned now, and it is the first full Verdant Prism from Verdant Studio: Verdant Studio generates its own GUI and all of its parts and views, so every part is designed around its stakeholder, intentional in form and function, and beautiful from its declarative implementation to its user interface. This ends the wait of REQ-CREATOR-UX."}
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-AGENT-USERS", "stakeholder": "afflom", "statement": "The implementing agent and other agents are users of Verdant along with human users, and an agent has the same graphical user interface experience of Verdant Studio as a person: the same parts, views and actions, under the same guards."}
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-AGENT-OBSERVER", "stakeholder": "afflom", "statement": "An agent communes with the Verdant Observer: the Observer observes every part, stakeholder and channel of Verdant, the agent included, and the agent experiences and acts on Verdant Studio as a participant of the Observer, so that the Observer is all things including the agent."}
+{"construct": "Studio.Gui.Prism", "req": "REQ-UI-PRISM"}
+{"construct": "Studio.Gui.Generation", "der": {"check": "VS-04", "inputs": ["Studio.Gui.Prism", "Studio.PrismGeneration", "Studio.Prism.Seed", "Studio.Generator", "Studio.Prism.Closure", "Studio.SelfHosted"], "rule": "pattern"}}
+{"construct": "Studio.User", "req": "REQ-AGENT-USERS"}
+{"construct": "Studio.Gui.Journey", "std": {"authority": "STITCH-PRODUCT-EXPERIENCE-68A9222"}}
+{"construct": "Studio.Gui.Action", "std": {"authority": "STITCH-PRODUCT-EXPERIENCE-68A9222"}}
+{"construct": "Studio.Gui.Perception", "der": {"check": "VS-04", "inputs": ["Studio.User", "Studio.Gui.View", "Studio.Gui.Widget", "Studio.Gui.Journey", "Studio.Agent.Interface.Resource"], "rule": "pattern"}}
+{"construct": "Studio.Gui.Enactment", "der": {"check": "VS-04", "inputs": ["Studio.User", "Studio.Gui.Action", "Studio.Surface", "Studio.Agent.Interface.Tool", "Studio.Agent.Interface.Authorization"], "rule": "pattern"}}
+{"construct": "Studio.Agent.Interface.Session", "std": {"authority": "STITCH-PRISMID-68A9222"}}
+{"construct": "Studio.Agent.Interface.Relay", "std": {"authority": "STITCH-RELAY-68A9222"}}
+{"construct": "Studio.Agent.Interface.Transport", "der": {"check": "VS-04", "inputs": ["Studio.Agent.Interface.Protocol", "Studio.Agent.Interface.Session", "Studio.Agent.Interface.Relay", "Studio.Instance.Sync", "Studio.Agent.PrismId"], "rule": "pattern"}}
+{"construct": "Studio.Observer", "req": "REQ-AGENT-OBSERVER"}
+{"construct": "Studio.Observer.Holon", "std": {"authority": "VERDANT-ENGINE-OBSERVER-2.22.4"}}
+{"construct": "Studio.Observer.Stakeholder", "std": {"authority": "VERDANT-ENGINE-OBSERVER-2.22.4"}}
+{"construct": "Studio.Observer.Channel", "std": {"authority": "VERDANT-ENGINE-OBSERVER-2.22.4"}}
+{"construct": "Studio.Observer.Participation", "der": {"check": "VS-04", "inputs": ["Studio.Observer", "Studio.Observer.Holon", "Studio.Observer.Stakeholder", "Studio.Observer.Channel", "Studio.User", "Studio.Agent.PrismId"], "rule": "pattern"}}
+{"construct": "Studio.Observer.Experience", "der": {"check": "VS-04", "inputs": ["Studio.Observer.Participation", "Studio.Gui.Perception", "Studio.Gui.Enactment", "Studio.Gui.Coordination"], "rule": "pattern"}}
