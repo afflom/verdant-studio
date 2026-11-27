@@ -617,3 +617,4 @@ Each construct and the citation that admits it.
 - `Studio.Generator.Guest.Contract`: std PRISM-CODE-CORE-WASM-0.11.6
 - `Studio.Mechanical`: req REQ-MECHANICAL
 - `Studio.SelfHosted`: req REQ-SELF-HOSTED
+- `Studio.ContentBoundary.Differentiation`: req REQ-CONTENT-BOUNDARY
