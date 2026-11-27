@@ -205,3 +205,51 @@ statement = "The BWF generator refuses a Prism of more than 349 features before 
 theorems = ["Studio.Generator.AudioFile.Bwf.admits_exactly_the_capacity", "Studio.Generator.AudioFile.Bwf.admits_the_capacity", "Studio.Generator.AudioFile.Bwf.refuses_one_past_the_capacity", "Studio.Generator.AudioFile.Bwf.refuses_a_prism_past_the_capacity"]
 failure = "refused: a BWF file of at most 16 MiB holds 349 features, a half-second note of 48000 bytes each, and this Prism has more"
 negative = "VS-20"
+
+[[id]]
+id = "VS-21"
+level = "build"
+suite = "feedback"
+statement = "Player feedback arrives through the in-game feedback form, kind TAB channel TAB feature TAB received TAB player TAB text, of kind feedback or complaint (ISO 10002) or incident (ISO/IEC/IEEE 29119-3), received in decimal seconds; a form of any other shape is refused by name"
+theorems = ["Studio.Feedback.Intake.reads_a_decimal", "Studio.Feedback.Intake.writes_a_decimal", "Studio.Feedback.refuses_an_unknown_kind_or_channel"]
+failure = "refused: every form is kind TAB channel TAB feature TAB received TAB player TAB text, the kind feedback, complaint or incident, the channel form or prompt, received in decimal seconds, with a feature and a player"
+negative = "VS-21"
+
+[[id]]
+id = "VS-22"
+level = "build"
+suite = "feedback"
+statement = "A form is either the player's own in-game form or the answer to a creator's prompt for feedback on a feature, and the catalog counts the players who answered a prompt"
+theorems = ["Studio.Feedback.Solicitation.knows_exactly_the_form_and_the_prompt", "Studio.Feedback.consensus_counts_distinct_players"]
+
+[[id]]
+id = "VS-23"
+level = "build"
+suite = "feedback"
+statement = "Feedback is masked: the catalog never carries the player's identifier, and every mention of it in an incident's or complaint's text is masked (ISO/IEC 29100 anonymization)"
+theorems = ["Studio.Feedback.Masking.masks_every_mention_of_the_player", "Studio.Feedback.Masking.keeps_a_text_without_the_player", "Studio.Feedback.an_incident_acts_alone_and_masked"]
+
+[[id]]
+id = "VS-24"
+level = "build"
+suite = "feedback"
+statement = "Feedback on a feature is distilled by consensus: it reaches consensus when at least the quorum of distinct players gave it, one player twice stays pending, and a quorum below 2 is refused as a single interest"
+theorems = ["Studio.Feedback.consensus_counts_distinct_players", "Studio.Feedback.one_player_twice_stays_pending", "Studio.Feedback.one_player_is_no_consensus"]
+failure = "refused: consensus needs a quorum of at least 2 players, because the feedback of 1 player is a single interest"
+negative = "VS-24"
+
+[[id]]
+id = "VS-25"
+level = "build"
+suite = "feedback"
+statement = "An incident or a complaint is actioned on its own, without consensus, as a single entry carrying its masked text"
+theorems = ["Studio.Feedback.Incident.an_incident_or_a_complaint_acts_alone", "Studio.Feedback.an_incident_acts_alone_and_masked"]
+
+[[id]]
+id = "VS-26"
+level = "build"
+suite = "feedback"
+statement = "The feedback-to-publish lead time (DORA change lead time) is the published time less the received time, and a release published before the feedback it answers is refused"
+theorems = ["Studio.Feedback.LeadTime.lead_time_is_published_less_received", "Studio.Feedback.LeadTime.refuses_a_release_before_its_feedback"]
+failure = "refused: a lead time is received TAB published, each in decimal seconds, and a release is published no earlier than the feedback it answers was received"
+negative = "VS-26"

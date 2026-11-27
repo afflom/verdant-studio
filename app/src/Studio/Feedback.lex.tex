@@ -1,0 +1,213 @@
+\begin{lexlean}{Studio.Feedback}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Feedback.Intake}
+\importmodule{Studio.Feedback.Solicitation}
+\importmodule{Studio.Feedback.Masking}
+\importmodule{Studio.Feedback.Incident}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: quorumRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a20636f6e73656e737573206e6565647320612071756f72756d206f66206174206c65617374203220706c61796572732c20626563617573652074686520666565646261636b206f66203120706c6179657220697320612073696e676c6520696e746572657374
+}
+
+definition{
+  name: formRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a20657665727920666f726d206973206b696e6420544142206368616e6e656c205441422066656174757265205441422072656365697665642054414220706c617965722054414220746578742c20746865206b696e6420666565646261636b2c20636f6d706c61696e74206f7220696e636964656e742c20746865206368616e6e656c20666f726d206f722070726f6d70742c20726563656976656420696e20646563696d616c207365636f6e64732c20776974682061206665617475726520616e64206120706c61796572
+}
+
+definition{
+  name: admitted,
+  parameters: [form : Studio.Feedback.Intake::Form],
+  result: Bool,
+  body: ((Studio.Feedback.Incident::knownKind (project form kind)) && (Studio.Feedback.Solicitation::knownChannel (project form channel)))
+}
+
+definition{
+  name: formsOf,
+  parameters: [lines : (List Bytes)],
+  result: (Option (List Studio.Feedback.Intake::Form)),
+  body: (match lines
+    | List.nil => (ctor Option.some [(List Studio.Feedback.Intake::Form)] (nil Studio.Feedback.Intake::Form))
+    | List.cons line rest => (match (Studio.Feedback.Intake::formOf line)
+      | Option.none => (ctor Option.none [(List Studio.Feedback.Intake::Form)])
+      | Option.some form => (if (admitted form) then (match (formsOf rest)
+        | Option.none => (ctor Option.none [(List Studio.Feedback.Intake::Form)])
+        | Option.some forms => (ctor Option.some [(List Studio.Feedback.Intake::Form)] (cons form forms))) else (ctor Option.none [(List Studio.Feedback.Intake::Form)])))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: memberBytes,
+  parameters: [item : Bytes, items : (List Bytes)],
+  result: Bool,
+  body: (match items
+    | List.nil => false
+    | List.cons head rest => ((Studio.Feedback.Intake::same head item) || (memberBytes item rest))),
+  recursive_argument: items
+}
+
+definition{
+  name: feedbackOn,
+  parameters: [forms : (List Studio.Feedback.Intake::Form), feature : Bytes, onlyPrompted : Bool],
+  result: (List Studio.Feedback.Intake::Form),
+  body: (match forms
+    | List.nil => (nil Studio.Feedback.Intake::Form)
+    | List.cons form rest => (if (((not (Studio.Feedback.Incident::actsAlone form)) && (Studio.Feedback.Intake::same (project form feature) feature)) && ((not onlyPrompted) || (Studio.Feedback.Solicitation::prompted form))) then (cons form (feedbackOn rest feature onlyPrompted)) else (feedbackOn rest feature onlyPrompted))),
+  recursive_argument: forms
+}
+
+definition{
+  name: playersFrom,
+  parameters: [forms : (List Studio.Feedback.Intake::Form), seen : (List Bytes)],
+  result: Nat,
+  body: (match forms
+    | List.nil => 0
+    | List.cons form rest => (if (memberBytes (project form player) seen) then (playersFrom rest seen) else (1 + (playersFrom rest (cons (project form player) seen))))),
+  recursive_argument: forms
+}
+
+definition{
+  name: players,
+  parameters: [forms : (List Studio.Feedback.Intake::Form)],
+  result: Nat,
+  body: (playersFrom forms (nil Bytes))
+}
+
+definition{
+  name: earliestFrom,
+  parameters: [forms : (List Studio.Feedback.Intake::Form), least : Nat],
+  result: Nat,
+  body: (match forms
+    | List.nil => least
+    | List.cons form rest => (earliestFrom rest (if ((project form received) <? least) then (project form received) else least))),
+  recursive_argument: forms
+}
+
+definition{
+  name: earliest,
+  parameters: [forms : (List Studio.Feedback.Intake::Form)],
+  result: Nat,
+  body: (match forms
+    | List.nil => 0
+    | List.cons form rest => (earliestFrom rest (project form received)))
+}
+
+definition{
+  name: tab,
+  parameters: [left : Bytes, right : Bytes],
+  result: Bytes,
+  body: (prim append (prim append left 0x09 : Bytes) right : Bytes)
+}
+
+definition{
+  name: consensus,
+  parameters: [quorum : Nat, count : Nat],
+  result: Bool,
+  body: (quorum <=? count)
+}
+
+definition{
+  name: consensusLine,
+  parameters: [quorum : Nat, forms : (List Studio.Feedback.Intake::Form), feature : Bytes],
+  result: Bytes,
+  body: (let group : (List Studio.Feedback.Intake::Form) := (feedbackOn forms feature false); (tab (tab (tab (tab (tab (if (consensus quorum (players group)) then 0x636f6e73656e737573 else 0x70656e64696e67) (Studio.Feedback.Intake::feedbackTerm)) feature) (Studio.Feedback.Intake::decimalOf (players group))) (Studio.Feedback.Intake::decimalOf (players (feedbackOn forms feature true)))) (Studio.Feedback.Intake::decimalOf (earliest group))))
+}
+
+definition{
+  name: singleLine,
+  parameters: [form : Studio.Feedback.Intake::Form],
+  result: Bytes,
+  body: (tab (tab (tab (tab (tab 0x73696e676c65 (project form kind)) (project form feature)) (project form channel)) (Studio.Feedback.Intake::decimalOf (project form received))) (Studio.Feedback.Masking::maskedText form))
+}
+
+definition{
+  name: distillFrom,
+  parameters: [quorum : Nat, all : (List Studio.Feedback.Intake::Form), forms : (List Studio.Feedback.Intake::Form), seen : (List Bytes)],
+  result: (List Bytes),
+  body: (match forms
+    | List.nil => (nil Bytes)
+    | List.cons form rest => (if (Studio.Feedback.Incident::actsAlone form) then (cons (singleLine form) (distillFrom quorum all rest seen)) else (if (memberBytes (project form feature) seen) then (distillFrom quorum all rest seen) else (cons (consensusLine quorum all (project form feature)) (distillFrom quorum all rest (cons (project form feature) seen)))))),
+  recursive_argument: forms
+}
+
+definition{
+  name: joinLines,
+  parameters: [lines : (List Bytes)],
+  result: Bytes,
+  body: (match lines
+    | List.nil => 0x
+    | List.cons line rest => (match rest
+      | List.nil => line
+      | List.cons following more => (prim append (prim append line 0x0a : Bytes) (joinLines rest) : Bytes))),
+  recursive_argument: lines
+}
+
+definition{
+  name: distill,
+  parameters: [quorum : Nat, forms : (List Studio.Feedback.Intake::Form)],
+  result: Bytes,
+  body: (joinLines (distillFrom quorum forms forms (nil Bytes)))
+}
+
+definition{
+  name: catalog,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Feedback.Intake::split value 10)
+    | List.nil => (quorumRefusal)
+    | List.cons header lines => (match (Studio.Feedback.Intake::decimal header)
+      | Option.none => (quorumRefusal)
+      | Option.some quorum => (if (quorum <? 2) then (quorumRefusal) else (match (formsOf lines)
+        | Option.none => (formRefusal)
+        | Option.some forms => (distill quorum forms))))),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: one_player_is_no_consensus,
+  parameters: [],
+  statement: (((catalog 0x31) = (quorumRefusal)) /\ ((catalog 0x30) = (quorumRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: consensus_counts_distinct_players,
+  parameters: [],
+  statement: ((catalog 0x320a666565646261636b09666f726d096a756d700931097031096869676865720a666565646261636b0970726f6d7074096a756d70093209703109686967686572210a666565646261636b09666f726d096a756d700933097032096d6f7265) = 0x636f6e73656e73757309666565646261636b096a756d70093209310931),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: one_player_twice_stays_pending,
+  parameters: [],
+  statement: ((catalog 0x320a666565646261636b09666f726d096a756d700931097031096869676865720a666565646261636b09666f726d096a756d70093209703109686967686572) = 0x70656e64696e6709666565646261636b096a756d70093109300931),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_incident_acts_alone_and_masked,
+  parameters: [],
+  statement: ((catalog 0x320a696e636964656e7409666f726d096a756d700937097037097037206372617368656420686572650a666565646261636b09666f726d096a756d70093809703109686967686572) = 0x73696e676c6509696e636964656e74096a756d7009666f726d0937092a206372617368656420686572650a70656e64696e6709666565646261636b096a756d70093109300938),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_an_unknown_kind_or_channel,
+  parameters: [],
+  statement: (((catalog 0x320a7261746509666f726d096a756d70093109703109) = (formRefusal)) /\ ((catalog 0x320a666565646261636b09656d61696c096a756d70093109703109) = (formRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,43 @@
+\begin{lexlean}{Studio.Feedback.Incident}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Feedback.Intake}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: incidentTerm,
+  parameters: [],
+  result: Bytes,
+  body: 0x696e636964656e74
+}
+
+definition{
+  name: knownKind,
+  parameters: [kind : Bytes],
+  result: Bool,
+  body: ((Studio.Feedback.Intake::same kind (Studio.Feedback.Intake::feedbackTerm)) || ((Studio.Feedback.Intake::same kind (Studio.Feedback.Intake::complaintTerm)) || (Studio.Feedback.Intake::same kind (incidentTerm))))
+}
+
+definition{
+  name: actsAloneOn,
+  parameters: [kind : Bytes],
+  result: Bool,
+  body: ((Studio.Feedback.Intake::same kind (incidentTerm)) || (Studio.Feedback.Intake::same kind (Studio.Feedback.Intake::complaintTerm)))
+}
+
+definition{
+  name: actsAlone,
+  parameters: [form : Studio.Feedback.Intake::Form],
+  result: Bool,
+  body: (actsAloneOn (project form kind))
+}
+
+theorem{
+  name: an_incident_or_a_complaint_acts_alone,
+  parameters: [],
+  statement: (((actsAloneOn 0x696e636964656e74) = true) /\ (((actsAloneOn 0x636f6d706c61696e74) = true) /\ ((actsAloneOn 0x666565646261636b) = false))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
