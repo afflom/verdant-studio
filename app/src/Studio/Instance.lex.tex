@@ -1,0 +1,167 @@
+\begin{lexlean}{Studio.Instance}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: mirror,
+  parameters: [],
+  result: Bytes,
+  body: 0x676974687562
+}
+
+definition{
+  name: runtimeHost,
+  parameters: [carriers : (List Bytes)],
+  result: Bool,
+  body: (match carriers
+    | List.nil => false
+    | List.cons carrier rest => (if (Studio.Runtime::same carrier (mirror)) then (runtimeHost rest) else true)),
+  recursive_argument: carriers,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: hostRefusal,
+  parameters: [prismId : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a20476974487562206973206f6e6c792061206d6972726f722c206e6576657220612072756e74696d652c20736f2074686520696e7374616e636573206f6620 prismId : Bytes) 0x206e656564206120686f7374206f74686572207468616e206769746875622c207375636820617320612062726f77736572206f7220612070686f6e65 : Bytes)
+}
+
+definition{
+  name: hostHandOff,
+  parameters: [prismId : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x686f7374696e67207265717565737420666f722056452d37373a2074686520696e7374616e636573206f6620 prismId : Bytes) 0x2072756e206f6e20657665727920686f7374206e616d65642c2077697468206769746875622061206d6972726f72206f6e6c79 : Bytes)
+}
+
+definition{
+  name: hostPlan,
+  parameters: [prismId : Bytes, carriers : (List Bytes)],
+  result: Bytes,
+  body: (if (runtimeHost carriers) then (hostHandOff prismId) else (hostRefusal prismId)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: syncRefusal,
+  parameters: [origin : Bytes, peer : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20616e20696e7374616e6365206f6620 origin : Bytes) (prim append 0x206e657665722073796e6368726f6e697a6573207769746820616e20696e7374616e6365206f6620 peer : Bytes) : Bytes) 0x2c20736f20636f6e74656e742063726f7373657320507269736d20494473206f6e6c79207768656e20697420697320736861726564207468726f756768206120636174616c6f67 : Bytes)
+}
+
+definition{
+  name: syncHandOff,
+  parameters: [prismId : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x73796e6368726f6e697a6174696f6e207265717565737420666f722056452d32343a2074686520696e7374616e636573206f6620 prismId : Bytes) (prim append 0x2073796e6368726f6e697a6520627920696e707574206a6f75726e616c2062617463686573207369676e6564207769746820 prismId : Bytes) : Bytes)
+}
+
+definition{
+  name: syncPair,
+  parameters: [origin : Bytes, peer : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same origin peer) then (syncHandOff origin) else (syncRefusal origin peer)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: readable,
+  parameters: [owner : Bytes, requester : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x7265616461626c653a20 requester : Bytes) (prim append 0x206d61792072656164207468652064617461206f6620 owner : Bytes) : Bytes)
+}
+
+definition{
+  name: privacyRefusal,
+  parameters: [owner : Bytes, requester : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a207468652064617461206f6620 owner : Bytes) (prim append 0x206973207072697661746520746f20 owner : Bytes) : Bytes) (prim append (prim append 0x20756e74696c206974206973207368617265642c20736f20 requester : Bytes) 0x206d6179206e6f742072656164206974 : Bytes) : Bytes)
+}
+
+definition{
+  name: readData,
+  parameters: [owner : Bytes, requester : Bytes, share : Bytes],
+  result: Bytes,
+  body: (if ((Studio.Runtime::same owner requester) || (Studio.Runtime::same share 0x736861726564)) then (readable owner requester) else (privacyRefusal owner requester)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons subject more2 => (if (Studio.Runtime::same verb 0x686f7374) then (hostPlan subject more2) else (match more2
+        | List.cons other more3 => (if (Studio.Runtime::same verb 0x73796e63) then (match more3
+          | List.nil => (syncPair subject other)
+          | List.cons extra others => 0x696e76616c69642072657175657374) else (if (Studio.Runtime::same verb 0x72656164) then (match more3
+          | List.cons share more4 => (match more4
+            | List.nil => (readData subject other share)
+            | List.cons extra others => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374) else 0x696e76616c69642072657175657374))
+        | List.nil => 0x696e76616c69642072657175657374))
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: hands_a_hosting_plan_with_a_runtime_host_to_the_engine,
+  parameters: [],
+  statement: ((request 0x686f737409707269736d3a616c6578096769746875620962726f777365720970686f6e65) = (hostHandOff 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_hosting_plan_on_the_mirror_alone,
+  parameters: [],
+  statement: ((request 0x686f737409707269736d3a616c657809676974687562) = (hostRefusal 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: hands_a_sync_under_one_prism_id_to_the_engine,
+  parameters: [],
+  statement: ((request 0x73796e6309707269736d3a616c657809707269736d3a616c6578) = (syncHandOff 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_sync_across_prism_ids,
+  parameters: [],
+  statement: ((request 0x73796e6309707269736d3a626f6209707269736d3a616c6578) = (syncRefusal 0x707269736d3a626f62 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: the_owner_reads_its_own_data,
+  parameters: [],
+  statement: ((request 0x7265616409707269736d3a616c657809707269736d3a616c65780970726976617465) = (readable 0x707269736d3a616c6578 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: anyone_reads_shared_data,
+  parameters: [],
+  statement: ((request 0x7265616409707269736d3a616c657809707269736d3a626f6209736861726564) = (readable 0x707269736d3a616c6578 0x707269736d3a626f62)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_to_read_private_data_of_another_prism_id,
+  parameters: [],
+  statement: ((request 0x7265616409707269736d3a616c657809707269736d3a626f620970726976617465) = (privacyRefusal 0x707269736d3a616c6578 0x707269736d3a626f62)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
