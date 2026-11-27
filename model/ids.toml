@@ -196,3 +196,12 @@ statement = "The SVG generator writes only XML text: it escapes & < and >, accep
 theorems = ["Studio.Generator.VectorImage.Svg.escapes_markup", "Studio.Generator.VectorImage.Svg.accepts_utf8_text", "Studio.Generator.VectorImage.Svg.refuses_a_control_character", "Studio.Generator.VectorImage.Svg.refuses_a_surrogate_and_a_noncharacter"]
 failure = "refused: the seed is not XML text, so it is UTF-8 with no control character but tab, line feed and carriage return"
 negative = "VS-15"
+
+[[id]]
+id = "VS-20"
+level = "build"
+suite = "generator"
+statement = "The BWF generator refuses a Prism of more than 349 features before it reads them, since a BWF file of at most 16 MiB holds 349 half-second notes, and admits every Prism of at most 349"
+theorems = ["Studio.Generator.AudioFile.Bwf.admits_exactly_the_capacity", "Studio.Generator.AudioFile.Bwf.admits_the_capacity", "Studio.Generator.AudioFile.Bwf.refuses_one_past_the_capacity", "Studio.Generator.AudioFile.Bwf.refuses_a_prism_past_the_capacity"]
+failure = "refused: a BWF file of at most 16 MiB holds 349 features, a half-second note of 48000 bytes each, and this Prism has more"
+negative = "VS-20"

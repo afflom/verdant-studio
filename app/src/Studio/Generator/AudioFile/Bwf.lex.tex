@@ -108,10 +108,17 @@ definition{
 }
 
 definition{
+  name: synthesize,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (let segments : (List Studio.Generator.AudioFile.Synthesis::Segment) := (Studio.Generator.AudioFile.Synthesis::segmentsOf (Studio.Generator.Music.Midi::file features)); (if (Studio.Generator.AudioFile.Synthesis::readable segments) then (wave features (Studio.Generator.AudioFile.Synthesis::render segments)) else (unreadableRefusal)))
+}
+
+definition{
   name: encode,
   parameters: [features : Bytes],
   result: Bytes,
-  body: (if (((prim length features : Nat) =? 0) || (not (Studio.Guard::asciiText features))) then (Studio.Generator.Music.Midi::refusal features) else (if (not (admits (prim length features : Nat))) then (capacityRefusal) else (let segments : (List Studio.Generator.AudioFile.Synthesis::Segment) := (Studio.Generator.AudioFile.Synthesis::segmentsOf (Studio.Generator.Music.Midi::file features)); (if (Studio.Generator.AudioFile.Synthesis::readable segments) then (wave features (Studio.Generator.AudioFile.Synthesis::render segments)) else (unreadableRefusal))))),
+  body: (if ((prim length features : Nat) =? 0) then (Studio.Generator.Music.Midi::refusal features) else (if (not (admits (prim length features : Nat))) then (capacityRefusal) else (if (not (Studio.Guard::asciiText features)) then (Studio.Generator.Music.Midi::refusal features) else (synthesize features)))),
   axioms: [Quot.sound, propext]
 }
 
@@ -127,6 +134,30 @@ theorem{
   parameters: [count : Nat],
   statement: ((breaksCapacity count) = false),
   proof: linear_arithmetic{definitions: [admits, breaksCapacity, capacity]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_one_past_the_capacity,
+  parameters: [],
+  statement: ((admits 350) = false),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: admits_the_capacity,
+  parameters: [],
+  statement: ((admits 349) = true),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_prism_past_the_capacity,
+  parameters: [],
+  statement: ((encode 0x4545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545) = (capacityRefusal)),
+  proof: decide{},
   axioms: [Quot.sound, propext]
 }
 
