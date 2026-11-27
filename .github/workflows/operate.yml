@@ -97,7 +97,56 @@ jobs:
           outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' -e '^readers/' -e '^admit/' -e '^lexlean-workspace.toml$' -e '^studio/lexlean.toml$' -e '^studio/production-request.json$' -e '^app/lexlean.toml$' -e '^stdlib/lexlean.toml$' -e '^.github/lexlean.pin$' || true)
           if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites, README.md, readers, admit, lexlean-workspace.toml, the studio, app and stdlib lexlean.toml, studio/production-request.json and .github/lexlean.pin, not: $outside"; exit 1; fi
           # studio/lexlean.lock, readers/lexlean.lock, readers/xml/lexlean.lock and admit/lexlean.lock are generated, and the export below writes them again.
-          git apply --exclude=studio/lexlean.lock --exclude=readers/lexlean.lock --exclude=readers/xml/lexlean.lock --exclude=admit/lexlean.lock target/input/change.patch
+          # Parallel lanes each register the next VS IDs they see, so two changes can claim the same ones, and each
+          # appends its rows at the end of model/ids.toml and of a suite. So each VS ID this change adds that main already
+          # has becomes the next free one throughout the change, and a file the change only appends to is appended to on
+          # main instead of patched, so a change proposed against an older main still applies.
+          python3 - <<'PY'
+          import re, json
+          nl = chr(10)
+          text = open('target/input/change.patch').read()
+          parts = re.split('(?m)^(?=diff --git )', text)
+          head, files = parts[0], parts[1:]
+          have = set(int(n) for n in re.findall('(?m)^id = .VS-([0-9]+).', open('model/ids.toml').read()))
+          added = []
+          for f in files:
+              added += [int(n) for n in re.findall('(?m)^[+]id = .VS-([0-9]+).', f)]
+          top = max(have | set(added) | {0})
+          ren = {}
+          for n in added:
+              if n in have and n not in ren:
+                  top += 1
+                  ren[n] = top
+          def fix(line):
+              return re.sub('VS-([0-9]+)(?![0-9])', lambda m: 'VS-' + str(ren[int(m.group(1))]).zfill(2) if int(m.group(1)) in ren else m.group(0), line)
+          appends = {}
+          kept = []
+          for f in files:
+              lines = [fix(l) if l.startswith('+') and not l.startswith('+++') else l for l in f.split(nl)]
+              hunks = [i for i, l in enumerate(lines) if l.startswith('@@')]
+              body = [l for l in lines[hunks[0] + 1:] if l != ''] if len(hunks) == 1 else []
+              plain = 'new file mode' not in f and 'GIT binary patch' not in f
+              if plain and body and body[-1].startswith('+') and not any(l[:1] in '-' + chr(92) for l in body):
+                  appends[lines[0].split(' ')[2][2:]] = [l[1:] for l in body if l.startswith('+')]
+              else:
+                  kept.append(nl.join(lines))
+          open('target/input/change.patch', 'w').write(head + ''.join(kept))
+          json.dump(appends, open('target/input/appends.json', 'w'))
+          for n in sorted(ren):
+              print('::notice::VS-' + str(n).zfill(2) + ' is already on main, so this change registers it as VS-' + str(ren[n]).zfill(2))
+          PY
+          # git apply drops a file whose binary patch is corrupt, says so on one error line and still exits 0, so any error line stops the run here, before the export.
+          : > target/apply.err
+          if grep -q '^diff --git' target/input/change.patch; then git apply --exclude=studio/lexlean.lock --exclude=readers/lexlean.lock --exclude=readers/xml/lexlean.lock --exclude=admit/lexlean.lock target/input/change.patch 2> target/apply.err || { sed 's/^/::error::/' target/apply.err; exit 1; }; fi
+          if grep -q '^error' target/apply.err; then sed 's/^/::error::the patch did not apply whole: /' target/apply.err; exit 1; fi
+          python3 - <<'PY'
+          import json
+          for path, add in json.load(open('target/input/appends.json')).items():
+              old = open(path).read()
+              if old and not old.endswith(chr(10)):
+                  old += chr(10)
+              open(path, 'w').write(old + chr(10).join(add) + chr(10))
+          PY
           # The owner reads this pull request, so its body leads with the proposer's own account (the prose
           # before the first diff), then the definitions it changes. Checked before the export, which takes minutes.
           awk 'index($0, "diff --git") == 1 { exit } { print }' target/input/change.patch > target/summary.md
