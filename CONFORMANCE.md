@@ -127,6 +127,20 @@ The three honesty levels (R2):
 | `VS-48` | `build` | A person's data is private to their Prism ID until they share it, so Studio.Instance refuses another Prism ID's read of unshared data, naming both (ISO/IEC 29100 consent and choice) | `Studio.Instance.refuses_to_read_private_data_of_another_prism_id`, refuses with `refused: the data of prism:alex is private to prism:alex until it is shared, so prism:bob may not read it` |
 | `VS-49` | `open` | Verdant Engine's VE-77 multi-gateway hosting and VE-24 Prism ID signed journal synchronization are callable from Verdant Studio, so that the requests Studio.Instance hands on are carried out by the engine; REQ-DISTRIBUTED-INSTANCES depends on them, and until the engine exposes them Studio holds the requests it would send |  |
 
+## shared-catalog
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-50` | `build` | Studio.SharedCatalog publishes a person's shared content in a catalog, distributed to every instance subscribed to that catalog | `Studio.SharedCatalog.publishes_shared_content` |
+| `VS-51` | `build` | Content is private to its Prism ID until it is shared, so Studio.SharedCatalog refuses to publish unshared content in a catalog, naming the Prism ID and the catalog | `Studio.SharedCatalog.refuses_to_publish_private_content`, refuses with `refused: the content of prism:alex is private to prism:alex until it is shared, so it is not published in creator-games` |
+| `VS-52` | `build` | Studio.SharedCatalog subscribes every instance of a Prism ID to a catalog, so its shared content reaches each of them, synchronized under that Prism ID | `Studio.SharedCatalog.subscribes_every_instance_of_a_prism_id` |
+| `VS-53` | `build` | A catalog has maintainers as a project does, so Studio.SharedCatalog hands a request to maintain, publish to, curate or moderate a catalog on to Verdant Engine's VE-70 signing-request scheme for the catalog's maintainers to decide | `Studio.SharedCatalog.hands_a_catalog_permission_request_to_the_engine` |
+| `VS-54` | `build` | Studio.SharedCatalog refuses a permission request for any scope other than maintain, publish, curate or moderate, naming the catalog and the scope | `Studio.SharedCatalog.refuses_a_scope_a_catalog_does_not_grant`, refuses with `refused: the catalog creator-games grants maintain, publish, curate or moderate, so delete is not one of its permissions` |
+| `VS-55` | `build` | Verdant Studio itself is the one catalog Studio.SharedCatalog finds with no catalog to find it through | `Studio.SharedCatalog.verdant_studio_is_discoverable_everywhere` |
+| `VS-56` | `build` | Only Verdant Studio itself is globally discoverable, so Studio.SharedCatalog refuses to find any other catalog, the Verdant Studio project included, except through a catalog that lists it, and pins none | `Studio.SharedCatalog.refuses_global_discovery_of_any_other_catalog`, refuses with `refused: only Verdant Studio is discoverable everywhere, so verdant-studio is found through a catalog that lists it` |
+| `VS-57` | `build` | Studio.SharedCatalog finds a catalog through another catalog that lists it | `Studio.SharedCatalog.finds_a_catalog_through_one_that_lists_it` |
+| `VS-58` | `build` | Studio.SharedCatalog refuses to find a catalog through one that does not list it, naming both | `Studio.SharedCatalog.refuses_a_catalog_through_one_that_does_not_list_it`, refuses with `refused: the catalog other-catalog does not list creator-games, so creator-games is not found through it` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

@@ -436,3 +436,74 @@ id = "VS-49"
 level = "open"
 suite = "instance"
 statement = "Verdant Engine's VE-77 multi-gateway hosting and VE-24 Prism ID signed journal synchronization are callable from Verdant Studio, so that the requests Studio.Instance hands on are carried out by the engine; REQ-DISTRIBUTED-INSTANCES depends on them, and until the engine exposes them Studio holds the requests it would send"
+
+[[id]]
+id = "VS-50"
+level = "build"
+suite = "shared-catalog"
+statement = "Studio.SharedCatalog publishes a person's shared content in a catalog, distributed to every instance subscribed to that catalog"
+theorems = ["Studio.SharedCatalog.publishes_shared_content"]
+
+[[id]]
+id = "VS-51"
+level = "build"
+suite = "shared-catalog"
+statement = "Content is private to its Prism ID until it is shared, so Studio.SharedCatalog refuses to publish unshared content in a catalog, naming the Prism ID and the catalog"
+theorems = ["Studio.SharedCatalog.refuses_to_publish_private_content"]
+failure = "refused: the content of prism:alex is private to prism:alex until it is shared, so it is not published in creator-games"
+negative = "VS-51"
+
+[[id]]
+id = "VS-52"
+level = "build"
+suite = "shared-catalog"
+statement = "Studio.SharedCatalog subscribes every instance of a Prism ID to a catalog, so its shared content reaches each of them, synchronized under that Prism ID"
+theorems = ["Studio.SharedCatalog.subscribes_every_instance_of_a_prism_id"]
+
+[[id]]
+id = "VS-53"
+level = "build"
+suite = "shared-catalog"
+statement = "A catalog has maintainers as a project does, so Studio.SharedCatalog hands a request to maintain, publish to, curate or moderate a catalog on to Verdant Engine's VE-70 signing-request scheme for the catalog's maintainers to decide"
+theorems = ["Studio.SharedCatalog.hands_a_catalog_permission_request_to_the_engine"]
+
+[[id]]
+id = "VS-54"
+level = "build"
+suite = "shared-catalog"
+statement = "Studio.SharedCatalog refuses a permission request for any scope other than maintain, publish, curate or moderate, naming the catalog and the scope"
+theorems = ["Studio.SharedCatalog.refuses_a_scope_a_catalog_does_not_grant"]
+failure = "refused: the catalog creator-games grants maintain, publish, curate or moderate, so delete is not one of its permissions"
+negative = "VS-54"
+
+[[id]]
+id = "VS-55"
+level = "build"
+suite = "shared-catalog"
+statement = "Verdant Studio itself is the one catalog Studio.SharedCatalog finds with no catalog to find it through"
+theorems = ["Studio.SharedCatalog.verdant_studio_is_discoverable_everywhere"]
+
+[[id]]
+id = "VS-56"
+level = "build"
+suite = "shared-catalog"
+statement = "Only Verdant Studio itself is globally discoverable, so Studio.SharedCatalog refuses to find any other catalog, the Verdant Studio project included, except through a catalog that lists it, and pins none"
+theorems = ["Studio.SharedCatalog.refuses_global_discovery_of_any_other_catalog"]
+failure = "refused: only Verdant Studio is discoverable everywhere, so verdant-studio is found through a catalog that lists it"
+negative = "VS-56"
+
+[[id]]
+id = "VS-57"
+level = "build"
+suite = "shared-catalog"
+statement = "Studio.SharedCatalog finds a catalog through another catalog that lists it"
+theorems = ["Studio.SharedCatalog.finds_a_catalog_through_one_that_lists_it"]
+
+[[id]]
+id = "VS-58"
+level = "build"
+suite = "shared-catalog"
+statement = "Studio.SharedCatalog refuses to find a catalog through one that does not list it, naming both"
+theorems = ["Studio.SharedCatalog.refuses_a_catalog_through_one_that_does_not_list_it"]
+failure = "refused: the catalog other-catalog does not list creator-games, so creator-games is not found through it"
+negative = "VS-58"
