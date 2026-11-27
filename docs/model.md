@@ -566,3 +566,5 @@ Each construct and the citation that admits it.
 - `Catalog.NintendoDeveloperProcessStep`: std NINTENDO-DEVELOPER-PORTAL-THE-PROCESS row P03
 - `Catalog.PyramidOfGameDesignLayer`: std LOVELL-PYRAMID-GAME-DESIGN-2018-CHAPTERS row U09
 - `Catalog.VghfArchiveMaterialClass`: std VGHF-DIGITAL-ARCHIVE row Y09
+- `Catalog.CppKeyword`: std ISO-IEC-14882-N4950 row H01
+- `Catalog.CsharpKeyword`: std ECMA-334-7 row H02
