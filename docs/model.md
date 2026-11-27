@@ -538,3 +538,13 @@ Each construct and the citation that admits it.
 - `Catalog.Wcag22SuccessCriterion`: std W3C-WCAG22-JSON row M06
 - `Catalog.WebSocketOpcode`: std IETF-RFC-6455 row K07
 - `Catalog.XliffSegmentState`: std OASIS-XLIFF-2.1 row N04
+- `Catalog.DisneyBrdfParameters`: std WDAS-DISNEY-BRDF-2012 row D08
+- `Catalog.GltfAsset`: std KHRONOS-GLTF-2.0 row D02
+- `Catalog.KhrDfColorModel`: std KHRONOS-DATAFORMAT-1.4.0 row D12
+- `Catalog.MaterialxStdlibNode`: std ASWF-MATERIALX-STDLIB-1.39.5 row D06
+- `Catalog.OpenPbrSurfaceInput`: std ASWF-OPENPBR-1.1.2 row D07
+- `Catalog.UsdCoreSchemaClass`: std OPENUSD-USD-SCHEMA-26.11.1 row D01
+- `Catalog.UsdSkelBindingProperty`: std OPENUSD-USDSKEL-SCHEMA-26.11.1 row E06
+- `Catalog.UsdSkelSchemaClass`: std OPENUSD-USDSKEL-SCHEMA-26.11.1 row E06
+- `Catalog.X3dHAnimNode`: std WEB3D-X3D-4.0-XSD row E04
+- `Catalog.YarnSpinnerParserRule`: std YARNSPINNER-PARSER-3.3.1 row C06

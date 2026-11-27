@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","description":"Mechanical, from WEB3D-X3D-4.0-XSD x3d-4.0.xsd: the element names of the HAnim component (H-Anim, ISO/IEC 19774), in schema order.","enum":["HAnimDisplacer","HAnimHumanoid","HAnimJoint","HAnimMotion","HAnimSegment","HAnimSite"],"title":"X3D HAnim node"}
