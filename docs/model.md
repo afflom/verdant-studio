@@ -568,3 +568,6 @@ Each construct and the citation that admits it.
 - `Catalog.VghfArchiveMaterialClass`: std VGHF-DIGITAL-ARCHIVE row Y09
 - `Catalog.CppKeyword`: std ISO-IEC-14882-N4950 row H01
 - `Catalog.CsharpKeyword`: std ECMA-334-7 row H02
+- `Catalog.ArticyExportRuleset`: std ARTICY-DRAFT-X-JSON-EXPORT row C08
+- `Catalog.ArticyExportTarget`: std ARTICY-DRAFT-X-JSON-EXPORT row C08
+- `Catalog.DdeLayer`: std WALK-GORLICH-BARRETT-DDE-2017 row B02
