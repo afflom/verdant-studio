@@ -614,3 +614,4 @@ Each construct and the citation that admits it.
 - `Studio.Generator.RasterImage.Png`: std W3C-PNG-3
 - `Studio.Generator.VectorImage`: req REQ-ENGINE-VECTOR-IMAGE
 - `Studio.Generator.VectorImage.Svg`: std W3C-SVG-2
+- `Studio.Generator.Guest.Contract`: std PRISM-CODE-CORE-WASM-0.11.6

@@ -577,6 +577,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `WIKIPEDIA-LIST-OF-RENDERING-APIS` | List of rendering APIs, including the vendor-specific PlayStation 4 APIs LibGNM (low level) and GNMX (high level); the console SDK documentation is under NDA. Index row G06. |  |
 | `WIKIPEDIA-NINTENDO-SWITCH` | Nintendo Switch, whose Nvidia chipset has a custom API known as NVN; the console SDK documentation is under NDA. Index row G06. |  |
 | `WIKIPEDIA-PLAYSTATION-5` | PlayStation 5, whose GPU is programmed via Sony's graphics API AGC; the console SDK documentation is under NDA. Index row G06. |  |
+| `PRISM-CODE-CORE-WASM-0.11.6` | The Core-Wasm guest contract: an import-free wasm32 core module exporting exactly memory, holo_alloc (i32 to i32) and holo_run (i32, i32 to i64), run on a fresh instance per request; the ABI of every Verdant Prism generator guest (REQ-PRISM-GENERATION). |  |
 
 ## Claims that are not conformance IDs
 
