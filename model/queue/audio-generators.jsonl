@@ -1,0 +1,6 @@
+{"construct": "Studio.Generator.Music.Midi.File", "std": {"authority": "MIDI-SMF-RP-001-1.0-PAGE", "row": "I06"}}
+{"construct": "Studio.Generator.Music.Midi.MediaType", "std": {"authority": "WHATWG-MIMESNIFF-BA4B3C3"}}
+{"construct": "Studio.Generator.AudioFile.Bwf.MediaType", "std": {"authority": "WHATWG-MIMESNIFF-BA4B3C3"}}
+{"construct": "Studio.Generator.AudioFile.Synthesis", "std": {"authority": "MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE", "row": "I06"}}
+{"construct": "Studio.Generator.AudioFile.Synthesis.SampleRate", "std": {"authority": "ITU-R-BS-1770-5", "row": "I01"}}
+{"construct": "Studio.Generator.AudioFile.Synthesis.Level", "std": {"authority": "EBU-R128-2023", "row": "I02"}}
