@@ -1,0 +1,257 @@
+\begin{lexlean}{Studio.Generator.AudioFile.Synthesis}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.Music.Midi}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Segment,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: key, type: Nat}, {name: count, type: Nat}]
+}
+
+definition{
+  name: silent,
+  parameters: [],
+  result: Nat,
+  body: 128
+}
+
+definition{
+  name: unreadable,
+  parameters: [],
+  result: Nat,
+  body: 256
+}
+
+definition{
+  name: octaveStep,
+  parameters: [j : Nat],
+  result: Nat,
+  body: (if (j =? 0) then 100544580129994352 else (if (j =? 1) then 106523271985579936 else (if (j =? 2) then 112857475359119376 else (if (j =? 3) then 119568330065550512 else (if (j =? 4) then 126678232958621664 else (if (j =? 5) then 134210912678309024 else (if (j =? 6) then 142191508842946432 else (if (j =? 7) then 150646655950365088 else (if (j =? 8) then 159604572268053984 else (if (j =? 9) then 169095154009004224 else (if (j =? 10) then 179150075107541152 else (if (j =? 11) then 189802892928135808 else 0))))))))))))
+}
+
+definition{
+  name: twoPower,
+  parameters: [exponent : Nat],
+  result: Nat,
+  body: (match exponent
+    | Nat.zero => 1
+    | Nat.succ rest => (prim multiply 2 (twoPower rest) : Nat)),
+  recursive_argument: exponent
+}
+
+definition{
+  name: phaseStep,
+  parameters: [key : Nat],
+  result: Nat,
+  body: (prim quotient ((prim quotient (octaveStep (prim remainder key 12 0 : Nat)) (twoPower (prim subtract 20 (prim quotient key 12 0 : Nat) : Nat)) 0 : Nat) + 1) 2 0 : Nat)
+}
+
+definition{
+  name: quarterSine,
+  parameters: [v : Nat],
+  result: Nat,
+  body: (let x : Nat := (prim quotient (prim multiply v 1727108826179 : Nat) 70368744177664 0 : Nat); (let x2 : Nat := (prim quotient (prim multiply x x : Nat) 1099511627776 0 : Nat); (let t3 : Nat := (prim quotient (prim multiply x x2 : Nat) 6597069766656 0 : Nat); (let t5 : Nat := (prim quotient (prim multiply t3 x2 : Nat) 21990232555520 0 : Nat); (let t7 : Nat := (prim quotient (prim multiply t5 x2 : Nat) 46179488366592 0 : Nat); (let t9 : Nat := (prim quotient (prim multiply t7 x2 : Nat) 79164837199872 0 : Nat); (prim subtract ((x + t5) + t9) (t3 + t7) : Nat)))))))
+}
+
+definition{
+  name: peak,
+  parameters: [],
+  result: Nat,
+  body: 3281
+}
+
+definition{
+  name: sample,
+  parameters: [phase : Nat],
+  result: Bytes,
+  body: (let q : Nat := (prim quotient phase 70368744177664 0 : Nat); (let r : Nat := (prim remainder phase 70368744177664 0 : Nat); (let v : Nat := (if ((prim remainder q 2 0 : Nat) =? 0) then r else (prim subtract 70368744177664 r : Nat)); (let a : Nat := (prim quotient ((prim multiply (quarterSine v) (prim multiply 2 (peak) : Nat) : Nat) + 1099511627776) 2199023255552 0 : Nat); (let s : Nat := (if (q <? 2) then a else (prim remainder (prim subtract 65536 a : Nat) 65536 0 : Nat)); (prim append (Studio.Generator.Music.Midi::octet s) (Studio.Generator.Music.Midi::octet (prim quotient s 256 0 : Nat)) : Bytes))))))
+}
+
+definition{
+  name: tone,
+  parameters: [step : Nat, start : Nat, count : Nat, depth : Nat],
+  result: Bytes,
+  body: (match depth
+    | Nat.zero => 0x
+    | Nat.succ rest => (if (count =? 0) then 0x else (if (count =? 1) then (sample (prim remainder (prim multiply start step : Nat) 281474976710656 0 : Nat)) else (let half : Nat := (prim quotient count 2 0 : Nat); (prim append (tone step start half rest) (tone step (start + half) (prim subtract count half : Nat) rest) : Bytes))))),
+  recursive_argument: depth
+}
+
+definition{
+  name: silence,
+  parameters: [count : Nat, depth : Nat],
+  result: Bytes,
+  body: (match depth
+    | Nat.zero => 0x
+    | Nat.succ rest => (if (count =? 0) then 0x else (if (count =? 1) then 0x0000 else (let half : Nat := (prim quotient count 2 0 : Nat); (prim append (silence half rest) (silence (prim subtract count half : Nat) rest) : Bytes))))),
+  recursive_argument: depth
+}
+
+definition{
+  name: pcm,
+  parameters: [segment : Segment],
+  result: Bytes,
+  body: (if ((project segment key) <? 128) then (tone (phaseStep (project segment key)) 0 (project segment count) 32) else (silence (project segment count) 32))
+}
+
+definition{
+  name: byteAt,
+  parameters: [midi : Bytes, offset : Nat],
+  result: Nat,
+  body: (match (prim index midi offset : (Option UInt8))
+    | Option.none => 256
+    | Option.some byte => (prim to_nat byte : Nat))
+}
+
+definition{
+  name: quantityFrom,
+  parameters: [midi : Bytes, offset : Nat, remaining : Nat, value : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => value
+    | Nat.succ rest => (let byte : Nat := (byteAt midi offset); (if (byte <? 128) then ((prim multiply value 128 : Nat) + byte) else (if (byte <? 256) then (quantityFrom midi (offset + 1) rest ((prim multiply value 128 : Nat) + (prim subtract byte 128 : Nat))) else value)))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: quantitySpan,
+  parameters: [midi : Bytes, offset : Nat, remaining : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => 0
+    | Nat.succ rest => (if ((byteAt midi offset) <? 128) then 1 else (1 + (quantitySpan midi (offset + 1) rest)))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: divisor,
+  parameters: [division : Nat],
+  result: Nat,
+  body: (prim multiply 1000000 division : Nat)
+}
+
+definition{
+  name: emit,
+  parameters: [key : Nat, count : Nat, segments : (List Segment)],
+  result: (List Segment),
+  body: (if (count =? 0) then segments else (cons (record Segment {key := key, count := count}) segments))
+}
+
+definition{
+  name: readFrom,
+  parameters: [midi : Bytes, offset : Nat, fuel : Nat, division : Nat, tempo : Nat, carry : Nat, key : Nat, segments : (List Segment)],
+  result: (List Segment),
+  body: (match fuel
+    | Nat.zero => (cons (record Segment {key := (unreadable), count := 0}) segments)
+    | Nat.succ rest => (let delta : Nat := (quantityFrom midi offset 4 0); (let at : Nat := (offset + (quantitySpan midi offset 4)); (let scaled : Nat := ((prim multiply (prim multiply delta 48000 : Nat) tempo : Nat) + carry); (let count : Nat := (prim quotient scaled (divisor division) 0 : Nat); (let left : Nat := (prim remainder scaled (divisor division) 0 : Nat); (let status : Nat := (byteAt midi at); (let sounded : (List Segment) := (emit key count segments); (if (status =? 255) then (let kind : Nat := (byteAt midi (at + 1)); (let size : Nat := (quantityFrom midi (at + 2) 4 0); (let data : Nat := ((at + 2) + (quantitySpan midi (at + 2) 4)); (if (kind =? 47) then sounded else (if ((kind =? 81) && (size =? 3)) then (readFrom midi (data + 3) rest division (((prim multiply (byteAt midi data) 65536 : Nat) + (prim multiply (byteAt midi (data + 1)) 256 : Nat)) + (byteAt midi (data + 2))) left key sounded) else (readFrom midi (data + size) rest division tempo left key sounded)))))) else (if ((prim quotient status 16 0 : Nat) =? 9) then (if ((byteAt midi (at + 2)) =? 0) then (readFrom midi (at + 3) rest division tempo left (if ((byteAt midi (at + 1)) =? key) then (silent) else key) sounded) else (readFrom midi (at + 3) rest division tempo left (byteAt midi (at + 1)) sounded)) else (if ((prim quotient status 16 0 : Nat) =? 8) then (readFrom midi (at + 3) rest division tempo left (if ((byteAt midi (at + 1)) =? key) then (silent) else key) sounded) else (cons (record Segment {key := (unreadable), count := status}) sounded)))))))))))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: segmentsOf,
+  parameters: [midi : Bytes],
+  result: (List Segment),
+  body: (if (((byteAt midi 9) =? 0) && (((byteAt midi 11) =? 1) && ((byteAt midi 12) <? 128))) then (readFrom midi 22 (prim length midi : Nat) ((prim multiply (byteAt midi 12) 256 : Nat) + (byteAt midi 13)) 500000 0 (silent) (nil Segment)) else (cons (record Segment {key := (unreadable), count := 0}) (nil Segment)))
+}
+
+definition{
+  name: readable,
+  parameters: [segments : (List Segment)],
+  result: Bool,
+  body: (match segments
+    | List.nil => true
+    | List.cons head others => (if ((project head key) =? (unreadable)) then false else (readable others))),
+  recursive_argument: segments
+}
+
+definition{
+  name: pairUp,
+  parameters: [pieces : (List Bytes), fuel : Nat],
+  result: (List Bytes),
+  body: (match fuel
+    | Nat.zero => pieces
+    | Nat.succ rest => (match pieces
+      | List.nil => (nil Bytes)
+      | List.cons head others => (match others
+        | List.nil => (cons head (nil Bytes))
+        | List.cons following more => (cons (prim append head following : Bytes) (pairUp more rest))))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: pieceCount,
+  parameters: [pieces : (List Bytes)],
+  result: Nat,
+  body: (match pieces
+    | List.nil => 0
+    | List.cons head others => (1 + (pieceCount others))),
+  recursive_argument: pieces
+}
+
+definition{
+  name: joinFrom,
+  parameters: [pieces : (List Bytes), depth : Nat],
+  result: Bytes,
+  body: (match depth
+    | Nat.zero => 0x
+    | Nat.succ rest => (match pieces
+      | List.nil => 0x
+      | List.cons head others => (match others
+        | List.nil => head
+        | List.cons following more => (joinFrom (pairUp pieces (pieceCount pieces)) rest)))),
+  recursive_argument: depth
+}
+
+definition{
+  name: renderFrom,
+  parameters: [segments : (List Segment), pieces : (List Bytes)],
+  result: (List Bytes),
+  body: (match segments
+    | List.nil => pieces
+    | List.cons head others => (renderFrom others (cons (pcm head) pieces))),
+  recursive_argument: segments
+}
+
+definition{
+  name: render,
+  parameters: [segments : (List Segment)],
+  result: Bytes,
+  body: (joinFrom (renderFrom segments (nil Bytes)) 32)
+}
+theorem{
+  name: key_69_steps_at_440_hertz,
+  parameters: [],
+  statement: ((phaseStep 69) = 2580187286514),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: sine_starts_at_zero,
+  parameters: [],
+  statement: ((sample 0) = 0x0000),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: sine_peaks_at_the_level,
+  parameters: [],
+  statement: ((sample 70368744177664) = 0xd10c),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: sine_troughs_at_the_negated_level,
+  parameters: [],
+  statement: ((sample 211106232532992) = 0x2ff3),
+  proof: decide{},
+  axioms: []
+}
+
+\end{semanticmodule}
+\end{lexlean}

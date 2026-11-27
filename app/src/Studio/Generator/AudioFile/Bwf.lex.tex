@@ -1,0 +1,196 @@
+\begin{lexlean}{Studio.Generator.AudioFile.Bwf}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Guard}
+\importmodule{Studio.Generator.Music.Midi}
+\importmodule{Studio.Generator.AudioFile.Synthesis}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: le16,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (Studio.Generator.Music.Midi::octet value) (Studio.Generator.Music.Midi::octet (prim quotient value 256 0 : Nat)) : Bytes)
+}
+
+definition{
+  name: le32,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (le16 value) (le16 (prim quotient value 65536 0 : Nat)) : Bytes)
+}
+
+definition{
+  name: nulls,
+  parameters: [count : Nat],
+  result: Bytes,
+  body: (match count
+    | Nat.zero => 0x
+    | Nat.succ rest => (prim append (nulls rest) 0x00 : Bytes)),
+  recursive_argument: count
+}
+
+definition{
+  name: field,
+  parameters: [text : Bytes, size : Nat],
+  result: Bytes,
+  body: (prim append text (nulls (prim subtract size (prim length text : Nat) : Nat)) : Bytes)
+}
+
+definition{
+  name: unused,
+  parameters: [],
+  result: Bytes,
+  body: 0xff7f
+}
+
+definition{
+  name: codingHistory,
+  parameters: [],
+  result: Bytes,
+  body: 0x413d50434d2c463d34383030302c573d31362c4d3d6d6f6e6f2c543d56657264616e742053747564696f0d0a
+}
+
+definition{
+  name: extension,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append (field features 256) (field 0x56657264616e742053747564696f 32) : Bytes) (prim append (nulls 50) (prim append (le32 0) (le32 0) : Bytes) : Bytes) : Bytes) (prim append (prim append (le16 2) (nulls 64) : Bytes) (prim append (prim append (prim append (unused) (unused) : Bytes) (prim append (unused) (prim append (unused) (unused) : Bytes) : Bytes) : Bytes) (prim append (nulls 180) (codingHistory) : Bytes) : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: extensionChunk,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x62657874 (le32 (prim length (extension features) : Nat)) : Bytes) (extension features) : Bytes)
+}
+
+definition{
+  name: formatChunk,
+  parameters: [],
+  result: Bytes,
+  body: 0x666d7420100000000100010080bb00000077010002001000
+}
+
+definition{
+  name: wave,
+  parameters: [features : Bytes, samples : Bytes],
+  result: Bytes,
+  body: (let body : Bytes := (prim append (prim append (extensionChunk features) (formatChunk) : Bytes) (prim append (prim append 0x64617461 (le32 (prim length samples : Nat)) : Bytes) samples : Bytes) : Bytes); (prim append (prim append 0x52494646 (le32 ((prim length body : Nat) + 4)) : Bytes) (prim append 0x57415645 body : Bytes) : Bytes))
+}
+
+definition{
+  name: unreadableRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a207468652073796e746865736973207265616473206120666f726d61742030205374616e64617264204d4944492046696c65206f66204e6f7465204f6e2c204e6f7465204f666620616e64206d657461206576656e74732c20616e6420746869732066696c65206973206e6f74206f6e65
+}
+
+definition{
+  name: capacity,
+  parameters: [],
+  result: Nat,
+  body: 349
+}
+
+definition{
+  name: admits,
+  parameters: [count : Nat],
+  result: Bool,
+  body: (count <=? (capacity))
+}
+
+definition{
+  name: capacityRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a2061204257462066696c65206f66206174206d6f7374203136204d694220686f6c6473203334392066656174757265732c20612068616c662d7365636f6e64206e6f7465206f6620343830303020627974657320656163682c20616e64207468697320507269736d20686173206d6f7265
+}
+
+definition{
+  name: encode,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (if (((prim length features : Nat) =? 0) || (not (Studio.Guard::asciiText features))) then (Studio.Generator.Music.Midi::refusal features) else (if (not (admits (prim length features : Nat))) then (capacityRefusal) else (let segments : (List Studio.Generator.AudioFile.Synthesis::Segment) := (Studio.Generator.AudioFile.Synthesis::segmentsOf (Studio.Generator.Music.Midi::file features)); (if (Studio.Generator.AudioFile.Synthesis::readable segments) then (wave features (Studio.Generator.AudioFile.Synthesis::render segments)) else (unreadableRefusal))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: breaksCapacity,
+  parameters: [count : Nat],
+  result: Bool,
+  body: (((admits count) && (349 <? count)) || ((count <=? 349) && (not (admits count))))
+}
+
+theorem{
+  name: admits_exactly_the_capacity,
+  parameters: [count : Nat],
+  statement: ((breaksCapacity count) = false),
+  proof: linear_arithmetic{definitions: [admits, breaksCapacity, capacity]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: le32_is_little_endian,
+  parameters: [],
+  statement: ((le32 16909060) = 0x04030201),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: format_is_pcm_mono_48000_16,
+  parameters: [],
+  statement: ((formatChunk) = 0x666d7420100000000100010080bb00000077010002001000),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: extension_is_version_2_with_coding_history,
+  parameters: [],
+  statement: ((prim length (extension 0x45) : Nat) = 646),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: wave_orders_bext_fmt_data,
+  parameters: [],
+  statement: ((prim slice (wave 0x45 0x0100) 0 20 : (Option Bytes)) = (ctor Option.some [Bytes] 0x52494646b4020000574156456265787486020000)),
+  proof: decide{},
+  axioms: []
+}
+theorem{
+  name: wave_carries_version_2,
+  parameters: [],
+  statement: ((prim slice (wave 0x45 0x0100) 366 2 : (Option Bytes)) = (ctor Option.some [Bytes] 0x0200)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: wave_carries_the_coding_history,
+  parameters: [],
+  statement: ((prim slice (wave 0x45 0x0100) 622 44 : (Option Bytes)) = (ctor Option.some [Bytes] (codingHistory))),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: wave_carries_fmt_then_data,
+  parameters: [],
+  statement: ((prim slice (wave 0x45 0x0100) 666 34 : (Option Bytes)) = (ctor Option.some [Bytes] 0x666d7420100000000100010080bb0000007701000200100064617461020000000100)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: wave_ends_with_the_samples,
+  parameters: [],
+  statement: ((prim length (wave 0x45 0x0100) : Nat) = 700),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}

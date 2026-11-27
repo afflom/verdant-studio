@@ -1,0 +1,146 @@
+\begin{lexlean}{Studio.Generator.Music.Midi}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Guard}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: octets,
+  parameters: [],
+  result: Bytes,
+  body: 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
+}
+
+definition{
+  name: octet,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (match (prim slice (octets) (prim remainder value 256 0 : Nat) 1 : (Option Bytes))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: word32,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (prim append (octet (prim quotient value 16777216 0 : Nat)) (octet (prim quotient value 65536 0 : Nat)) : Bytes) (prim append (octet (prim quotient value 256 0 : Nat)) (octet value) : Bytes) : Bytes)
+}
+
+definition{
+  name: header,
+  parameters: [],
+  result: Bytes,
+  body: 0x4d54686400000006000000010060
+}
+
+definition{
+  name: note,
+  parameters: [key : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x0090 key : Bytes) (prim append 0x406080 (prim append key 0x40 : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: notesFrom,
+  parameters: [features : Bytes, offset : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (match (prim slice features offset 1 : (Option Bytes))
+      | Option.none => out
+      | Option.some key => (notesFrom features (offset + 1) rest (prim append out (note key) : Bytes)))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: endOfTrack,
+  parameters: [],
+  result: Bytes,
+  body: 0x00ff2f00
+}
+
+definition{
+  name: trackData,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (prim append (notesFrom features 0 (prim length features : Nat) 0x) (endOfTrack) : Bytes)
+}
+
+definition{
+  name: file,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (prim append (header) (prim append (prim append 0x4d54726b (word32 (prim length (trackData features) : Nat)) : Bytes) (trackData features) : Bytes) : Bytes)
+}
+
+definition{
+  name: emptyRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a2074686520507269736d20686173206e6f2066656174757265732c20736f207468657265206973206e6f7468696e6720746f20636f6d706f7365
+}
+
+definition{
+  name: featureRefusal,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (prim append 0x726566757365643a20656163682062797465206f66206120666561747572652069732061204d49444920312e30206461746120627974652c20736f2061206665617475726520697320415343494920746578742c20616e6420 (prim append features 0x206973206e6f74 : Bytes) : Bytes)
+}
+
+definition{
+  name: refusal,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (if ((prim length features : Nat) =? 0) then (emptyRefusal) else (featureRefusal features))
+}
+
+definition{
+  name: compose,
+  parameters: [features : Bytes],
+  result: Bytes,
+  body: (if (((prim length features : Nat) =? 0) || (not (Studio.Guard::asciiText features))) then (refusal features) else (file features)),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_no_features,
+  parameters: [],
+  statement: ((refusal 0x) = (emptyRefusal)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_feature_by_name,
+  parameters: [],
+  statement: ((refusal 0x636166c3a9) = (featureRefusal 0x636166c3a9)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: word32_is_big_endian,
+  parameters: [],
+  statement: ((word32 16909060) = 0x01020304),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: writes_a_format_0_file,
+  parameters: [],
+  statement: ((file 0x45) = 0x4d546864000000060000000100604d54726b0000000c009045406080454000ff2f00),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: writes_one_note_per_feature,
+  parameters: [],
+  statement: ((file 0x3c40) = 0x4d546864000000060000000100604d54726b0000001400903c4060803c40009040406080404000ff2f00),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
