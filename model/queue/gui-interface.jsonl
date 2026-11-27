@@ -1,0 +1,21 @@
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-STUDIO-GUI", "stakeholder": "afflom", "statement": "The Verdant Studio GUI is in the plan now, and once it is available it is the maintainer's primary interface with the implementing agent, with Verdant Studio and with GitHub, which Verdant Studio keeps only as its mirror (REQ-DISTRIBUTED-INSTANCES). It is the creator UI of REQ-CREATOR-UX, REQ-CREATOR-BESPOKE and REQ-BRAND, generated through the workspace API from the model (REQ-D9)."}
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-AGENT-INTERFACE", "stakeholder": "afflom", "statement": "The implementing agent has its own interface to Verdant Studio, a Model Context Protocol server, through which it reads the model and runs the workspace API's operations as a Contributor (REQ-AGENT-CONTRIBUTOR), so that the maintainer's GUI and the agent's interface are two views of one workspace API."}
+{"construct": "Studio.Gui", "req": "REQ-STUDIO-GUI"}
+{"construct": "Studio.Agent.Interface", "req": "REQ-AGENT-INTERFACE"}
+{"construct": "Studio.Agent.Interface.Protocol", "std": {"authority": "MCP-SCHEMA-2026-07-28"}}
+{"construct": "Studio.Agent.Interface.Tool", "std": {"authority": "MCP-SCHEMA-2026-07-28"}}
+{"construct": "Studio.Agent.Interface.Resource", "std": {"authority": "MCP-SCHEMA-2026-07-28"}}
+{"construct": "Studio.Agent.Interface.Subscription", "std": {"authority": "MCP-SCHEMA-2026-07-28"}}
+{"construct": "Studio.Agent.Interface.Authorization", "der": {"check": "VS-04", "inputs": ["Studio.Agent.Interface", "Studio.Agent.PrismId", "Studio.Agent.Permission"], "rule": "pattern"}}
+{"construct": "Studio.Surface", "der": {"check": "VS-04", "inputs": ["Studio.Ops", "Studio.Schema", "Studio.Gui", "Studio.Agent.Interface.Tool", "Studio.Agent.Interface.Resource"], "rule": "pattern"}}
+{"construct": "Studio.Gui.View", "der": {"check": "VS-04", "inputs": ["Studio.Gui", "Studio.Surface", "Studio.Catalog.Stakeholder", "Studio.Catalog.Viewpoint", "Studio.Catalog.View"], "rule": "pattern"}}
+{"construct": "Studio.Gui.Widget", "std": {"authority": "VERDANT-ENGINE-IDS-2.22.4"}}
+{"construct": "Studio.Gui.Accessibility", "std": {"authority": "W3C-WCAG22-JSON", "row": "M06"}}
+{"construct": "Studio.Gui.Usability", "std": {"authority": "ISO-9241-11-2018", "row": "L02"}}
+{"construct": "Studio.Gui.Design", "std": {"authority": "ISO-9241-210-2019", "row": "L01"}}
+{"construct": "Studio.Gui.Rendering", "std": {"authority": "W3C-WEBGPU-20261116"}}
+{"construct": "Studio.Gui.Brand", "der": {"check": "VS-04", "inputs": ["Studio.Gui", "Studio.Prism.Seed", "Studio.Prism.Closure", "Studio.SelfHosted"], "rule": "pattern"}}
+{"construct": "Studio.Gui.Coordination", "der": {"check": "VS-04", "inputs": ["Studio.Gui", "Studio.Coordination", "Studio.Coordination.Channel", "Studio.Agent.Interface.Subscription"], "rule": "pattern"}}
+{"construct": "Studio.Gui.Approval", "der": {"check": "VS-04", "inputs": ["Studio.Gui", "Studio.Agent.Permission", "Studio.Project.Maintainer", "Studio.Project.AccessRequest"], "rule": "pattern"}}
+{"construct": "Studio.Gui.Mirror", "der": {"check": "VS-04", "inputs": ["Studio.Gui", "Studio.Runtime.Mirror", "Studio.Runtime.Publish"], "rule": "pattern"}}
+{"construct": "Studio.Gui.Instance", "der": {"check": "VS-04", "inputs": ["Studio.Gui", "Studio.Instance", "Studio.Instance.Sync"], "rule": "pattern"}}
