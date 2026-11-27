@@ -8906,3 +8906,20 @@ statement = "PlayStation 5, whose GPU is programmed via Sony's graphics API AGC;
 checksum = "none"
 checksum_reason = "The authority is citation-only, so no artifact is committed."
 realized_by = []
+
+[[authority]]
+id = "PRISM-CODE-CORE-WASM-0.11.6"
+name = "Prism Core-Wasm guest contract hologram:guest/core-wasm@1"
+issuer = "UOR Foundation (prism-code)"
+edition = "prism-code 0.11.6, format revision 2026-10-23"
+canonical_id = "https://www.npmjs.com/package/prism-code"
+source_role = "normative"
+retrieval_date = "2026-11-27"
+url = "https://unpkg.com/prism-code@0.11.6/src/generate/core-wasm.wit"
+media_type = "text/plain"
+license = "MIT"
+redistribution = "redistributable"
+statement = "The Core-Wasm guest contract: an import-free wasm32 core module exporting exactly memory, holo_alloc (i32 to i32) and holo_run (i32, i32 to i64), run on a fresh instance per request; the ABI of every Verdant Prism generator guest (REQ-PRISM-GENERATION)."
+artifact = "authorities/PRISM-CODE-CORE-WASM-0.11.6/core-wasm.wit"
+checksum = "a566c87a359cadf98f652747f1b3574aa307ff5f652a190c6d99c350db9cf369"
+realized_by = []
