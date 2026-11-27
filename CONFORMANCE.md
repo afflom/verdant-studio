@@ -529,6 +529,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `W3C-WASM-JS-API-2` | The JavaScript interface a browser host gives WebAssembly modules; the browser runtime of a Verdant Prism's WebAssembly (REQ-PRISM-GENERATION). |  |
 | `W3C-WASM-WEB-API-2` | Streaming compilation and the application/wasm media type for WebAssembly on the Web; the browser delivery of a Verdant Prism's WebAssembly (REQ-PRISM-GENERATION). |  |
 | `VTENSOR-IDS-280A1A4` | vTensor's registered capability IDs (VT-01 onward): a GGML device backend whose only tensor-compute substrate is Verdant Tensor, matching the GGML CPU oracle byte for byte, so any GGML application can run a Verdant Prism generator deterministically (REQ-PRISM-GENERATION, REQ-ENGINE-FIDELITY). |  |
+| `W3C-WEBREF-IDL-PERMISSIONS-A0114B8` | The Web IDL fragments of Permissions, extracted by Reffy into W3C webref (Source: Permissions (https://www.w3.org/TR/permissions/)). Read by read-webidl as an import for index row G14, which defines PermissionDescriptor and PermissionStatus. |  |
 
 ## Claims that are not conformance IDs
 
