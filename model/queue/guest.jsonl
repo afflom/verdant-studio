@@ -1,0 +1,2 @@
+{"construct": "Studio.Generator.Guest", "std": {"authority": "W3C-WASM-CORE-3.0"}}
+{"construct": "Studio.Generator.Host", "std": {"authority": "W3C-WASM-JS-API-2"}}
