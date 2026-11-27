@@ -1,0 +1,36 @@
+\begin{lexlean}{Studio.Feedback.Assessment}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Feedback.Intake}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: immediateTerm,
+  parameters: [],
+  result: Bytes,
+  body: 0x696d6d656469617465
+}
+
+definition{
+  name: knownAssessment,
+  parameters: [assessment : Bytes],
+  result: Bool,
+  body: (((prim length assessment : Nat) =? 0) || (Studio.Feedback.Intake::same assessment (immediateTerm)))
+}
+
+definition{
+  name: immediate,
+  parameters: [form : Studio.Feedback.Intake::Form],
+  result: Bool,
+  body: (Studio.Feedback.Intake::same (project form assessment) (immediateTerm))
+}
+
+theorem{
+  name: knows_no_assessment_and_immediate_action,
+  parameters: [],
+  statement: (((knownAssessment 0x) = true) /\ (((knownAssessment 0x696d6d656469617465) = true) /\ ((knownAssessment 0x757267656e74) = false))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
