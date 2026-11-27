@@ -72,6 +72,6 @@ version = "0.1.0"
 kind = "path"
 source = "studio"
 module_prefix = "VerdantStudioCli"
-tree_sha256 = "b61b70b6b7c4bdf1d466b87c0912f8b542c5c318e34fb02a6764d509dc398ed5"
+tree_sha256 = "330bcf651a9a3bc0eaa67b8355d184a423cc71e59ac0b5aaab8f44b6721101a6"
 manifest_sha256 = "0a0e0f56d766c0ce6b701e6e1abfa698e130495841f2b9506de2a4a40e708dcb"
 imports = ["core@0.1.0", "std@1.0.0"]
