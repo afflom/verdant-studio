@@ -188,6 +188,12 @@ The three honesty levels (R2):
 | `VS-76` | `build` | Verdant Studio is implemented in Verdant Studio, so Studio.SelfHosted accepts a part of Verdant Studio's production made in its own project, verdant-studio | `Studio.SelfHosted.a_part_made_in_its_own_project_is_self_hosted` |
 | `VS-77` | `build` | Every part of Verdant Studio's production is made in Verdant Studio, so Studio.SelfHosted refuses a part made anywhere else, naming the part and its producer | `Studio.SelfHosted.refuses_a_part_made_elsewhere`, refuses with `refused: brand of Verdant Studio is made in Verdant Studio, in its own project verdant-studio, not in other-tool` |
 
+## typeface
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-81` | `build` | The typeface generator's arithmetic is METAFONT's, as mf.web 2.71828182 computes it: make_fraction, take_fraction, make_scaled, take_scaled, square_rt, pyth_add, n_arg and n_sin_cos give mf.web's results bit for bit, rounding and overflow to el_gordo included | `Studio.Generator.Typeface.Scaled.makes_fractions_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.takes_fractions_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.makes_scaled_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.takes_scaled_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.roots_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.measures_angles_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.adds_pythagorean_as_mf_web_does`, `Studio.Generator.Typeface.Scaled.sines_and_cosines_as_mf_web_does` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

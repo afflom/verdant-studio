@@ -679,3 +679,11 @@ level = "build"
 suite = "prism"
 statement = "The Prism generation answers application/zip with the Prism's bundle: a BagIt 1.0 bag whose payload is every facet under data/ by its media type, with a SHA-256 and a SHA-512 payload manifest, serialized as a ZIP archive that begins with its local file header signature"
 theorems = ["Studio.Prism.Bundle.bags_each_facet_with_both_manifests", "Studio.Prism.Bundle.manifests_each_facet_by_sha256", "Studio.Prism.Bundle.manifests_each_facet_by_sha512", "Studio.PrismGeneration.the_bundle_is_a_zip_archive"]
+
+
+[[id]]
+id = "VS-81"
+level = "build"
+suite = "typeface"
+statement = "The typeface generator's arithmetic is METAFONT's, as mf.web 2.71828182 computes it: make_fraction, take_fraction, make_scaled, take_scaled, square_rt, pyth_add, n_arg and n_sin_cos give mf.web's results bit for bit, rounding and overflow to el_gordo included"
+theorems = ["Studio.Generator.Typeface.Scaled.makes_fractions_as_mf_web_does", "Studio.Generator.Typeface.Scaled.takes_fractions_as_mf_web_does", "Studio.Generator.Typeface.Scaled.makes_scaled_as_mf_web_does", "Studio.Generator.Typeface.Scaled.takes_scaled_as_mf_web_does", "Studio.Generator.Typeface.Scaled.roots_as_mf_web_does", "Studio.Generator.Typeface.Scaled.measures_angles_as_mf_web_does", "Studio.Generator.Typeface.Scaled.adds_pythagorean_as_mf_web_does", "Studio.Generator.Typeface.Scaled.sines_and_cosines_as_mf_web_does"]
