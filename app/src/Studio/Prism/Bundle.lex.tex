@@ -1,0 +1,129 @@
+\begin{lexlean}{Studio.Prism.Bundle}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Prism.Bundle.Digest}
+\importmodule{Studio.Prism.Bundle.Archive}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: declaration,
+  parameters: [],
+  result: Bytes,
+  body: 0x42616749742d56657273696f6e3a20312e300a5461672d46696c652d4368617261637465722d456e636f64696e673a205554462d380a
+}
+
+definition{
+  name: midiPath,
+  parameters: [],
+  result: Bytes,
+  body: 0x646174612f617564696f2f6d696469
+}
+
+definition{
+  name: wavePath,
+  parameters: [],
+  result: Bytes,
+  body: 0x646174612f617564696f2f77617665
+}
+
+definition{
+  name: svgPath,
+  parameters: [],
+  result: Bytes,
+  body: 0x646174612f696d6167652f7376672b786d6c
+}
+
+definition{
+  name: hexDigit,
+  parameters: [nibble : Nat],
+  result: Bytes,
+  body: (Studio.Prism.Bundle.Archive::piece 0x30313233343536373839616263646566 nibble 1),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: hexFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (match (prim index value offset : (Option UInt8))
+      | Option.none => out
+      | Option.some byte => (hexFrom value (offset + 1) rest (prim append (prim append out (hexDigit (prim quotient (prim to_nat byte : Nat) 16 0 : Nat)) : Bytes) (hexDigit (prim remainder (prim to_nat byte : Nat) 16 0 : Nat)) : Bytes)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: hex,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (hexFrom value 0 (prim length value : Nat) 0x),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: line,
+  parameters: [digest : Bytes, path : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append (hex digest) 0x20 : Bytes) path : Bytes) 0x0a : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: entry,
+  parameters: [path : Bytes, data : Bytes],
+  result: Studio.Prism.Bundle.Archive::Entry,
+  body: (record Studio.Prism.Bundle.Archive::Entry {name := path, data := data}),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: manifest256,
+  parameters: [midi : Bytes, wave : Bytes, svg : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (line (Studio.Prism.Bundle.Digest::sha256 midi) (midiPath)) (line (Studio.Prism.Bundle.Digest::sha256 wave) (wavePath)) : Bytes) (line (Studio.Prism.Bundle.Digest::sha256 svg) (svgPath)) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: manifest512,
+  parameters: [midi : Bytes, wave : Bytes, svg : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (line (Studio.Prism.Bundle.Digest::sha512 midi) (midiPath)) (line (Studio.Prism.Bundle.Digest::sha512 wave) (wavePath)) : Bytes) (line (Studio.Prism.Bundle.Digest::sha512 svg) (svgPath)) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: bag,
+  parameters: [midi : Bytes, wave : Bytes, svg : Bytes],
+  result: Bytes,
+  body: (Studio.Prism.Bundle.Archive::archive (cons (entry 0x62616769742e747874 (declaration)) (cons (entry 0x6d616e69666573742d7368613235362e747874 (manifest256 midi wave svg)) (cons (entry 0x6d616e69666573742d7368613531322e747874 (manifest512 midi wave svg)) (cons (entry (midiPath) midi) (cons (entry (wavePath) wave) (cons (entry (svgPath) svg) (nil Studio.Prism.Bundle.Archive::Entry)))))))),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: manifests_each_facet_by_sha256,
+  parameters: [],
+  statement: ((manifest256 0x41 0x42 0x43) = 0x3535396165616430383236346435373935643339303937313863646430356162643439353732653834666535353539306565663331613838613038666466666420646174612f617564696f2f6d6964690a6466376537306535303231353434663438333462626565363461396533373839666562633462653831343730646636323963616436646462303333323061356320646174612f617564696f2f776176650a3662323363306435663335643162313166396236383366306230613631373335356465623131323737643931616530393164333939633635356238373934306420646174612f696d6167652f7376672b786d6c0a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: manifests_each_facet_by_sha512,
+  parameters: [],
+  statement: ((manifest512 0x41 0x42 0x43) = 0x323162346634626439653634656433353563336562363736613238656265646166366438663137626463333635393935623331393039373135333034343038303531366264303833626663636536363132316133303732363436393934633834333063633338326238646335343365383438383031383362663835366366663520646174612f617564696f2f6d6964690a383438623037373966663431356630616634656131346466396464316433633239616334316438333663373830383839366334656261313963353161633430613433396361663565363165633838633330376337643631393139353232393431326561613733666232613565613230643233636338366139643866383661306620646174612f617564696f2f776176650a336436333761653633643539353232646433636231623831633161643637653536643436313835623039373165306263376464326438616433623236303930616362363334633235326663366136336233373636393334333134656131613665353966613063386332626330323761376236613436306232393163643464666220646174612f696d6167652f7376672b786d6c0a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: bags_each_facet_with_both_manifests,
+  parameters: [],
+  statement: ((bag 0x41 0x42 0x43) = (Studio.Prism.Bundle.Archive::archive (cons (entry 0x62616769742e747874 (declaration)) (cons (entry 0x6d616e69666573742d7368613235362e747874 (manifest256 0x41 0x42 0x43)) (cons (entry 0x6d616e69666573742d7368613531322e747874 (manifest512 0x41 0x42 0x43)) (cons (entry (midiPath) 0x41) (cons (entry (wavePath) 0x42) (cons (entry (svgPath) 0x43) (nil Studio.Prism.Bundle.Archive::Entry))))))))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
