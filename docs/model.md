@@ -711,3 +711,4 @@ Each construct and the citation that admits it.
 - `Studio.Prism.Feature`: std UNICODE-UAX-29-47
 - `Studio.PrismGeneration.Features`: der pattern from Studio.PrismGeneration, Studio.Prism.Seed, Studio.Prism.Feature
 - `Studio.Generator.Typeface.Choices`: std KNUTH-MF-WEB-2.71828182
+- `Studio.Generator.Typeface.Pen`: std KNUTH-MF-WEB-2.71828182
