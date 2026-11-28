@@ -1,0 +1,5 @@
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-PRISM-WORKS", "stakeholder": "afflom", "statement": "Verdant Studio composes the procedural synthesis of its verified primitive generators into entire works: complex, immersive, compelling, stylized and stunning multi-modal works at high definition, such as cover art, a cue from a soundtrack, storyboards or a chapter of a novel. Every part of Verdant Studio has a generator and every generator is verified (REQ-PRISM-GENERATION)."}
+{"construct": "Studio.Work", "req": "REQ-PRISM-WORKS"}
+{"construct": "Studio.Work.Soundtrack", "std": {"authority": "EBU-R128-2023"}}
+{"construct": "Studio.Work.CoverArt", "der": {"check": "VS-04", "inputs": ["Studio.Work", "Studio.Generator.Expert.Image", "Studio.Generator.VectorImage.Svg", "Studio.Generator.RasterImage.Png"], "rule": "pattern"}}
+{"construct": "Studio.Work.Novel", "std": {"authority": "W3C-EPUB-3.3"}}
