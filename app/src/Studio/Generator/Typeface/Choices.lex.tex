@@ -1,0 +1,541 @@
+\begin{lexlean}{Studio.Generator.Typeface.Choices}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.Typeface.Scaled}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: explicitKind,
+  parameters: [],
+  result: Nat,
+  body: 1
+}
+
+definition{
+  name: givenKind,
+  parameters: [],
+  result: Nat,
+  body: 2
+}
+
+definition{
+  name: curlKind,
+  parameters: [],
+  result: Nat,
+  body: 3
+}
+
+definition{
+  name: openKind,
+  parameters: [],
+  result: Nat,
+  body: 4
+}
+
+definition{
+  name: endCycleKind,
+  parameters: [],
+  result: Nat,
+  body: 5
+}
+
+definition{
+  name: zigzag,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer],
+  result: Nat,
+  body: (if (project a negative) then ((prim multiply 2 (project a magnitude) : Nat) + 1) else (prim multiply 2 (project a magnitude) : Nat))
+}
+
+definition{
+  name: unzigzag,
+  parameters: [z : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Scaled::signed ((prim remainder z 2 0 : Nat) =? 1) (prim quotient z 2 0 : Nat))
+}
+
+definition{
+  name: item,
+  parameters: [l : (List Nat), i : Nat],
+  result: Nat,
+  body: (match l
+    | List.nil => 0
+    | List.cons h t => (if (i =? 0) then h else (item t (prim subtract i 1 : Nat)))),
+  recursive_argument: l
+}
+
+definition{
+  name: replaced,
+  parameters: [l : (List Nat), i : Nat, v : Nat],
+  result: (List Nat),
+  body: (match l
+    | List.nil => (nil Nat)
+    | List.cons h t => (if (i =? 0) then (cons v t) else (cons h (replaced t (prim subtract i 1 : Nat) v)))),
+  recursive_argument: l
+}
+
+definition{
+  name: appended,
+  parameters: [l : (List Nat), v : Nat],
+  result: (List Nat),
+  body: (match l
+    | List.nil => (cons v (nil Nat))
+    | List.cons h t => (cons h (appended t v))),
+  recursive_argument: l
+}
+
+definition{
+  name: size,
+  parameters: [l : (List Nat)],
+  result: Nat,
+  body: (match l
+    | List.nil => 0
+    | List.cons h t => (1 + (size t))),
+  recursive_argument: l
+}
+
+definition{
+  name: sameList,
+  parameters: [a : (List Nat), b : (List Nat)],
+  result: Bool,
+  body: (match a
+    | List.nil => ((size b) =? 0)
+    | List.cons h t => (match b
+    | List.nil => false
+    | List.cons g u => ((h =? g) && (sameList t u)))),
+  recursive_argument: a
+}
+
+definition{
+  name: entry,
+  parameters: [l : (List Nat), i : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (unzigzag (item l i))
+}
+
+definition{
+  name: field,
+  parameters: [kn : (List Nat), i : Nat, f : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (unzigzag (item kn ((prim multiply 8 i : Nat) + f)))
+}
+
+definition{
+  name: kind,
+  parameters: [kn : (List Nat), i : Nat, f : Nat],
+  result: Nat,
+  body: (prim quotient (item kn ((prim multiply 8 i : Nat) + f)) 2 0 : Nat)
+}
+
+definition{
+  name: withField,
+  parameters: [kn : (List Nat), i : Nat, f : Nat, v : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (replaced kn ((prim multiply 8 i : Nat) + f) (zigzag v))
+}
+
+definition{
+  name: withKind,
+  parameters: [kn : (List Nat), i : Nat, f : Nat, t : Nat],
+  result: (List Nat),
+  body: (replaced kn ((prim multiply 8 i : Nat) + f) (prim multiply 2 t : Nat))
+}
+
+definition{
+  name: ahead,
+  parameters: [i : Nat, k : Nat, count : Nat],
+  result: Nat,
+  body: (prim remainder (i + k) count 0 : Nat)
+}
+
+definition{
+  name: velocity,
+  parameters: [st : Studio.Generator.Typeface.Scaled::Integer, ct : Studio.Generator.Typeface.Scaled::Integer, sf : Studio.Generator.Typeface.Scaled::Integer, cf : Studio.Generator.Typeface.Scaled::Integer, t : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (let acc0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::minus st (Studio.Generator.Typeface.Scaled::truncated sf 16)) (Studio.Generator.Typeface.Scaled::minus sf (Studio.Generator.Typeface.Scaled::truncated st 16))); (let acc : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction acc0 (Studio.Generator.Typeface.Scaled::minus ct cf)); (let num0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::signed false 536870912) (Studio.Generator.Typeface.Scaled::takeFraction acc (Studio.Generator.Typeface.Scaled::signed false 379625062))); (let denom : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::signed false 805306368) (Studio.Generator.Typeface.Scaled::takeFraction ct (Studio.Generator.Typeface.Scaled::signed false 497706707))) (Studio.Generator.Typeface.Scaled::takeFraction cf (Studio.Generator.Typeface.Scaled::signed false 307599661))); (let num : Studio.Generator.Typeface.Scaled::Integer := (if ((not (project t negative)) && ((project t magnitude) =? 65536)) then num0 else (Studio.Generator.Typeface.Scaled::makeScaled num0 t)); (if ((project (Studio.Generator.Typeface.Scaled::minus denom (Studio.Generator.Typeface.Scaled::truncated num 4)) negative) || ((project (Studio.Generator.Typeface.Scaled::minus denom (Studio.Generator.Typeface.Scaled::truncated num 4)) magnitude) =? 0)) then (Studio.Generator.Typeface.Scaled::signed false 1073741824) else (Studio.Generator.Typeface.Scaled::makeFraction num denom)))))))
+}
+
+definition{
+  name: lessCode,
+  parameters: [],
+  result: Nat,
+  body: 0
+}
+
+definition{
+  name: equalCode,
+  parameters: [],
+  result: Nat,
+  body: 1
+}
+
+definition{
+  name: greaterCode,
+  parameters: [],
+  result: Nat,
+  body: 2
+}
+
+definition{
+  name: compareLoop,
+  parameters: [a : Nat, b : Nat, c : Nat, d : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => (equalCode)
+    | Nat.succ rest => (let q : Nat := (prim quotient a d 0 : Nat); (let r : Nat := (prim quotient c b 0 : Nat); (if (not (q =? r)) then (if (r <? q) then (greaterCode) else (lessCode)) else (let qm : Nat := (prim remainder a d 0 : Nat); (let rm : Nat := (prim remainder c b 0 : Nat); (if (rm =? 0) then (if (qm =? 0) then (equalCode) else (greaterCode)) else (if (qm =? 0) then (lessCode) else (compareLoop b qm d rm rest))))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: productOrder,
+  parameters: [a0 : Studio.Generator.Typeface.Scaled::Integer, b0 : Studio.Generator.Typeface.Scaled::Integer, c0 : Studio.Generator.Typeface.Scaled::Integer, d0 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Nat,
+  body: (let a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project a0 magnitude)); (let b : Studio.Generator.Typeface.Scaled::Integer := (if (project a0 negative) then (Studio.Generator.Typeface.Scaled::negated b0) else b0); (let c : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project c0 magnitude)); (let d : Studio.Generator.Typeface.Scaled::Integer := (if (project c0 negative) then (Studio.Generator.Typeface.Scaled::negated d0) else d0); (if ((project d negative) || ((project d magnitude) =? 0)) then (if (not (project b negative)) then (if ((((project a magnitude) =? 0) || ((project b magnitude) =? 0)) && (((project c magnitude) =? 0) || ((project d magnitude) =? 0))) then (equalCode) else (greaterCode)) else (if ((project d magnitude) =? 0) then (if ((project a magnitude) =? 0) then (equalCode) else (lessCode)) else (compareLoop (project c magnitude) (project d magnitude) (project a magnitude) (project b magnitude) 64))) else (if ((project b negative) || ((project b magnitude) =? 0)) then (if ((project b negative) && ((not (project a negative)) && (not ((project a magnitude) =? 0)))) then (lessCode) else (if ((project c magnitude) =? 0) then (equalCode) else (lessCode))) else (compareLoop (project a magnitude) (project b magnitude) (project c magnitude) (project d magnitude) 64)))))))
+}
+
+definition{
+  name: curlRatio,
+  parameters: [gamma : Studio.Generator.Typeface.Scaled::Integer, at : Studio.Generator.Typeface.Scaled::Integer, bt : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (let alpha : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false 65536) at); (let beta : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false 65536) bt); (let small : Bool := ((project (Studio.Generator.Typeface.Scaled::minus alpha beta) negative) || ((project (Studio.Generator.Typeface.Scaled::minus alpha beta) magnitude) =? 0)); (let r0 : Studio.Generator.Typeface.Scaled::Integer := (if small then (Studio.Generator.Typeface.Scaled::makeFraction alpha beta) else (Studio.Generator.Typeface.Scaled::makeFraction beta alpha)); (let ff : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction r0 r0); (let g : Studio.Generator.Typeface.Scaled::Integer := (if small then (Studio.Generator.Typeface.Scaled::takeFraction gamma ff) else gamma); (let b : Studio.Generator.Typeface.Scaled::Integer := (if small then (Studio.Generator.Typeface.Scaled::truncated beta 4096) else (Studio.Generator.Typeface.Scaled::truncated (Studio.Generator.Typeface.Scaled::takeFraction beta ff) 4096)); (let denom : Studio.Generator.Typeface.Scaled::Integer := (if small then (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction g alpha) (Studio.Generator.Typeface.Scaled::signed false 196608)) b) else (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction g alpha) (Studio.Generator.Typeface.Scaled::truncated ff 1365)) b)); (let num : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction g (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 805306368) alpha)) b); (if ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::plus denom denom) (Studio.Generator.Typeface.Scaled::plus denom denom)) num) negative) || ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::plus denom denom) (Studio.Generator.Typeface.Scaled::plus denom denom)) num) magnitude) =? 0)) then (Studio.Generator.Typeface.Scaled::signed false 1073741824) else (Studio.Generator.Typeface.Scaled::makeFraction num denom)))))))))))
+}
+
+definition{
+  name: reducedAngle,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if (188743680 <? (project a magnitude)) then (if (project a negative) then (Studio.Generator.Typeface.Scaled::plus a (Studio.Generator.Typeface.Scaled::signed false 377487360)) else (Studio.Generator.Typeface.Scaled::minus a (Studio.Generator.Typeface.Scaled::signed false 377487360))) else a)
+}
+
+definition{
+  name: tensionIsUnity,
+  parameters: [t : Studio.Generator.Typeface.Scaled::Integer],
+  result: Bool,
+  body: ((project t magnitude) =? 65536)
+}
+
+definition{
+  name: setControls,
+  parameters: [kn : (List Nat), p : Nat, q : Nat, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, st : Studio.Generator.Typeface.Scaled::Integer, ct : Studio.Generator.Typeface.Scaled::Integer, sf : Studio.Generator.Typeface.Scaled::Integer, cf : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (let rtension : Studio.Generator.Typeface.Scaled::Integer := (field kn p 7); (let ltension : Studio.Generator.Typeface.Scaled::Integer := (field kn q 5); (let rr0 : Studio.Generator.Typeface.Scaled::Integer := (velocity st ct sf cf (Studio.Generator.Typeface.Scaled::signed false (project rtension magnitude))); (let ss0 : Studio.Generator.Typeface.Scaled::Integer := (velocity sf cf st ct (Studio.Generator.Typeface.Scaled::signed false (project ltension magnitude))); (let sine0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::signed false (project st magnitude)) cf) (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::signed false (project sf magnitude)) ct)); (let bounded : Bool := ((((not (project st negative)) && (not (project sf negative))) || (((project st negative) || ((project st magnitude) =? 0)) && ((project sf negative) || ((project sf magnitude) =? 0)))) && ((not (project sine0 negative)) && (not ((project sine0 magnitude) =? 0)))); (let sine : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction sine0 (Studio.Generator.Typeface.Scaled::signed false 268500992)); (let rr : Studio.Generator.Typeface.Scaled::Integer := (if ((bounded && (project rtension negative)) && ((productOrder (Studio.Generator.Typeface.Scaled::signed false (project sf magnitude)) (Studio.Generator.Typeface.Scaled::signed false 268435456) rr0 sine) =? (lessCode))) then (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false (project sf magnitude)) sine) else rr0); (let ss : Studio.Generator.Typeface.Scaled::Integer := (if ((bounded && (project ltension negative)) && ((productOrder (Studio.Generator.Typeface.Scaled::signed false (project st magnitude)) (Studio.Generator.Typeface.Scaled::signed false 268435456) ss0 sine) =? (lessCode))) then (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false (project st magnitude)) sine) else ss0); (let xp : Studio.Generator.Typeface.Scaled::Integer := (field kn p 2); (let yp : Studio.Generator.Typeface.Scaled::Integer := (field kn p 3); (let xq : Studio.Generator.Typeface.Scaled::Integer := (field kn q 2); (let yq : Studio.Generator.Typeface.Scaled::Integer := (field kn q 3); (let k1 : (List Nat) := (withField kn p 6 (Studio.Generator.Typeface.Scaled::plus xp (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction dx ct) (Studio.Generator.Typeface.Scaled::takeFraction dy st)) rr))); (let k2 : (List Nat) := (withField k1 p 7 (Studio.Generator.Typeface.Scaled::plus yp (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction dy ct) (Studio.Generator.Typeface.Scaled::takeFraction dx st)) rr))); (let k3 : (List Nat) := (withField k2 q 4 (Studio.Generator.Typeface.Scaled::minus xq (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction dx cf) (Studio.Generator.Typeface.Scaled::takeFraction dy sf)) ss))); (let k4 : (List Nat) := (withField k3 q 5 (Studio.Generator.Typeface.Scaled::minus yq (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction dy cf) (Studio.Generator.Typeface.Scaled::takeFraction dx sf)) ss))); (withKind (withKind k4 p 1 (explicitKind)) q 0 (explicitKind)))))))))))))))))))
+}
+
+definition{
+  name: twoGivens,
+  parameters: [kn : (List Nat), p : Nat, q : Nat, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (let aa : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::arg dx dy); (let a : Studio.Generator.Typeface.Scaled::SineCosine := (Studio.Generator.Typeface.Scaled::sineCosine (Studio.Generator.Typeface.Scaled::minus (field kn p 6) aa)); (let b : Studio.Generator.Typeface.Scaled::SineCosine := (Studio.Generator.Typeface.Scaled::sineCosine (Studio.Generator.Typeface.Scaled::minus (field kn q 4) aa)); (setControls kn p q dx dy (project a sine) (project a cosine) (Studio.Generator.Typeface.Scaled::negated (project b sine)) (project b cosine)))))
+}
+
+definition{
+  name: third,
+  parameters: [d : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if (project d negative) then (Studio.Generator.Typeface.Scaled::truncated (Studio.Generator.Typeface.Scaled::minus d (Studio.Generator.Typeface.Scaled::signed false 1)) 3) else (Studio.Generator.Typeface.Scaled::truncated (Studio.Generator.Typeface.Scaled::plus d (Studio.Generator.Typeface.Scaled::signed false 1)) 3))
+}
+
+definition{
+  name: lineOffset,
+  parameters: [d : Studio.Generator.Typeface.Scaled::Integer, tension : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if ((project tension magnitude) =? 65536) then (third d) else (Studio.Generator.Typeface.Scaled::takeFraction d (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false 65536) (Studio.Generator.Typeface.Scaled::signed false (prim multiply 3 (project tension magnitude) : Nat)))))
+}
+
+definition{
+  name: straightLine,
+  parameters: [kn : (List Nat), p : Nat, q : Nat, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (let lt : Studio.Generator.Typeface.Scaled::Integer := (field kn q 5); (let rt : Studio.Generator.Typeface.Scaled::Integer := (field kn p 7); (let xp : Studio.Generator.Typeface.Scaled::Integer := (field kn p 2); (let yp : Studio.Generator.Typeface.Scaled::Integer := (field kn p 3); (let xq : Studio.Generator.Typeface.Scaled::Integer := (field kn q 2); (let yq : Studio.Generator.Typeface.Scaled::Integer := (field kn q 3); (let k1 : (List Nat) := (withKind (withKind kn p 1 (explicitKind)) q 0 (explicitKind)); (let k2 : (List Nat) := (withField (withField k1 p 6 (Studio.Generator.Typeface.Scaled::plus xp (lineOffset dx rt))) p 7 (Studio.Generator.Typeface.Scaled::plus yp (lineOffset dy rt))); (withField (withField k2 q 4 (Studio.Generator.Typeface.Scaled::minus xq (lineOffset dx lt))) q 5 (Studio.Generator.Typeface.Scaled::minus yq (lineOffset dy lt)))))))))))
+}
+
+definition{
+  name: differences,
+  parameters: [kn : (List Nat), p : Nat, count : Nat, f : Nat, k : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (cons (zigzag (Studio.Generator.Typeface.Scaled::minus (field kn (ahead p (k + 1) count) f) (field kn (ahead p k count) f))) (differences kn p count f (k + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: distances,
+  parameters: [dxs : (List Nat), dys : (List Nat), k : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (cons (zigzag (Studio.Generator.Typeface.Scaled::pythagoreanAdd (entry dxs k) (entry dys k))) (distances dxs dys (k + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: turn,
+  parameters: [dxs : (List Nat), dys : (List Nat), ds : (List Nat), k : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (let j : Nat := (prim subtract k 1 : Nat); (let sine : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction (entry dys j) (entry ds j)); (let cosine : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction (entry dxs j) (entry ds j)); (let x : Studio.Generator.Typeface.Scaled::Integer := (entry dxs k); (let y : Studio.Generator.Typeface.Scaled::Integer := (entry dys k); (Studio.Generator.Typeface.Scaled::arg (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction x cosine) (Studio.Generator.Typeface.Scaled::takeFraction y sine)) (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction y cosine) (Studio.Generator.Typeface.Scaled::takeFraction x sine))))))))
+}
+
+definition{
+  name: turns,
+  parameters: [dxs : (List Nat), dys : (List Nat), ds : (List Nat), k : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (cons (zigzag (turn dxs dys ds k)) (turns dxs dys ds (k + 1) rest))),
+  recursive_argument: steps
+}
+
+structure{
+  name: Segment,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: count, type: Nat}, {name: p, type: Nat}, {name: n, type: Nat}, {name: dxs, type: (List Nat)}, {name: dys, type: (List Nat)}, {name: ds, type: (List Nat)}, {name: psis, type: (List Nat)}]
+}
+
+definition{
+  name: backSubstitution,
+  parameters: [us : (List Nat), vs : (List Nat), next : Studio.Generator.Typeface.Scaled::Integer, j : Nat, acc : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => acc
+    | Nat.succ rest => (let th : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (entry vs j) (Studio.Generator.Typeface.Scaled::takeFraction next (entry us j))); (backSubstitution us vs th (prim subtract j 1 : Nat) (cons (zigzag th) acc) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: thetas,
+  parameters: [us : (List Nat), vs : (List Nat), thetaN : Studio.Generator.Typeface.Scaled::Integer, n : Nat],
+  result: (List Nat),
+  body: (backSubstitution us vs thetaN (prim subtract n 1 : Nat) (cons (zigzag thetaN) (nil Nat)) n)
+}
+
+structure{
+  name: Pair,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: first, type: Studio.Generator.Typeface.Scaled::Integer}, {name: second, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: closeStep,
+  parameters: [us : (List Nat), vs : (List Nat), ws : (List Nat), k : Nat, acc : Pair],
+  result: Pair,
+  body: (record Pair {first := (Studio.Generator.Typeface.Scaled::minus (entry vs k) (Studio.Generator.Typeface.Scaled::takeFraction (project acc first) (entry us k))), second := (Studio.Generator.Typeface.Scaled::minus (entry ws k) (Studio.Generator.Typeface.Scaled::takeFraction (project acc second) (entry us k)))})
+}
+
+definition{
+  name: closeLoop,
+  parameters: [us : (List Nat), vs : (List Nat), ws : (List Nat), k : Nat, acc : Pair, steps : Nat],
+  result: Pair,
+  body: (match steps
+    | Nat.zero => acc
+    | Nat.succ rest => (closeLoop us vs ws (prim subtract k 1 : Nat) (closeStep us vs ws k acc) rest)),
+  recursive_argument: steps
+}
+
+definition{
+  name: adjusted,
+  parameters: [vs : (List Nat), ws : (List Nat), aa : Studio.Generator.Typeface.Scaled::Integer, k : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (cons (zigzag (Studio.Generator.Typeface.Scaled::plus (entry vs k) (Studio.Generator.Typeface.Scaled::takeFraction aa (entry ws k)))) (adjusted vs ws aa (k + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: cycleThetas,
+  parameters: [us : (List Nat), vs : (List Nat), ws : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (let last : Pair := (closeStep us vs ws n (closeLoop us vs ws (prim subtract n 1 : Nat) (record Pair {first := (Studio.Generator.Typeface.Scaled::signed false 0), second := (Studio.Generator.Typeface.Scaled::signed false 268435456)}) (prim subtract n 1 : Nat))); (let aa : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction (project last first) (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) (project last second))); (thetas us (cons (zigzag aa) (adjusted vs ws aa 1 (prim subtract n 1 : Nat))) aa n)))
+}
+
+definition{
+  name: curlFactor,
+  parameters: [cc : Studio.Generator.Typeface.Scaled::Integer, a : Studio.Generator.Typeface.Scaled::Integer, b : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if ((tensionIsUnity a) && (tensionIsUnity b)) then (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::plus cc cc) (Studio.Generator.Typeface.Scaled::signed false 65536)) (Studio.Generator.Typeface.Scaled::plus cc (Studio.Generator.Typeface.Scaled::signed false 131072))) else (curlRatio cc (Studio.Generator.Typeface.Scaled::signed false (project a magnitude)) (Studio.Generator.Typeface.Scaled::signed false (project b magnitude))))
+}
+
+definition{
+  name: alphaRatio,
+  parameters: [t : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if (tensionIsUnity t) then (Studio.Generator.Typeface.Scaled::signed false 134217728) else (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false 65536) (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false (prim multiply 3 (project t magnitude) : Nat)) (Studio.Generator.Typeface.Scaled::signed false 65536))))
+}
+
+definition{
+  name: lengthFactor,
+  parameters: [d : Studio.Generator.Typeface.Scaled::Integer, t : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if (tensionIsUnity t) then (Studio.Generator.Typeface.Scaled::plus d d) else (Studio.Generator.Typeface.Scaled::takeFraction d (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 805306368) (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false 65536) (Studio.Generator.Typeface.Scaled::signed false (project t magnitude))))))
+}
+
+definition{
+  name: forward,
+  parameters: [kn : (List Nat), g : Segment, k : Nat, us : (List Nat), vs : (List Nat), ws : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (let count : Nat := (project g count); (let n : Nat := (project g n); (let s : Nat := (ahead (project g p) k count); (let r : Nat := (ahead (project g p) (prim subtract k 1 : Nat) count); (let t : Nat := (ahead (project g p) (k + 1) count); (let ls : Nat := (kind kn s 0); (if (ls =? (curlKind)) then (let ff : Studio.Generator.Typeface.Scaled::Integer := (curlFactor (field kn s 4) (field kn s 5) (field kn r 7)); (thetas us vs (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::takeFraction (entry vs (prim subtract n 1 : Nat)) ff) (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) (Studio.Generator.Typeface.Scaled::takeFraction ff (entry us (prim subtract n 1 : Nat)))))) n)) else (if (ls =? (givenKind)) then (thetas us vs (reducedAngle (Studio.Generator.Typeface.Scaled::minus (field kn s 4) (Studio.Generator.Typeface.Scaled::arg (entry (project g dxs) (prim subtract n 1 : Nat)) (entry (project g dys) (prim subtract n 1 : Nat))))) n) else (let rtr : Studio.Generator.Typeface.Scaled::Integer := (field kn r 7); (let ltt : Studio.Generator.Typeface.Scaled::Integer := (field kn t 5); (let dk : Studio.Generator.Typeface.Scaled::Integer := (entry (project g ds) k); (let dj : Studio.Generator.Typeface.Scaled::Integer := (entry (project g ds) (prim subtract k 1 : Nat)); (let aa : Studio.Generator.Typeface.Scaled::Integer := (alphaRatio rtr); (let bb : Studio.Generator.Typeface.Scaled::Integer := (alphaRatio ltt); (let cc : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) (Studio.Generator.Typeface.Scaled::takeFraction (entry us (prim subtract k 1 : Nat)) aa)); (let dd0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction (lengthFactor dk rtr) cc); (let ee0 : Studio.Generator.Typeface.Scaled::Integer := (lengthFactor dj ltt); (let lt : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project (field kn s 5) magnitude)); (let rt : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project (field kn s 7) magnitude)); (let ratio : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus lt rt) negative) then (Studio.Generator.Typeface.Scaled::makeFraction lt rt) else (Studio.Generator.Typeface.Scaled::makeFraction rt lt)); (let square : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction ratio ratio); (let dd : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus lt rt) negative) then (Studio.Generator.Typeface.Scaled::takeFraction dd0 square) else dd0); (let ee : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus rt lt) negative) then (Studio.Generator.Typeface.Scaled::takeFraction ee0 square) else ee0); (let ff : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction ee (Studio.Generator.Typeface.Scaled::plus ee dd)); (let uk : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction ff bb); (let acc : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::takeFraction (entry (project g psis) (k + 1)) uk)); (let curled : Bool := ((kind kn r 1) =? (curlKind)); (let fb : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) ff) cc); (let fa : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction fb aa); (let wprev : Studio.Generator.Typeface.Scaled::Integer := (entry ws (prim subtract k 1 : Nat)); (let vk : Studio.Generator.Typeface.Scaled::Integer := (if curled then (Studio.Generator.Typeface.Scaled::minus acc (Studio.Generator.Typeface.Scaled::takeFraction (entry (project g psis) 1) (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) ff))) else (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::minus acc (Studio.Generator.Typeface.Scaled::takeFraction (entry (project g psis) k) fb)) (Studio.Generator.Typeface.Scaled::takeFraction (entry vs (prim subtract k 1 : Nat)) fa))); (let wk : Studio.Generator.Typeface.Scaled::Integer := (if (curled || ((project wprev magnitude) =? 0)) then (Studio.Generator.Typeface.Scaled::signed false 0) else (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::takeFraction wprev fa))); (let us2 : (List Nat) := (appended us (zigzag uk)); (let vs2 : (List Nat) := (appended vs (zigzag vk)); (let ws2 : (List Nat) := (appended ws (zigzag wk)); (if (ls =? (endCycleKind)) then (cycleThetas us2 vs2 ws2 n) else (forward kn g (k + 1) us2 vs2 ws2 rest)))))))))))))))))))))))))))))))))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: controls,
+  parameters: [kn : (List Nat), g : Segment, th : (List Nat), k : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => kn
+    | Nat.succ rest => (let count : Nat := (project g count); (let a : Studio.Generator.Typeface.Scaled::SineCosine := (Studio.Generator.Typeface.Scaled::sineCosine (entry th k)); (let b : Studio.Generator.Typeface.Scaled::SineCosine := (Studio.Generator.Typeface.Scaled::sineCosine (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::negated (entry (project g psis) (k + 1))) (entry th (k + 1)))); (controls (setControls kn (ahead (project g p) k count) (ahead (project g p) (k + 1) count) (entry (project g dxs) k) (entry (project g dys) k) (project a sine) (project a cosine) (project b sine) (project b cosine)) g th (k + 1) rest))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: solved,
+  parameters: [kn : (List Nat), g : Segment, q : Nat],
+  result: (List Nat),
+  body: (let count : Nat := (project g count); (let p : Nat := (project g p); (let t : Nat := (ahead (project g p) 1 count); (let rs : Nat := (kind kn p 1); (let lt : Nat := (kind kn t 0); (let dx : Studio.Generator.Typeface.Scaled::Integer := (entry (project g dxs) 0); (let dy : Studio.Generator.Typeface.Scaled::Integer := (entry (project g dys) 0); (if ((rs =? (givenKind)) && (lt =? (givenKind))) then (twoGivens kn p q dx dy) else (if ((rs =? (curlKind)) && (lt =? (curlKind))) then (straightLine kn p q dx dy) else (let u0 : Studio.Generator.Typeface.Scaled::Integer := (if (rs =? (curlKind)) then (curlFactor (field kn p 6) (field kn p 7) (field kn t 5)) else (Studio.Generator.Typeface.Scaled::signed false 0)); (let v0 : Studio.Generator.Typeface.Scaled::Integer := (if (rs =? (givenKind)) then (reducedAngle (Studio.Generator.Typeface.Scaled::minus (field kn p 6) (Studio.Generator.Typeface.Scaled::arg dx dy))) else (if (rs =? (curlKind)) then (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::takeFraction (entry (project g psis) 1) u0)) else (Studio.Generator.Typeface.Scaled::signed false 0))); (let w0 : Studio.Generator.Typeface.Scaled::Integer := (if (rs =? (openKind)) then (Studio.Generator.Typeface.Scaled::signed false 268435456) else (Studio.Generator.Typeface.Scaled::signed false 0)); (let th : (List Nat) := (forward kn g 1 (cons (zigzag u0) (nil Nat)) (cons (zigzag v0) (nil Nat)) (cons (zigzag w0) (nil Nat)) (project g n)); (controls kn g th 0 (project g n)))))))))))))))
+}
+
+definition{
+  name: openedLeft,
+  parameters: [kn : (List Nat), q : Nat],
+  result: (List Nat),
+  body: (if ((kind kn q 0) =? (openKind)) then (let delx : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (field kn q 6) (field kn q 2)); (let dely : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (field kn q 7) (field kn q 3)); (if (((project delx magnitude) =? 0) && ((project dely magnitude) =? 0)) then (withField (withKind kn q 0 (curlKind)) q 4 (Studio.Generator.Typeface.Scaled::signed false 65536)) else (withField (withKind kn q 0 (givenKind)) q 4 (Studio.Generator.Typeface.Scaled::arg delx dely))))) else kn)
+}
+
+definition{
+  name: openedRight,
+  parameters: [kn : (List Nat), p : Nat],
+  result: (List Nat),
+  body: (if (((kind kn p 1) =? (openKind)) && ((kind kn p 0) =? (explicitKind))) then (let delx : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (field kn p 2) (field kn p 4)); (let dely : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (field kn p 3) (field kn p 5)); (if (((project delx magnitude) =? 0) && ((project dely magnitude) =? 0)) then (withField (withKind kn p 1 (curlKind)) p 6 (Studio.Generator.Typeface.Scaled::signed false 65536)) else (withField (withKind kn p 1 (givenKind)) p 6 (Studio.Generator.Typeface.Scaled::arg delx dely))))) else kn)
+}
+
+definition{
+  name: filled,
+  parameters: [kn : (List Nat), p : Nat, q : Nat, count : Nat],
+  result: (List Nat),
+  body: (let n : Nat := (if (p <? q) then (prim subtract q p : Nat) else (prim subtract (q + count) p : Nat)); (let cyclic : Bool := ((kind kn q 0) =? (endCycleKind)); (let m : Nat := (if cyclic then (n + 1) else n); (let dxs : (List Nat) := (differences kn p count 2 0 m); (let dys : (List Nat) := (differences kn p count 3 0 m); (let ds : (List Nat) := (distances dxs dys 0 m); (let inner : (List Nat) := (turns dxs dys ds 1 (prim subtract m 1 : Nat)); (let psis : (List Nat) := (cons 0 (appended inner (if cyclic then (item inner 0) else 0))); (let k1 : (List Nat) := (openedRight (openedLeft kn q) p); (solved k1 (record Segment {count := count, p := p, n := n, dxs := dxs, dys := dys, ds := ds, psis := psis}) q))))))))))
+}
+
+definition{
+  name: joined,
+  parameters: [kn : (List Nat), p : Nat, count : Nat],
+  result: (List Nat),
+  body: (let q : Nat := (ahead p 1 count); (if (((Studio.Generator.Typeface.Scaled::agrees (Studio.Generator.Typeface.Scaled::minus (field kn p 2) (field kn q 2)) false 0) && (Studio.Generator.Typeface.Scaled::agrees (Studio.Generator.Typeface.Scaled::minus (field kn p 3) (field kn q 3)) false 0)) && ((explicitKind) <? (kind kn p 1))) then (let k1 : (List Nat) := (withKind kn p 1 (explicitKind)); (let k2 : (List Nat) := (if ((kind k1 p 0) =? (openKind)) then (withField (withKind k1 p 0 (curlKind)) p 4 (Studio.Generator.Typeface.Scaled::signed false 65536)) else k1); (let k3 : (List Nat) := (withKind k2 q 0 (explicitKind)); (let k4 : (List Nat) := (if ((kind k3 q 1) =? (openKind)) then (withField (withKind k3 q 1 (curlKind)) q 6 (Studio.Generator.Typeface.Scaled::signed false 65536)) else k3); (let x : Studio.Generator.Typeface.Scaled::Integer := (field k4 p 2); (let y : Studio.Generator.Typeface.Scaled::Integer := (field k4 p 3); (withField (withField (withField (withField k4 p 6 x) q 4 x) p 7 y) q 5 y))))))) else kn))
+}
+
+definition{
+  name: joinedAll,
+  parameters: [kn : (List Nat), p : Nat, count : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => kn
+    | Nat.succ rest => (joinedAll (joined kn p count) (p + 1) count rest)),
+  recursive_argument: steps
+}
+
+definition{
+  name: breakpoint,
+  parameters: [kn : (List Nat), h : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => h
+    | Nat.succ rest => (if ((not ((kind kn h 0) =? (openKind))) || (not ((kind kn h 1) =? (openKind)))) then h else (breakpoint kn (h + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: skipOpen,
+  parameters: [kn : (List Nat), q : Nat, count : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => q
+    | Nat.succ rest => (if (((kind kn q 0) =? (openKind)) && ((kind kn q 1) =? (openKind))) then (skipOpen kn (ahead q 1 count) count rest) else q)),
+  recursive_argument: steps
+}
+
+definition{
+  name: segments,
+  parameters: [kn : (List Nat), p : Nat, h : Nat, count : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => kn
+    | Nat.succ rest => (let broken : Bool := ((givenKind) <=? (kind kn p 1)); (let q : Nat := (if broken then (skipOpen kn (ahead p 1 count) count count) else (ahead p 1 count)); (let k1 : (List Nat) := (if broken then (filled kn p q count) else kn); (if (q =? h) then k1 else (segments k1 q h count rest)))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: choices,
+  parameters: [kn : (List Nat)],
+  result: (List Nat),
+  body: (let count : Nat := (prim quotient (size kn) 8 0 : Nat); (let k1 : (List Nat) := (joinedAll kn 0 count count); (let h0 : Nat := (breakpoint k1 0 count); (let none : Bool := (h0 =? count); (let k2 : (List Nat) := (if none then (withKind k1 0 0 (endCycleKind)) else k1); (let h : Nat := (if none then 0 else h0); (segments k2 h h count count)))))))
+}
+
+theorem{
+  name: chooses_a_curled_arc_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 0 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 131072 (cons 131072 (cons 8 (cons 8 (cons 13107200 (cons 13107200 (cons 0 (cons 131072 (cons 0 (cons 131072 (cons 6 (cons 0 (cons 26214400 (cons 0 (cons 131072 (cons 131072 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 7238906 (cons 2 (cons 2 (cons 13107200 (cons 13107200 (cons 5868294 (cons 13107200 (cons 20346106 (cons 13107200 (cons 2 (cons 0 (cons 26214400 (cons 0 (cons 26214400 (cons 7238906 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: chooses_a_cycle_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 8 (cons 8 (cons 13107200 (cons 0 (cons 0 (cons 131072 (cons 0 (cons 131072 (cons 8 (cons 8 (cons 0 (cons 13107200 (cons 0 (cons 131072 (cons 0 (cons 131072 (cons 8 (cons 8 (cons 13107201 (cons 0 (cons 0 (cons 131072 (cons 0 (cons 131072 (cons 8 (cons 8 (cons 0 (cons 13107201 (cons 0 (cons 131072 (cons 0 (cons 131072 (nil Nat)))))))))))))))))))))))))))))))))) (cons 2 (cons 2 (cons 13107200 (cons 0 (cons 13107200 (cons 7238907 (cons 13107200 (cons 7238906 (cons 2 (cons 2 (cons 0 (cons 13107200 (cons 7238906 (cons 13107200 (cons 7238907 (cons 13107200 (cons 2 (cons 2 (cons 13107201 (cons 0 (cons 13107201 (cons 7238906 (cons 13107201 (cons 7238907 (cons 2 (cons 2 (cons 0 (cons 13107201 (cons 7238907 (cons 13107201 (cons 7238906 (cons 13107201 (nil Nat)))))))))))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: chooses_given_directions_and_tensions_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 0 (cons 4 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 157286 (cons 8 (cons 8 (cons 6553600 (cons 10485760 (cons 0 (cons 262144 (cons 0 (cons 131072 (cons 4 (cons 0 (cons 13107200 (cons 0 (cons 188743681 (cons 131072 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 4090910 (cons 0 (cons 2 (cons 2 (cons 6553600 (cons 10485760 (cons 5354752 (cons 8613298 (cons 9189068 (cons 14602054 (cons 2 (cons 0 (cons 13107200 (cons 0 (cons 13107200 (cons 8313546 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: chooses_beside_explicit_controls_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 8 (cons 2 (cons 0 (cons 0 (cons 0 (cons 131072 (cons 1310720 (cons 3932160 (cons 2 (cons 8 (cons 7864320 (cons 7864320 (cons 5242880 (cons 6553600 (cons 0 (cons 131072 (cons 8 (cons 8 (cons 13107200 (cons 0 (cons 0 (cons 131072 (cons 0 (cons 131072 (nil Nat)))))))))))))))))))))))))) (cons 2 (cons 2 (cons 0 (cons 0 (cons 1893827 (cons 5681483 (cons 1310720 (cons 3932160 (cons 2 (cons 2 (cons 7864320 (cons 7864320 (cons 5242880 (cons 6553600 (cons 11171756 (cons 9518038 (cons 2 (cons 2 (cons 13107200 (cons 0 (cons 14937158 (cons 5169484 (cons 9450444 (cons 10330047 (nil Nat)))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: chooses_tension_at_least_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 0 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 131072 (cons 131073 (cons 8 (cons 8 (cons 3932160 (cons 11796480 (cons 0 (cons 131073 (cons 0 (cons 131073 (cons 6 (cons 0 (cons 15728640 (cons 0 (cons 131072 (cons 131073 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2620193 (cons 4301966 (cons 2 (cons 2 (cons 3932160 (cons 11796480 (cons 745175 (cons 9927022 (cons 11339784 (cons 14757194 (cons 2 (cons 0 (cons 15728640 (cons 0 (cons 18689354 (cons 7407624 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: joins_equal_knots_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 0 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 131072 (cons 131072 (cons 8 (cons 8 (cons 0 (cons 0 (cons 0 (cons 131072 (cons 0 (cons 131072 (cons 6 (cons 0 (cons 6553600 (cons 6553600 (cons 131072 (cons 131072 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2184534 (cons 2184534 (cons 2 (cons 0 (cons 6553600 (cons 6553600 (cons 4369066 (cons 4369066 (cons 0 (cons 0 (nil Nat)))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: chooses_two_given_directions_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 0 (cons 4 (cons 0 (cons 0 (cons 0 (cons 0 (cons 188743680 (cons 131072 (cons 4 (cons 0 (cons 13107200 (cons 0 (cons 188743681 (cons 131072 (cons 0 (cons 0 (nil Nat)))))))))))))))))) (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 8738134 (cons 2 (cons 0 (cons 13107200 (cons 0 (cons 13107200 (cons 8738134 (cons 0 (cons 0 (nil Nat)))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: draws_a_curled_straight_line_as_metafont_does,
+  parameters: [],
+  statement: ((sameList (choices (cons 0 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 131072 (cons 262144 (cons 6 (cons 0 (cons 9175040 (cons 2621440 (cons 131072 (cons 131072 (cons 0 (cons 0 (nil Nat)))))))))))))))))) (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 1529174 (cons 436906 (cons 2 (cons 0 (cons 9175040 (cons 2621440 (cons 6116694 (cons 1747626 (cons 0 (cons 0 (nil Nat)))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}

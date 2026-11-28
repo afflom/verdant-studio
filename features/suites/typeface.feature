@@ -10,3 +10,9 @@ Feature: typeface
     Given the arithmetic model in app/src/Studio/Generator/Typeface/Scaled.lex.tex
     When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Scaled.makes_fractions_as_mf_web_does and Studio.Generator.Typeface.Scaled.takes_fractions_as_mf_web_does and Studio.Generator.Typeface.Scaled.makes_scaled_as_mf_web_does and Studio.Generator.Typeface.Scaled.takes_scaled_as_mf_web_does and Studio.Generator.Typeface.Scaled.roots_as_mf_web_does and Studio.Generator.Typeface.Scaled.measures_angles_as_mf_web_does and Studio.Generator.Typeface.Scaled.adds_pythagorean_as_mf_web_does and Studio.Generator.Typeface.Scaled.sines_and_cosines_as_mf_web_does
     Then each routine answers the value mf.web's own routine computes for the same integers
+
+  @VS-87 @build
+  Scenario: The typeface generator chooses a path's control points as METAFONT does: make_choices of mf.web 2.71828182 (Hobby's mock-curvature equations with tension, curl, given directions, explicit controls, tension atleast and cycles) gives mf.web's control points bit for bit
+    Given the path model in app/src/Studio/Generator/Typeface/Choices.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Choices.chooses_a_curled_arc_as_metafont_does and Studio.Generator.Typeface.Choices.chooses_a_cycle_as_metafont_does and Studio.Generator.Typeface.Choices.chooses_given_directions_and_tensions_as_metafont_does and Studio.Generator.Typeface.Choices.chooses_beside_explicit_controls_as_metafont_does and Studio.Generator.Typeface.Choices.chooses_tension_at_least_as_metafont_does and Studio.Generator.Typeface.Choices.joins_equal_knots_as_metafont_does and Studio.Generator.Typeface.Choices.chooses_two_given_directions_as_metafont_does and Studio.Generator.Typeface.Choices.draws_a_curled_straight_line_as_metafont_does
+    Then each path gets the control points mf.web's make_choices computes for the same knots
