@@ -26,7 +26,7 @@ Feature: prism
   Scenario: The Prism generation lists a seed's facets by media type, answers each media type with the artifact its generator writes from the seed, and each artifact begins as its media type requires: audio/midi and audio/wave by their WHATWG MIME Sniffing patterns, image/svg+xml with an svg root in the SVG namespace
     Given the Prism generation in app/src/Studio/PrismGeneration.lex.tex
     When prism-code check has Lean's kernel prove Studio.PrismGeneration.lists_the_facets, Studio.PrismGeneration.routes_each_media_type_to_its_generator and Studio.PrismGeneration.each_facet_has_its_media_type
-    Then the seed verdant lists the facets audio/midi, audio/wave and image/svg+xml
+    Then the seed verdant lists the facets audio/midi, audio/wave, image/svg+xml and application/zip
     And prism-code build replays the list and the audio/midi and image/svg+xml facets of the seed verdant
 
   @VS-30 @build @rejects
@@ -41,3 +41,23 @@ Feature: prism
     Given the Prism generation in app/src/Studio/PrismGeneration.lex.tex
     When prism-code check has Lean's kernel prove Studio.PrismGeneration.refuses_a_request_with_no_seed
     Then prism-code build replays the request prism TAB verdant, answered with the request-shape refusal
+
+  @VS-78 @build
+  Scenario: The Prism bundle's digests are SHA-256 and SHA-512 of FIPS 180-4, each giving the standard's digest of its one-block example abc
+    Given the digest model in app/src/Studio/Prism/Bundle/Digest.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Bundle.Digest.sha256_of_the_fips_examples and Studio.Prism.Bundle.Digest.sha512_of_the_fips_examples
+    Then the digests of abc are the ones FIPS 180-4's examples give
+
+  @VS-79 @build
+  Scenario: The Prism bundle's archive is a ZIP file of stored entries as PKWARE APPNOTE 6.3.3 lays it out and ISO/IEC 21320-1 restricts it: each entry's local header with its CRC-32 and sizes, then the central directory, then the end of central directory record
+    Given the archive model in app/src/Studio/Prism/Bundle/Archive.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Bundle.Archive.archives_a_stored_entry and Studio.Prism.Bundle.Archive.archives_nothing_as_an_empty_directory
+    Then the archive of a.txt holding abc is the stored ZIP file of that one entry
+    And the archive of no entries is the end of central directory record alone
+
+  @VS-80 @build
+  Scenario: The Prism generation answers application/zip with the Prism's bundle: a BagIt 1.0 bag whose payload is every facet under data/ by its media type, with a SHA-256 and a SHA-512 payload manifest, serialized as a ZIP archive that begins with its local file header signature
+    Given the bundle model in app/src/Studio/Prism/Bundle.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Bundle.bags_each_facet_with_both_manifests, Studio.Prism.Bundle.manifests_each_facet_by_sha256, Studio.Prism.Bundle.manifests_each_facet_by_sha512 and Studio.PrismGeneration.the_bundle_is_a_zip_archive
+    Then the bag of three facets holds bagit.txt, manifest-sha256.txt, manifest-sha512.txt and data/audio/midi, data/audio/wave and data/image/svg+xml
+    And it begins as application/zip requires, and a Standard MIDI File does not

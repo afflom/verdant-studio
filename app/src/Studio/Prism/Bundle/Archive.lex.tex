@@ -1,0 +1,92 @@
+\begin{lexlean}{Studio.Prism.Bundle.Archive}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.RasterImage.Png}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: Entry,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: name, type: Bytes}, {name: data, type: Bytes}]
+}
+
+definition{
+  name: piece,
+  parameters: [value : Bytes, offset : Nat, count : Nat],
+  result: Bytes,
+  body: (match (prim slice value offset count : (Option Bytes))
+    | Option.none => 0x
+    | Option.some part => part),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: crcLittle,
+  parameters: [data : Bytes],
+  result: Bytes,
+  body: (let crc : Bytes := (Studio.Generator.RasterImage.Png::crc32 data); (prim append (prim append (prim append (piece crc 3 1) (piece crc 2 1) : Bytes) (piece crc 1 1) : Bytes) (piece crc 0 1) : Bytes)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: localHeader,
+  parameters: [entry : Entry, crc : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append (prim append (prim append 0x504b03040a000000000000002100 crc : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 (prim length (project entry data) : Nat)) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 (prim length (project entry data) : Nat)) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian16 (prim length (project entry name) : Nat)) : Bytes) 0x0000 : Bytes) (project entry name) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: centralHeader,
+  parameters: [entry : Entry, crc : Bytes, offset : Nat],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append (prim append (prim append (prim append 0x504b01020a000a000000000000002100 crc : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 (prim length (project entry data) : Nat)) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 (prim length (project entry data) : Nat)) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian16 (prim length (project entry name) : Nat)) : Bytes) 0x000000000000000000000000 : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 offset) : Bytes) (project entry name) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: endRecord,
+  parameters: [count : Nat, size : Nat, offset : Nat],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append (prim append 0x504b050600000000 (Studio.Generator.RasterImage.Png::littleEndian16 count) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian16 count) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 size) : Bytes) (Studio.Generator.RasterImage.Png::littleEndian32 offset) : Bytes) 0x0000 : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: archiveFrom,
+  parameters: [entries : (List Entry), offset : Nat, locals : Bytes, central : Bytes, count : Nat],
+  result: Bytes,
+  body: (match entries
+    | List.nil => (prim append (prim append locals central : Bytes) (endRecord count (prim length central : Nat) offset) : Bytes)
+    | List.cons entry rest => (let crc : Bytes := (crcLittle (project entry data)); (let header : Bytes := (localHeader entry crc); (archiveFrom rest (offset + ((prim length header : Nat) + (prim length (project entry data) : Nat))) (prim append (prim append locals header : Bytes) (project entry data) : Bytes) (prim append central (centralHeader entry crc offset) : Bytes) (count + 1))))),
+  recursive_argument: entries,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: archive,
+  parameters: [entries : (List Entry)],
+  result: Bytes,
+  body: (archiveFrom entries 0 0x 0x 0),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: archives_a_stored_entry,
+  parameters: [],
+  statement: ((archive (cons (record Entry {name := 0x612e747874, data := 0x616263}) (nil Entry))) = 0x504b03040a000000000000002100c2412435030000000300000005000000612e747874616263504b01020a000a000000000000002100c24124350300000003000000050000000000000000000000000000000000612e747874504b0506000000000100010033000000260000000000),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: archives_nothing_as_an_empty_directory,
+  parameters: [],
+  statement: ((archive (nil Entry)) = 0x504b0506000000000000000000000000000000000000),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}

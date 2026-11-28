@@ -1,0 +1,394 @@
+\begin{lexlean}{Studio.Prism.Bundle.Digest}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.RasterImage.Png}
+\title{Natural number addition}
+\begin{semanticmodule}
+structure{
+  name: State,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: a, type: UInt64}, {name: b, type: UInt64}, {name: c, type: UInt64}, {name: d, type: UInt64}, {name: e, type: UInt64}, {name: f, type: UInt64}, {name: g, type: UInt64}, {name: h, type: UInt64}]
+}
+
+structure{
+  name: Window,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: w0, type: UInt64}, {name: w1, type: UInt64}, {name: w2, type: UInt64}, {name: w3, type: UInt64}, {name: w4, type: UInt64}, {name: w5, type: UInt64}, {name: w6, type: UInt64}, {name: w7, type: UInt64}, {name: w8, type: UInt64}, {name: w9, type: UInt64}, {name: w10, type: UInt64}, {name: w11, type: UInt64}, {name: w12, type: UInt64}, {name: w13, type: UInt64}, {name: w14, type: UInt64}, {name: w15, type: UInt64}]
+}
+
+definition{
+  name: shr,
+  parameters: [x : UInt64, n : UInt32],
+  result: UInt64,
+  body: (match (prim shift_right x n : (Option UInt64))
+    | Option.none => (0 : UInt64)
+    | Option.some v => v)
+}
+
+definition{
+  name: shl,
+  parameters: [x : UInt64, n : UInt32],
+  result: UInt64,
+  body: (match (prim shift_left x n : (Option UInt64))
+    | Option.none => (0 : UInt64)
+    | Option.some v => v)
+}
+
+definition{
+  name: bit,
+  parameters: [b : UInt8, m : UInt8, w : UInt64],
+  result: UInt64,
+  body: (if (prim equal (prim bit_and b m : UInt8) (0 : UInt8) : Bool) then (0 : UInt64) else w)
+}
+
+definition{
+  name: byteWord,
+  parameters: [b : UInt8],
+  result: UInt64,
+  body: (prim bit_or (prim bit_or (prim bit_or (prim bit_or (prim bit_or (prim bit_or (prim bit_or (bit b (1 : UInt8) (1 : UInt64)) (bit b (2 : UInt8) (2 : UInt64)) : UInt64) (bit b (4 : UInt8) (4 : UInt64)) : UInt64) (bit b (8 : UInt8) (8 : UInt64)) : UInt64) (bit b (16 : UInt8) (16 : UInt64)) : UInt64) (bit b (32 : UInt8) (32 : UInt64)) : UInt64) (bit b (64 : UInt8) (64 : UInt64)) : UInt64) (bit b (128 : UInt8) (128 : UInt64)) : UInt64)
+}
+
+definition{
+  name: at,
+  parameters: [value : Bytes, offset : Nat],
+  result: UInt64,
+  body: (match (prim index value offset : (Option UInt8))
+    | Option.none => (0 : UInt64)
+    | Option.some b => (byteWord b))
+}
+
+definition{
+  name: word32,
+  parameters: [value : Bytes, offset : Nat],
+  result: UInt64,
+  body: (prim bit_or (prim bit_or (prim bit_or (shl (at value offset) (24 : UInt32)) (shl (at value (offset + 1)) (16 : UInt32)) : UInt64) (shl (at value (offset + 2)) (8 : UInt32)) : UInt64) (shl (at value (offset + 3)) (0 : UInt32)) : UInt64)
+}
+
+definition{
+  name: word64,
+  parameters: [value : Bytes, offset : Nat],
+  result: UInt64,
+  body: (prim bit_or (shl (word32 value offset) (32 : UInt32)) (word32 value (offset + 4)) : UInt64)
+}
+
+definition{
+  name: add32,
+  parameters: [x : UInt64, y : UInt64],
+  result: UInt64,
+  body: (match (prim checked_add x y : (Option UInt64))
+    | Option.none => (0 : UInt64)
+    | Option.some v => (prim bit_and v (4294967295 : UInt64) : UInt64))
+}
+
+definition{
+  name: rotr32,
+  parameters: [x : UInt64, n : UInt32, m : UInt32],
+  result: UInt64,
+  body: (prim bit_and (prim bit_or (shr x n) (shl x m) : UInt64) (4294967295 : UInt64) : UInt64)
+}
+
+definition{
+  name: add64,
+  parameters: [x : UInt64, y : UInt64],
+  result: UInt64,
+  body: (match (prim checked_add x y : (Option UInt64))
+    | Option.some v1 => v1
+    | Option.none => (match (prim checked_add (prim bit_xor x (9223372036854775808 : UInt64) : UInt64) (prim bit_xor y (9223372036854775808 : UInt64) : UInt64) : (Option UInt64))
+    | Option.some v2 => v2
+    | Option.none => (match (prim checked_add (prim bit_xor x (9223372036854775808 : UInt64) : UInt64) y : (Option UInt64))
+    | Option.some v3 => (prim bit_xor v3 (9223372036854775808 : UInt64) : UInt64)
+    | Option.none => (match (prim checked_add x (prim bit_xor y (9223372036854775808 : UInt64) : UInt64) : (Option UInt64))
+    | Option.some v4 => (prim bit_xor v4 (9223372036854775808 : UInt64) : UInt64)
+    | Option.none => (0 : UInt64)))))
+}
+
+definition{
+  name: rotr64,
+  parameters: [x : UInt64, n : UInt32, m : UInt32],
+  result: UInt64,
+  body: (prim bit_or (shr x n) (shl x m) : UInt64)
+}
+
+definition{
+  name: ch,
+  parameters: [x : UInt64, y : UInt64, z : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_and x y : UInt64) (prim bit_and (prim bit_not x : UInt64) z : UInt64) : UInt64)
+}
+
+definition{
+  name: maj,
+  parameters: [x : UInt64, y : UInt64, z : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (prim bit_and x y : UInt64) (prim bit_and x z : UInt64) : UInt64) (prim bit_and y z : UInt64) : UInt64)
+}
+
+definition{
+  name: s256Big0,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr32 x (2 : UInt32) (30 : UInt32)) (rotr32 x (13 : UInt32) (19 : UInt32)) : UInt64) (rotr32 x (22 : UInt32) (10 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s256Big1,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr32 x (6 : UInt32) (26 : UInt32)) (rotr32 x (11 : UInt32) (21 : UInt32)) : UInt64) (rotr32 x (25 : UInt32) (7 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s256Small0,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr32 x (7 : UInt32) (25 : UInt32)) (rotr32 x (18 : UInt32) (14 : UInt32)) : UInt64) (shr x (3 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s256Small1,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr32 x (17 : UInt32) (15 : UInt32)) (rotr32 x (19 : UInt32) (13 : UInt32)) : UInt64) (shr x (10 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s256Constant,
+  parameters: [t : Nat],
+  result: UInt64,
+  body: (if (t <? 32) then (if (t <? 16) then (if (t <? 8) then (if (t <? 4) then (if (t <? 2) then (if (t <? 1) then (1116352408 : UInt64) else (1899447441 : UInt64)) else (if (t <? 3) then (3049323471 : UInt64) else (3921009573 : UInt64))) else (if (t <? 6) then (if (t <? 5) then (961987163 : UInt64) else (1508970993 : UInt64)) else (if (t <? 7) then (2453635748 : UInt64) else (2870763221 : UInt64)))) else (if (t <? 12) then (if (t <? 10) then (if (t <? 9) then (3624381080 : UInt64) else (310598401 : UInt64)) else (if (t <? 11) then (607225278 : UInt64) else (1426881987 : UInt64))) else (if (t <? 14) then (if (t <? 13) then (1925078388 : UInt64) else (2162078206 : UInt64)) else (if (t <? 15) then (2614888103 : UInt64) else (3248222580 : UInt64))))) else (if (t <? 24) then (if (t <? 20) then (if (t <? 18) then (if (t <? 17) then (3835390401 : UInt64) else (4022224774 : UInt64)) else (if (t <? 19) then (264347078 : UInt64) else (604807628 : UInt64))) else (if (t <? 22) then (if (t <? 21) then (770255983 : UInt64) else (1249150122 : UInt64)) else (if (t <? 23) then (1555081692 : UInt64) else (1996064986 : UInt64)))) else (if (t <? 28) then (if (t <? 26) then (if (t <? 25) then (2554220882 : UInt64) else (2821834349 : UInt64)) else (if (t <? 27) then (2952996808 : UInt64) else (3210313671 : UInt64))) else (if (t <? 30) then (if (t <? 29) then (3336571891 : UInt64) else (3584528711 : UInt64)) else (if (t <? 31) then (113926993 : UInt64) else (338241895 : UInt64)))))) else (if (t <? 48) then (if (t <? 40) then (if (t <? 36) then (if (t <? 34) then (if (t <? 33) then (666307205 : UInt64) else (773529912 : UInt64)) else (if (t <? 35) then (1294757372 : UInt64) else (1396182291 : UInt64))) else (if (t <? 38) then (if (t <? 37) then (1695183700 : UInt64) else (1986661051 : UInt64)) else (if (t <? 39) then (2177026350 : UInt64) else (2456956037 : UInt64)))) else (if (t <? 44) then (if (t <? 42) then (if (t <? 41) then (2730485921 : UInt64) else (2820302411 : UInt64)) else (if (t <? 43) then (3259730800 : UInt64) else (3345764771 : UInt64))) else (if (t <? 46) then (if (t <? 45) then (3516065817 : UInt64) else (3600352804 : UInt64)) else (if (t <? 47) then (4094571909 : UInt64) else (275423344 : UInt64))))) else (if (t <? 56) then (if (t <? 52) then (if (t <? 50) then (if (t <? 49) then (430227734 : UInt64) else (506948616 : UInt64)) else (if (t <? 51) then (659060556 : UInt64) else (883997877 : UInt64))) else (if (t <? 54) then (if (t <? 53) then (958139571 : UInt64) else (1322822218 : UInt64)) else (if (t <? 55) then (1537002063 : UInt64) else (1747873779 : UInt64)))) else (if (t <? 60) then (if (t <? 58) then (if (t <? 57) then (1955562222 : UInt64) else (2024104815 : UInt64)) else (if (t <? 59) then (2227730452 : UInt64) else (2361852424 : UInt64))) else (if (t <? 62) then (if (t <? 61) then (2428436474 : UInt64) else (2756734187 : UInt64)) else (if (t <? 63) then (3204031479 : UInt64) else (3329325298 : UInt64))))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s256Round,
+  parameters: [s : State, w : Window, t : Nat],
+  result: State,
+  body: (let one : UInt64 := (add32 (add32 (add32 (add32 (project s h) (s256Big1 (project s e))) (ch (project s e) (project s f) (project s g))) (s256Constant t)) (project w w0)); (let two : UInt64 := (add32 (s256Big0 (project s a)) (maj (project s a) (project s b) (project s c))); (record State {a := (add32 one two), b := (project s a), c := (project s b), d := (project s c), e := (add32 (project s d) one), f := (project s e), g := (project s f), h := (project s g)}))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s256Slide,
+  parameters: [w : Window],
+  result: Window,
+  body: (record Window {w0 := (project w w1), w1 := (project w w2), w2 := (project w w3), w3 := (project w w4), w4 := (project w w5), w5 := (project w w6), w6 := (project w w7), w7 := (project w w8), w8 := (project w w9), w9 := (project w w10), w10 := (project w w11), w11 := (project w w12), w12 := (project w w13), w13 := (project w w14), w14 := (project w w15), w15 := (add32 (add32 (add32 (s256Small1 (project w w14)) (project w w9)) (s256Small0 (project w w1))) (project w w0))})
+}
+
+definition{
+  name: s256Rounds,
+  parameters: [s : State, w : Window, t : Nat, remaining : Nat],
+  result: State,
+  body: (match remaining
+    | Nat.zero => s
+    | Nat.succ rest => (s256Rounds (s256Round s w t) (s256Slide w) (t + 1) rest)),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s256Load,
+  parameters: [value : Bytes, offset : Nat],
+  result: Window,
+  body: (record Window {w0 := (word32 value offset), w1 := (word32 value (offset + 4)), w2 := (word32 value (offset + 8)), w3 := (word32 value (offset + 12)), w4 := (word32 value (offset + 16)), w5 := (word32 value (offset + 20)), w6 := (word32 value (offset + 24)), w7 := (word32 value (offset + 28)), w8 := (word32 value (offset + 32)), w9 := (word32 value (offset + 36)), w10 := (word32 value (offset + 40)), w11 := (word32 value (offset + 44)), w12 := (word32 value (offset + 48)), w13 := (word32 value (offset + 52)), w14 := (word32 value (offset + 56)), w15 := (word32 value (offset + 60))})
+}
+
+definition{
+  name: s256Sum,
+  parameters: [x : State, y : State],
+  result: State,
+  body: (record State {a := (add32 (project x a) (project y a)), b := (add32 (project x b) (project y b)), c := (add32 (project x c) (project y c)), d := (add32 (project x d) (project y d)), e := (add32 (project x e) (project y e)), f := (add32 (project x f) (project y f)), g := (add32 (project x g) (project y g)), h := (add32 (project x h) (project y h))})
+}
+
+definition{
+  name: s256Blocks,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, s : State],
+  result: State,
+  body: (match remaining
+    | Nat.zero => s
+    | Nat.succ rest => (s256Blocks value (offset + 64) rest (s256Sum s (s256Rounds s (s256Load value offset) 0 64)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s256Initial,
+  parameters: [],
+  result: State,
+  body: (record State {a := (1779033703 : UInt64), b := (3144134277 : UInt64), c := (1013904242 : UInt64), d := (2773480762 : UInt64), e := (1359893119 : UInt64), f := (2600822924 : UInt64), g := (528734635 : UInt64), h := (1541459225 : UInt64)})
+}
+
+definition{
+  name: s256WordBytes,
+  parameters: [x : UInt64],
+  result: Bytes,
+  body: (Studio.Generator.RasterImage.Png::bigEndian32 (prim to_nat x : Nat))
+}
+
+definition{
+  name: s256Bytes,
+  parameters: [s : State],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append (prim append (prim append (prim append (s256WordBytes (project s a)) (s256WordBytes (project s b)) : Bytes) (s256WordBytes (project s c)) : Bytes) (s256WordBytes (project s d)) : Bytes) (s256WordBytes (project s e)) : Bytes) (s256WordBytes (project s f)) : Bytes) (s256WordBytes (project s g)) : Bytes) (s256WordBytes (project s h)) : Bytes)
+}
+
+definition{
+  name: s512Big0,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr64 x (28 : UInt32) (36 : UInt32)) (rotr64 x (34 : UInt32) (30 : UInt32)) : UInt64) (rotr64 x (39 : UInt32) (25 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s512Big1,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr64 x (14 : UInt32) (50 : UInt32)) (rotr64 x (18 : UInt32) (46 : UInt32)) : UInt64) (rotr64 x (41 : UInt32) (23 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s512Small0,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr64 x (1 : UInt32) (63 : UInt32)) (rotr64 x (8 : UInt32) (56 : UInt32)) : UInt64) (shr x (7 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s512Small1,
+  parameters: [x : UInt64],
+  result: UInt64,
+  body: (prim bit_xor (prim bit_xor (rotr64 x (19 : UInt32) (45 : UInt32)) (rotr64 x (61 : UInt32) (3 : UInt32)) : UInt64) (shr x (6 : UInt32)) : UInt64)
+}
+
+definition{
+  name: s512Constant,
+  parameters: [t : Nat],
+  result: UInt64,
+  body: (if (t <? 40) then (if (t <? 20) then (if (t <? 10) then (if (t <? 5) then (if (t <? 2) then (if (t <? 1) then (4794697086780616226 : UInt64) else (8158064640168781261 : UInt64)) else (if (t <? 3) then (13096744586834688815 : UInt64) else (if (t <? 4) then (16840607885511220156 : UInt64) else (4131703408338449720 : UInt64)))) else (if (t <? 7) then (if (t <? 6) then (6480981068601479193 : UInt64) else (10538285296894168987 : UInt64)) else (if (t <? 8) then (12329834152419229976 : UInt64) else (if (t <? 9) then (15566598209576043074 : UInt64) else (1334009975649890238 : UInt64))))) else (if (t <? 15) then (if (t <? 12) then (if (t <? 11) then (2608012711638119052 : UInt64) else (6128411473006802146 : UInt64)) else (if (t <? 13) then (8268148722764581231 : UInt64) else (if (t <? 14) then (9286055187155687089 : UInt64) else (11230858885718282805 : UInt64)))) else (if (t <? 17) then (if (t <? 16) then (13951009754708518548 : UInt64) else (16472876342353939154 : UInt64)) else (if (t <? 18) then (17275323862435702243 : UInt64) else (if (t <? 19) then (1135362057144423861 : UInt64) else (2597628984639134821 : UInt64)))))) else (if (t <? 30) then (if (t <? 25) then (if (t <? 22) then (if (t <? 21) then (3308224258029322869 : UInt64) else (5365058923640841347 : UInt64)) else (if (t <? 23) then (6679025012923562964 : UInt64) else (if (t <? 24) then (8573033837759648693 : UInt64) else (10970295158949994411 : UInt64)))) else (if (t <? 27) then (if (t <? 26) then (12119686244451234320 : UInt64) else (12683024718118986047 : UInt64)) else (if (t <? 28) then (13788192230050041572 : UInt64) else (if (t <? 29) then (14330467153632333762 : UInt64) else (15395433587784984357 : UInt64))))) else (if (t <? 35) then (if (t <? 32) then (if (t <? 31) then (489312712824947311 : UInt64) else (1452737877330783856 : UInt64)) else (if (t <? 33) then (2861767655752347644 : UInt64) else (if (t <? 34) then (3322285676063803686 : UInt64) else (5560940570517711597 : UInt64)))) else (if (t <? 37) then (if (t <? 36) then (5996557281743188959 : UInt64) else (7280758554555802590 : UInt64)) else (if (t <? 38) then (8532644243296465576 : UInt64) else (if (t <? 39) then (9350256976987008742 : UInt64) else (10552545826968843579 : UInt64))))))) else (if (t <? 60) then (if (t <? 50) then (if (t <? 45) then (if (t <? 42) then (if (t <? 41) then (11727347734174303076 : UInt64) else (12113106623233404929 : UInt64)) else (if (t <? 43) then (14000437183269869457 : UInt64) else (if (t <? 44) then (14369950271660146224 : UInt64) else (15101387698204529176 : UInt64)))) else (if (t <? 47) then (if (t <? 46) then (15463397548674623760 : UInt64) else (17586052441742319658 : UInt64)) else (if (t <? 48) then (1182934255886127544 : UInt64) else (if (t <? 49) then (1847814050463011016 : UInt64) else (2177327727835720531 : UInt64))))) else (if (t <? 55) then (if (t <? 52) then (if (t <? 51) then (2830643537854262169 : UInt64) else (3796741975233480872 : UInt64)) else (if (t <? 53) then (4115178125766777443 : UInt64) else (if (t <? 54) then (5681478168544905931 : UInt64) else (6601373596472566643 : UInt64)))) else (if (t <? 57) then (if (t <? 56) then (7507060721942968483 : UInt64) else (8399075790359081724 : UInt64)) else (if (t <? 58) then (8693463985226723168 : UInt64) else (if (t <? 59) then (9568029438360202098 : UInt64) else (10144078919501101548 : UInt64)))))) else (if (t <? 70) then (if (t <? 65) then (if (t <? 62) then (if (t <? 61) then (10430055236837252648 : UInt64) else (11840083180663258601 : UInt64)) else (if (t <? 63) then (13761210420658862357 : UInt64) else (if (t <? 64) then (14299343276471374635 : UInt64) else (14566680578165727644 : UInt64)))) else (if (t <? 67) then (if (t <? 66) then (15097957966210449927 : UInt64) else (16922976911328602910 : UInt64)) else (if (t <? 68) then (17689382322260857208 : UInt64) else (if (t <? 69) then (500013540394364858 : UInt64) else (748580250866718886 : UInt64))))) else (if (t <? 75) then (if (t <? 72) then (if (t <? 71) then (1242879168328830382 : UInt64) else (1977374033974150939 : UInt64)) else (if (t <? 73) then (2944078676154940804 : UInt64) else (if (t <? 74) then (3659926193048069267 : UInt64) else (4368137639120453308 : UInt64)))) else (if (t <? 77) then (if (t <? 76) then (4836135668995329356 : UInt64) else (5532061633213252278 : UInt64)) else (if (t <? 78) then (6448918945643986474 : UInt64) else (if (t <? 79) then (6902733635092675308 : UInt64) else (7801388544844847127 : UInt64)))))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s512Round,
+  parameters: [s : State, w : Window, t : Nat],
+  result: State,
+  body: (let one : UInt64 := (add64 (add64 (add64 (add64 (project s h) (s512Big1 (project s e))) (ch (project s e) (project s f) (project s g))) (s512Constant t)) (project w w0)); (let two : UInt64 := (add64 (s512Big0 (project s a)) (maj (project s a) (project s b) (project s c))); (record State {a := (add64 one two), b := (project s a), c := (project s b), d := (project s c), e := (add64 (project s d) one), f := (project s e), g := (project s f), h := (project s g)}))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s512Slide,
+  parameters: [w : Window],
+  result: Window,
+  body: (record Window {w0 := (project w w1), w1 := (project w w2), w2 := (project w w3), w3 := (project w w4), w4 := (project w w5), w5 := (project w w6), w6 := (project w w7), w7 := (project w w8), w8 := (project w w9), w9 := (project w w10), w10 := (project w w11), w11 := (project w w12), w12 := (project w w13), w13 := (project w w14), w14 := (project w w15), w15 := (add64 (add64 (add64 (s512Small1 (project w w14)) (project w w9)) (s512Small0 (project w w1))) (project w w0))})
+}
+
+definition{
+  name: s512Rounds,
+  parameters: [s : State, w : Window, t : Nat, remaining : Nat],
+  result: State,
+  body: (match remaining
+    | Nat.zero => s
+    | Nat.succ rest => (s512Rounds (s512Round s w t) (s512Slide w) (t + 1) rest)),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s512Load,
+  parameters: [value : Bytes, offset : Nat],
+  result: Window,
+  body: (record Window {w0 := (word64 value offset), w1 := (word64 value (offset + 8)), w2 := (word64 value (offset + 16)), w3 := (word64 value (offset + 24)), w4 := (word64 value (offset + 32)), w5 := (word64 value (offset + 40)), w6 := (word64 value (offset + 48)), w7 := (word64 value (offset + 56)), w8 := (word64 value (offset + 64)), w9 := (word64 value (offset + 72)), w10 := (word64 value (offset + 80)), w11 := (word64 value (offset + 88)), w12 := (word64 value (offset + 96)), w13 := (word64 value (offset + 104)), w14 := (word64 value (offset + 112)), w15 := (word64 value (offset + 120))})
+}
+
+definition{
+  name: s512Sum,
+  parameters: [x : State, y : State],
+  result: State,
+  body: (record State {a := (add64 (project x a) (project y a)), b := (add64 (project x b) (project y b)), c := (add64 (project x c) (project y c)), d := (add64 (project x d) (project y d)), e := (add64 (project x e) (project y e)), f := (add64 (project x f) (project y f)), g := (add64 (project x g) (project y g)), h := (add64 (project x h) (project y h))})
+}
+
+definition{
+  name: s512Blocks,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, s : State],
+  result: State,
+  body: (match remaining
+    | Nat.zero => s
+    | Nat.succ rest => (s512Blocks value (offset + 128) rest (s512Sum s (s512Rounds s (s512Load value offset) 0 80)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: s512Initial,
+  parameters: [],
+  result: State,
+  body: (record State {a := (7640891576956012808 : UInt64), b := (13503953896175478587 : UInt64), c := (4354685564936845355 : UInt64), d := (11912009170470909681 : UInt64), e := (5840696475078001361 : UInt64), f := (11170449401992604703 : UInt64), g := (2270897969802886507 : UInt64), h := (6620516959819538809 : UInt64)})
+}
+
+definition{
+  name: s512WordBytes,
+  parameters: [x : UInt64],
+  result: Bytes,
+  body: (prim append (Studio.Generator.RasterImage.Png::bigEndian32 (prim quotient (prim to_nat x : Nat) 4294967296 0 : Nat)) (Studio.Generator.RasterImage.Png::bigEndian32 (prim to_nat x : Nat)) : Bytes)
+}
+
+definition{
+  name: s512Bytes,
+  parameters: [s : State],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append (prim append (prim append (prim append (s512WordBytes (project s a)) (s512WordBytes (project s b)) : Bytes) (s512WordBytes (project s c)) : Bytes) (s512WordBytes (project s d)) : Bytes) (s512WordBytes (project s e)) : Bytes) (s512WordBytes (project s f)) : Bytes) (s512WordBytes (project s g)) : Bytes) (s512WordBytes (project s h)) : Bytes)
+}
+
+definition{
+  name: zeros,
+  parameters: [count : Nat],
+  result: Bytes,
+  body: (match count
+    | Nat.zero => 0x
+    | Nat.succ rest => (prim append 0x00 (zeros rest) : Bytes)),
+  recursive_argument: count
+}
+
+definition{
+  name: padding,
+  parameters: [length : Nat, block : Nat, field : Nat],
+  result: Bytes,
+  body: (prim append (prim append 0x80 (zeros (prim remainder (prim subtract block (prim remainder (length + (1 + field)) block 0 : Nat) : Nat) block 0 : Nat)) : Bytes) (prim append (zeros (prim subtract field 8 : Nat)) (prim append (Studio.Generator.RasterImage.Png::bigEndian32 (prim quotient (prim multiply length 8 : Nat) 4294967296 0 : Nat)) (Studio.Generator.RasterImage.Png::bigEndian32 (prim multiply length 8 : Nat)) : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: sha256,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (let padded : Bytes := (prim append value (padding (prim length value : Nat) 64 8) : Bytes); (s256Bytes (s256Blocks padded 0 (prim quotient (prim length padded : Nat) 64 0 : Nat) (s256Initial)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: sha512,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (let padded : Bytes := (prim append value (padding (prim length value : Nat) 128 16) : Bytes); (s512Bytes (s512Blocks padded 0 (prim quotient (prim length padded : Nat) 128 0 : Nat) (s512Initial)))),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: sha256_of_the_fips_examples,
+  parameters: [],
+  statement: ((sha256 0x616263) = 0xba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: sha512_of_the_fips_examples,
+  parameters: [],
+  statement: ((sha512 0x616263) = 0xddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}
