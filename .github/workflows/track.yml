@@ -2,6 +2,7 @@
 # REQ-ENGINE-TRACKING: Verdant Studio tracks Verdant Engine releases. Every hour this runs
 # operate stage-engine, which stages the latest release's four registers when they are new
 # (advance then ingests them by sha256), and re-cites their admissions once they are ingested.
+# It then runs track-pins.sh, which proposes moving a toolchain pin once a release contains the fix it waits on.
 name: track
 
 on:
@@ -21,3 +22,7 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run operate.yml --repo "$GITHUB_REPOSITORY" --ref main -f args=stage-engine
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/track-pins.sh
