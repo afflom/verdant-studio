@@ -831,3 +831,24 @@ id = "VS-100"
 level = "open"
 suite = "transport"
 statement = "The agent's MCP JSON-RPC messages reach Studio.Agent.Interface.Transport over Stitch's sealed relay as a custom MCP transport, each delivered only when Stitch.Relay deliveryAllowed holds; until an instance hosts the relay, the agent reaches the workspace operations through the GitHub App"
+
+[[id]]
+id = "VS-101"
+level = "build"
+suite = "gui-coordination"
+statement = "Studio.Gui.Coordination presents the coordination journey of the Studio UI Prism in Stitch Product.Experience's pattern, a journey whose view is chosen by facts and whose actions are enabled by model guards: with the agent linked to the maintainer (Studio.Coordination), the coordinationOpen view, its send action enabled once a message is drafted"
+theorems = ["Studio.Gui.Coordination.presents_the_open_view_with_send_enabled"]
+
+[[id]]
+id = "VS-102"
+level = "build"
+suite = "gui-coordination"
+statement = "Studio.Gui.Coordination presents the coordinationUnlinked view, its send action disabled, when the other Prism ID is not linked to the maintainer, as Studio.Coordination carries no message for that pair"
+theorems = ["Studio.Gui.Coordination.presents_the_unlinked_view_with_send_disabled"]
+
+[[id]]
+id = "VS-103"
+level = "build"
+suite = "gui-coordination"
+statement = "The send action of the coordination journey is guarded by the link, so Studio.Gui.Coordination never enables it for a pair that is not a maintainer and its linked agent, whatever is drafted"
+theorems = ["Studio.Gui.Coordination.an_unlinked_pair_never_sends"]

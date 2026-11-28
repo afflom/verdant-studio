@@ -1,0 +1,93 @@
+\begin{lexlean}{Studio.Gui.Coordination}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.Coordination}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: journey,
+  parameters: [],
+  result: Bytes,
+  body: 0x6a6f75726e657920636f6f7264696e6174696f6e3a20436f6f7264696e617465207769746820796f7572206167656e742c206576657279206d657373616765206265747765656e20746865206d61696e7461696e657220616e6420697473206c696e6b6564206167656e742063617272696564206f6e207468652056657264616e742053747564696f205549
+}
+
+definition{
+  name: openView,
+  parameters: [],
+  result: Bytes,
+  body: 0x7669657720636f6f7264696e6174696f6e4f70656e3a204c494e4b45442c206d65737361676573206172652063617272696564206f6e207468652056657264616e742053747564696f2055492c207365616c656420746f20626f746820507269736d204944732062792056452d3433
+}
+
+definition{
+  name: unlinkedView,
+  parameters: [],
+  result: Bytes,
+  body: 0x7669657720636f6f7264696e6174696f6e556e6c696e6b65643a204e4f54204c494e4b45442c206c696e6b20746865206167656e74277320507269736d20494420746f20746865206d61696e7461696e65722773206265666f726520636f6f7264696e6174696e67
+}
+
+definition{
+  name: sendEnabled,
+  parameters: [linked : Bool, drafted : Bool],
+  result: Bool,
+  body: (linked && drafted),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: sendAction,
+  parameters: [enabled : Bool],
+  result: Bytes,
+  body: (if enabled then 0x616374696f6e2073656e643a20656e61626c6564 else 0x616374696f6e2073656e643a2064697361626c6564),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: present,
+  parameters: [linked : Bool, drafted : Bool],
+  result: Bytes,
+  body: (prim append (prim append (journey) (prim append 0x0a (if linked then (openView) else (unlinkedView)) : Bytes) : Bytes) (prim append 0x0a (sendAction (sendEnabled linked drafted)) : Bytes) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb f1 => (match f1
+      | List.cons maintainer f2 => (match f2
+        | List.cons agent f3 => (match f3
+          | List.cons draft links => (if (Studio.Runtime::same verb 0x76696577) then (if (Studio.Runtime::same draft 0x64726166746564) then (present (Studio.Coordination::paired agent maintainer links) true) else (if (Studio.Runtime::same draft 0x656d707479) then (present (Studio.Coordination::paired agent maintainer links) false) else 0x696e76616c69642072657175657374)) else 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_unlinked_pair_never_sends,
+  parameters: [drafted : Bool],
+  statement: ((sendEnabled false drafted) = false),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: presents_the_open_view_with_send_enabled,
+  parameters: [],
+  statement: ((request 0x7669657709707269736d3a616c657809707269736d3a6167656e74096472616674656409707269736d3a6167656e743d707269736d3a616c6578) = (present true true)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: presents_the_unlinked_view_with_send_disabled,
+  parameters: [],
+  statement: ((request 0x7669657709707269736d3a616c657809707269736d3a626f62096472616674656409707269736d3a6167656e743d707269736d3a616c6578) = (present false true)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
