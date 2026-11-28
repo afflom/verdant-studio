@@ -6,6 +6,7 @@
 \importmodule{Studio.Generator.AudioFile.Bwf}
 \importmodule{Studio.Generator.VectorImage.Svg}
 \importmodule{Studio.Prism.Bundle}
+\importmodule{Studio.Prism.Closure}
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
@@ -41,6 +42,13 @@ definition{
   parameters: [],
   result: Bytes,
   body: 0x6665617475726573
+}
+
+definition{
+  name: cellsKey,
+  parameters: [],
+  result: Bytes,
+  body: 0x63656c6c73
 }
 
 definition{
@@ -135,7 +143,7 @@ definition{
   name: facet,
   parameters: [mediaType : Bytes, seed : Bytes],
   result: Bytes,
-  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (same mediaType (featuresKey)) then (Studio.Prism.Seed::features seed) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed)) else (if (same mediaType (zipType)) then (bundle seed) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType)))))))),
+  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (same mediaType (featuresKey)) then (Studio.Prism.Seed::features seed) else (if (same mediaType (cellsKey)) then (Studio.Prism.Closure::cells) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed)) else (if (same mediaType (zipType)) then (bundle seed) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType))))))))),
   axioms: [Quot.sound, propext]
 }
 
@@ -230,6 +238,13 @@ theorem{
   name: refuses_features_of_a_seed_with_no_word,
   parameters: [],
   statement: ((generate 0x6665617475726573092e2e2e) = (Studio.Prism.Seed::noWordRefusal)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+theorem{
+  name: lists_the_cells,
+  parameters: [],
+  statement: ((generate 0x63656c6c730976657264616e74) = (Studio.Prism.Closure::cells)),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }

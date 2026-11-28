@@ -710,3 +710,17 @@ statement = "The Prism generation refuses by name a seed with no word, since suc
 theorems = ["Studio.Prism.Seed.refuses_a_seed_with_no_word", "Studio.Prism.Seed.does_not_admit_a_seed_with_no_word", "Studio.PrismGeneration.refuses_features_of_a_seed_with_no_word"]
 failure = "refused: the seed has no word by the word boundaries of Unicode text segmentation (UAX #29), so the Prism has no feature to generate from"
 negative = "VS-84"
+
+[[id]]
+id = "VS-85"
+level = "build"
+suite = "prism"
+statement = "A Prism's closure closes a domain over every domain it shares a standard or a role with, to a fixed point, and spreads a cell to the same phase of each domain in that closure"
+theorems = ["Studio.Prism.Closure.closes_domains_that_share_a_standard", "Studio.Prism.Closure.closes_domains_through_shared_roles", "Studio.Prism.Closure.a_domain_that_shares_nothing_is_its_own_closure", "Studio.Prism.Closure.the_closure_is_a_fixed_point", "Studio.Prism.Closure.spreads_a_cell_to_the_same_phase_of_its_closure"]
+
+[[id]]
+id = "VS-86"
+level = "build"
+suite = "prism"
+statement = "The Prism generation answers cells with the Prism's cells, one domain/phase per line of the standards index, each followed by a tab and its value, empty until a bound source places the seed's features on cells"
+theorems = ["Studio.PrismGeneration.lists_the_cells"]
