@@ -712,3 +712,5 @@ Each construct and the citation that admits it.
 - `Studio.PrismGeneration.Features`: der pattern from Studio.PrismGeneration, Studio.Prism.Seed, Studio.Prism.Feature
 - `Studio.Generator.Typeface.Choices`: std KNUTH-MF-WEB-2.71828182
 - `Studio.Generator.Typeface.Pen`: std KNUTH-MF-WEB-2.71828182
+- `Studio.Generator.Typeface.Envelope`: std KNUTH-MF-WEB-2.71828182
+- `Studio.Generator.Typeface.Spec`: std KNUTH-MF-WEB-2.71828182
