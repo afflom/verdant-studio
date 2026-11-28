@@ -1,0 +1,2 @@
+{"construct": "Studio.Prism.Feature", "std": {"authority": "UNICODE-UAX-29-47"}}
+{"construct": "Studio.PrismGeneration.Features", "der": {"check": "VS-04", "inputs": ["Studio.PrismGeneration", "Studio.Prism.Seed", "Studio.Prism.Feature"], "rule": "pattern"}}
