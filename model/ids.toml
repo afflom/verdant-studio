@@ -886,3 +886,31 @@ id = "VS-108"
 level = "open"
 suite = "gui-creator"
 statement = "VerdantUI renders the creator journey that Studio.Gui.Generation presents and routes the creator's natural-language tuning onto the Prism's cells (DEC-009), so a creator enters a seed, tunes it and takes the bundle in the Studio UI; until VerdantUI serves the journey, the prism route answers it"
+
+[[id]]
+id = "VS-109"
+level = "build"
+suite = "gui-approval"
+statement = "Studio.Gui.Approval presents the approval journey of the Studio UI Prism in Stitch Product.Experience's pattern: a linked agent's content-addressed permission request (Studio.Agent.Contributor) shows in the approvalPending view, and the maintainer viewing it has the grant and reject actions enabled"
+theorems = ["Studio.Gui.Approval.the_maintainer_decides_a_pending_request"]
+
+[[id]]
+id = "VS-110"
+level = "build"
+suite = "gui-approval"
+statement = "Only the maintainer grants or rejects a contributor's request, so Studio.Gui.Approval shows the request to any other viewer with grant and reject disabled"
+theorems = ["Studio.Gui.Approval.another_viewer_cannot_decide"]
+
+[[id]]
+id = "VS-111"
+level = "build"
+suite = "gui-approval"
+statement = "Studio.Gui.Approval presents a request Studio.Agent.Contributor refuses in the approvalRefused view with that refusal, grant and reject disabled"
+theorems = ["Studio.Gui.Approval.shows_why_a_request_is_refused"]
+
+[[id]]
+id = "VS-112"
+level = "build"
+suite = "gui-approval"
+statement = "The grant and reject actions of the approval journey are guarded, so Studio.Gui.Approval never enables them for a viewer who is not the request's maintainer, whatever is pending"
+theorems = ["Studio.Gui.Approval.only_the_maintainer_decides"]
