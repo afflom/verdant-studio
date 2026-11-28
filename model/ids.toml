@@ -752,3 +752,10 @@ level = "build"
 suite = "prism"
 statement = "The Prism generation takes the values routed onto its cells as the Prism's features and generates every facet from them"
 theorems = ["Studio.Prism.Closure.a_routed_text_carries_its_values", "Studio.PrismGeneration.lists_the_routed_values_as_features"]
+
+[[id]]
+id = "VS-91"
+level = "build"
+suite = "typeface"
+statement = "The typeface generator makes pencircle pens as METAFONT does: make_ellipse of mf.web 2.71828182, with the axes and angle that pencircle transformed by a transform becomes and with fillin, gives mf.web's pen polygon vertex for vertex"
+theorems = ["Studio.Generator.Typeface.Pen.makes_a_pencircle_of_diameter_three_as_metafont_does", "Studio.Generator.Typeface.Pen.makes_a_flat_pen_as_metafont_does", "Studio.Generator.Typeface.Pen.makes_a_quarter_turned_pen_as_metafont_does", "Studio.Generator.Typeface.Pen.makes_a_slanted_pen_as_metafont_does", "Studio.Generator.Typeface.Pen.makes_a_filled_in_pen_as_metafont_does", "Studio.Generator.Typeface.Pen.follows_mf_web_where_tex_live_2023_differs"]

@@ -1,0 +1,294 @@
+\begin{lexlean}{Studio.Generator.Typeface.Pen}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.Typeface.Scaled}
+\importmodule{Studio.Generator.Typeface.Choices}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: times,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer, k : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Scaled::signed (project a negative) (prim multiply (project a magnitude) k : Nat))
+}
+
+definition{
+  name: nodeCount,
+  parameters: [l : (List Nat), i : Nat, f : Nat],
+  result: Nat,
+  body: (Studio.Generator.Typeface.Choices::item l ((prim multiply 6 i : Nat) + f))
+}
+
+definition{
+  name: nodeCoordinate,
+  parameters: [l : (List Nat), i : Nat, f : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Choices::unzigzag (nodeCount l i f))
+}
+
+definition{
+  name: withCount,
+  parameters: [l : (List Nat), i : Nat, f : Nat, n : Nat],
+  result: (List Nat),
+  body: (Studio.Generator.Typeface.Choices::replaced l ((prim multiply 6 i : Nat) + f) n)
+}
+
+definition{
+  name: withCoordinate,
+  parameters: [l : (List Nat), i : Nat, f : Nat, v : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (withCount l i f (Studio.Generator.Typeface.Choices::zigzag v))
+}
+
+definition{
+  name: node,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer, u : Studio.Generator.Typeface.Scaled::Integer, v : Studio.Generator.Typeface.Scaled::Integer, c : Nat, n : Nat],
+  result: (List Nat),
+  body: (cons (Studio.Generator.Typeface.Choices::zigzag x) (cons (Studio.Generator.Typeface.Choices::zigzag y) (cons (Studio.Generator.Typeface.Choices::zigzag u) (cons (Studio.Generator.Typeface.Choices::zigzag v) (cons c (cons n (nil Nat)))))))
+}
+
+definition{
+  name: concatenated,
+  parameters: [a : (List Nat), b : (List Nat)],
+  result: (List Nat),
+  body: (match a
+    | List.nil => b
+    | List.cons h t => (cons h (concatenated t b))),
+  recursive_argument: a
+}
+
+definition{
+  name: spliced,
+  parameters: [l : (List Nat), k : Nat, vs : (List Nat)],
+  result: (List Nat),
+  body: (match l
+    | List.nil => vs
+    | List.cons h t => (if (k =? 0) then (concatenated vs (cons h t)) else (cons h (spliced t (prim subtract k 1 : Nat) vs)))),
+  recursive_argument: l
+}
+
+definition{
+  name: dropped,
+  parameters: [l : (List Nat), k : Nat, n : Nat],
+  result: (List Nat),
+  body: (match l
+    | List.nil => (nil Nat)
+    | List.cons h t => (if (k =? 0) then (if (n =? 0) then (cons h t) else (dropped t 0 (prim subtract n 1 : Nat))) else (cons h (dropped t (prim subtract k 1 : Nat) n)))),
+  recursive_argument: l
+}
+
+definition{
+  name: taken,
+  parameters: [l : (List Nat), k : Nat],
+  result: (List Nat),
+  body: (match l
+    | List.nil => (nil Nat)
+    | List.cons h t => (if (k =? 0) then (nil Nat) else (cons h (taken t (prim subtract k 1 : Nat))))),
+  recursive_argument: l
+}
+
+definition{
+  name: withoutNode,
+  parameters: [l : (List Nat), i : Nat],
+  result: (List Nat),
+  body: (dropped l (prim multiply 6 i : Nat) 6)
+}
+
+definition{
+  name: nodes,
+  parameters: [l : (List Nat)],
+  result: Nat,
+  body: (prim quotient (Studio.Generator.Typeface.Choices::size l) 6 0 : Nat)
+}
+
+structure{
+  name: Shape,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: major, type: Studio.Generator.Typeface.Scaled::Integer}, {name: minor, type: Studio.Generator.Typeface.Scaled::Integer}, {name: fillin, type: Studio.Generator.Typeface.Scaled::Integer}, {name: symmetric, type: Bool}, {name: level, type: Bool}, {name: cosine, type: Studio.Generator.Typeface.Scaled::Integer}, {name: sine, type: Studio.Generator.Typeface.Scaled::Integer}, {name: alpha, type: Studio.Generator.Typeface.Scaled::Integer}, {name: beta, type: Nat}, {name: gamma, type: Nat}]
+}
+
+definition{
+  name: rounded,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Scaled::truncated (Studio.Generator.Typeface.Scaled::plus a (Studio.Generator.Typeface.Scaled::signed false 32768)) 65536)
+}
+
+definition{
+  name: revisedAlpha,
+  parameters: [alpha : Studio.Generator.Typeface.Scaled::Integer, gamma : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if (gamma <=? (project alpha magnitude)) then (if ((not (project alpha negative)) && (not ((project alpha magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false (prim subtract gamma 1 : Nat)) else (Studio.Generator.Typeface.Scaled::signed true (prim subtract gamma 1 : Nat))) else alpha)
+}
+
+definition{
+  name: atLeastOne,
+  parameters: [n : Nat],
+  result: Nat,
+  body: (if (n =? 0) then 1 else n)
+}
+
+definition{
+  name: shape,
+  parameters: [major : Studio.Generator.Typeface.Scaled::Integer, minor : Studio.Generator.Typeface.Scaled::Integer, theta : Studio.Generator.Typeface.Scaled::Integer, fillin : Studio.Generator.Typeface.Scaled::Integer],
+  result: Shape,
+  body: (if (((project major magnitude) =? (project minor magnitude)) || ((prim remainder (project theta magnitude) 94371840 0 : Nat) =? 0)) then (let odd : Bool := ((prim remainder (prim quotient (project theta magnitude) 94371840 0 : Nat) 2 0 : Nat) =? 1); (let beta : Nat := (atLeastOne (project (rounded (if odd then major else minor)) magnitude)); (let gamma : Nat := (atLeastOne (project (rounded (if odd then minor else major)) magnitude)); (record Shape {major := major, minor := minor, fillin := fillin, symmetric := true, level := ((not odd) || ((project theta magnitude) =? 0)), cosine := (Studio.Generator.Typeface.Scaled::signed false 0), sine := (if odd then (Studio.Generator.Typeface.Scaled::signed false 268435456) else (Studio.Generator.Typeface.Scaled::signed false 0)), alpha := (revisedAlpha (Studio.Generator.Typeface.Scaled::signed false 0) gamma), beta := beta, gamma := gamma})))) else (let cs : Studio.Generator.Typeface.Scaled::SineCosine := (Studio.Generator.Typeface.Scaled::sineCosine theta); (let cosine : Studio.Generator.Typeface.Scaled::Integer := (project cs cosine); (let sine : Studio.Generator.Typeface.Scaled::Integer := (project cs sine); (let g0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction major sine); (let d0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction minor cosine); (let b0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::pythagoreanAdd g0 d0); (let a0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::takeFraction major (Studio.Generator.Typeface.Scaled::makeFraction g0 b0)) cosine) (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::takeFraction minor (Studio.Generator.Typeface.Scaled::makeFraction d0 b0)) sine)); (let gamma : Nat := (atLeastOne (project (rounded (Studio.Generator.Typeface.Scaled::pythagoreanAdd (Studio.Generator.Typeface.Scaled::takeFraction major cosine) (Studio.Generator.Typeface.Scaled::takeFraction minor sine))) magnitude)); (let beta : Nat := (atLeastOne (project (rounded b0) magnitude)); (record Shape {major := major, minor := minor, fillin := fillin, symmetric := false, level := false, cosine := cosine, sine := sine, alpha := (revisedAlpha (rounded a0) gamma), beta := beta, gamma := gamma})))))))))))
+}
+
+definition{
+  name: started,
+  parameters: [sh : Shape],
+  result: (List Nat),
+  body: (let a : Studio.Generator.Typeface.Scaled::Integer := (project sh alpha); (let b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project sh beta)); (let g : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project sh gamma)); (concatenated (node (Studio.Generator.Typeface.Scaled::negated a) (Studio.Generator.Typeface.Scaled::negated b) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) (project sh beta) 0) (concatenated (node g (Studio.Generator.Typeface.Scaled::negated b) (Studio.Generator.Typeface.Scaled::signed false 1) (Studio.Generator.Typeface.Scaled::signed true 1) (project sh gamma) (project (Studio.Generator.Typeface.Scaled::plus g a) magnitude)) (if (project sh symmetric) then (node g (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) (project sh beta) (project sh beta)) else (concatenated (node g b (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) (project sh beta) (prim multiply 2 (project sh beta) : Nat)) (node a b (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 1) 0 (project (Studio.Generator.Typeface.Scaled::minus g a) magnitude)))))))))
+}
+
+definition{
+  name: distance,
+  parameters: [sh : Shape, u : Studio.Generator.Typeface.Scaled::Integer, v : Studio.Generator.Typeface.Scaled::Integer],
+  result: Nat,
+  body: (let us : Studio.Generator.Typeface.Scaled::Integer := (times u 32768); (let vs : Studio.Generator.Typeface.Scaled::Integer := (times v 32768); (let delta : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::pythagoreanAdd us vs); (let d0 : Studio.Generator.Typeface.Scaled::Integer := (if ((project (project sh major) magnitude) =? (project (project sh minor) magnitude)) then (project sh major) else (let a1 : Studio.Generator.Typeface.Scaled::Integer := (if (project sh level) then us else (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::takeFraction us (project sh cosine)) (Studio.Generator.Typeface.Scaled::takeFraction vs (project sh sine)))); (let b1 : Studio.Generator.Typeface.Scaled::Integer := (if (project sh level) then vs else (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction vs (project sh cosine)) (Studio.Generator.Typeface.Scaled::takeFraction us (project sh sine)))); (Studio.Generator.Typeface.Scaled::pythagoreanAdd (Studio.Generator.Typeface.Scaled::takeFraction (project sh major) (Studio.Generator.Typeface.Scaled::makeFraction a1 delta)) (Studio.Generator.Typeface.Scaled::takeFraction (project sh minor) (Studio.Generator.Typeface.Scaled::makeFraction b1 delta)))))); (let small : Nat := (if ((project u magnitude) <? (project v magnitude)) then (project u magnitude) else (project v magnitude)); (let large : Nat := (if ((project u magnitude) <? (project v magnitude)) then (project v magnitude) else (project u magnitude)); (let d1 : Studio.Generator.Typeface.Scaled::Integer := (if ((project (project sh fillin) magnitude) =? 0) then d0 else (Studio.Generator.Typeface.Scaled::minus d0 (Studio.Generator.Typeface.Scaled::takeFraction (project sh fillin) (Studio.Generator.Typeface.Scaled::makeFraction (Studio.Generator.Typeface.Scaled::signed false (prim multiply small 65536 : Nat)) delta)))); (let d2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::truncated (Studio.Generator.Typeface.Scaled::plus d1 (Studio.Generator.Typeface.Scaled::signed false 4)) 8) delta); (if ((project d2 negative) || ((project d2 magnitude) <? large)) then large else (project d2 magnitude))))))))))
+}
+
+structure{
+  name: Walk,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: nodes, type: (List Nat)}, {name: p, type: Nat}, {name: done, type: Bool}, {name: open, type: Bool}]
+}
+
+definition{
+  name: interpolated,
+  parameters: [sh : Shape, l : (List Nat), p : Nat],
+  result: Walk,
+  body: (let q : Nat := (p + 1); (let r : Nat := (p + 2); (let u : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (nodeCoordinate l p 2) (nodeCoordinate l q 2)); (let v : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (nodeCoordinate l q 3) (nodeCoordinate l r 3)); (let c : Nat := ((nodeCount l p 4) + (nodeCount l q 4)); (let d : Nat := (distance sh u v); (let lq : Nat := (nodeCount l q 5); (let lr : Nat := (nodeCount l r 5); (if (d <? c) then (let delta0 : Nat := (prim subtract c d : Nat); (let delta : Nat := (if (lr <? delta0) then lr else delta0); (let qx : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (nodeCoordinate l q 0) (times (nodeCoordinate l r 3) (if (lq <=? delta) then lq else delta))); (let qy : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus (nodeCoordinate l q 1) (times (nodeCoordinate l q 2) (if (lq <=? delta) then lq else delta))); (if (lq <=? delta) then (record Walk {nodes := (withCount (withCoordinate (withCoordinate (withCoordinate (withCoordinate (withCount l p 4 (prim subtract c lq : Nat)) p 2 u) q 3 v) q 0 qx) q 1 qy) r 5 (prim subtract lr lq : Nat)), p := p, done := false, open := true}) else (let s : (List Nat) := (node (Studio.Generator.Typeface.Scaled::plus (nodeCoordinate l q 0) (times (nodeCoordinate l q 3) delta)) (Studio.Generator.Typeface.Scaled::minus (nodeCoordinate l q 1) (times (nodeCoordinate l p 2) delta)) u (nodeCoordinate l q 3) (prim subtract c delta : Nat) (prim subtract lq delta : Nat)); (let l1 : (List Nat) := (withCount (withCount (withCoordinate (withCoordinate (withCoordinate l q 0 qx) q 1 qy) q 3 v) q 5 delta) r 5 (prim subtract lr delta : Nat)); (record Walk {nodes := (spliced l1 (prim multiply 6 q : Nat) s), p := p, done := false, open := true})))))))) else (record Walk {nodes := l, p := q, done := false, open := true}))))))))))
+}
+
+definition{
+  name: advanced,
+  parameters: [l : (List Nat), p : Nat, steps : Nat],
+  result: Walk,
+  body: (match steps
+    | Nat.zero => (record Walk {nodes := l, p := p, done := true, open := false})
+    | Nat.succ rest => (let q : Nat := (p + 1); (let n : Nat := (nodes l); (if (n <=? q) then (record Walk {nodes := l, p := p, done := true, open := false}) else (if ((nodeCount l q 5) =? 0) then (advanced (withoutNode (withCoordinate (withCount l p 4 (nodeCount l q 4)) p 2 (nodeCoordinate l q 2)) q) p rest) else (if (n <=? (q + 1)) then (record Walk {nodes := l, p := p, done := true, open := true}) else (if ((nodeCount l (q + 1) 5) =? 0) then (advanced (withoutNode l q) q rest) else (record Walk {nodes := l, p := p, done := false, open := true})))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: interpolation,
+  parameters: [sh : Shape, l : (List Nat), p : Nat, steps : Nat],
+  result: Walk,
+  body: (match steps
+    | Nat.zero => (record Walk {nodes := l, p := p, done := true, open := false})
+    | Nat.succ rest => (let w : Walk := (interpolated sh l p); (let m : Walk := (advanced (project w nodes) (project w p) (nodes (project w nodes))); (if (project m done) then m else (interpolation sh (project m nodes) (project m p) rest))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: reflected,
+  parameters: [l : (List Nat), q : Nat, p : Nat, acc : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => acc
+    | Nat.succ rest => (let acc1 : (List Nat) := (concatenated (node (nodeCoordinate l q 0) (Studio.Generator.Typeface.Scaled::negated (nodeCoordinate l q 1)) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) 0 0) acc); (if ((q =? p) || ((project (nodeCoordinate l (q + 1) 1) magnitude) =? 0)) then acc1 else (reflected l (q + 1) p acc1 rest)))),
+  recursive_argument: steps
+}
+
+definition{
+  name: levelWith,
+  parameters: [l : (List Nat), p : Nat, y : Studio.Generator.Typeface.Scaled::Integer, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => p
+    | Nat.succ rest => (if (Studio.Generator.Typeface.Scaled::agrees (Studio.Generator.Typeface.Scaled::minus (nodeCoordinate l p 1) y) false 0) then p else (levelWith l (p + 1) y rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: points,
+  parameters: [l : (List Nat), i : Nat, n : Nat, negated : Bool],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (let x : Studio.Generator.Typeface.Scaled::Integer := (times (nodeCoordinate l i 0) 32768); (let y : Studio.Generator.Typeface.Scaled::Integer := (times (nodeCoordinate l i 1) 32768); (cons (Studio.Generator.Typeface.Choices::zigzag (if negated then (Studio.Generator.Typeface.Scaled::negated x) else x)) (cons (Studio.Generator.Typeface.Choices::zigzag (if negated then (Studio.Generator.Typeface.Scaled::negated y) else y)) (points l (i + 1) rest negated)))))),
+  recursive_argument: n
+}
+
+definition{
+  name: completed,
+  parameters: [l : (List Nat), a : Nat],
+  result: (List Nat),
+  body: (concatenated (points l 0 (a + 1) false) (points l 1 (if (a <? 2) then 1 else (prim subtract a 1 : Nat)) true))
+}
+
+definition{
+  name: ellipse,
+  parameters: [major : Studio.Generator.Typeface.Scaled::Integer, minor : Studio.Generator.Typeface.Scaled::Integer, theta : Studio.Generator.Typeface.Scaled::Integer, fillin : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (let sh : Shape := (shape major minor theta fillin); (let w : Walk := (interpolation sh (started sh) 0 ((prim multiply 4 ((project sh beta) + (project sh gamma)) : Nat) + 16)); (let l0 : (List Nat) := (project w nodes); (let p0 : Nat := (project w p); (let l1 : (List Nat) := (if (project sh symmetric) then (concatenated (taken l0 (prim multiply 6 (p0 + 1) : Nat)) (reflected l0 0 p0 (nil Nat) (p0 + 1))) else l0); (let p1 : Nat := (if (project sh symmetric) then (levelWith l1 p0 (Studio.Generator.Typeface.Scaled::negated (nodeCoordinate l0 0 1)) (nodes l1)) else p0); (let open : Bool := (if (project sh symmetric) then ((p1 + 1) <? (nodes l1)) else (project w open)); (let drop : Bool := (open && ((project (nodeCoordinate l1 0 2) magnitude) =? 0)); (let l2 : (List Nat) := (if drop then (withoutNode l1 0) else l1); (let a : Nat := (if open then (if drop then p1 else (p1 + 1)) else p1); (let l3 : (List Nat) := (if drop then (withCoordinate l2 a 0 (Studio.Generator.Typeface.Scaled::negated (nodeCoordinate l2 0 0))) else l2); (completed l3 a))))))))))))
+}
+
+definition{
+  name: half,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Scaled::truncated a 2)
+}
+
+definition{
+  name: pencircle,
+  parameters: [txx : Studio.Generator.Typeface.Scaled::Integer, tyx : Studio.Generator.Typeface.Scaled::Integer, txy : Studio.Generator.Typeface.Scaled::Integer, tyy : Studio.Generator.Typeface.Scaled::Integer, fillin : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (let amb : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::pythagoreanAdd (Studio.Generator.Typeface.Scaled::minus txx tyy) (Studio.Generator.Typeface.Scaled::plus tyx txy)); (let apb : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::pythagoreanAdd (Studio.Generator.Typeface.Scaled::plus txx tyy) (Studio.Generator.Typeface.Scaled::minus tyx txy)); (let major : Studio.Generator.Typeface.Scaled::Integer := (half (Studio.Generator.Typeface.Scaled::plus amb apb)); (let minor : Studio.Generator.Typeface.Scaled::Integer := (half (Studio.Generator.Typeface.Scaled::signed false (project (Studio.Generator.Typeface.Scaled::minus apb amb) magnitude))); (let theta : Studio.Generator.Typeface.Scaled::Integer := (if ((project major magnitude) =? (project minor magnitude)) then (Studio.Generator.Typeface.Scaled::signed false 0) else (half (Studio.Generator.Typeface.Scaled::plus (Studio.Generator.Typeface.Scaled::arg (Studio.Generator.Typeface.Scaled::minus txx tyy) (Studio.Generator.Typeface.Scaled::plus tyx txy)) (Studio.Generator.Typeface.Scaled::arg (Studio.Generator.Typeface.Scaled::plus txx tyy) (Studio.Generator.Typeface.Scaled::minus tyx txy))))); (ellipse major minor theta fillin))))))
+}
+
+theorem{
+  name: makes_a_pencircle_of_diameter_three_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (pencircle (Studio.Generator.Typeface.Scaled::signed false 196608) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 196608) (Studio.Generator.Typeface.Scaled::signed false 0)) (cons 65536 (cons 196609 (cons 196608 (cons 65537 (cons 196608 (cons 65536 (cons 65536 (cons 196608 (cons 65537 (cons 196608 (cons 196609 (cons 65536 (cons 196609 (cons 65537 (cons 65537 (cons 196609 (nil Nat)))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: makes_a_flat_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (pencircle (Studio.Generator.Typeface.Scaled::signed false 393216) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 131072) (Studio.Generator.Typeface.Scaled::signed false 0)) (cons 131072 (cons 131073 (cons 327680 (cons 65537 (cons 393216 (cons 0 (cons 327680 (cons 65536 (cons 131072 (cons 131072 (cons 131073 (cons 131072 (cons 327681 (cons 65536 (cons 393217 (cons 0 (cons 327681 (cons 65537 (cons 131073 (cons 131073 (nil Nat)))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: makes_a_quarter_turned_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (pencircle (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 327680) (Studio.Generator.Typeface.Scaled::signed true 131072) (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::signed false 0)) (cons 0 (cons 327681 (cons 65536 (cons 262145 (cons 131072 (cons 131073 (cons 131072 (cons 131072 (cons 65536 (cons 262144 (cons 0 (cons 327680 (cons 65537 (cons 262144 (cons 131073 (cons 131072 (cons 131073 (cons 131073 (cons 65537 (cons 262145 (nil Nat)))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: makes_a_slanted_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (pencircle (Studio.Generator.Typeface.Scaled::signed false 327680) (Studio.Generator.Typeface.Scaled::signed false 131072) (Studio.Generator.Typeface.Scaled::signed false 65536) (Studio.Generator.Typeface.Scaled::signed false 131072) (Studio.Generator.Typeface.Scaled::signed false 0)) (cons 262145 (cons 196609 (cons 65537 (cons 131073 (cons 196608 (cons 0 (cons 327680 (cons 131072 (cons 327680 (cons 196608 (cons 262144 (cons 196608 (cons 65536 (cons 131072 (cons 196609 (cons 0 (cons 327681 (cons 131073 (cons 327681 (cons 196609 (nil Nat)))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: makes_a_filled_in_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (pencircle (Studio.Generator.Typeface.Scaled::signed false 262144) (Studio.Generator.Typeface.Scaled::signed false 65536) (Studio.Generator.Typeface.Scaled::signed false 131072) (Studio.Generator.Typeface.Scaled::signed false 196608) (Studio.Generator.Typeface.Scaled::signed false 32768)) (cons 196609 (cons 196609 (cons 65536 (cons 65537 (cons 262144 (cons 131072 (cons 196608 (cons 196608 (cons 65537 (cons 65536 (cons 262145 (cons 131073 (nil Nat)))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: follows_mf_web_where_tex_live_2023_differs,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (pencircle (Studio.Generator.Typeface.Scaled::signed false 262144) (Studio.Generator.Typeface.Scaled::signed false 131072) (Studio.Generator.Typeface.Scaled::signed true 65536) (Studio.Generator.Typeface.Scaled::signed false 196608) (Studio.Generator.Typeface.Scaled::signed false 0)) (cons 65537 (cons 262145 (cons 65536 (cons 196609 (cons 262144 (cons 0 (cons 262144 (cons 131072 (cons 196608 (cons 196608 (cons 65536 (cons 262144 (cons 65537 (cons 196608 (cons 262145 (cons 0 (cons 262145 (cons 131073 (cons 196609 (cons 196609 (nil Nat)))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}
