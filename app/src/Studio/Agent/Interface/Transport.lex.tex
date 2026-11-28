@@ -1,0 +1,167 @@
+\begin{lexlean}{Studio.Agent.Interface.Transport}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.Agent.Contributor}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: window,
+  parameters: [],
+  result: Nat,
+  body: 60000
+}
+
+definition{
+  name: listed,
+  parameters: [tool : Bytes, names : (List Bytes)],
+  result: Bool,
+  body: (match names
+    | List.nil => false
+    | List.cons name rest => ((Studio.Runtime::same name tool) || (listed tool rest))),
+  recursive_argument: names,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: inWindow,
+  parameters: [issued : Nat, now : Nat],
+  result: Bool,
+  body: ((now <=? (issued + (window))) && (issued <=? (now + (window)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: admitted,
+  parameters: [tool : Bytes, agent : Bytes, maintainer : Bytes, audience : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append (prim append 0x61646d69747465643a20746f6f6c732f63616c6c20 tool : Bytes) (prim append 0x2066726f6d20 agent : Bytes) : Bytes) (prim append (prim append 0x206f6e20626568616c66206f6620 maintainer : Bytes) (prim append 0x2c206120537469746368207369676e656420616374696f6e20666f7220 audience : Bytes) : Bytes) : Bytes) (prim append 0x2c2072756e732074686520776f726b7370616365206f7065726174696f6e20 tool : Bytes) : Bytes)
+}
+
+definition{
+  name: audienceRefusal,
+  parameters: [audience : Bytes, instance : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a207468652063616c6c206973207369676e656420666f7220 audience : Bytes) (prim append 0x2c206e6f7420666f7220 instance : Bytes) : Bytes) 0x2c20736f207468697320696e7374616e636520646f6573206e6f742072756e206974 : Bytes)
+}
+
+definition{
+  name: replayRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a207468652063616c6c2773206e6f6e63652077617320616c7265616479207365656e2077697468696e207468652077696e646f772c20736f2069742069732061207265706c617920616e64206973206e6f742072756e20616761696e
+}
+
+definition{
+  name: staleRefusal,
+  parameters: [issued : Bytes, now : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a207468652063616c6c207761732069737375656420617420 issued : Bytes) (prim append 0x206d732c206d6f7265207468616e203630303030206d732066726f6d20 now : Bytes) : Bytes) 0x206d732c20736f206974206973206e6f7420667265736820616e64206973206e6f742072756e : Bytes)
+}
+
+definition{
+  name: scopeRefusal,
+  parameters: [tool : Bytes, agent : Bytes, maintainer : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 tool : Bytes) (prim append 0x206973206e6f7420696e207468652073636f706520 maintainer : Bytes) : Bytes) (prim append (prim append 0x206772616e74656420 agent : Bytes) 0x2c20736f207468652063616c6c206973206e6f742072756e : Bytes) : Bytes)
+}
+
+definition{
+  name: judge,
+  parameters: [agent : Bytes, maintainer : Bytes, tool : Bytes, scope : Bytes, audience : Bytes, instance : Bytes, replay : Bytes, issuedText : Bytes, nowText : Bytes, issued : Nat, now : Nat],
+  result: Bytes,
+  body: (if (not (Studio.Runtime::same audience instance)) then (audienceRefusal audience instance) else (if (not (Studio.Runtime::same replay 0x756e7365656e)) then (replayRefusal) else (if (not (inWindow issued now)) then (staleRefusal issuedText nowText) else (if (listed tool (Studio.Runtime::split scope 44)) then (admitted tool agent maintainer audience) else (scopeRefusal tool agent maintainer))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: call,
+  parameters: [agent : Bytes, maintainer : Bytes, tool : Bytes, scope : Bytes, audience : Bytes, instance : Bytes, replay : Bytes, issuedText : Bytes, nowText : Bytes, links : (List Bytes)],
+  result: Bytes,
+  body: (match (Studio.Agent.Contributor::standing agent maintainer links)
+    | Option.some refusal => refusal
+    | Option.none => (match (Studio.Runtime::number issuedText)
+      | Option.none => 0x696e76616c69642072657175657374
+      | Option.some issued => (match (Studio.Runtime::number nowText)
+        | Option.none => 0x696e76616c69642072657175657374
+        | Option.some now => (judge agent maintainer tool scope audience instance replay issuedText nowText issued now)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb f1 => (match f1
+      | List.cons agent f2 => (match f2
+        | List.cons maintainer f3 => (match f3
+          | List.cons tool f4 => (match f4
+            | List.cons scope f5 => (match f5
+              | List.cons audience f6 => (match f6
+                | List.cons instance f7 => (match f7
+                  | List.cons replay f8 => (match f8
+                    | List.cons issuedText f9 => (match f9
+                      | List.cons nowText links => (if (Studio.Runtime::same verb 0x63616c6c) then (call agent maintainer tool scope audience instance replay issuedText nowText links) else 0x696e76616c69642072657175657374)
+                      | List.nil => 0x696e76616c69642072657175657374)
+                    | List.nil => 0x696e76616c69642072657175657374)
+                  | List.nil => 0x696e76616c69642072657175657374)
+                | List.nil => 0x696e76616c69642072657175657374)
+              | List.nil => 0x696e76616c69642072657175657374)
+            | List.nil => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: runs_a_fresh_signed_call_inside_its_scope,
+  parameters: [],
+  statement: ((request 0x63616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = (admitted 0x6e657874 0x707269736d3a6167656e74 0x707269736d3a616c6578 0x76657264616e742d73747564696f)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_call_signed_for_another_audience,
+  parameters: [],
+  statement: ((request 0x63616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d656e67696e650976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = (audienceRefusal 0x76657264616e742d656e67696e65 0x76657264616e742d73747564696f)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_replayed_call,
+  parameters: [],
+  statement: ((request 0x63616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f097365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = (replayRefusal)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_call_outside_the_window,
+  parameters: [],
+  statement: ((request 0x63616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009393130303009707269736d3a6167656e743d707269736d3a616c6578) = (staleRefusal 0x31303030 0x3931303030)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_tool_outside_the_granted_scope,
+  parameters: [],
+  statement: ((request 0x63616c6c09707269736d3a6167656e7409707269736d3a616c6578097075626c697368096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = (scopeRefusal 0x7075626c697368 0x707269736d3a6167656e74 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_call_from_an_unlinked_agent,
+  parameters: [],
+  statement: ((request 0x63616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6f746865723d707269736d3a626f62) = (Studio.Agent.Contributor::unlinkedRefusal 0x707269736d3a6167656e74 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
