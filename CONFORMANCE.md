@@ -317,6 +317,16 @@ The three honesty levels (R2):
 | `VS-230` | `build` | Studio.Gui.View builds view trees only for the PROV-O and SOSA stakeholder relations of the D10 matrix, so it refuses any other relation, naming it | `Studio.Gui.View.refuses_a_relation_the_matrix_has_not`, refuses with `refused: esco:hasOptionalSkill is no stakeholder relation of the D10 matrix that a view tree is built for; the relations are producer, onBehalfOf, attributed, consumer and observation` |
 | `VS-231` | `build` | An agent in a stakeholder role gets the tree a person in that role gets (REQ-AGENT-USERS), so each journey of a Studio.Gui.View tree, with its audit, is the same for an agent as for a person | `Studio.Gui.View.an_agent_gets_the_tree_a_person_gets` |
 
+## usability
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-232` | `build` | Usability is effectiveness, efficiency and satisfaction in a context of use (ISO 9241-11:2018 3.1.1, inferred from its public preview, ISO-9241-11-2018-PREVIEW), so Studio.Gui.Usability measures a journey's view tree: the maintainer reaches the approval goal with both actions enabled, in one step, and satisfaction is left to the users' own feedback | `Studio.Gui.Usability.the_maintainer_reaches_the_approval_goal` |
+| `VS-233` | `build` | Effectiveness is the accuracy and completeness with which users achieve specified goals (ISO 9241-11:2018 3.1.12, inferred), so Studio.Gui.Usability measures the approval journey of a viewer whose actions are disabled as not reaching its goal in that context, naming what its view says | `Studio.Gui.Usability.another_viewer_does_not_reach_the_approval_goal` |
+| `VS-234` | `build` | Efficiency is the resources used in relation to the results achieved (ISO 9241-11:2018 3.1.13, inferred), so Studio.Gui.Usability spends no step on a release a gate holds back, and its effectiveness names the gate that holds it | `Studio.Gui.Usability.a_held_release_names_what_it_needs` |
+| `VS-235` | `build` | Usability is measured against specified goals (ISO 9241-11:2018 3.1.1, inferred), so Studio.Gui.Usability refuses a view tree that opens with no journey and so names no goal | `Studio.Gui.Usability.refuses_a_tree_with_no_goal`, refuses with `refused: the view tree opens with no journey, so it names no goal to measure usability against: view prismSeed: NO SEED, enter one word or sentence` |
+| `VS-236` | `build` | An agent is measured as a person is (REQ-AGENT-USERS), so Studio.Gui.Usability gives the view tree an agent perceives exactly the usability measures it gives a person's, for every journey and request | `Studio.Gui.Usability.an_agent_and_a_person_get_the_same_measures` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
