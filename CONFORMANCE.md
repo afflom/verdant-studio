@@ -305,6 +305,18 @@ The three honesty levels (R2):
 | `VS-223` | `build` | WCAG 2.2 success criterion 3.3.1 Error Identification asks that an error be described in text, so Studio.Gui.Accessibility fails a refused view that does not say why, naming it | `Studio.Gui.Accessibility.refuses_an_error_it_does_not_describe`, refuses with `fails WCAG 2.2 success criterion 3.3.1 Error Identification: view prismRefused: refused:` |
 | `VS-224` | `build` | An agent is audited as a person is (REQ-AGENT-USERS), so Studio.Gui.Accessibility gives the view tree an agent perceives exactly the audit it gives a person's, for every journey and request | `Studio.Gui.Accessibility.an_agent_and_a_person_get_the_same_audit` |
 
+## view
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-225` | `build` | Every stakeholder gets a representation bespoke to its need (REQ-CREATOR-BESPOKE), so Studio.Gui.View builds the view tree of a producer role of the D10 matrix (prov:wasGeneratedBy) from the journeys that generate: the creator journey and its own instances, each audited by Studio.Gui.Accessibility | `Studio.Gui.View.the_producer_relation_opens_creation` |
+| `VS-226` | `build` | A role that acts on behalf of another (prov:actedOnBehalfOf in the D10 matrix) gets the journeys of delegation, coordination and approval, with its instances, so Studio.Gui.View builds that tree and audits each journey | `Studio.Gui.View.the_delegate_relation_opens_delegation` |
+| `VS-227` | `build` | A role a release is attributed to (prov:wasAttributedTo in the D10 matrix) gets the mirror journey that publishes the release, with its instances, so Studio.Gui.View builds that tree and audits each journey | `Studio.Gui.View.the_attributed_tree` |
+| `VS-228` | `build` | A role that uses what Studio publishes (prov:used, a consumer in the D10 matrix) gets the mirror journey of the published release, so Studio.Gui.View builds that tree and audits it | `Studio.Gui.View.the_consumer_tree` |
+| `VS-229` | `build` | Players never log in to Studio and give feedback in the game, so Studio.Gui.View gives an observed role of the D10 matrix (W3C SOSA) no journey and names the Verdant Observer as how it takes part | `Studio.Gui.View.an_observed_role_opens_no_journey` |
+| `VS-230` | `build` | Studio.Gui.View builds view trees only for the PROV-O and SOSA stakeholder relations of the D10 matrix, so it refuses any other relation, naming it | `Studio.Gui.View.refuses_a_relation_the_matrix_has_not`, refuses with `refused: esco:hasOptionalSkill is no stakeholder relation of the D10 matrix that a view tree is built for; the relations are producer, onBehalfOf, attributed, consumer and observation` |
+| `VS-231` | `build` | An agent in a stakeholder role gets the tree a person in that role gets (REQ-AGENT-USERS), so each journey of a Studio.Gui.View tree, with its audit, is the same for an agent as for a person | `Studio.Gui.View.an_agent_gets_the_tree_a_person_gets` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

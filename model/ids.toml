@@ -1138,3 +1138,54 @@ level = "build"
 suite = "accessibility"
 statement = "An agent is audited as a person is (REQ-AGENT-USERS), so Studio.Gui.Accessibility gives the view tree an agent perceives exactly the audit it gives a person's, for every journey and request"
 theorems = ["Studio.Gui.Accessibility.an_agent_and_a_person_get_the_same_audit"]
+
+[[id]]
+id = "VS-225"
+level = "build"
+suite = "view"
+statement = "Every stakeholder gets a representation bespoke to its need (REQ-CREATOR-BESPOKE), so Studio.Gui.View builds the view tree of a producer role of the D10 matrix (prov:wasGeneratedBy) from the journeys that generate: the creator journey and its own instances, each audited by Studio.Gui.Accessibility"
+theorems = ["Studio.Gui.View.the_producer_relation_opens_creation"]
+
+[[id]]
+id = "VS-226"
+level = "build"
+suite = "view"
+statement = "A role that acts on behalf of another (prov:actedOnBehalfOf in the D10 matrix) gets the journeys of delegation, coordination and approval, with its instances, so Studio.Gui.View builds that tree and audits each journey"
+theorems = ["Studio.Gui.View.the_delegate_relation_opens_delegation"]
+
+[[id]]
+id = "VS-227"
+level = "build"
+suite = "view"
+statement = "A role a release is attributed to (prov:wasAttributedTo in the D10 matrix) gets the mirror journey that publishes the release, with its instances, so Studio.Gui.View builds that tree and audits each journey"
+theorems = ["Studio.Gui.View.the_attributed_tree"]
+
+[[id]]
+id = "VS-228"
+level = "build"
+suite = "view"
+statement = "A role that uses what Studio publishes (prov:used, a consumer in the D10 matrix) gets the mirror journey of the published release, so Studio.Gui.View builds that tree and audits it"
+theorems = ["Studio.Gui.View.the_consumer_tree"]
+
+[[id]]
+id = "VS-229"
+level = "build"
+suite = "view"
+statement = "Players never log in to Studio and give feedback in the game, so Studio.Gui.View gives an observed role of the D10 matrix (W3C SOSA) no journey and names the Verdant Observer as how it takes part"
+theorems = ["Studio.Gui.View.an_observed_role_opens_no_journey"]
+
+[[id]]
+id = "VS-230"
+level = "build"
+suite = "view"
+statement = "Studio.Gui.View builds view trees only for the PROV-O and SOSA stakeholder relations of the D10 matrix, so it refuses any other relation, naming it"
+theorems = ["Studio.Gui.View.refuses_a_relation_the_matrix_has_not"]
+failure = "refused: esco:hasOptionalSkill is no stakeholder relation of the D10 matrix that a view tree is built for; the relations are producer, onBehalfOf, attributed, consumer and observation"
+negative = "VS-230"
+
+[[id]]
+id = "VS-231"
+level = "build"
+suite = "view"
+statement = "An agent in a stakeholder role gets the tree a person in that role gets (REQ-AGENT-USERS), so each journey of a Studio.Gui.View tree, with its audit, is the same for an agent as for a person"
+theorems = ["Studio.Gui.View.an_agent_gets_the_tree_a_person_gets"]
