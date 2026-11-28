@@ -4,7 +4,8 @@
 # as MCP resources. Each journey's routes, views and actions are read from the app's own acceptance vectors, the
 # answers its model gives, and its guards from the build rows of its suite in model/ids.toml, so nothing here
 # restates the model. The resource list must be a ListResourcesResult, and each journey a ReadResourceResult, of
-# the bound MCP-SCHEMA-2026-07-28. gui-tree.py COMMAND... runs COMMAND record on the app's holo.
+# the bound MCP-SCHEMA-2026-07-28. Each role of the D10 matrix (model/matrix) gets the view tree Studio.Gui.View answers
+# for its relations, and a tree whose WCAG 2.2 audit fails stops the publish. gui-tree.py COMMAND... runs COMMAND record on the app's holo.
 import glob, json, subprocess, sys, tomllib
 SLASH = chr(47)
 TYPES = {'object': dict, 'array': list, 'string': str, 'boolean': bool, 'null': type(None)}
@@ -88,6 +89,41 @@ for route, entry in sorted(journeys.items()):
                       'description': 'The ' + journey + ' journey of the Studio UI Prism: its route, views, actions and guards'})
     reads[journey] = {'cacheScope': 'public', 'resultType': 'complete', 'ttlMs': 0,
                       'contents': [{'uri': uri, 'mimeType': 'application' + SLASH + 'json', 'text': json.dumps(tree, sort_keys=True)}]}
+answers = {}
+vprefix = 'studio' + chr(9) + 'view' + chr(9)
+for event in events:
+    request = bytes.fromhex(event['request']).decode('utf-8', 'replace')
+    if request.startswith(vprefix):
+        answers[request[len(vprefix):]] = bytes.fromhex(event['response']).decode('utf-8', 'replace')
+roles = {}
+for path in sorted(glob.glob(SLASH.join(['model', 'matrix', '*.jsonl']))):
+    for line in open(path):
+        edge = json.loads(line)
+        term = edge['role']['term']
+        slug = '-'.join(''.join(ch if ch.isalnum() else ' ' for ch in term.lower()).split())
+        role = roles.setdefault(slug, {'terms': [], 'relations': [], 'rows': []})
+        for key, value in (('terms', term), ('relations', edge['relation']), ('rows', edge['row'])):
+            if value not in role[key]:
+                role[key].append(value)
+unbuilt = []
+for slug, role in sorted(roles.items()):
+    trees = {relation: answers[relation] for relation in role['relations'] if not answers.get(relation, 'refused:').startswith('refused:')}
+    if not trees:
+        unbuilt.append(role['terms'][0])
+        continue
+    for relation, answer in trees.items():
+        for line in answer.split(chr(10)):
+            if line.startswith('audit: ') and not line.startswith('audit: conforms'):
+                problems.append('of the role ' + role['terms'][0] + ' (' + relation + ') fails its WCAG 2.2 audit: ' + line)
+    opened = sorted({line.split(' ')[1].rstrip(':') for answer in trees.values() for line in answer.split(chr(10)) if line.startswith('journey ')})
+    name = 'view' + SLASH + slug
+    uri = 'verdant-studio:' + SLASH + SLASH + 'gui' + SLASH + name
+    tree = {'role': role['terms'], 'relations': role['relations'], 'rows': role['rows'], 'journeys': opened, 'trees': trees}
+    resources.append({'uri': uri, 'name': name, 'title': 'The Studio UI of the ' + role['terms'][0] + ' role', 'mimeType': 'application' + SLASH + 'json',
+                      'description': 'The view tree the ' + role['terms'][0] + ' role of the D10 matrix opens (Studio.Gui.View), each journey audited against WCAG 2.2'})
+    reads[name] = {'cacheScope': 'public', 'resultType': 'complete', 'ttlMs': 0,
+                   'contents': [{'uri': uri, 'mimeType': 'application' + SLASH + 'json', 'text': json.dumps(tree, sort_keys=True)}]}
+print('::notice::no view tree for ' + str(len(unbuilt)) + ' roles whose relations Studio.Gui.View builds none for: ' + ', '.join(unbuilt))
 listing = {'cacheScope': 'public', 'resultType': 'complete', 'ttlMs': 0, 'resources': resources}
 check(listing, defs['ListResourcesResult'], 'resources-list', problems)
 for journey, read in reads.items():
@@ -99,9 +135,9 @@ for problem in problems:
 if problems:
     sys.exit(1)
 site = SLASH.join(['app', '.prism', 'site', 'surface'])
-subprocess.run(['mkdir', '-p', site + SLASH + 'gui'], check=True)
+subprocess.run(['mkdir', '-p', site + SLASH + 'gui' + SLASH + 'view'], check=True)
 json.dump(listing, open(site + SLASH + 'mcp-resources.json', 'w'), sort_keys=True)
 for journey, read in reads.items():
     json.dump(read, open(site + SLASH + 'gui' + SLASH + journey + '.json', 'w'), sort_keys=True)
 subprocess.run(['cp', SLASH.join(['surface', 'mcp-tools.json']), site], check=True)
-print('accepted: ' + str(len(resources)) + ' journeys of the Studio UI Prism as MCP resources, valid against MCP-SCHEMA-2026-07-28: ' + ', '.join(sorted(reads)))
+print('accepted: ' + str(len(resources)) + ' journeys and role view trees of the Studio UI Prism as MCP resources, valid against MCP-SCHEMA-2026-07-28: ' + ', '.join(sorted(reads)))
