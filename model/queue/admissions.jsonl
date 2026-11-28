@@ -1,12 +1,15 @@
-{"evidence": {"constraint": {"authority": "MIDI-1.0-DETAILED-SPEC-4.2.1-PAGE", "row": "I06"}}, "id": "REQ-ENGINE-MUSIC", "stakeholder": "afflom", "statement": "Verdant Engine composes music from a Verdant Prism's features as MIDI 1.0 messages, deterministically, refusing invalid features by name, so that a song or a whole soundtrack of the Prism can be generated (REQ-PRISM-GENERATION)."}
-{"evidence": {"constraint": {"authority": "EBU-TECH-3285-2", "row": "I09"}}, "id": "REQ-ENGINE-AUDIO-FILE", "stakeholder": "afflom", "statement": "Verdant Engine encodes the audio it synthesizes as Broadcast Wave Format files, bit for bit deterministic, so that every audio artifact of a Verdant Prism has a declared media type (REQ-PRISM-GENERATION)."}
-{"evidence": {"constraint": {"authority": "W3C-PNG-3"}}, "id": "REQ-ENGINE-RASTER-IMAGE", "stakeholder": "afflom", "statement": "Verdant Engine encodes the frames it renders as PNG images at their full rendered resolution and colour depth, bit for bit deterministic, so that raster artwork of a Verdant Prism, such as its cover art, has a declared media type (REQ-PRISM-GENERATION)."}
-{"evidence": {"constraint": {"authority": "W3C-SVG-2"}}, "id": "REQ-ENGINE-VECTOR-IMAGE", "stakeholder": "afflom", "statement": "Verdant Engine renders vector artwork as SVG documents, deterministically, so that vector artwork of a Verdant Prism, such as its logo, has a declared media type (REQ-PRISM-GENERATION)."}
-{"construct": "Studio.Prism.Seed", "req": "REQ-PRISM-GENERATION"}
-{"construct": "Studio.Prism.Artifact", "std": {"authority": "IANA-MEDIA-TYPES"}}
-{"construct": "Studio.Prism.Bundle", "std": {"authority": "IETF-RFC-8493", "row": "Y05"}}
-{"construct": "Studio.Prism.Provenance", "std": {"authority": "W3C-PROV-O"}}
-{"construct": "Studio.Prism.Validation", "std": {"authority": "ISO-IEC-IEEE-15288-2023", "row": "A13"}}
-{"construct": "Studio.Generator", "der": {"check": "VS-04", "inputs": ["Studio.PrismGeneration", "Studio.Engine.Capability", "Studio.Engine.Fidelity", "Studio.Prism.Artifact", "Studio.Prism.Provenance", "P5", "P11"], "rule": "pattern"}}
-{"construct": "Studio.Prism.Closure", "der": {"check": "VS-04", "inputs": ["Studio.Generator", "Studio.Prism.Seed", "Studio.Catalog.Facet", "Studio.Catalog.Mapping", "D11"], "rule": "pattern"}}
-{"construct": "Studio.Prism.Acceptance", "der": {"check": "VS-04", "inputs": ["Studio.Prism.Closure", "Studio.Prism.Bundle", "Studio.Prism.Validation", "P5", "P12"], "rule": "pattern"}}
+{"evidence": {"identity": {"agent": "afflom", "artifact": "docs/owner-decisions.md"}}, "id": "REQ-OBSERVABILITY", "stakeholder": "afflom", "statement": "Every operation of Verdant Studio is observable, auditable and traceable in its own runtime (REQ-SELF-RUNTIME): each emits its OpenTelemetry signals, a span, log records and metrics in OTLP/JSON, correlated by W3C Trace Context and attributed to the acting Prism ID, so that logging and metrics record every operation and every refusal, each refusal is the error from which REQ-SELF-HEALING takes its observation, and the log records are the audit trail of who did what, when and with which result."}
+{"construct": "Studio.Telemetry", "req": "REQ-OBSERVABILITY"}
+{"construct": "Studio.Telemetry.Context", "std": {"authority": "W3C-TRACE-CONTEXT-1"}}
+{"construct": "Studio.Telemetry.Span", "std": {"authority": "OTEL-SPEC-1.60.0-TRACE-API", "row": "W04"}}
+{"construct": "Studio.Telemetry.Run", "std": {"authority": "OTEL-SEMCONV-1.37.0-CICD-SPANS"}}
+{"construct": "Studio.Telemetry.Log", "std": {"authority": "OTEL-SPEC-1.60.0-LOGS-DATA-MODEL", "row": "W04"}}
+{"construct": "Studio.Telemetry.Metric", "std": {"authority": "OTEL-SPEC-1.60.0-METRICS-DATA-MODEL", "row": "W04"}}
+{"construct": "Studio.Telemetry.RunMetric", "std": {"authority": "OTEL-SEMCONV-1.37.0-CICD-METRICS"}}
+{"construct": "Studio.Telemetry.Error", "std": {"authority": "OTEL-SEMCONV-1.37.0-ERROR"}}
+{"construct": "Studio.Telemetry.Resource", "std": {"authority": "OTEL-SEMCONV-1.37.0-SERVICE"}}
+{"construct": "Studio.Telemetry.Encoding", "std": {"authority": "OTLP-1.11.1-SPECIFICATION"}}
+{"construct": "Studio.Telemetry.Attribution", "der": {"check": "VS-04", "inputs": ["Studio.Telemetry", "Studio.Agent.PrismId", "Studio.Observer"], "rule": "pattern"}}
+{"construct": "Studio.Telemetry.Audit", "std": {"authority": "ISO-IEC-27002-2022-PREVIEW", "row": "T06"}}
+{"construct": "Studio.Telemetry.Indicator", "std": {"authority": "GOOGLE-SRE-BOOK-CH4-SLO", "row": "W01"}}
+{"construct": "Studio.Telemetry.Healing", "der": {"check": "VS-04", "inputs": ["Studio.Telemetry.Log", "Studio.Telemetry.Error", "Studio.Error.Observation", "Studio.SelfHealing"], "rule": "pattern"}}
