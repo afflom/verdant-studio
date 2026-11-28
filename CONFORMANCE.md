@@ -264,6 +264,18 @@ The three honesty levels (R2):
 | `VS-202` | `build` | Studio.Gui.Mirror presents a release Studio.Runtime does not cut in the mirrorHeld view with its refusal, publish disabled | `Studio.Gui.Mirror.holds_a_release_with_a_failed_gate` |
 | `VS-203` | `build` | The publish action of the mirror journey is guarded, so Studio.Gui.Mirror never enables it for a viewer who is not the maintainer, whatever is cut | `Studio.Gui.Mirror.only_the_maintainer_publishes` |
 
+## user
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-204` | `build` | An agent is a Verdant user along with human users (REQ-AGENT-USERS), so Studio.User gives an agent the view of a journey of the Studio UI Prism through that journey's MCP resource, the same view Stitch Product.Experience gives a person | `Studio.User.an_agent_perceives_its_journey_through_an_mcp_resource` |
+| `VS-205` | `build` | An agent enacts an action of the Studio UI Prism only when its guard enables it, as an MCP tools/call carried over Stitch by Studio.Agent.Interface.Transport | `Studio.User.an_agent_enacts_an_enabled_action_over_stitch` |
+| `VS-206` | `build` | The same action guard gates the control a person presses and the call an agent makes (Stitch Product.Experience), so Studio.User refuses an agent the grant of its own request, as the approval journey disables it | `Studio.User.refuses_an_agent_an_action_its_guard_disables`, refuses with `refused: the action grant of the approval journey is not enabled for this user, so it is not enacted` |
+| `VS-207` | `build` | A person enacts an enabled action of the Studio UI Prism through the Studio UI, so Studio.User enacts the maintainer's grant of its agent's request | `Studio.User.a_person_enacts_an_enabled_action_through_the_studio_ui` |
+| `VS-208` | `build` | A Verdant user is a human or an agent (REQ-AGENT-USERS), so Studio.User refuses a request from any other kind, naming it | `Studio.User.refuses_a_user_of_no_known_kind`, refuses with `refused: robot is no kind of Verdant user; a user is human or agent` |
+| `VS-209` | `build` | An agent has the same graphical user interface experience of Verdant Studio as a person (REQ-AGENT-USERS), so Studio.User gives an agent exactly the view it gives a person, for every journey and every request | `Studio.User.an_agent_perceives_the_view_a_human_perceives` |
+| `VS-210` | `build` | An agent acts under the same guards as a person (REQ-AGENT-USERS), so Studio.User enables an action for an agent exactly when it enables it for a person, for every journey, action and request | `Studio.User.an_agent_is_held_to_the_guards_a_human_is_held_to` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

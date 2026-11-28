@@ -977,3 +977,56 @@ level = "build"
 suite = "gui-mirror"
 statement = "The publish action of the mirror journey is guarded, so Studio.Gui.Mirror never enables it for a viewer who is not the maintainer, whatever is cut"
 theorems = ["Studio.Gui.Mirror.only_the_maintainer_publishes"]
+
+[[id]]
+id = "VS-204"
+level = "build"
+suite = "user"
+statement = "An agent is a Verdant user along with human users (REQ-AGENT-USERS), so Studio.User gives an agent the view of a journey of the Studio UI Prism through that journey's MCP resource, the same view Stitch Product.Experience gives a person"
+theorems = ["Studio.User.an_agent_perceives_its_journey_through_an_mcp_resource"]
+
+[[id]]
+id = "VS-205"
+level = "build"
+suite = "user"
+statement = "An agent enacts an action of the Studio UI Prism only when its guard enables it, as an MCP tools/call carried over Stitch by Studio.Agent.Interface.Transport"
+theorems = ["Studio.User.an_agent_enacts_an_enabled_action_over_stitch"]
+
+[[id]]
+id = "VS-206"
+level = "build"
+suite = "user"
+statement = "The same action guard gates the control a person presses and the call an agent makes (Stitch Product.Experience), so Studio.User refuses an agent the grant of its own request, as the approval journey disables it"
+theorems = ["Studio.User.refuses_an_agent_an_action_its_guard_disables"]
+failure = "refused: the action grant of the approval journey is not enabled for this user, so it is not enacted"
+negative = "VS-206"
+
+[[id]]
+id = "VS-207"
+level = "build"
+suite = "user"
+statement = "A person enacts an enabled action of the Studio UI Prism through the Studio UI, so Studio.User enacts the maintainer's grant of its agent's request"
+theorems = ["Studio.User.a_person_enacts_an_enabled_action_through_the_studio_ui"]
+
+[[id]]
+id = "VS-208"
+level = "build"
+suite = "user"
+statement = "A Verdant user is a human or an agent (REQ-AGENT-USERS), so Studio.User refuses a request from any other kind, naming it"
+theorems = ["Studio.User.refuses_a_user_of_no_known_kind"]
+failure = "refused: robot is no kind of Verdant user; a user is human or agent"
+negative = "VS-208"
+
+[[id]]
+id = "VS-209"
+level = "build"
+suite = "user"
+statement = "An agent has the same graphical user interface experience of Verdant Studio as a person (REQ-AGENT-USERS), so Studio.User gives an agent exactly the view it gives a person, for every journey and every request"
+theorems = ["Studio.User.an_agent_perceives_the_view_a_human_perceives"]
+
+[[id]]
+id = "VS-210"
+level = "build"
+suite = "user"
+statement = "An agent acts under the same guards as a person (REQ-AGENT-USERS), so Studio.User enables an action for an agent exactly when it enables it for a person, for every journey, action and request"
+theorems = ["Studio.User.an_agent_is_held_to_the_guards_a_human_is_held_to"]
