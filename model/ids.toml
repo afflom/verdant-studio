@@ -1164,8 +1164,8 @@ theorems = ["Studio.Gui.View.the_attributed_tree"]
 id = "VS-228"
 level = "build"
 suite = "view"
-statement = "A role that uses what Studio publishes (prov:used, a consumer in the D10 matrix) gets the mirror journey of the published release, so Studio.Gui.View builds that tree and audits it"
-theorems = ["Studio.Gui.View.the_consumer_tree"]
+statement = "A role that uses what Studio publishes (prov:used, a consumer in the D10 matrix) only uses it and never acts in Studio, so Studio.Gui.View builds its tree read-only: the mirror journey of the published release seen by a viewer who is not its maintainer, with the publish action disabled, and audits it"
+theorems = ["Studio.Gui.View.the_consumer_tree_is_read_only"]
 
 [[id]]
 id = "VS-229"

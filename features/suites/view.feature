@@ -25,10 +25,10 @@ Feature: view
     And prism-code build replays that request, answered with that answer
 
   @VS-228 @build
-  Scenario: A role that uses what Studio publishes (prov:used, a consumer in the D10 matrix) gets the mirror journey of the published release, so Studio.Gui.View builds that tree and audits it
+  Scenario: A role that uses what Studio publishes (prov:used, a consumer in the D10 matrix) only uses it and never acts in Studio, so Studio.Gui.View builds its tree read-only: the mirror journey of the published release seen by a viewer who is not its maintainer, with the publish action disabled, and audits it
     Given the view model in app/src/Studio/Gui/View.lex.tex
-    When prism-code check has Lean's kernel prove Studio.Gui.View.the_consumer_tree
-    Then the consumer relation is answered with the mirror journey, conforming
+    When prism-code check has Lean's kernel prove Studio.Gui.View.the_consumer_tree_is_read_only
+    Then the consumer relation is answered with the mirror journey, its publish action disabled, conforming
     And prism-code build replays that request, answered with that answer
 
   @VS-229 @build
