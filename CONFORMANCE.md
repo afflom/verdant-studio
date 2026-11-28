@@ -276,6 +276,15 @@ The three honesty levels (R2):
 | `VS-209` | `build` | An agent has the same graphical user interface experience of Verdant Studio as a person (REQ-AGENT-USERS), so Studio.User gives an agent exactly the view it gives a person, for every journey and every request | `Studio.User.an_agent_perceives_the_view_a_human_perceives` |
 | `VS-210` | `build` | An agent acts under the same guards as a person (REQ-AGENT-USERS), so Studio.User enables an action for an agent exactly when it enables it for a person, for every journey, action and request | `Studio.User.an_agent_is_held_to_the_guards_a_human_is_held_to` |
 
+## brand
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-215` | `build` | Verdant Studio has a cohesive brand that its UI carries (REQ-BRAND), and as a Prism of itself it generates its own brand from its seed, so Studio.Gui.Brand names the generated facets of the Verdant Studio Prism that make up the brand: its wordmark and its typeface | `Studio.Gui.Brand.lists_the_parts_of_the_brand` |
+| `VS-216` | `build` | The wordmark of the Verdant Studio brand is the image/svg+xml facet that Studio.PrismGeneration generates from the seed Verdant Studio, composed and never generated again | `Studio.Gui.Brand.the_wordmark_is_the_svg_facet_of_the_seed` |
+| `VS-217` | `build` | Studio.Gui.Brand composes only facets a generator produces, so it refuses a part no generator of the Verdant Studio Prism makes, naming it | `Studio.Gui.Brand.refuses_a_part_the_brand_has_not`, refuses with `refused: the Verdant Studio brand has no part palette; its parts are the wordmark and the typeface` |
+| `VS-218` | `build` | The brand regenerates nothing: Studio.Gui.Brand answers each part with exactly the facet Studio.PrismGeneration generates for its media type from the seed Verdant Studio | `Studio.Gui.Brand.the_brand_regenerates_nothing` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
