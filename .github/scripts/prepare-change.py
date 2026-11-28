@@ -7,6 +7,7 @@
 # both take this path.
 #   prepare PATCH APPENDS  renumbers PATCH in place and moves its pure appends into APPENDS
 #   append APPENDS         appends them, after the rest of the patch is applied
+#   lint PATCH             refuses an added string literal the Lean export would refuse as an absolute path
 import re, json, sys
 nl = chr(10)
 
@@ -53,7 +54,37 @@ def append(appends_name):
             old += nl
         open(path, 'w').write(old + nl.join(add) + nl)
 
+def rooted(text):
+    # LexLean's own test for an absolute path in Lean's output (first_unexpected_absolute_path in its verifier),
+    # run over each added string literal as written, which is how Lean prints it: escapes stay escaped, so a line
+    # ending in a one-letter name and a colon reads as a Windows path.
+    slash, colon, backslash = chr(47), chr(58), chr(92)
+    boundary = lambda char: char.isspace() or char in chr(34) + chr(39) + chr(96) + '([{<,;='
+    segment = lambda char: char.isalnum() or char in '_.'
+    for at, char in enumerate(text):
+        before = at == 0 or boundary(text[at - 1])
+        ahead = text[at + 1:at + 4]
+        posix = char == slash and before and len(ahead) > 0 and segment(ahead[0])
+        windows = char.isascii() and char.isalpha() and before and len(ahead) == 3 and ahead[0] == colon and ahead[1] in slash + backslash and segment(ahead[2])
+        if posix or windows:
+            return text[at:at + 40]
+    return None
+
+def lint(patch_name):
+    found = []
+    for line in open(patch_name).read().split(nl):
+        if line.startswith('+') and not line.startswith('+++'):
+            for literal in re.findall(chr(34) + '((?:[^' + chr(34) + chr(92) * 2 + ']|' + chr(92) * 2 + '.)*)' + chr(34), line):
+                hit = rooted(literal)
+                if hit is not None:
+                    found.append(hit)
+    for hit in found:
+        print('::error::LLV7006: an added string literal holds ' + repr(hit) + ', which the Lean export refuses as an absolute path')
+    return 1 if found else 0
+
 if sys.argv[1] == 'prepare':
     prepare(sys.argv[2], sys.argv[3])
+elif sys.argv[1] == 'lint':
+    sys.exit(lint(sys.argv[2]))
 else:
     append(sys.argv[2])
