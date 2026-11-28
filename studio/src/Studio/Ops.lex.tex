@@ -2095,7 +2095,7 @@ definition{
 }
 
 definition{
-  name: acceptanceScript,
+  name: acceptanceScript1,
   parameters: [],
   result: Bytes,
   body: (Studio.Doc::cat
@@ -2105,10 +2105,52 @@ definition{
     (cons (Studio.Doc::lit "# with the seed \"Verdant Studio\" and require every facet the Prism lists to have its media type at the\n")
     (cons (Studio.Doc::lit "# fidelity its generator's theorems state. Run from the repository root after the build, so the app is not\n")
     (cons (Studio.Doc::lit "# proved again: prism-acceptance.py COMMAND... runs COMMAND run app --input REQUEST for each request.\n")
-    (cons (Studio.Doc::lit "import struct, subprocess, sys, xml.etree.ElementTree as tree\n")
+    (cons (Studio.Doc::lit "import math, struct, subprocess, sys, xml.etree.ElementTree as tree\n")
     (cons (Studio.Doc::lit "SEED = 'Verdant Studio'\n")
     (cons (Studio.Doc::lit "MIDI_HEADER = bytes.fromhex('4d54686400000006000000010060')\n")
     (cons (Studio.Doc::lit "FMT = bytes.fromhex('0100010080bb00000077010002001000')\n")
+    (cons (Studio.Doc::lit "# SONY-ASWG-R001 (the AswgLoudnessTarget catalog module), the home-based platform target REQ-ENGINE-FIDELITY's high-end gaming\n")
+    (cons (Studio.Doc::lit "# systems name: -24 (+-2) LKFS integrated, at most -1 dBTP true peak, both measured as ITU-R-BS-1770-5 states.\n")
+    (cons (Studio.Doc::lit "TARGET, TOLERANCE, TRUE_PEAK = -24.0, 2.0, -1.0\n")
+    (cons (Studio.Doc::lit "# BS.1770-5 Annex 1 pre-filter and RLB filter at 48 kHz, as (b0, b1, b2, a1, a2).\n")
+    (cons (Studio.Doc::lit "K_WEIGHTING = ((1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585),\n")
+    (cons (Studio.Doc::lit "               (1.0, -2.0, 1.0, -1.99004745483398, 0.99007225036621))\n")
+    (cons (Studio.Doc::lit "\n")
+    (cons (Studio.Doc::lit "def loudness(x):\n")
+    (cons (Studio.Doc::lit "    # Annex 1: K-weighting, 400 ms blocks overlapping by three quarters, absolute gate -70 LKFS, relative gate -10 LU.\n")
+    (cons (Studio.Doc::lit "    for b0, b1, b2, a1, a2 in K_WEIGHTING:\n")
+    (cons (Studio.Doc::lit "        y, x1, x2, y1, y2 = [], 0.0, 0.0, 0.0, 0.0\n")
+    (cons (Studio.Doc::lit "        for v in list(x):\n")
+    (cons (Studio.Doc::lit "            o = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2\n")
+    (cons (Studio.Doc::lit "            x2, x1, y2, y1 = x1, v, y1, o\n")
+    (cons (Studio.Doc::lit "            y.append(o)\n")
+    (cons (Studio.Doc::lit "        x = y\n")
+    (cons (Studio.Doc::lit "    squares = [0.0]\n")
+    (cons (Studio.Doc::lit "    for v in list(x):\n")
+    (cons (Studio.Doc::lit "        squares.append(squares[-1] + v * v)\n")
+    (cons (Studio.Doc::lit "    size, hop = 19200, 4800\n")
+    (cons (Studio.Doc::lit "    blocks = [(squares[at + size] - squares[at]) * size ** -1 for at in range(0, len(x) - size + 1, hop)]\n")
+    (cons (Studio.Doc::lit "    level = lambda power: -0.691 + 10 * math.log10(power) if power > 0 else -math.inf\n")
+    (cons (Studio.Doc::lit "    gated = [power for power in blocks if level(power) > -70]\n")
+    (cons (Studio.Doc::lit "    if not gated:\n")
+    (cons (Studio.Doc::lit "        return -math.inf\n")
+    (cons (Studio.Doc::lit "    relative = level(sum(gated) * len(gated) ** -1) - 10\n")
+    (cons (Studio.Doc::lit "    gated = [power for power in gated if level(power) > relative]\n")
+    (cons (Studio.Doc::lit "    return level(sum(gated) * len(gated) ** -1)\n")
+    (cons (Studio.Doc::lit "\n")
+    (cons (Studio.Doc::lit "def true_peak(x):\n")
+    (cons (Studio.Doc::lit "    # Annex 2: oversample by 4 and take the greatest magnitude, here with a 48-tap Hann-windowed sinc interpolator.\n")
+    (cons (Studio.Doc::lit "    taps = [[(math.sin(math.pi * (k - 24 + phase * 0.25)) * (math.pi * (k - 24 + phase * 0.25)) ** -1 if k - 24 + phase * 0.25 else 1.0)\n")
+    (cons (Studio.Doc::lit "             * (0.5 - 0.5 * math.cos(2 * math.pi * (k + phase * 0.25) * 48 ** -1)) for k in range(48)] for phase in range(1, 4)]\n")
+    (cons (Studio.Doc::lit "    peak = max(map(abs, x), default=0.0)\n")
+    (cons (Studio.Doc::lit "    for at in range(len(x)):\n")
+    (cons (Studio.Doc::lit "        if abs(x[at]) < peak * 0.7:\n")
+    (cons (Studio.Doc::lit "            continue\n")
+    (cons (Studio.Doc::lit "        window = x[max(0, at - 23):at + 25]\n")
+    (cons (Studio.Doc::lit "        for row in taps:\n")
+    (cons (Studio.Doc::lit "            peak = max(peak, abs(sum(c * v for c, v in zip(row[23 - (at - max(0, at - 23)):], window))))\n")
+    (cons (Studio.Doc::lit "    return 20 * math.log10(peak) if peak > 0 else -math.inf\n")
+    (cons (Studio.Doc::lit "\n")
     (cons (Studio.Doc::lit "SVG_ROOT = '{http:' + chr(47) * 2 + 'www.w3.org' + chr(47) + '2000' + chr(47) + 'svg}svg'\n")
     (cons (Studio.Doc::lit "\n")
     (cons (Studio.Doc::lit "def run(request):\n")
@@ -2117,6 +2159,15 @@ definition{
     (cons (Studio.Doc::lit "        raise SystemExit('::error::' + repr(request) + ' failed: ' + got.stderr.decode(errors='replace')[-400:])\n")
     (cons (Studio.Doc::lit "    return got.stdout\n")
     (cons (Studio.Doc::lit "\n")
+    (nil Bytes)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: acceptanceScript2,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::cat
     (cons (Studio.Doc::lit "def midi(data):\n")
     (cons (Studio.Doc::lit "    # Midi.lex.tex writes_a_format_0_file: format 0, one track, 96 ticks per quarter note.\n")
     (cons (Studio.Doc::lit "    if not data.startswith(MIDI_HEADER) or data[14:18] != b'MTrk':\n")
@@ -2141,6 +2192,12 @@ definition{
     (cons (Studio.Doc::lit "        return 'is not PCM, mono, 48000 Hz, 16-bit'\n")
     (cons (Studio.Doc::lit "    if not chunks[2][1]:\n")
     (cons (Studio.Doc::lit "        return 'has no samples'\n")
+    (cons (Studio.Doc::lit "    samples = [value * 2.0 ** -15 for value in struct.unpack('<' + str(len(chunks[2][1]) >> 1) + 'h', chunks[2][1])]\n")
+    (cons (Studio.Doc::lit "    measured, peak = loudness(samples), true_peak(samples)\n")
+    (cons (Studio.Doc::lit "    if abs(measured - TARGET) > TOLERANCE:\n")
+    (cons (Studio.Doc::lit "        return 'reads ' + format(measured, '.1f') + ' LKFS, outside the -24 (+-2) LKFS home-platform target of ASWG-R001'\n")
+    (cons (Studio.Doc::lit "    if peak > TRUE_PEAK:\n")
+    (cons (Studio.Doc::lit "        return 'peaks at ' + format(peak, '.2f') + ' dBTP, above the -1 dBTP of ASWG-R001'\n")
     (cons (Studio.Doc::lit "\n")
     (cons (Studio.Doc::lit "def svg(data):\n")
     (cons (Studio.Doc::lit "    try:\n")
@@ -2169,7 +2226,15 @@ definition{
     (cons (Studio.Doc::lit "    else:\n")
     (cons (Studio.Doc::lit "        print('accepted: the ' + facet + ' facet of ' + SEED + ', ' + str(len(data)) + ' bytes')\n")
     (cons (Studio.Doc::lit "sys.exit(1 if failed else 0)\n")
-    (nil Bytes)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+    (nil Bytes)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: acceptanceScript,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::cat (cons (acceptanceScript1) (cons (acceptanceScript2) (nil Bytes)))),
   executable: true
 }
 

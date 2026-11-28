@@ -57,26 +57,43 @@ definition{
 }
 
 definition{
-  name: peak,
+  name: truePeak,
   parameters: [],
   result: Nat,
-  body: 3281
+  body: 29204
+}
+
+definition{
+  name: level,
+  parameters: [key : Nat],
+  result: Nat,
+  body: (if (key <? 64) then (if (key <? 32) then (if (key <? 16) then (if (key <? 8) then (if (key <? 4) then (if (key <? 2) then (if (key <? 1) then 29204 else 29204) else (if (key <? 3) then 29204 else 29204)) else (if (key <? 6) then (if (key <? 5) then 29204 else 29204) else (if (key <? 7) then 29204 else 29204))) else (if (key <? 12) then (if (key <? 10) then (if (key <? 9) then 29204 else 27376) else (if (key <? 11) then 24732 else 22377)) else (if (key <? 14) then (if (key <? 13) then 20279 else 18409) else (if (key <? 15) then 16744 else 15260)))) else (if (key <? 24) then (if (key <? 20) then (if (key <? 18) then (if (key <? 17) then 13938 else 12761) else (if (key <? 19) then 11712 else 10777)) else (if (key <? 22) then (if (key <? 21) then 9945 else 9203) else (if (key <? 23) then 8542 else 7954))) else (if (key <? 28) then (if (key <? 26) then (if (key <? 25) then 7429 else 6962) else (if (key <? 27) then 6546 else 6175)) else (if (key <? 30) then (if (key <? 29) then 5845 else 5551) else (if (key <? 31) then 5289 else 5055))))) else (if (key <? 48) then (if (key <? 40) then (if (key <? 36) then (if (key <? 34) then (if (key <? 33) then 4847 else 4662) else (if (key <? 35) then 4497 else 4350)) else (if (key <? 38) then (if (key <? 37) then 4219 else 4102) else (if (key <? 39) then 3999 else 3906))) else (if (key <? 44) then (if (key <? 42) then (if (key <? 41) then 3823 else 3750) else (if (key <? 43) then 3685 else 3626)) else (if (key <? 46) then (if (key <? 45) then 3574 else 3528) else (if (key <? 47) then 3487 else 3450)))) else (if (key <? 56) then (if (key <? 52) then (if (key <? 50) then (if (key <? 49) then 3417 else 3388) else (if (key <? 51) then 3362 else 3339)) else (if (key <? 54) then (if (key <? 53) then 3318 else 3300) else (if (key <? 55) then 3283 else 3269))) else (if (key <? 60) then (if (key <? 58) then (if (key <? 57) then 3256 else 3244) else (if (key <? 59) then 3234 else 3224)) else (if (key <? 62) then (if (key <? 61) then 3216 else 3208) else (if (key <? 63) then 3201 else 3195)))))) else (if (key <? 96) then (if (key <? 80) then (if (key <? 72) then (if (key <? 68) then (if (key <? 66) then (if (key <? 65) then 3189 else 3183) else (if (key <? 67) then 3178 else 3173)) else (if (key <? 70) then (if (key <? 69) then 3168 else 3163) else (if (key <? 71) then 3158 else 3152))) else (if (key <? 76) then (if (key <? 74) then (if (key <? 73) then 3145 else 3138) else (if (key <? 75) then 3130 else 3120)) else (if (key <? 78) then (if (key <? 77) then 3108 else 3094) else (if (key <? 79) then 3077 else 3057)))) else (if (key <? 88) then (if (key <? 84) then (if (key <? 82) then (if (key <? 81) then 3033 else 3004) else (if (key <? 83) then 2970 else 2931)) else (if (key <? 86) then (if (key <? 85) then 2886 else 2835) else (if (key <? 87) then 2779 else 2718))) else (if (key <? 92) then (if (key <? 90) then (if (key <? 89) then 2653 else 2587) else (if (key <? 91) then 2520 else 2455)) else (if (key <? 94) then (if (key <? 93) then 2392 else 2333) else (if (key <? 95) then 2280 else 2232))))) else (if (key <? 112) then (if (key <? 104) then (if (key <? 100) then (if (key <? 98) then (if (key <? 97) then 2191 else 2155) else (if (key <? 99) then 2124 else 2098)) else (if (key <? 102) then (if (key <? 101) then 2077 else 2060) else (if (key <? 103) then 2045 else 2034))) else (if (key <? 108) then (if (key <? 106) then (if (key <? 105) then 2024 else 2017) else (if (key <? 107) then 2011 else 2006)) else (if (key <? 110) then (if (key <? 109) then 2002 else 1999) else (if (key <? 111) then 1997 else 1995)))) else (if (key <? 120) then (if (key <? 116) then (if (key <? 114) then (if (key <? 113) then 1993 else 1992) else (if (key <? 115) then 1991 else 1990)) else (if (key <? 118) then (if (key <? 117) then 1990 else 1989) else (if (key <? 119) then 1989 else 1989))) else (if (key <? 124) then (if (key <? 122) then (if (key <? 121) then 1988 else 1988) else (if (key <? 123) then 1988 else 1988)) else (if (key <? 126) then (if (key <? 125) then 1988 else 1988) else (if (key <? 127) then 1988 else 1988)))))))
+}
+
+definition{
+  name: levelsWithin,
+  parameters: [count : Nat],
+  result: Bool,
+  body: (match count
+    | Nat.zero => true
+    | Nat.succ rest => (((level rest) <=? (truePeak)) && (levelsWithin rest))),
+  recursive_argument: count
 }
 
 definition{
   name: sample,
-  parameters: [phase : Nat],
+  parameters: [phase : Nat, peak : Nat],
   result: Bytes,
-  body: (let q : Nat := (prim quotient phase 70368744177664 0 : Nat); (let r : Nat := (prim remainder phase 70368744177664 0 : Nat); (let v : Nat := (if ((prim remainder q 2 0 : Nat) =? 0) then r else (prim subtract 70368744177664 r : Nat)); (let a : Nat := (prim quotient ((prim multiply (quarterSine v) (prim multiply 2 (peak) : Nat) : Nat) + 1099511627776) 2199023255552 0 : Nat); (let s : Nat := (if (q <? 2) then a else (prim remainder (prim subtract 65536 a : Nat) 65536 0 : Nat)); (prim append (Studio.Generator.Music.Midi::octet s) (Studio.Generator.Music.Midi::octet (prim quotient s 256 0 : Nat)) : Bytes))))))
+  body: (let q : Nat := (prim quotient phase 70368744177664 0 : Nat); (let r : Nat := (prim remainder phase 70368744177664 0 : Nat); (let v : Nat := (if ((prim remainder q 2 0 : Nat) =? 0) then r else (prim subtract 70368744177664 r : Nat)); (let a : Nat := (prim quotient ((prim multiply (quarterSine v) (prim multiply 2 peak : Nat) : Nat) + 1099511627776) 2199023255552 0 : Nat); (let s : Nat := (if (q <? 2) then a else (prim remainder (prim subtract 65536 a : Nat) 65536 0 : Nat)); (prim append (Studio.Generator.Music.Midi::octet s) (Studio.Generator.Music.Midi::octet (prim quotient s 256 0 : Nat)) : Bytes))))))
 }
 
 definition{
   name: tone,
-  parameters: [step : Nat, start : Nat, count : Nat, depth : Nat],
+  parameters: [step : Nat, peak : Nat, start : Nat, count : Nat, depth : Nat],
   result: Bytes,
   body: (match depth
     | Nat.zero => 0x
-    | Nat.succ rest => (if (count =? 0) then 0x else (if (count =? 1) then (sample (prim remainder (prim multiply start step : Nat) 281474976710656 0 : Nat)) else (let half : Nat := (prim quotient count 2 0 : Nat); (prim append (tone step start half rest) (tone step (start + half) (prim subtract count half : Nat) rest) : Bytes))))),
+    | Nat.succ rest => (if (count =? 0) then 0x else (if (count =? 1) then (sample (prim remainder (prim multiply start step : Nat) 281474976710656 0 : Nat) peak) else (let half : Nat := (prim quotient count 2 0 : Nat); (prim append (tone step peak start half rest) (tone step peak (start + half) (prim subtract count half : Nat) rest) : Bytes))))),
   recursive_argument: depth
 }
 
@@ -94,7 +111,7 @@ definition{
   name: pcm,
   parameters: [segment : Segment],
   result: Bytes,
-  body: (if ((project segment key) <? 128) then (tone (phaseStep (project segment key)) 0 (project segment count) 32) else (silence (project segment count) 32))
+  body: (if ((project segment key) <? 128) then (tone (phaseStep (project segment key)) (level (project segment key)) 0 (project segment count) 32) else (silence (project segment count) 32))
 }
 
 definition{
@@ -232,7 +249,7 @@ theorem{
 theorem{
   name: sine_starts_at_zero,
   parameters: [],
-  statement: ((sample 0) = 0x0000),
+  statement: ((sample 0 (level 69)) = 0x0000),
   proof: decide{},
   axioms: []
 }
@@ -240,7 +257,7 @@ theorem{
 theorem{
   name: sine_peaks_at_the_level,
   parameters: [],
-  statement: ((sample 70368744177664) = 0xd10c),
+  statement: ((sample 70368744177664 (level 69)) = 0x5b0c),
   proof: decide{},
   axioms: []
 }
@@ -248,7 +265,31 @@ theorem{
 theorem{
   name: sine_troughs_at_the_negated_level,
   parameters: [],
-  statement: ((sample 211106232532992) = 0x2ff3),
+  statement: ((sample 211106232532992 (level 69)) = 0xa5f3),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: key_69_reads_minus_24_lkfs,
+  parameters: [],
+  statement: ((level 69) = 3163),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: every_key_stays_under_the_true_peak,
+  parameters: [],
+  statement: ((levelsWithin 128) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_lowest_key_is_held_at_the_true_peak,
+  parameters: [],
+  statement: ((level 0) = (truePeak)),
   proof: decide{},
   axioms: []
 }

@@ -4,10 +4,52 @@
 # with the seed "Verdant Studio" and require every facet the Prism lists to have its media type at the
 # fidelity its generator's theorems state. Run from the repository root after the build, so the app is not
 # proved again: prism-acceptance.py COMMAND... runs COMMAND run app --input REQUEST for each request.
-import struct, subprocess, sys, xml.etree.ElementTree as tree
+import math, struct, subprocess, sys, xml.etree.ElementTree as tree
 SEED = 'Verdant Studio'
 MIDI_HEADER = bytes.fromhex('4d54686400000006000000010060')
 FMT = bytes.fromhex('0100010080bb00000077010002001000')
+# SONY-ASWG-R001 (the AswgLoudnessTarget catalog module), the home-based platform target REQ-ENGINE-FIDELITY's high-end gaming
+# systems name: -24 (+-2) LKFS integrated, at most -1 dBTP true peak, both measured as ITU-R-BS-1770-5 states.
+TARGET, TOLERANCE, TRUE_PEAK = -24.0, 2.0, -1.0
+# BS.1770-5 Annex 1 pre-filter and RLB filter at 48 kHz, as (b0, b1, b2, a1, a2).
+K_WEIGHTING = ((1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585),
+               (1.0, -2.0, 1.0, -1.99004745483398, 0.99007225036621))
+
+def loudness(x):
+    # Annex 1: K-weighting, 400 ms blocks overlapping by three quarters, absolute gate -70 LKFS, relative gate -10 LU.
+    for b0, b1, b2, a1, a2 in K_WEIGHTING:
+        y, x1, x2, y1, y2 = [], 0.0, 0.0, 0.0, 0.0
+        for v in list(x):
+            o = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+            x2, x1, y2, y1 = x1, v, y1, o
+            y.append(o)
+        x = y
+    squares = [0.0]
+    for v in list(x):
+        squares.append(squares[-1] + v * v)
+    size, hop = 19200, 4800
+    blocks = [(squares[at + size] - squares[at]) * size ** -1 for at in range(0, len(x) - size + 1, hop)]
+    level = lambda power: -0.691 + 10 * math.log10(power) if power > 0 else -math.inf
+    gated = [power for power in blocks if level(power) > -70]
+    if not gated:
+        return -math.inf
+    relative = level(sum(gated) * len(gated) ** -1) - 10
+    gated = [power for power in gated if level(power) > relative]
+    return level(sum(gated) * len(gated) ** -1)
+
+def true_peak(x):
+    # Annex 2: oversample by 4 and take the greatest magnitude, here with a 48-tap Hann-windowed sinc interpolator.
+    taps = [[(math.sin(math.pi * (k - 24 + phase * 0.25)) * (math.pi * (k - 24 + phase * 0.25)) ** -1 if k - 24 + phase * 0.25 else 1.0)
+             * (0.5 - 0.5 * math.cos(2 * math.pi * (k + phase * 0.25) * 48 ** -1)) for k in range(48)] for phase in range(1, 4)]
+    peak = max(map(abs, x), default=0.0)
+    for at in range(len(x)):
+        if abs(x[at]) < peak * 0.7:
+            continue
+        window = x[max(0, at - 23):at + 25]
+        for row in taps:
+            peak = max(peak, abs(sum(c * v for c, v in zip(row[23 - (at - max(0, at - 23)):], window))))
+    return 20 * math.log10(peak) if peak > 0 else -math.inf
+
 SVG_ROOT = '{http:' + chr(47) * 2 + 'www.w3.org' + chr(47) + '2000' + chr(47) + 'svg}svg'
 
 def run(request):
@@ -40,6 +82,12 @@ def wave(data):
         return 'is not PCM, mono, 48000 Hz, 16-bit'
     if not chunks[2][1]:
         return 'has no samples'
+    samples = [value * 2.0 ** -15 for value in struct.unpack('<' + str(len(chunks[2][1]) >> 1) + 'h', chunks[2][1])]
+    measured, peak = loudness(samples), true_peak(samples)
+    if abs(measured - TARGET) > TOLERANCE:
+        return 'reads ' + format(measured, '.1f') + ' LKFS, outside the -24 (+-2) LKFS home-platform target of ASWG-R001'
+    if peak > TRUE_PEAK:
+        return 'peaks at ' + format(peak, '.2f') + ' dBTP, above the -1 dBTP of ASWG-R001'
 
 def svg(data):
     try:

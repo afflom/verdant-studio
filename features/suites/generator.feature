@@ -21,10 +21,10 @@ Feature: generator
     And prism-code build replays the feature café, answered with the refusal that names it
 
   @VS-18 @build
-  Scenario: The synthesis, Studio.Generator.AudioFile.Synthesis, renders the Standard MIDI File the MIDI generator writes as 16-bit PCM at 48 kHz: each sounding key a sine at its MIDI tuning frequency, key 69 at 440 Hz, peaking at 3281, the level at which a 997 Hz tone reads -23 LUFS
+  Scenario: The synthesis, Studio.Generator.AudioFile.Synthesis, renders the Standard MIDI File the MIDI generator writes as 16-bit PCM at 48 kHz: each sounding key a sine at its MIDI tuning frequency, key 69 at 440 Hz, peaking where its ITU-R BS.1770-5 K-weighted loudness reads -24 LKFS, the home-platform target of Sony ASWG-R001, and never above that target's -1 dBTP true peak, 29204
     Given the synthesis in app/src/Studio/Generator/AudioFile/Synthesis.lex.tex
-    When prism-code check has Lean's kernel prove Studio.Generator.AudioFile.Synthesis.key_69_steps_at_440_hertz, Studio.Generator.AudioFile.Synthesis.sine_starts_at_zero, Studio.Generator.AudioFile.Synthesis.sine_peaks_at_the_level and Studio.Generator.AudioFile.Synthesis.sine_troughs_at_the_negated_level
-    Then key 69 advances the phase by 440 Hz at 48 kHz, and the sine starts at 0, peaks at 3281 and falls to -3281
+    When prism-code check has Lean's kernel prove Studio.Generator.AudioFile.Synthesis.key_69_steps_at_440_hertz, Studio.Generator.AudioFile.Synthesis.sine_starts_at_zero, Studio.Generator.AudioFile.Synthesis.sine_peaks_at_the_level, Studio.Generator.AudioFile.Synthesis.sine_troughs_at_the_negated_level, Studio.Generator.AudioFile.Synthesis.key_69_reads_minus_24_lkfs, Studio.Generator.AudioFile.Synthesis.every_key_stays_under_the_true_peak and Studio.Generator.AudioFile.Synthesis.the_lowest_key_is_held_at_the_true_peak
+    Then key 69 advances the phase by 440 Hz at 48 kHz, and the sine starts at 0, peaks at 3163 (-24 LKFS through the K-weighting at 440 Hz) and falls to -3163, and no key's peak passes 29204 (-1 dBTP)
 
   @VS-19 @build
   Scenario: The BWF generator, Studio.Generator.AudioFile.Bwf, writes a Prism's features as a Broadcast Wave Format version 2 file, RIFF WAVE with bext, fmt (PCM, mono, 48 kHz, 16-bit) and data chunks in that order, carrying the synthesis of the MIDI generator's file
