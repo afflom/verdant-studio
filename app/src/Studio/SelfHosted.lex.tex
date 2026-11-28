@@ -1,0 +1,68 @@
+\begin{lexlean}{Studio.SelfHosted}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: ownProject,
+  parameters: [],
+  result: Bytes,
+  body: 0x76657264616e742d73747564696f
+}
+
+definition{
+  name: produced,
+  parameters: [piece : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x73656c662d686f737465643a20 piece : Bytes) (prim append 0x206f662056657264616e742053747564696f2069732070726f647563656420696e20697473206f776e2070726f6a6563742c20 (ownProject) : Bytes) : Bytes)
+}
+
+definition{
+  name: elsewhereRefusal,
+  parameters: [piece : Bytes, producer : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 piece : Bytes) (prim append 0x206f662056657264616e742053747564696f206973206d61646520696e2056657264616e742053747564696f2c20696e20697473206f776e2070726f6a65637420 (ownProject) : Bytes) : Bytes) (prim append 0x2c206e6f7420696e20 producer : Bytes) : Bytes)
+}
+
+definition{
+  name: partOf,
+  parameters: [item : Bytes, producer : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same producer (ownProject)) then (produced item) else (elsewhereRefusal item producer)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons item more2 => (match more2
+        | List.cons producer more3 => (match more3
+          | List.nil => (if (Studio.Runtime::same verb 0x70617274) then (partOf item producer) else 0x696e76616c69642072657175657374)
+          | List.cons extra others => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_part_made_in_its_own_project_is_self_hosted,
+  parameters: [],
+  statement: ((request 0x70617274096272616e640976657264616e742d73747564696f) = (produced 0x6272616e64)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_part_made_elsewhere,
+  parameters: [],
+  statement: ((request 0x70617274096272616e64096f746865722d746f6f6c) = (elsewhereRefusal 0x6272616e64 0x6f746865722d746f6f6c)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}

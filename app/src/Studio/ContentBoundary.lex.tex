@@ -1,0 +1,138 @@
+\begin{lexlean}{Studio.ContentBoundary}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: contentKind,
+  parameters: [kind : Bytes],
+  result: Bool,
+  body: ((Studio.Runtime::same kind 0x64656d6f) || ((Studio.Runtime::same kind 0x6578616d706c65) || ((Studio.Runtime::same kind 0x706970656c696e65) || (Studio.Runtime::same kind 0x70726f6a656374)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: knownKind,
+  parameters: [kind : Bytes],
+  result: Bool,
+  body: ((Studio.Runtime::same kind 0x66656174757265) || (contentKind kind)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: anyFeature,
+  parameters: [kinds : (List Bytes)],
+  result: Bool,
+  body: (match kinds
+    | List.nil => false
+    | List.cons kind rest => (if (Studio.Runtime::same kind 0x66656174757265) then true else (anyFeature rest))),
+  recursive_argument: kinds,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: anyContent,
+  parameters: [kinds : (List Bytes)],
+  result: Bool,
+  body: (match kinds
+    | List.nil => false
+    | List.cons kind rest => (if (contentKind kind) then true else (anyContent rest))),
+  recursive_argument: kinds,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: unknownKind,
+  parameters: [kinds : (List Bytes)],
+  result: (Option Bytes),
+  body: (match kinds
+    | List.nil => (ctor Option.none [Bytes])
+    | List.cons kind rest => (if (knownKind kind) then (unknownKind rest) else (ctor Option.some [Bytes] kind))),
+  recursive_argument: kinds,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: featureAnswer,
+  parameters: [item : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x666561747572653a20 item : Bytes) 0x2069732070617274206f662056657264616e742053747564696f2c207468652073797374656d206f6620696e746572657374 : Bytes)
+}
+
+definition{
+  name: contentAnswer,
+  parameters: [item : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x636f6e74656e743a20 item : Bytes) 0x206973206d616e616765642062792056657264616e742053747564696f2c20696e2069747320656e7669726f6e6d656e742c20616e64206973206e6f2066656174757265206f66206974 : Bytes)
+}
+
+definition{
+  name: conflationRefusal,
+  parameters: [item : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a20 item : Bytes) 0x206973206e616d656420626f746820612066656174757265206f662056657264616e742053747564696f20616e6420636f6e74656e74206974206d616e616765732c20616e642056657264616e742053747564696f20697320646966666572656e7469617465642066726f6d2069747320636f6e74656e74 : Bytes)
+}
+
+definition{
+  name: kindRefusal,
+  parameters: [item : Bytes, kind : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 kind : Bytes) (prim append 0x206973206e6569746865722066656174757265206e6f722064656d6f2c206578616d706c652c20706970656c696e65206f722070726f6a6563742c20736f20 item : Bytes) : Bytes) 0x206973206e6f7420706c61636564 : Bytes)
+}
+
+definition{
+  name: classify,
+  parameters: [item : Bytes, kinds : (List Bytes)],
+  result: Bytes,
+  body: (match (unknownKind kinds)
+    | Option.some kind => (kindRefusal item kind)
+    | Option.none => (if ((anyFeature kinds) && (anyContent kinds)) then (conflationRefusal item) else (if (anyFeature kinds) then (featureAnswer item) else (if (anyContent kinds) then (contentAnswer item) else 0x696e76616c69642072657175657374)))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons item kinds => (if (Studio.Runtime::same verb 0x706c616365) then (classify item kinds) else 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: places_a_feature_in_verdant_studio,
+  parameters: [],
+  statement: ((request 0x706c61636509707269736d2067656e65726174696f6e0966656174757265) = (featureAnswer 0x707269736d2067656e65726174696f6e)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: places_managed_content_outside_verdant_studio,
+  parameters: [],
+  statement: ((request 0x706c61636509737461727465722067616d650964656d6f) = (contentAnswer 0x737461727465722067616d65)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_an_item_named_both_feature_and_content,
+  parameters: [],
+  statement: ((request 0x706c61636509707269736d2067656e65726174696f6e096665617475726509706970656c696e65) = (conflationRefusal 0x707269736d2067656e65726174696f6e)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_an_unknown_kind,
+  parameters: [],
+  statement: ((request 0x706c61636509707269736d2067656e65726174696f6e09776964676574) = (kindRefusal 0x707269736d2067656e65726174696f6e 0x776964676574)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}

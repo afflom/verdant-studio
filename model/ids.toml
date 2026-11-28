@@ -585,3 +585,76 @@ id = "VS-68"
 level = "open"
 suite = "coordination"
 statement = "The Verdant Studio UI carries the messages between the maintainer and the agent that Studio.Coordination admits, so every interaction between them happens there; until the UI serves that channel, they coordinate in the project chat and the GitHub mirror"
+
+[[id]]
+id = "VS-69"
+level = "build"
+suite = "agent-identity"
+statement = "The workspace has its own identity, apart from the owner, so Studio.AgentIdentity accepts a lifecycle change authored by that identity through the repository API, for the owner to approve, here by the studio check under the owner's automated approvals (2026-11-26)"
+theorems = ["Studio.AgentIdentity.the_workspace_identity_runs_the_lifecycle"]
+
+[[id]]
+id = "VS-70"
+level = "build"
+suite = "agent-identity"
+statement = "Studio.AgentIdentity refuses a lifecycle change authored by the owner's own identity, naming the workspace identity it runs under"
+theorems = ["Studio.AgentIdentity.refuses_the_owners_identity_running_the_lifecycle"]
+failure = "refused: afflom is the owner, and the lifecycle runs under the workspace's own identity, afflom-verdant-studio[bot], for the owner to approve"
+negative = "VS-70"
+
+[[id]]
+id = "VS-71"
+level = "build"
+suite = "agent-identity"
+statement = "Studio.AgentIdentity refuses a lifecycle change authored by any identity other than the workspace's, naming both"
+theorems = ["Studio.AgentIdentity.refuses_any_other_identity"]
+failure = "refused: someone is not the workspace's identity, afflom-verdant-studio[bot], so its change does not run the lifecycle"
+negative = "VS-71"
+
+[[id]]
+id = "VS-72"
+level = "build"
+suite = "content-boundary"
+statement = "Studio.ContentBoundary places a feature in Verdant Studio, the system of interest in the sense of ISO/IEC/IEEE 42010:2022"
+theorems = ["Studio.ContentBoundary.places_a_feature_in_verdant_studio"]
+
+[[id]]
+id = "VS-73"
+level = "build"
+suite = "content-boundary"
+statement = "Studio.ContentBoundary places a demo, example, pipeline or project in Verdant Studio's environment, as content it manages and no feature of it (ISO/IEC/IEEE 42010:2022)"
+theorems = ["Studio.ContentBoundary.places_managed_content_outside_verdant_studio"]
+
+[[id]]
+id = "VS-74"
+level = "build"
+suite = "content-boundary"
+statement = "Verdant Studio is differentiated from its managed content, so Studio.ContentBoundary refuses an item named both a feature and content, naming it"
+theorems = ["Studio.ContentBoundary.refuses_an_item_named_both_feature_and_content"]
+failure = "refused: prism generation is named both a feature of Verdant Studio and content it manages, and Verdant Studio is differentiated from its content"
+negative = "VS-74"
+
+[[id]]
+id = "VS-75"
+level = "build"
+suite = "content-boundary"
+statement = "Studio.ContentBoundary refuses a kind that is neither feature nor demo, example, pipeline or project, naming the kind and the item"
+theorems = ["Studio.ContentBoundary.refuses_an_unknown_kind"]
+failure = "refused: widget is neither feature nor demo, example, pipeline or project, so prism generation is not placed"
+negative = "VS-75"
+
+[[id]]
+id = "VS-76"
+level = "build"
+suite = "self-hosted"
+statement = "Verdant Studio is implemented in Verdant Studio, so Studio.SelfHosted accepts a part of Verdant Studio's production made in its own project, verdant-studio"
+theorems = ["Studio.SelfHosted.a_part_made_in_its_own_project_is_self_hosted"]
+
+[[id]]
+id = "VS-77"
+level = "build"
+suite = "self-hosted"
+statement = "Every part of Verdant Studio's production is made in Verdant Studio, so Studio.SelfHosted refuses a part made anywhere else, naming the part and its producer"
+theorems = ["Studio.SelfHosted.refuses_a_part_made_elsewhere"]
+failure = "refused: brand of Verdant Studio is made in Verdant Studio, in its own project verdant-studio, not in other-tool"
+negative = "VS-77"

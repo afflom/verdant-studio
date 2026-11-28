@@ -1,0 +1,78 @@
+\begin{lexlean}{Studio.AgentIdentity}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: accepted,
+  parameters: [workspace : Bytes, owner : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x6c6966656379636c65206368616e676520627920 workspace : Bytes) (prim append 0x2c2074686520776f726b73706163652773206f776e206964656e746974792c207468726f75676820746865207265706f7369746f7279204150492c20666f7220 owner : Bytes) : Bytes) 0x20746f20617070726f7665 : Bytes)
+}
+
+definition{
+  name: ownerRefusal,
+  parameters: [owner : Bytes, workspace : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 owner : Bytes) (prim append 0x20697320746865206f776e65722c20616e6420746865206c6966656379636c652072756e7320756e6465722074686520776f726b73706163652773206f776e206964656e746974792c20 workspace : Bytes) : Bytes) 0x2c20666f7220746865206f776e657220746f20617070726f7665 : Bytes)
+}
+
+definition{
+  name: otherRefusal,
+  parameters: [author : Bytes, workspace : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 author : Bytes) (prim append 0x206973206e6f742074686520776f726b73706163652773206964656e746974792c20 workspace : Bytes) : Bytes) 0x2c20736f20697473206368616e676520646f6573206e6f742072756e20746865206c6966656379636c65 : Bytes)
+}
+
+definition{
+  name: change,
+  parameters: [author : Bytes, workspace : Bytes, owner : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same author owner) then (ownerRefusal owner workspace) else (if (Studio.Runtime::same author workspace) then (accepted workspace owner) else (otherRefusal author workspace))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons author more2 => (match more2
+        | List.cons workspace more3 => (match more3
+          | List.cons owner more4 => (match more4
+            | List.nil => (if (Studio.Runtime::same verb 0x6368616e6765) then (change author workspace owner) else 0x696e76616c69642072657175657374)
+            | List.cons extra others => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_workspace_identity_runs_the_lifecycle,
+  parameters: [],
+  statement: ((request 0x6368616e6765096166666c6f6d2d76657264616e742d73747564696f5b626f745d096166666c6f6d2d76657264616e742d73747564696f5b626f745d096166666c6f6d) = (accepted 0x6166666c6f6d2d76657264616e742d73747564696f5b626f745d 0x6166666c6f6d)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_the_owners_identity_running_the_lifecycle,
+  parameters: [],
+  statement: ((request 0x6368616e6765096166666c6f6d096166666c6f6d2d76657264616e742d73747564696f5b626f745d096166666c6f6d) = (ownerRefusal 0x6166666c6f6d 0x6166666c6f6d2d76657264616e742d73747564696f5b626f745d)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_any_other_identity,
+  parameters: [],
+  statement: ((request 0x6368616e676509736f6d656f6e65096166666c6f6d2d76657264616e742d73747564696f5b626f745d096166666c6f6d) = (otherRefusal 0x736f6d656f6e65 0x6166666c6f6d2d76657264616e742d73747564696f5b626f745d)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
