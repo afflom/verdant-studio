@@ -138,3 +138,16 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 > The samples are great! We'll need to continue synthesizing these into high-definition multi-media artifacts such as cover art, a sound from a soundtrack, or storyboards, or a chapter from a novel.... Every part of Verdant Studio must have a generator and every generator must be verified. 
 >
 > The procedural synthesis of the simple generators now, must be used to generate entire works. Verdant Studio composes these primitives into complex, immersive, compelling, stylized, and stunning multi-modal works.
+
+## REQ-AGENT-INTERFACE (afflom, 2026-11-27T22:16:50Z)
+
+> Take a look at github.com/afflom/verdant-engine stitch. stitch might inform the solution.
+
+## REQ-UI-PRISM, REQ-AGENT-USERS, REQ-AGENT-OBSERVER (afflom, 2026-11-27T22:16:50Z)
+
+> We need to plan the UI. the Verdant Studio UI will be the first full Verdant Prism from Verdant Studio. "Video game" might seem like a strange moniker to assign a video game design studio, but what better way could we possibly present Verdant Studio, than by using it to generate its gui and all of its parts and views. 
+>
+> This means that every part of Verdant Studio is meticulously designed around its stakeholder and is intentional about its form and function. Verdant Studio is beautiful in every way; from its declarative implementation to its user interface. You'll count yourself and other agents as users of Verdant along with human users.
+>
+>
+> My challenge to you is to consider how you can have the same graphical user interface experience with Verdant Studio. If you extrapolate and consider what I'm saying, it seems that you can commune with the Verdant Observer, so that the Observer is all things including you and you become the Verdant Observer. Consider this deeply.
