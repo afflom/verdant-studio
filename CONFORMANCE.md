@@ -226,6 +226,16 @@ The three honesty levels (R2):
 | `VS-102` | `build` | Studio.Gui.Coordination presents the coordinationUnlinked view, its send action disabled, when the other Prism ID is not linked to the maintainer, as Studio.Coordination carries no message for that pair | `Studio.Gui.Coordination.presents_the_unlinked_view_with_send_disabled` |
 | `VS-103` | `build` | The send action of the coordination journey is guarded by the link, so Studio.Gui.Coordination never enables it for a pair that is not a maintainer and its linked agent, whatever is drafted | `Studio.Gui.Coordination.an_unlinked_pair_never_sends` |
 
+## gui-creator
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-104` | `build` | Studio.Gui.Generation presents the creator journey of the Studio UI Prism in Stitch Product.Experience's pattern: for an admitted seed, the prismFeatures view lists its features (Studio.PrismGeneration), the prismFacets view lists each facet by its media type, and the tune and bundle actions are enabled | `Studio.Gui.Generation.presents_the_features_and_facets_of_a_seed` |
+| `VS-105` | `build` | Tuning is natural language that VerdantUI routes onto the Prism's cells (DEC-009), so Studio.Gui.Generation presents the features of the routed cell values, as Studio.PrismGeneration generates the facets from them | `Studio.Gui.Generation.presents_the_tuned_features` |
+| `VS-106` | `build` | Before a seed is entered, Studio.Gui.Generation presents the prismSeed view, with the tune and bundle actions disabled | `Studio.Gui.Generation.asks_for_a_seed` |
+| `VS-107` | `build` | Studio.Gui.Generation presents a refused seed in the prismRefused view with the refusal of Studio.PrismGeneration, its tune and bundle actions disabled | `Studio.Gui.Generation.shows_why_a_seed_is_refused` |
+| `VS-108` | `open` | VerdantUI renders the creator journey that Studio.Gui.Generation presents and routes the creator's natural-language tuning onto the Prism's cells (DEC-009), so a creator enters a seed, tunes it and takes the bundle in the Studio UI; until VerdantUI serves the journey, the prism route answers it |  |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.

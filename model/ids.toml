@@ -852,3 +852,37 @@ level = "build"
 suite = "gui-coordination"
 statement = "The send action of the coordination journey is guarded by the link, so Studio.Gui.Coordination never enables it for a pair that is not a maintainer and its linked agent, whatever is drafted"
 theorems = ["Studio.Gui.Coordination.an_unlinked_pair_never_sends"]
+
+[[id]]
+id = "VS-104"
+level = "build"
+suite = "gui-creator"
+statement = "Studio.Gui.Generation presents the creator journey of the Studio UI Prism in Stitch Product.Experience's pattern: for an admitted seed, the prismFeatures view lists its features (Studio.PrismGeneration), the prismFacets view lists each facet by its media type, and the tune and bundle actions are enabled"
+theorems = ["Studio.Gui.Generation.presents_the_features_and_facets_of_a_seed"]
+
+[[id]]
+id = "VS-105"
+level = "build"
+suite = "gui-creator"
+statement = "Tuning is natural language that VerdantUI routes onto the Prism's cells (DEC-009), so Studio.Gui.Generation presents the features of the routed cell values, as Studio.PrismGeneration generates the facets from them"
+theorems = ["Studio.Gui.Generation.presents_the_tuned_features"]
+
+[[id]]
+id = "VS-106"
+level = "build"
+suite = "gui-creator"
+statement = "Before a seed is entered, Studio.Gui.Generation presents the prismSeed view, with the tune and bundle actions disabled"
+theorems = ["Studio.Gui.Generation.asks_for_a_seed"]
+
+[[id]]
+id = "VS-107"
+level = "build"
+suite = "gui-creator"
+statement = "Studio.Gui.Generation presents a refused seed in the prismRefused view with the refusal of Studio.PrismGeneration, its tune and bundle actions disabled"
+theorems = ["Studio.Gui.Generation.shows_why_a_seed_is_refused"]
+
+[[id]]
+id = "VS-108"
+level = "open"
+suite = "gui-creator"
+statement = "VerdantUI renders the creator journey that Studio.Gui.Generation presents and routes the creator's natural-language tuning onto the Prism's cells (DEC-009), so a creator enters a seed, tunes it and takes the bundle in the Studio UI; until VerdantUI serves the journey, the prism route answers it"
