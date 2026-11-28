@@ -152,6 +152,15 @@ The three honesty levels (R2):
 | `VS-63` | `build` | A contributor's permission request is content-addressed, so Studio.Agent.Contributor refuses one whose content is not named by blake3: and 64 hex digits | `Studio.Agent.Contributor.refuses_a_permission_request_without_a_content_address`, refuses with `refused: latest is no content address, so the request names no content; name it as blake3: and 64 hex digits` |
 | `VS-64` | `open` | The implementing agent's changes reach Verdant Studio as the VE-70 permission requests its maintainer grants, superseding GitHub App pull requests and owner approval (REQ-AGENT-IDENTITY), with the GitHub App only pushing the mirror when a release is published; until VE-70 is callable from Studio (VS-42), the App pull requests carry them |  |
 
+## coordination
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-65` | `build` | Studio.Coordination carries every message between the maintainer and its linked agent on the Verdant Studio UI, in either direction, sealed to their Prism IDs by Verdant Engine's Prism ID boundary privacy, VE-43 | `Studio.Coordination.carries_a_message_on_the_studio_ui` |
+| `VS-66` | `build` | All coordination between the maintainer and the agent happens through the Verdant Studio UI, so Studio.Coordination refuses a message between them on any other channel, naming it | `Studio.Coordination.refuses_a_message_off_the_studio_ui`, refuses with `refused: the maintainer and the agent coordinate only through the Verdant Studio UI, so a message on github is not carried` |
+| `VS-67` | `build` | Studio.Coordination carries messages only between a maintainer and its linked agent, so it refuses any other pair, naming both | `Studio.Coordination.refuses_a_message_between_unlinked_prism_ids`, refuses with `refused: prism:bob and prism:alex are not a maintainer and its linked agent, so the coordination channel does not carry their message` |
+| `VS-68` | `open` | The Verdant Studio UI carries the messages between the maintainer and the agent that Studio.Coordination admits, so every interaction between them happens there; until the UI serves that channel, they coordinate in the project chat and the GitHub mirror |  |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
