@@ -132,3 +132,9 @@ as written. Each is the evidence of a requirement in `model/requirements.json`.
 ## REQ-STUDIO-GUI, REQ-AGENT-INTERFACE (afflom, 2026-11-27T21:33:11Z)
 
 > We are likely ready to start including the GUI/UX of Verdant Studio in the plan, since it will be my primary interface with you, verdant-studio, and github going forward when it is available. You will also need your own interface; mcp?
+
+## REQ-PRISM-WORKS, REQ-PRISM-GENERATION (afflom, 2026-11-28T00:26:35Z)
+
+> The samples are great! We'll need to continue synthesizing these into high-definition multi-media artifacts such as cover art, a sound from a soundtrack, or storyboards, or a chapter from a novel.... Every part of Verdant Studio must have a generator and every generator must be verified. 
+>
+> The procedural synthesis of the simple generators now, must be used to generate entire works. Verdant Studio composes these primitives into complex, immersive, compelling, stylized, and stunning multi-modal works.
