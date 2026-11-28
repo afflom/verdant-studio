@@ -1,0 +1,92 @@
+\begin{lexlean}{Studio.Coordination}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.Agent.Contributor}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: channel,
+  parameters: [],
+  result: Bytes,
+  body: 0x56657264616e742053747564696f205549
+}
+
+definition{
+  name: paired,
+  parameters: [sender : Bytes, recipient : Bytes, links : (List Bytes)],
+  result: Bool,
+  body: ((Studio.Agent.Contributor::linkedTo sender recipient links) || (Studio.Agent.Contributor::linkedTo recipient sender links)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: carried,
+  parameters: [sender : Bytes, recipient : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x63617272696564206f6e2074686520 (channel) : Bytes) (prim append 0x3a2066726f6d20 sender : Bytes) : Bytes) (prim append (prim append 0x20746f20 recipient : Bytes) 0x2c207365616c656420746f20746865697220507269736d204944732062792056452d3433 : Bytes) : Bytes)
+}
+
+definition{
+  name: channelRefusal,
+  parameters: [via : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20746865206d61696e7461696e657220616e6420746865206167656e7420636f6f7264696e617465206f6e6c79207468726f7567682074686520 (channel) : Bytes) (prim append 0x2c20736f2061206d657373616765206f6e20 via : Bytes) : Bytes) 0x206973206e6f742063617272696564 : Bytes)
+}
+
+definition{
+  name: pairRefusal,
+  parameters: [sender : Bytes, recipient : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a20 sender : Bytes) (prim append 0x20616e6420 recipient : Bytes) : Bytes) 0x20617265206e6f742061206d61696e7461696e657220616e6420697473206c696e6b6564206167656e742c20736f2074686520636f6f7264696e6174696f6e206368616e6e656c20646f6573206e6f74206361727279207468656972206d657373616765 : Bytes)
+}
+
+definition{
+  name: send,
+  parameters: [sender : Bytes, recipient : Bytes, via : Bytes, links : (List Bytes)],
+  result: Bytes,
+  body: (if (paired sender recipient links) then (if (Studio.Runtime::same via (channel)) then (carried sender recipient) else (channelRefusal via)) else (pairRefusal sender recipient)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb more => (match more
+      | List.cons sender more2 => (match more2
+        | List.cons recipient more3 => (match more3
+          | List.cons via links => (if (Studio.Runtime::same verb 0x73656e64) then (send sender recipient via links) else 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: carries_a_message_on_the_studio_ui,
+  parameters: [],
+  statement: ((request 0x73656e6409707269736d3a616c657809707269736d3a6167656e740956657264616e742053747564696f20554909707269736d3a6167656e743d707269736d3a616c6578) = (carried 0x707269736d3a616c6578 0x707269736d3a6167656e74)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_message_off_the_studio_ui,
+  parameters: [],
+  statement: ((request 0x73656e6409707269736d3a6167656e7409707269736d3a616c65780967697468756209707269736d3a6167656e743d707269736d3a616c6578) = (channelRefusal 0x676974687562)),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: refuses_a_message_between_unlinked_prism_ids,
+  parameters: [],
+  statement: ((request 0x73656e6409707269736d3a626f6209707269736d3a616c65780956657264616e742053747564696f20554909707269736d3a6167656e743d707269736d3a616c6578) = (pairRefusal 0x707269736d3a626f62 0x707269736d3a616c6578)),
+  proof: decide{},
+  axioms: []
+}
+\end{semanticmodule}
+\end{lexlean}
