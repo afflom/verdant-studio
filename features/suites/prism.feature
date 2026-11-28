@@ -83,13 +83,13 @@ Feature: prism
 
   @VS-85 @build
   Scenario: A Prism's closure closes a domain over every domain it shares a standard or a role with, to a fixed point, and spreads a cell to the same phase of each domain in that closure
-    Given the closure model in app/src/Studio/Prism/Closure.lex.tex, generated from catalog/standards-index.csv, model/mappings and model/matrix
-    When prism-code check has Lean's kernel prove Studio.Prism.Closure.closes_domains_that_share_a_standard, Studio.Prism.Closure.closes_domains_through_shared_roles, Studio.Prism.Closure.a_domain_that_shares_nothing_is_its_own_closure, Studio.Prism.Closure.the_closure_is_a_fixed_point and Studio.Prism.Closure.spreads_a_cell_to_the_same_phase_of_its_closure
-    Then domain A closes to A and B, which share FULLERTON-GDW-5E-2024, and domain J closes to J, M, S, T, U, W and X through shared roles
-    And domain C, which shares nothing, is its own closure, and J/OPS spreads to the OPS cell of each domain in J's closure
+    Given the closure model in app/src/Studio/Prism/Closure.lex.tex, over the register that verdant_studio publish writes to app/src/Studio/Prism/Closure/Register.lex.tex from catalog/standards-index.csv, model/mappings and model/matrix
+    When prism-code check has Lean's kernel prove Studio.Prism.Closure.closes_domains_that_share_a_standard, Studio.Prism.Closure.closes_domains_through_shared_roles, Studio.Prism.Closure.a_domain_that_shares_nothing_is_its_own_closure, Studio.Prism.Closure.the_closure_is_a_fixed_point, Studio.Prism.Closure.spreads_a_cell_to_the_same_phase_of_its_closure and Studio.Prism.Closure.spreads_only_to_cells_the_register_holds
+    Then over the pairs A-B, J-M and M-U, domain A closes to A and B, and domain J closes to J, M and U through M
+    And domain C, which shares nothing, is its own closure, and J/OPS spreads only to the OPS cells the register holds
 
   @VS-86 @build
   Scenario: The Prism generation answers cells with the Prism's cells, one domain/phase per line of the standards index, each followed by a tab and its value, empty until a bound source places the seed's features on cells
     Given the Prism generation in app/src/Studio/PrismGeneration.lex.tex
     When prism-code check has Lean's kernel prove Studio.PrismGeneration.lists_the_cells
-    Then prism-code build replays the request prism TAB cells TAB verdant, answered with the 148 cells of the standards index
+    Then the cells it answers are the closure register's, which verdant_studio publish writes from the standards index, so they never drift from it

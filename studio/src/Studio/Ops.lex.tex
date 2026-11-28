@@ -3326,6 +3326,137 @@ definition{
 }
 
 definition{
+  name: lowerHex,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (let code : Nat := (match (prim index value offset : (Option UInt8))
+      | Option.none => 0
+      | Option.some byte => (Studio.Doc::byteValue byte)); (lowerHex value (offset + 1) rest (prim append (prim append out (LexLeanStd.Text::sliceOr (Studio.Doc::lit "0123456789abcdef") (prim quotient code 16 0 : Nat) 1) : Bytes) (LexLeanStd.Text::sliceOr (Studio.Doc::lit "0123456789abcdef") (prim remainder code 16 0 : Nat) 1) : Bytes)))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: columnAt,
+  parameters: [values : (List Bytes), index : Nat],
+  result: Bytes,
+  body: (match values
+    | List.nil => 0x
+    | List.cons head rest => (if (index =? 0) then head else (columnAt rest (prim subtract index 1 : Nat)))),
+  recursive_argument: values,
+  executable: true
+}
+
+definition{
+  name: facetPhases,
+  parameters: [],
+  result: (List Bytes),
+  body: (LexLeanStd.Text::splitOn (Studio.Doc::lit "CON PRE PRO QA LCH OPS MNT EOL") (32 : UInt8)),
+  executable: true
+}
+
+definition{
+  name: facetLetters,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::lit "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+  executable: true
+}
+
+definition{
+  name: hasFacet,
+  parameters: [records : (List (List Bytes)), letter : Bytes, phase : Bytes],
+  result: Bool,
+  body: (match records
+    | List.nil => false
+    | List.cons head rest => (if (Studio.Doc::both (LexLeanStd.Text::startsWith (columnAt head 0) letter) (Studio.Doc::memberBytes phase (LexLeanStd.Text::splitOn (columnAt head 4) (32 : UInt8)))) then true else (hasFacet rest letter phase))),
+  recursive_argument: records,
+  executable: true
+}
+
+definition{
+  name: facetLines,
+  parameters: [records : (List (List Bytes)), letter : Bytes, phases : (List Bytes)],
+  result: (List Bytes),
+  body: (match phases
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (hasFacet records letter head) then (cons (Studio.Doc::cat (cons letter (cons (Studio.Doc::lit "/") (cons head (cons (Studio.Doc::lit "\t\n") (nil Bytes)))))) (facetLines records letter rest)) else (facetLines records letter rest))),
+  recursive_argument: phases,
+  executable: true
+}
+
+definition{
+  name: facetCells,
+  parameters: [records : (List (List Bytes)), offset : Nat, remaining : Nat],
+  result: (List Bytes),
+  body: (match remaining
+    | Nat.zero => (nil Bytes)
+    | Nat.succ rest => (Studio.Check::concat (facetLines records (LexLeanStd.Text::sliceOr (facetLetters) offset 1) (facetPhases)) (facetCells records (offset + 1) rest))),
+  recursive_argument: remaining,
+  executable: true
+}
+
+definition{
+  name: sharedKeys,
+  parameters: [rows : (List Bytes), entries : (List Studio.Schema::Value)],
+  result: (List (Bytes * Bytes)),
+  body: (match entries
+    | List.nil => (nil (Bytes * Bytes))
+    | List.cons head rest => (if (filled head (Studio.Doc::lit "subject")) then (if (Studio.Doc::memberBytes (Studio.Schema::str head (Studio.Doc::lit "subject")) rows) then (cons ((prim append (Studio.Doc::lit "a:") (Studio.Schema::str head (Studio.Doc::lit "object")) : Bytes), (LexLeanStd.Text::sliceOr (Studio.Schema::str head (Studio.Doc::lit "subject")) 0 1)) (sharedKeys rows rest)) else (sharedKeys rows rest)) else (let term : Bytes := (match (Studio.Schema::field head (Studio.Doc::lit "role"))
+      | Option.none => 0x
+      | Option.some role => (Studio.Schema::str role (Studio.Doc::lit "term"))); (if (Studio.Doc::both (Studio.Doc::memberBytes (Studio.Schema::str head (Studio.Doc::lit "row")) rows) (negate ((prim length term : Nat) =? 0))) then (cons ((prim append (Studio.Doc::lit "r:") term : Bytes), (LexLeanStd.Text::sliceOr (Studio.Schema::str head (Studio.Doc::lit "row")) 0 1)) (sharedKeys rows rest)) else (sharedKeys rows rest))))),
+  recursive_argument: entries,
+  executable: true
+}
+
+definition{
+  name: firstOctet,
+  parameters: [value : Bytes],
+  result: Nat,
+  body: (match (prim index value 0 : (Option UInt8))
+    | Option.none => 256
+    | Option.some byte => (Studio.Doc::byteValue byte)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: pairsWith,
+  parameters: [key : Bytes, letter : Bytes, keyed : (List (Bytes * Bytes))],
+  result: (List Bytes),
+  body: (match keyed
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (if (Studio.Doc::both (Studio.Doc::same (first head) key) ((firstOctet letter) <? (firstOctet (second head)))) then (cons (prim append letter (second head) : Bytes) (pairsWith key letter rest)) else (pairsWith key letter rest))),
+  recursive_argument: keyed,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: sharedPairs,
+  parameters: [keyed : (List (Bytes * Bytes)), all : (List (Bytes * Bytes))],
+  result: (List Bytes),
+  body: (match keyed
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (Studio.Check::concat (pairsWith (first head) (second head) all) (sharedPairs rest all))),
+  recursive_argument: keyed,
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: closureRegister,
+  parameters: [seen : Seen],
+  result: Bytes,
+  body: (let records : (List (List Bytes)) := (restOf (Studio.Csv::parse (contents seen (indexPath)))); (let keyed : (List (Bytes * Bytes)) := (sharedKeys (rowIds records) (entriesOf seen (stagedPaths seen))); (let cells : Bytes := (Studio.Doc::cat (facetCells records 0 26)); (let pairs : Bytes := (Studio.Doc::cat (LexLeanStd.Order::sortedSet (sharedPairs keyed keyed))); (Studio.Doc::cat (cons (Studio.Doc::lit "\\begin{lexlean}{Studio.Prism.Closure.Register}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\title{Natural number addition}\n\\begin{semanticmodule}\ndefinition{\n  name: cells,\n  parameters: [],\n  result: Bytes,\n  body: 0x") (cons (lowerHex cells 0 (prim length cells : Nat) 0x) (cons (Studio.Doc::lit "\n}\n\ndefinition{\n  name: pairs,\n  parameters: [],\n  result: Bytes,\n  body: 0x") (cons (lowerHex pairs 0 (prim length pairs : Nat) 0x) (cons (Studio.Doc::lit "\n}\n\\end{semanticmodule}\n\\end{lexlean}\n") (nil Bytes))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: planPublish,
   parameters: [seen : Seen],
   result: Plan,
@@ -3333,7 +3464,7 @@ definition{
     | List.cons head rest => (ctor Plan.lists (cons head rest))
     | List.nil => (match (Studio.Check::concat (missing seen (cons (Studio.Doc::lit "model/requirements.json") (cons (Studio.Doc::lit "model/admissions.json") (cons (decisionsPath) (nil Bytes))))) (mappingNeeds seen))
     | List.cons head rest => (ctor Plan.reads (cons head rest))
-    | List.nil => (ctor Plan.done (appendPairs (decisionFiles seen) (cons ((workflowPath), (workflow)) (cons ((Studio.Doc::lit ".github/workflows/operate.yml"), (operateWorkflow)) (cons ((Studio.Doc::lit ".github/workflows/refresh.yml"), (refreshWorkflow)) (cons ((Studio.Doc::lit ".github/scripts/export.sh"), (exportScript)) (cons ((Studio.Doc::lit ".github/scripts/readmit.sh"), (readmitScript)) (cons ((Studio.Doc::lit ".github/scripts/merge-entries.py"), (mergeScript)) (cons ((Studio.Doc::lit ".github/scripts/prism-acceptance.py"), (acceptanceScript)) (cons ((Studio.Doc::lit ".github/scripts/prepare-change.py"), (prepareScript)) (cons ((Studio.Doc::lit ".github/CODEOWNERS"), (codeOwners)) (cons ((Studio.Doc::lit ".github/lexlean.pin"), (lexleanPin)) (cons ((Studio.Doc::lit "docs/catalog.md"), (catalogView seen)) (cons ((Studio.Doc::lit "docs/matrix.md"), (matrixView seen)) (cons ((Studio.Doc::lit "docs/model.md"), (modelView seen)) (cons ((Studio.Doc::lit ".github/secret_scanning.yml"), (secretScanning)) (nil (Bytes * Bytes))))))))))))))))) (Studio.Doc::lit "published the workflows, the export, readmit, entry-merge, change-preparing and Prism acceptance scripts, CODEOWNERS, the lexlean pin, secret scanning, docs/model.md, docs/catalog.md, docs/matrix.md and docs/owner-decisions.md\n")))),
+    | List.nil => (ctor Plan.done (appendPairs (decisionFiles seen) (cons ((workflowPath), (workflow)) (cons ((Studio.Doc::lit ".github/workflows/operate.yml"), (operateWorkflow)) (cons ((Studio.Doc::lit ".github/workflows/refresh.yml"), (refreshWorkflow)) (cons ((Studio.Doc::lit ".github/scripts/export.sh"), (exportScript)) (cons ((Studio.Doc::lit ".github/scripts/readmit.sh"), (readmitScript)) (cons ((Studio.Doc::lit ".github/scripts/merge-entries.py"), (mergeScript)) (cons ((Studio.Doc::lit ".github/scripts/prism-acceptance.py"), (acceptanceScript)) (cons ((Studio.Doc::lit ".github/scripts/prepare-change.py"), (prepareScript)) (cons ((Studio.Doc::lit ".github/CODEOWNERS"), (codeOwners)) (cons ((Studio.Doc::lit ".github/lexlean.pin"), (lexleanPin)) (cons ((Studio.Doc::lit "docs/catalog.md"), (catalogView seen)) (cons ((Studio.Doc::lit "docs/matrix.md"), (matrixView seen)) (cons ((Studio.Doc::lit "app/src/Studio/Prism/Closure/Register.lex.tex"), (closureRegister seen)) (cons ((Studio.Doc::lit "docs/model.md"), (modelView seen)) (cons ((Studio.Doc::lit ".github/secret_scanning.yml"), (secretScanning)) (nil (Bytes * Bytes)))))))))))))))))) (Studio.Doc::lit "published the workflows, the export, readmit, entry-merge, change-preparing and Prism acceptance scripts, CODEOWNERS, the lexlean pin, secret scanning, docs/model.md, docs/catalog.md, docs/matrix.md, docs/owner-decisions.md and the Prism closure register\n")))),
   axioms: [Quot.sound, propext],
   executable: true
 }
