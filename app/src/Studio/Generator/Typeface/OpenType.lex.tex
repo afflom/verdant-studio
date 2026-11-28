@@ -1,0 +1,542 @@
+\begin{lexlean}{Studio.Generator.Typeface.OpenType}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.RasterImage.Png}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: item,
+  parameters: [l : (List Nat), i : Nat],
+  result: Nat,
+  body: (match l
+    | List.nil => 0
+    | List.cons h t => (if (i =? 0) then h else (item t (prim subtract i 1 : Nat)))),
+  recursive_argument: l
+}
+
+definition{
+  name: count,
+  parameters: [l : (List Nat)],
+  result: Nat,
+  body: (match l
+    | List.nil => 0
+    | List.cons h t => (1 + (count t))),
+  recursive_argument: l
+}
+
+definition{
+  name: dropped,
+  parameters: [l : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => l
+    | Nat.succ k => (match l
+    | List.nil => (nil Nat)
+    | List.cons h t => (dropped t k))),
+  recursive_argument: n
+}
+
+definition{
+  name: pushed,
+  parameters: [o : (List Nat), v : Nat],
+  result: (List Nat),
+  body: (cons (prim remainder v 256 0 : Nat) o)
+}
+
+definition{
+  name: pushed2,
+  parameters: [o : (List Nat), v : Nat],
+  result: (List Nat),
+  body: (pushed (pushed o (prim quotient v 256 0 : Nat)) v)
+}
+
+definition{
+  name: pushed4,
+  parameters: [o : (List Nat), v : Nat],
+  result: (List Nat),
+  body: (pushed2 (pushed2 o (prim quotient v 65536 0 : Nat)) v)
+}
+
+definition{
+  name: pushedAll,
+  parameters: [o : (List Nat), l : (List Nat)],
+  result: (List Nat),
+  body: (match l
+    | List.nil => o
+    | List.cons h t => (pushedAll (cons h o) t)),
+  recursive_argument: l
+}
+
+definition{
+  name: key,
+  parameters: [z : Nat],
+  result: Nat,
+  body: (if ((prim remainder z 2 0 : Nat) =? 1) then (prim subtract 2147483648 (prim quotient z 2 0 : Nat) : Nat) else (2147483648 + (prim quotient z 2 0 : Nat)))
+}
+
+definition{
+  name: pushedSigned2,
+  parameters: [o : (List Nat), k : Nat],
+  result: (List Nat),
+  body: (if (k <? 2147483648) then (pushed2 o (prim subtract 65536 (prim subtract 2147483648 k : Nat) : Nat)) else (pushed2 o (prim subtract k 2147483648 : Nat)))
+}
+
+definition{
+  name: lesser,
+  parameters: [a : Nat, b : Nat],
+  result: Nat,
+  body: (if (a <? b) then a else b)
+}
+
+definition{
+  name: greater,
+  parameters: [a : Nat, b : Nat],
+  result: Nat,
+  body: (if (a <? b) then b else a)
+}
+
+definition{
+  name: number,
+  parameters: [o : (List Nat), k : Nat],
+  result: (List Nat),
+  body: (if (k <? 2147483648) then (let v : Nat := (prim subtract 2147483648 k : Nat); (if (v <=? 107) then (pushed o (prim subtract 139 v : Nat)) else (if (v <=? 1131) then (pushed (pushed o ((prim quotient (prim subtract v 108 : Nat) 256 0 : Nat) + 251)) (prim subtract v 108 : Nat)) else (pushed2 (pushed o 28) (prim subtract 65536 v : Nat))))) else (let v : Nat := (prim subtract k 2147483648 : Nat); (if (v <=? 107) then (pushed o (v + 139)) else (if (v <=? 1131) then (pushed (pushed o ((prim quotient (prim subtract v 108 : Nat) 256 0 : Nat) + 247)) (prim subtract v 108 : Nat)) else (pushed2 (pushed o 28) v)))))
+}
+
+structure{
+  name: Pen,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: out, type: (List Nat)}, {name: rest, type: (List Nat)}, {name: x, type: Nat}, {name: y, type: Nat}, {name: left, type: Nat}, {name: bottom, type: Nat}, {name: right, type: Nat}, {name: top, type: Nat}]
+}
+
+definition{
+  name: sides,
+  parameters: [p : Pen, n : Nat, horizontal : Bool, operator : Bool, c : Nat],
+  result: Pen,
+  body: (match n
+    | Nat.zero => (if (c =? 0) then p else (record Pen {out := (pushed (project p out) (if operator then 6 else 7)), rest := (project p rest), x := (project p x), y := (project p y), left := (project p left), bottom := (project p bottom), right := (project p right), top := (project p top)}))
+    | Nat.succ k => (let x : Nat := (key (item (project p rest) 0)); (let y : Nat := (key (item (project p rest) 1)); (let o : (List Nat) := (number (project p out) (if horizontal then (prim subtract (x + 2147483648) (project p x) : Nat) else (prim subtract (y + 2147483648) (project p y) : Nat))); (let full : Bool := (c =? 47); (sides (record Pen {out := (if full then (pushed o (if operator then 6 else 7)) else o), rest := (dropped (project p rest) 2), x := x, y := y, left := (lesser (project p left) x), bottom := (lesser (project p bottom) y), right := (greater (project p right) x), top := (greater (project p top) y)}) k (not horizontal) operator (if full then 0 else (c + 1)))))))),
+  recursive_argument: n
+}
+
+definition{
+  name: contour,
+  parameters: [p : Pen],
+  result: Pen,
+  body: (let s : (List Nat) := (project p rest); (let k : Nat := (item s 0); (let x : Nat := (key (item s 1)); (let y : Nat := (key (item s 2)); (let o : (List Nat) := (pushed (number (number (project p out) (prim subtract (x + 2147483648) (project p x) : Nat)) (prim subtract (y + 2147483648) (project p y) : Nat)) 21); (let h : Bool := ((item s 4) =? (item s 2)); (sides (record Pen {out := o, rest := (dropped s 3), x := x, y := y, left := (lesser (project p left) x), bottom := (lesser (project p bottom) y), right := (greater (project p right) x), top := (greater (project p top) y)}) (prim subtract k 1 : Nat) h h 0)))))))
+}
+
+definition{
+  name: contours,
+  parameters: [p : Pen, n : Nat],
+  result: Pen,
+  body: (match n
+    | Nat.zero => p
+    | Nat.succ k => (contours (contour p) k)),
+  recursive_argument: n
+}
+
+structure{
+  name: Pass,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: data, type: (List Nat)}, {name: lengths, type: (List Nat)}, {name: summary, type: (List Nat)}, {name: rest, type: (List Nat)}]
+}
+
+definition{
+  name: glyphs,
+  parameters: [q : Pass, n : Nat],
+  result: Pass,
+  body: (match n
+    | Nat.zero => q
+    | Nat.succ k => (let s : (List Nat) := (project q rest); (let nc : Nat := (item s 3); (let e : Pen := (contours (record Pen {out := (number (nil Nat) (2147483648 + (item s 2))), rest := (dropped s 4), x := 2147483648, y := 2147483648, left := (prim multiply 2 2147483648 : Nat), bottom := (prim multiply 2 2147483648 : Nat), right := 0, top := 0}) nc); (let cs : (List Nat) := (pushed (project e out) 14); (let any : Bool := (0 <? nc); (let sm : (List Nat) := (cons (item s 0) (cons (item s 1) (cons (item s 2) (cons (if any then (project e left) else 2147483648) (cons (if any then (project e bottom) else 2147483648) (cons (if any then (project e right) else 2147483648) (cons (if any then (project e top) else 2147483648) (cons (if any then 1 else 0) (nil Nat))))))))); (glyphs (record Pass {data := (pushedAll (project q data) (pushedAll (nil Nat) cs)), lengths := (cons (count cs) (project q lengths)), summary := (pushedAll (project q summary) sm), rest := (project e rest)}) k)))))))),
+  recursive_argument: n
+}
+
+definition{
+  name: extent,
+  parameters: [l : (List Nat), n : Nat, g : Nat, f : Nat, smallest : Bool, acc : Nat],
+  result: Nat,
+  body: (match n
+    | Nat.zero => acc
+    | Nat.succ k => (extent l k (g + 1) f smallest (if ((item l ((prim multiply 8 g : Nat) + 7)) =? 0) then acc else (if smallest then (lesser acc (item l ((prim multiply 8 g : Nat) + f))) else (greater acc (item l ((prim multiply 8 g : Nat) + f))))))),
+  recursive_argument: n
+}
+
+definition{
+  name: sideBearings,
+  parameters: [l : (List Nat), n : Nat, g : Nat, acc : (List Nat)],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => acc
+    | Nat.succ k => (sideBearings l k (g + 1) (pushedSigned2 (pushed2 acc (item l ((prim multiply 8 g : Nat) + 2))) (if ((item l ((prim multiply 8 g : Nat) + 7)) =? 0) then 2147483648 else (item l ((prim multiply 8 g : Nat) + 3)))))),
+  recursive_argument: n
+}
+
+definition{
+  name: rightBearing,
+  parameters: [l : (List Nat), n : Nat, g : Nat, acc : Nat],
+  result: Nat,
+  body: (match n
+    | Nat.zero => acc
+    | Nat.succ k => (rightBearing l k (g + 1) (if ((item l ((prim multiply 8 g : Nat) + 7)) =? 0) then acc else (lesser acc (prim subtract ((2147483648 + (item l ((prim multiply 8 g : Nat) + 2))) + 2147483648) (item l ((prim multiply 8 g : Nat) + 5)) : Nat))))),
+  recursive_argument: n
+}
+
+structure{
+  name: Pair,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: most, type: Nat}, {name: mean, type: Nat}]
+}
+
+definition{
+  name: advances,
+  parameters: [l : (List Nat), n : Nat, g : Nat, most : Nat, sum : Nat, used : Nat],
+  result: Pair,
+  body: (match n
+    | Nat.zero => (record Pair {most := most, mean := (if (used =? 0) then 0 else (prim quotient sum used 0 : Nat))})
+    | Nat.succ k => (let a : Nat := (item l ((prim multiply 8 g : Nat) + 2)); (advances l k (g + 1) (greater most a) (sum + a) (if (a =? 0) then used else (used + 1))))),
+  recursive_argument: n
+}
+
+definition{
+  name: offsetSize,
+  parameters: [v : Nat],
+  result: Nat,
+  body: (if (v <? 256) then 1 else (if (v <? 65536) then 2 else (if (v <? 16777216) then 3 else 4)))
+}
+
+definition{
+  name: pushedOffset,
+  parameters: [o : (List Nat), v : Nat, offSize : Nat],
+  result: (List Nat),
+  body: (if (offSize =? 1) then (pushed o v) else (if (offSize =? 2) then (pushed2 o v) else (if (offSize =? 3) then (pushed2 (pushed o (prim quotient v 65536 0 : Nat)) v) else (pushed4 o v))))
+}
+
+definition{
+  name: offsets,
+  parameters: [o : (List Nat), lengths : (List Nat), origin : Nat, offSize : Nat],
+  result: (List Nat),
+  body: (match lengths
+    | List.nil => o
+    | List.cons h t => (offsets (pushedOffset o (origin + h) offSize) t (origin + h) offSize)),
+  recursive_argument: lengths
+}
+
+definition{
+  name: total,
+  parameters: [l : (List Nat)],
+  result: Nat,
+  body: (match l
+    | List.nil => 0
+    | List.cons h t => (h + (total t))),
+  recursive_argument: l
+}
+
+definition{
+  name: index,
+  parameters: [o : (List Nat), lengths : (List Nat), data : (List Nat)],
+  result: (List Nat),
+  body: (let n : Nat := (count lengths); (let offSize : Nat := (offsetSize ((total lengths) + 1)); (if (n =? 0) then (pushed2 o 0) else (pushedAll (offsets (pushedOffset (pushed (pushed2 o n) offSize) 1 offSize) lengths 1 offSize) data))))
+}
+
+definition{
+  name: indexLength,
+  parameters: [n : Nat, bytes : Nat],
+  result: Nat,
+  body: (if (n =? 0) then 2 else ((3 + (prim multiply (offsetSize (bytes + 1)) (n + 1) : Nat)) + bytes))
+}
+
+definition{
+  name: fixed,
+  parameters: [o : (List Nat), v : Nat],
+  result: (List Nat),
+  body: (pushed4 (pushed o 29) v)
+}
+
+definition{
+  name: charset,
+  parameters: [o : (List Nat), l : (List Nat), n : Nat, g : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => o
+    | Nat.succ k => (charset (pushed2 o (item l ((prim multiply 8 g : Nat) + 0))) l k (g + 1))),
+  recursive_argument: n
+}
+
+structure{
+  name: Box,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: left, type: Nat}, {name: bottom, type: Nat}, {name: right, type: Nat}, {name: top, type: Nat}]
+}
+
+definition{
+  name: box,
+  parameters: [l : (List Nat), n : Nat],
+  result: Box,
+  body: (let left : Nat := (extent l n 0 3 true (prim multiply 2 2147483648 : Nat)); (let any : Bool := (left <? (prim multiply 2 2147483648 : Nat)); (record Box {left := (if any then left else 2147483648), bottom := (if any then (extent l n 0 4 true (prim multiply 2 2147483648 : Nat)) else 2147483648), right := (if any then (extent l n 0 5 false 0) else 2147483648), top := (if any then (extent l n 0 6 false 0) else 2147483648)})))
+}
+
+definition{
+  name: topDict,
+  parameters: [b : Box, charsetAt : Nat, charStringsAt : Nat, privateAt : Nat],
+  result: (List Nat),
+  body: (pushed (fixed (fixed (pushed (fixed (pushed (fixed (pushed (number (number (number (number (nil Nat) (project b left)) (project b bottom)) (project b right)) (project b top)) 5) charsetAt) 15) charStringsAt) 17) 0) privateAt) 18)
+}
+
+definition{
+  name: cff,
+  parameters: [fontName : (List Nat), q : Pass, n : Nat, l : (List Nat)],
+  result: (List Nat),
+  body: (let b : Box := (box l n); (let top : Nat := (count (topDict b 0 0 0)); (let charsetAt : Nat := ((8 + (indexLength 1 (count fontName))) + (indexLength 1 top)); (let charStringsAt : Nat := (charsetAt + (prim subtract (prim multiply 2 n : Nat) 1 : Nat)); (let lengths : (List Nat) := (pushedAll (nil Nat) (project q lengths)); (let privateAt : Nat := (charStringsAt + (indexLength n (total lengths))); (let t : (List Nat) := (pushedAll (nil Nat) (topDict b charsetAt charStringsAt privateAt)); (index (charset (pushed (pushed2 (pushed2 (index (index (pushed4 (nil Nat) 16778244) (cons (count fontName) (nil Nat)) fontName) (cons (count t) (nil Nat)) t) 0) 0) 0) l (prim subtract n 1 : Nat) 1) lengths (pushedAll (nil Nat) (project q data))))))))))
+}
+
+structure{
+  name: FontValues,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: upem, type: Nat}, {name: revision, type: Nat}, {name: created, type: Nat}, {name: modified, type: Nat}, {name: headFlags, type: Nat}, {name: macStyle, type: Nat}, {name: lowestPpem, type: Nat}, {name: ascender, type: Nat}, {name: descender, type: Nat}, {name: lineGap, type: Nat}, {name: italicAngle, type: Nat}, {name: underlinePosition, type: Nat}, {name: underlineThickness, type: Nat}, {name: fixedPitch, type: Nat}, {name: weight, type: Nat}, {name: widthClass, type: Nat}, {name: fsType, type: Nat}, {name: subscriptXSize, type: Nat}, {name: subscriptYSize, type: Nat}, {name: subscriptXOffset, type: Nat}, {name: subscriptYOffset, type: Nat}, {name: superscriptXSize, type: Nat}, {name: superscriptYSize, type: Nat}, {name: superscriptXOffset, type: Nat}, {name: superscriptYOffset, type: Nat}, {name: strikeoutSize, type: Nat}, {name: strikeoutPosition, type: Nat}, {name: familyClass, type: Nat}, {name: panose, type: (List Nat)}, {name: unicodeRanges, type: (List Nat)}, {name: vendor, type: Nat}, {name: selection, type: Nat}, {name: winAscent, type: Nat}, {name: winDescent, type: Nat}, {name: codePages, type: (List Nat)}, {name: xHeight, type: Nat}, {name: capHeight, type: Nat}, {name: defaultChar, type: Nat}, {name: breakChar, type: Nat}, {name: maxContext, type: Nat}]
+}
+
+definition{
+  name: pushedLong,
+  parameters: [o : (List Nat), v : Nat],
+  result: (List Nat),
+  body: (pushed4 (pushed4 o (prim quotient v 4294967296 0 : Nat)) v)
+}
+
+definition{
+  name: pushedWords,
+  parameters: [o : (List Nat), l : (List Nat)],
+  result: (List Nat),
+  body: (match l
+    | List.nil => o
+    | List.cons h t => (pushedWords (pushed4 o h) t)),
+  recursive_argument: l
+}
+
+definition{
+  name: head,
+  parameters: [v : FontValues, b : Box, adjustment : Nat],
+  result: (List Nat),
+  body: (pushedAll (nil Nat) (pushed2 (pushed2 (pushedSigned2 (pushed2 (pushed2 (pushedSigned2 (pushedSigned2 (pushedSigned2 (pushedSigned2 (pushedLong (pushedLong (pushed2 (pushed2 (pushed4 (pushed4 (pushed4 (pushed4 (nil Nat) 65536) (project v revision)) adjustment) 1594834165) (project v headFlags)) (project v upem)) (project v created)) (project v modified)) (project b left)) (project b bottom)) (project b right)) (project b top)) (project v macStyle)) (project v lowestPpem)) (2147483648 + 2)) 0) 0))
+}
+
+definition{
+  name: hhea,
+  parameters: [v : FontValues, l : (List Nat), n : Nat, most : Nat],
+  result: (List Nat),
+  body: (let left : Nat := (extent l n 0 3 true (prim multiply 2 2147483648 : Nat)); (let any : Bool := (left <? (prim multiply 2 2147483648 : Nat)); (pushedAll (nil Nat) (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushedSigned2 (pushedSigned2 (pushedSigned2 (pushed2 (pushedSigned2 (pushedSigned2 (pushedSigned2 (pushed4 (nil Nat) 65536) (key (project v ascender))) (key (project v descender))) (key (project v lineGap))) most) (if any then left else 2147483648)) (if any then (rightBearing l n 0 (prim multiply 2 2147483648 : Nat)) else 2147483648)) (if any then (extent l n 0 5 false 0) else 2147483648)) 1) 0) 0) 0) 0) 0) 0) 0) n))))
+}
+
+definition{
+  name: maxp,
+  parameters: [n : Nat],
+  result: (List Nat),
+  body: (pushedAll (nil Nat) (pushed2 (pushed4 (nil Nat) 20480) n))
+}
+
+definition{
+  name: hmtx,
+  parameters: [l : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (pushedAll (nil Nat) (sideBearings l n 0 (nil Nat)))
+}
+
+definition{
+  name: pushedFixed,
+  parameters: [o : (List Nat), z : Nat],
+  result: (List Nat),
+  body: (if (((prim remainder z 2 0 : Nat) =? 1) && (1 <? z)) then (pushed4 o (prim subtract 4294967296 (prim quotient z 2 0 : Nat) : Nat)) else (pushed4 o (prim quotient z 2 0 : Nat)))
+}
+
+definition{
+  name: post,
+  parameters: [v : FontValues],
+  result: (List Nat),
+  body: (pushedAll (nil Nat) (pushed4 (pushed4 (pushed4 (pushed4 (pushed4 (pushed2 (pushedSigned2 (pushedFixed (pushed4 (nil Nat) 196608) (project v italicAngle)) (key (project v underlinePosition))) (project v underlineThickness)) (project v fixedPitch)) 0) 0) 0) 0))
+}
+
+definition{
+  name: segments,
+  parameters: [l : (List Nat), n : Nat, g : Nat, acc : (List Nat), start : Nat, stop : Nat, firstGlyph : Nat, open : Bool],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => (pushedAll (nil Nat) (cons 1 (cons 65535 (cons 65535 (if open then (cons firstGlyph (cons stop (cons start acc))) else acc)))))
+    | Nat.succ k => (let c : Nat := (item l ((prim multiply 8 g : Nat) + 1)); (let continues : Bool := (open && ((c =? (stop + 1)) && (g =? (firstGlyph + (prim subtract c start : Nat))))); (if continues then (segments l k (g + 1) acc start c firstGlyph true) else (segments l k (g + 1) (if open then (cons firstGlyph (cons stop (cons start acc))) else acc) c c g true))))),
+  recursive_argument: n
+}
+
+definition{
+  name: column,
+  parameters: [o : (List Nat), s : (List Nat), n : Nat, f : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => o
+    | Nat.succ k => (let a : Nat := (item s 0); (let b : Nat := (item s 1); (let g : Nat := (item s 2); (column (pushed2 o (if (f =? 0) then b else (if (f =? 1) then a else (if (f =? 2) then (if (a =? 65535) then g else (prim remainder (prim subtract (g + 65536) a : Nat) 65536 0 : Nat)) else 0)))) (dropped s 3) k f))))),
+  recursive_argument: n
+}
+
+definition{
+  name: power,
+  parameters: [n : Nat, p : Nat, fuel : Nat],
+  result: Nat,
+  body: (match fuel
+    | Nat.zero => p
+    | Nat.succ k => (if ((prim multiply 2 p : Nat) <=? n) then (power n (prim multiply 2 p : Nat) k) else p)),
+  recursive_argument: fuel
+}
+
+definition{
+  name: log,
+  parameters: [p : Nat, fuel : Nat],
+  result: Nat,
+  body: (match fuel
+    | Nat.zero => 0
+    | Nat.succ k => (if (p <=? 1) then 0 else (1 + (log (prim quotient p 2 0 : Nat) k)))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: cmap,
+  parameters: [l : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (let s : (List Nat) := (segments l (prim subtract n 1 : Nat) 1 (nil Nat) 0 0 0 false); (let m : Nat := (prim quotient (count s) 3 0 : Nat); (let e : Nat := (power m 1 16); (let o : (List Nat) := (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed4 (pushed2 (pushed2 (pushed2 (pushed2 (nil Nat) 0) 1) 3) 1) 12) 4) (16 + (prim multiply 8 m : Nat))) 0) (prim multiply 2 m : Nat)) (prim multiply 2 e : Nat)) (log e 16)) (prim subtract (prim multiply 2 m : Nat) (prim multiply 2 e : Nat) : Nat)); (pushedAll (nil Nat) (column (column (column (pushed2 (column o s m 0) 0) s m 1) s m 2) s m 3))))))
+}
+
+definition{
+  name: nameRecords,
+  parameters: [o : (List Nat), s : (List Nat), n : Nat, origin : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => o
+    | Nat.succ k => (let u : Nat := (item s 1); (nameRecords (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 o 3) 1) 1033) (item s 0)) (prim multiply 2 u : Nat)) origin) (dropped s (2 + u)) k (origin + (prim multiply 2 u : Nat))))),
+  recursive_argument: n
+}
+
+definition{
+  name: units,
+  parameters: [o : (List Nat), s : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => o
+    | Nat.succ k => (match s
+    | List.nil => o
+    | List.cons h t => (units (pushed2 o h) t k))),
+  recursive_argument: n
+}
+
+definition{
+  name: nameUnits,
+  parameters: [o : (List Nat), s : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => o
+    | Nat.succ k => (let u : Nat := (item s 1); (nameUnits (units o (dropped s 2) u) (dropped s (2 + u)) k))),
+  recursive_argument: n
+}
+
+definition{
+  name: name,
+  parameters: [s : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (pushedAll (nil Nat) (nameUnits (nameRecords (pushed2 (pushed2 (pushed2 (nil Nat) 0) n) (6 + (prim multiply 12 n : Nat))) s n 0) s n))
+}
+
+definition{
+  name: os2,
+  parameters: [v : FontValues, l : (List Nat), n : Nat, mean : Nat],
+  result: (List Nat),
+  body: (pushedAll (nil Nat) (pushed2 (pushed2 (pushed2 (pushedSigned2 (pushedSigned2 (pushedWords (pushed2 (pushed2 (pushedSigned2 (pushedSigned2 (pushedSigned2 (pushed2 (pushed2 (pushed2 (pushed4 (pushedWords (pushedAll (pushed2 (pushedSigned2 (pushed2 (pushedSigned2 (pushedSigned2 (pushed2 (pushed2 (pushedSigned2 (pushedSigned2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (pushed2 (nil Nat) 4) mean) (project v weight)) (project v widthClass)) (project v fsType)) (project v subscriptXSize)) (project v subscriptYSize)) (key (project v subscriptXOffset))) (key (project v subscriptYOffset))) (project v superscriptXSize)) (project v superscriptYSize)) (key (project v superscriptXOffset))) (key (project v superscriptYOffset))) (project v strikeoutSize)) (key (project v strikeoutPosition))) (project v familyClass)) (project v panose)) (project v unicodeRanges)) (project v vendor)) (project v selection)) (item l ((prim multiply 8 1 : Nat) + 1))) (item l ((prim multiply 8 (prim subtract n 1 : Nat) : Nat) + 1))) (key (project v ascender))) (key (project v descender))) (key (project v lineGap))) (project v winAscent)) (project v winDescent)) (project v codePages)) (key (project v xHeight))) (key (project v capHeight))) (project v defaultChar)) (project v breakChar)) (project v maxContext)))
+}
+
+definition{
+  name: checksum,
+  parameters: [l : (List Nat), n : Nat, acc : Nat],
+  result: Nat,
+  body: (match n
+    | Nat.zero => acc
+    | Nat.succ k => (checksum (dropped l 4) k (prim remainder (acc + (((prim multiply (item l 0) 16777216 : Nat) + (prim multiply (item l 1) 65536 : Nat)) + ((prim multiply (item l 2) 256 : Nat) + (item l 3)))) 4294967296 0 : Nat))),
+  recursive_argument: n
+}
+
+definition{
+  name: padded,
+  parameters: [o : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (match n
+    | Nat.zero => o
+    | Nat.succ k => (padded (pushed o 0) k)),
+  recursive_argument: n
+}
+
+definition{
+  name: entry,
+  parameters: [o : (List Nat), tag : Nat, t : (List Nat), origin : Nat],
+  result: (List Nat),
+  body: (pushed4 (pushed4 (pushed4 (pushed4 o tag) (checksum t (prim quotient ((count t) + 3) 4 0 : Nat) 0)) origin) (count t))
+}
+
+definition{
+  name: table,
+  parameters: [o : (List Nat), t : (List Nat)],
+  result: (List Nat),
+  body: (padded (pushedAll o t) (prim subtract (prim multiply (prim quotient ((count t) + 3) 4 0 : Nat) 4 : Nat) (count t) : Nat))
+}
+
+definition{
+  name: font,
+  parameters: [v : FontValues, psName : (List Nat), names : (List Nat), nameCount : Nat, glyphData : (List Nat), n : Nat],
+  result: (List Nat),
+  body: (let q : Pass := (glyphs (record Pass {data := (nil Nat), lengths := (nil Nat), summary := (nil Nat), rest := glyphData}) n); (let l : (List Nat) := (pushedAll (nil Nat) (project q summary)); (let a : Pair := (advances l n 0 0 0 0); (let b : Box := (box l n); (let cffTable : (List Nat) := (pushedAll (nil Nat) (cff psName q n l)); (let os2Table : (List Nat) := (os2 v l n (project a mean)); (let cmapTable : (List Nat) := (cmap l n); (let plainHead : (List Nat) := (head v b 0); (let hheaTable : (List Nat) := (hhea v l n (project a most)); (let hmtxTable : (List Nat) := (hmtx l n); (let maxpTable : (List Nat) := (maxp n); (let nameTable : (List Nat) := (name names nameCount); (let postTable : (List Nat) := (post v); (let at0 : Nat := 156; (let at1 : Nat := (at0 + (prim multiply (prim quotient ((count cffTable) + 3) 4 0 : Nat) 4 : Nat)); (let at2 : Nat := (at1 + (prim multiply (prim quotient ((count os2Table) + 3) 4 0 : Nat) 4 : Nat)); (let at3 : Nat := (at2 + (prim multiply (prim quotient ((count cmapTable) + 3) 4 0 : Nat) 4 : Nat)); (let at4 : Nat := (at3 + (prim multiply (prim quotient ((count plainHead) + 3) 4 0 : Nat) 4 : Nat)); (let at5 : Nat := (at4 + (prim multiply (prim quotient ((count hheaTable) + 3) 4 0 : Nat) 4 : Nat)); (let at6 : Nat := (at5 + (prim multiply (prim quotient ((count hmtxTable) + 3) 4 0 : Nat) 4 : Nat)); (let at7 : Nat := (at6 + (prim multiply (prim quotient ((count maxpTable) + 3) 4 0 : Nat) 4 : Nat)); (let at8 : Nat := (at7 + (prim multiply (prim quotient ((count nameTable) + 3) 4 0 : Nat) 4 : Nat)); (let directory : (List Nat) := (pushedAll (nil Nat) (entry (entry (entry (entry (entry (entry (entry (entry (entry (pushed2 (pushed2 (pushed2 (pushed2 (pushed4 (nil Nat) 1330926671) 9) 128) 3) 16) 1128678944 cffTable at0) 1330851634 os2Table at1) 1668112752 cmapTable at2) 1751474532 plainHead at3) 1751672161 hheaTable at4) 1752003704 hmtxTable at5) 1835104368 maxpTable at6) 1851878757 nameTable at7) 1886352244 postTable at8)); (let sum : Nat := (prim remainder ((checksum directory (prim quotient ((count directory) + 3) 4 0 : Nat) 0) + ((((checksum cffTable (prim quotient ((count cffTable) + 3) 4 0 : Nat) 0) + (checksum os2Table (prim quotient ((count os2Table) + 3) 4 0 : Nat) 0)) + ((checksum cmapTable (prim quotient ((count cmapTable) + 3) 4 0 : Nat) 0) + (checksum plainHead (prim quotient ((count plainHead) + 3) 4 0 : Nat) 0))) + (((checksum hheaTable (prim quotient ((count hheaTable) + 3) 4 0 : Nat) 0) + (checksum hmtxTable (prim quotient ((count hmtxTable) + 3) 4 0 : Nat) 0)) + (((checksum maxpTable (prim quotient ((count maxpTable) + 3) 4 0 : Nat) 0) + (checksum nameTable (prim quotient ((count nameTable) + 3) 4 0 : Nat) 0)) + (checksum postTable (prim quotient ((count postTable) + 3) 4 0 : Nat) 0))))) 4294967296 0 : Nat); (let headTable : (List Nat) := (head v b (prim remainder (prim subtract (2981146554 + 4294967296) sum : Nat) 4294967296 0 : Nat)); (pushedAll (nil Nat) (table (table (table (table (table (table (table (table (table (pushedAll (nil Nat) directory) cffTable) os2Table) cmapTable) headTable) hheaTable) hmtxTable) maxpTable) nameTable) postTable)))))))))))))))))))))))))))
+}
+
+definition{
+  name: sameList,
+  parameters: [a : (List Nat), b : (List Nat)],
+  result: Bool,
+  body: (match a
+    | List.nil => ((count b) =? 0)
+    | List.cons h t => (match b
+    | List.nil => false
+    | List.cons g u => ((h =? g) && (sameList t u)))),
+  recursive_argument: a
+}
+
+definition{
+  name: encodedFrom,
+  parameters: [l : (List Nat), acc : Bytes],
+  result: Bytes,
+  body: (match l
+    | List.nil => acc
+    | List.cons h t => (encodedFrom t (prim append acc (Studio.Generator.RasterImage.Png::byteOf h) : Bytes))),
+  recursive_argument: l
+}
+
+definition{
+  name: fontFile,
+  parameters: [v : FontValues, psName : (List Nat), names : (List Nat), nameCount : Nat, glyphData : (List Nat), n : Nat],
+  result: Bytes,
+  body: (encodedFrom (font v psName names nameCount glyphData n) 0x)
+}
+
+theorem{
+  name: encodes_type2_numbers_as_tn5177_specifies,
+  parameters: [],
+  statement: ((sameList (number (number (number (number (number (number (number (number (number (number (number (nil Nat) 2147483648) 2147483755) 2147483541) 2147483756) 2147484779) 2147483540) 2147482517) 2147484780) 2147482516) 2147516415) 2147450880) (cons 0 (cons 128 (cons 28 (cons 255 (cons 127 (cons 28 (cons 148 (cons 251 (cons 28 (cons 108 (cons 4 (cons 28 (cons 255 (cons 254 (cons 0 (cons 251 (cons 255 (cons 250 (cons 0 (cons 247 (cons 32 (cons 246 (cons 139 (nil Nat))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: writes_a_font_file_as_opentype_and_cff_specify,
+  parameters: [],
+  statement: ((fontFile (record FontValues {upem := 1000, revision := 65536, created := 0, modified := 0, headFlags := 1, macStyle := 0, lowestPpem := 8, ascender := 1500, descender := 501, lineGap := 0, italicAngle := 0, underlinePosition := 201, underlineThickness := 40, fixedPitch := 0, weight := 400, widthClass := 5, fsType := 0, subscriptXSize := 650, subscriptYSize := 600, subscriptXOffset := 0, subscriptYOffset := 150, superscriptXSize := 650, superscriptYSize := 600, superscriptXOffset := 0, superscriptYOffset := 700, strikeoutSize := 40, strikeoutPosition := 500, familyClass := 0, panose := (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (nil Nat))))))))))), unicodeRanges := (cons 1 (cons 0 (cons 0 (cons 0 (nil Nat))))), vendor := 1313820229, selection := 64, winAscent := 750, winDescent := 250, codePages := (cons 1 (cons 0 (nil Nat))), xHeight := 862, capHeight := 1366, defaultChar := 0, breakChar := 32, maxContext := 0}) (cons 84 (nil Nat)) (cons 1 (cons 1 (cons 84 (cons 2 (cons 7 (cons 82 (cons 101 (cons 103 (cons 117 (cons 108 (cons 97 (cons 114 (nil Nat))))))))))))) 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 66 (cons 97 (cons 500 (cons 2 (cons 4 (cons 20 (cons 0 (cons 800 (cons 0 (cons 800 (cons 600 (cons 20 (cons 600 (cons 4 (cons 200 (cons 200 (cons 200 (cons 400 (cons 600 (cons 400 (cons 600 (cons 200 (cons 67 (cons 98 (cons 600 (cons 1 (cons 4 (cons 41 (cons 21 (cons 100 (cons 21 (cons 100 (cons 1400 (cons 41 (cons 1400 (cons 69 (cons 100 (cons 300 (cons 1 (cons 54 (cons 0 (cons 0 (cons 20 (cons 0 (cons 20 (cons 20 (cons 40 (cons 20 (cons 40 (cons 40 (cons 60 (cons 40 (cons 60 (cons 60 (cons 80 (cons 60 (cons 80 (cons 80 (cons 100 (cons 80 (cons 100 (cons 100 (cons 120 (cons 100 (cons 120 (cons 120 (cons 140 (cons 120 (cons 140 (cons 140 (cons 160 (cons 140 (cons 160 (cons 160 (cons 180 (cons 160 (cons 180 (cons 180 (cons 200 (cons 180 (cons 200 (cons 200 (cons 220 (cons 200 (cons 220 (cons 220 (cons 240 (cons 220 (cons 240 (cons 240 (cons 260 (cons 240 (cons 260 (cons 260 (cons 280 (cons 260 (cons 280 (cons 280 (cons 300 (cons 280 (cons 300 (cons 300 (cons 320 (cons 300 (cons 320 (cons 320 (cons 340 (cons 320 (cons 340 (cons 340 (cons 360 (cons 340 (cons 360 (cons 360 (cons 380 (cons 360 (cons 380 (cons 380 (cons 400 (cons 380 (cons 400 (cons 400 (cons 420 (cons 400 (cons 420 (cons 420 (cons 440 (cons 420 (cons 440 (cons 440 (cons 460 (cons 440 (cons 460 (cons 460 (cons 480 (cons 460 (cons 480 (cons 480 (cons 500 (cons 480 (cons 500 (cons 500 (cons 520 (cons 500 (cons 520 (cons 520 (cons 0 (cons 520 (nil Nat))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) 4) = 0x4f54544f000900800003001043464620107ec3270000009c000000a14f532f325e4359a90000014000000060636d61700079009d000001a0000000346865616460914397000001d40000003668686561046c018b0000020c00000024686d74780578fff600000230000000106d6178700004500000000240000000066e616d6501bc09b9000002480000002e706f7374ff9f0028000002780000002001000404000101010254000101011f7781f824f950051d000000310f1d00000038111d000000001d000000a112000000000000420043004500040101031924628b0ef888958b15f81af7c0fc1a06e5fb5c15eff75c27070ef8ec778115d1f95a45060ef7c08b8b159595959595959595959595959595959595959595959595959595959595959595959595959595959595959595959595950695959595fb98060e000000000401d2019000050000028a02580000004b028a02580000015e002800fa000000000000000000000000000000010000000000000000000000004e4f4e4500400061006402eeff06000002ee00fa000000010000000001af02ab00000020000000000001000300010000000c000400280000000600040001000200620064ffff000000610064ffffffa0ff9f0001000000000000000100000001000030ba64485f0f3cf5000103e800000000000000000000000000000000ffecfff6019002bc0000000800020000000000000001000002eeff0600000258ffec002801900001000000000000000000000000000000040000000001f4000a0258ffec012c0000000050000004000000000002001e0003000104090001000200000003000104090002000e000200540052006500670075006c0061007200000003000000000000ff9c00280000000000000000000000000000000000000000),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}

@@ -942,3 +942,10 @@ level = "build"
 suite = "gui-instance"
 statement = "The sync action of the instances journey is guarded, so Studio.Gui.Instance never enables it for a viewer that is not the instances' own Prism ID, wherever they are hosted"
 theorems = ["Studio.Gui.Instance.only_the_owner_synchronizes"]
+
+[[id]]
+id = "VS-117"
+level = "build"
+suite = "typeface"
+statement = "The typeface generator writes its glyphs as an OpenType font file with CFF outlines: the table directory and checksums, head, hhea, maxp, hmtx, cmap format 4, name, OS/2 and post of OpenType 1.9.1, and the CFF INDEX, Top DICT, charset and Type 2 charstrings of Adobe TN 5176 and TN 5177, byte for byte"
+theorems = ["Studio.Generator.Typeface.OpenType.encodes_type2_numbers_as_tn5177_specifies", "Studio.Generator.Typeface.OpenType.writes_a_font_file_as_opentype_and_cff_specify"]
