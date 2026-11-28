@@ -128,8 +128,8 @@ negative = "VS-10"
 id = "VS-16"
 level = "build"
 suite = "generator"
-statement = "The MIDI generator, Studio.Generator.Music.Midi, writes a Prism's features as a format 0 Standard MIDI File with one track at 96 ticks per quarter note, each feature byte a MIDI 1.0 key number sounded as one quarter note on channel 1"
-theorems = ["Studio.Generator.Music.Midi.word32_is_big_endian", "Studio.Generator.Music.Midi.writes_a_format_0_file", "Studio.Generator.Music.Midi.writes_one_note_per_feature"]
+statement = "The MIDI generator, Studio.Generator.Music.Midi, writes a Prism's features as a format 0 Standard MIDI File with one track at 96 ticks per quarter note, each feature a Marker meta event (SMF RP-001) naming it, then each of its bytes a MIDI 1.0 key number sounded as one quarter note on channel 1, and the line feeds between features neither"
+theorems = ["Studio.Generator.Music.Midi.word32_is_big_endian", "Studio.Generator.Music.Midi.writes_a_format_0_file", "Studio.Generator.Music.Midi.writes_one_note_per_feature", "Studio.Generator.Music.Midi.marks_each_feature_and_sounds_no_line_feed", "Studio.Generator.Music.Midi.writes_a_long_marker_length_as_a_variable_length_quantity"]
 
 [[id]]
 id = "VS-17"
