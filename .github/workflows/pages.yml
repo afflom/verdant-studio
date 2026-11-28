@@ -106,6 +106,8 @@ jobs:
           if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
       - name: accept the Prism of the seed Verdant Studio, every facet at its media type and its generator's fidelity
         run: python3 .github/scripts/prism-acceptance.py node target/prismpm/sdk/npm/prism-code/bin/prism-code.mjs
+      - name: the workspace API's operations are MCP tools valid against the bound MCP schema (Studio.Surface)
+        run: python3 .github/scripts/surface-check.py
       - name: next answers within a second, because operate's advance runs it on every push to main
         run: |
           set -euo pipefail
