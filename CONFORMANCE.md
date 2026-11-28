@@ -891,6 +891,7 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `VERDANT-ENGINE-OBSERVER-2.22.4` | Verdant Engine's Observer: a self-observing second-order Prism holon that composes its organs, a full Prism model per stakeholder that it observes, and Prism ID signed, SOSA and PROV-O observed communication channels, among them channels between people and agents and between agents. Only its runtime holon, stakeholder models and channels are cited, not its Studio organ (REQ-ENGINE-RUNTIME-ONLY). Cited by REQ-AGENT-OBSERVER. |  |
 | `UNICODE-UAX-29-47` | The default word boundary rules WB1 to WB999 (section 4.1.1) of Unicode 17.0.0 text segmentation, by which a Prism's seed is segmented into words, its features. |  |
 | `UNICODE-UCD-17.0.0-WORD-BREAK` | The Word_Break property value of every code point in Unicode 17.0.0, in the Consortium's official UCD text form, which UAX #29's word boundary rules read. |  |
+| `OTEL-SPEC-1.60.0-FILE-EXPORTER` | The OTLP file format: a JSON lines file, one OTLP/JSON ExportTraceServiceRequest, ExportLogsServiceRequest or ExportMetricsServiceRequest per line, preferred extension jsonl. Index row W04; the edition verdant-engine 2.22.4 pins. Cited by REQ-OBSERVABILITY. |  |
 
 ## Claims that are not conformance IDs
 
