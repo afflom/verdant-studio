@@ -104,6 +104,8 @@ jobs:
           target/release/verdant_studio build
           target/release/verdant_studio publish
           if ! git diff --quiet; then echo "::error::publish changed $(git diff --name-only | tr '\n' ' '): run every operation through operate, which ends with check, build and publish"; exit 1; fi
+      - name: accept the Prism of the seed Verdant Studio, every facet at its media type and its generator's fidelity
+        run: python3 .github/scripts/prism-acceptance.py node target/prismpm/sdk/npm/prism-code/bin/prism-code.mjs
       - name: next answers within a second, because operate's advance runs it on every push to main
         run: |
           set -euo pipefail
