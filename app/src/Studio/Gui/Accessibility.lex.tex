@@ -1,0 +1,149 @@
+\begin{lexlean}{Studio.Gui.Accessibility}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.User}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: piece,
+  parameters: [value : Bytes, offset : Nat, count : Nat],
+  result: Bytes,
+  body: (match (prim slice value offset count : (Option Bytes))
+    | Option.none => 0x
+    | Option.some part => part)
+}
+
+definition{
+  name: separatorFrom,
+  parameters: [line : Bytes, offset : Nat, remaining : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => (prim length line : Nat)
+    | Nat.succ rest => (if (Studio.Runtime::sameFrom (piece line offset 2) 0x3a20 0 2) then (if ((prim length (piece line offset 2) : Nat) =? 2) then offset else (prim length line : Nat)) else (separatorFrom line (offset + 1) rest))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: separator,
+  parameters: [line : Bytes, prefix : Bytes],
+  result: Nat,
+  body: (separatorFrom line (prim length prefix : Nat) (prim length line : Nat)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: labelName,
+  parameters: [line : Bytes, prefix : Bytes],
+  result: Bytes,
+  body: (piece line (prim length prefix : Nat) (prim subtract (separator line prefix) (prim length prefix : Nat) : Nat)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: labelText,
+  parameters: [line : Bytes, prefix : Bytes],
+  result: Bytes,
+  body: (piece line ((separator line prefix) + 2) (prim subtract (prim length line : Nat) ((separator line prefix) + 2) : Nat)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: labelled,
+  parameters: [line : Bytes, prefix : Bytes],
+  result: Bool,
+  body: ((not ((prim length (labelName line prefix) : Nat) =? 0)) && (not ((prim length (labelText line prefix) : Nat) =? 0))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: lineFailure,
+  parameters: [line : Bytes],
+  result: Bytes,
+  body: (if (Studio.User::begins line 0x6a6f75726e657920) then (if (labelled line 0x6a6f75726e657920) then 0x else 0x322e342e322050616765205469746c6564) else (if (Studio.User::begins line 0x7669657720) then (if (not (labelled line 0x7669657720)) then 0x322e342e362048656164696e677320616e64204c6162656c73 else (if ((Studio.User::begins (labelText line 0x7669657720) 0x726566757365643a) && ((prim length (labelText line 0x7669657720) : Nat) <=? 10)) then 0x332e332e31204572726f72204964656e74696669636174696f6e else 0x)) else (if (Studio.User::begins line 0x616374696f6e20) then (if ((labelled line 0x616374696f6e20) && ((Studio.User::begins (labelText line 0x616374696f6e20) 0x656e61626c6564) || (Studio.User::begins (labelText line 0x616374696f6e20) 0x64697361626c6564))) then 0x else 0x342e312e32204e616d652c20526f6c652c2056616c7565) else 0x))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: firstFailure,
+  parameters: [lines : (List Bytes)],
+  result: Bytes,
+  body: (match lines
+    | List.nil => 0x
+    | List.cons line rest => (if ((prim length (lineFailure line) : Nat) =? 0) then (firstFailure rest) else (prim append (prim append (prim append 0x6661696c73205743414720322e32207375636365737320637269746572696f6e20 (lineFailure line) : Bytes) 0x3a20 : Bytes) line : Bytes))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: audit,
+  parameters: [tree : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split tree 10)
+    | List.nil => 0x696e76616c69642072657175657374
+    | List.cons opening rest => (if (not (Studio.User::begins opening 0x6a6f75726e657920)) then (prim append 0x6661696c73205743414720322e32207375636365737320637269746572696f6e20322e342e322050616765205469746c65643a2074686520766965772074726565206f70656e732077697468206e6f206a6f75726e6579207469746c653a20 opening : Bytes) else (if ((prim length (firstFailure (cons opening rest)) : Nat) =? 0) then 0x636f6e666f726d7320746f205743414720322e32207375636365737320637269746572696120322e342e322050616765205469746c65642c20322e342e362048656164696e677320616e64204c6162656c732c20332e332e31204572726f72204964656e74696669636174696f6e20616e6420342e312e32204e616d652c20526f6c652c2056616c7565 else (firstFailure (cons opening rest))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.nil => 0x696e76616c69642072657175657374
+    | List.cons mode rest => (if (Studio.Runtime::same mode 0x636865636b) then (audit (Studio.User::joinTabs rest)) else (if (Studio.Runtime::same mode 0x6a6f75726e6579) then (match rest
+      | List.nil => 0x696e76616c69642072657175657374
+      | List.cons journey more => (audit (Studio.User::view 0x68756d616e journey (Studio.User::joinTabs more)))) else 0x696e76616c69642072657175657374))),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_agent_and_a_person_get_the_same_audit,
+  parameters: [journey : Bytes, rest : Bytes],
+  statement: ((audit (Studio.User::view 0x6167656e74 journey rest)) = (audit (Studio.User::view 0x68756d616e journey rest))),
+  proof: reflexivity{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_creator_journey_conforms,
+  parameters: [],
+  statement: ((request 0x6a6f75726e65790963726561746f720956657264616e742053747564696f) = 0x636f6e666f726d7320746f205743414720322e32207375636365737320637269746572696120322e342e322050616765205469746c65642c20322e342e362048656164696e677320616e64204c6162656c732c20332e332e31204572726f72204964656e74696669636174696f6e20616e6420342e312e32204e616d652c20526f6c652c2056616c7565),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_refused_view_identifies_its_error,
+  parameters: [],
+  statement: ((request 0x6a6f75726e657909617070726f76616c097669657709707269736d3a616c657809707269736d3a6167656e7409707269736d3a616c6578096170702f737263096c617465737409707269736d3a6167656e743d707269736d3a616c6578) = 0x636f6e666f726d7320746f205743414720322e32207375636365737320637269746572696120322e342e322050616765205469746c65642c20322e342e362048656164696e677320616e64204c6162656c732c20332e332e31204572726f72204964656e74696669636174696f6e20616e6420342e312e32204e616d652c20526f6c652c2056616c7565),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_view_tree_with_no_title,
+  parameters: [],
+  statement: ((request 0x636865636b097669657720707269736d536565643a204e4f20534545442c20656e746572206f6e6520776f7264206f722073656e74656e6365) = 0x6661696c73205743414720322e32207375636365737320637269746572696f6e20322e342e322050616765205469746c65643a2074686520766965772074726565206f70656e732077697468206e6f206a6f75726e6579207469746c653a207669657720707269736d536565643a204e4f20534545442c20656e746572206f6e6520776f7264206f722073656e74656e6365),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_an_action_with_no_state,
+  parameters: [],
+  statement: ((request 0x636865636b096a6f75726e65792063726561746f723a20437265617465206120507269736d0a616374696f6e2074756e65) = 0x6661696c73205743414720322e32207375636365737320637269746572696f6e20342e312e32204e616d652c20526f6c652c2056616c75653a20616374696f6e2074756e65),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_an_error_it_does_not_describe,
+  parameters: [],
+  statement: ((request 0x636865636b096a6f75726e65792063726561746f723a20437265617465206120507269736d0a7669657720707269736d526566757365643a20726566757365643a) = 0x6661696c73205743414720322e32207375636365737320637269746572696f6e20332e332e31204572726f72204964656e74696669636174696f6e3a207669657720707269736d526566757365643a20726566757365643a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

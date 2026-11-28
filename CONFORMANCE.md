@@ -285,6 +285,26 @@ The three honesty levels (R2):
 | `VS-217` | `build` | Studio.Gui.Brand composes only facets a generator produces, so it refuses a part no generator of the Verdant Studio Prism makes, naming it | `Studio.Gui.Brand.refuses_a_part_the_brand_has_not`, refuses with `refused: the Verdant Studio brand has no part palette; its parts are the wordmark and the typeface` |
 | `VS-218` | `build` | The brand regenerates nothing: Studio.Gui.Brand answers each part with exactly the facet Studio.PrismGeneration generates for its media type from the seed Verdant Studio | `Studio.Gui.Brand.the_brand_regenerates_nothing` |
 
+## observer
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-211` | `build` | An agent communes with the Verdant Observer as a participant (REQ-AGENT-OBSERVER), so Studio.Observer answers an agent's perception of a journey with a W3C SOSA observation of it, associated with the agent's Prism ID by PROV-O, before the view Studio.User gives it | `Studio.Observer.observes_an_agent_as_a_participant` |
+| `VS-212` | `build` | The Verdant Observer observes every stakeholder and channel of Verdant (VERDANT-ENGINE-OBSERVER-2.22.4), so Studio.Observer observes a person's action on a journey just as it observes an agent's, before the answer Studio.User gives | `Studio.Observer.observes_a_person_as_a_participant` |
+| `VS-213` | `build` | A PROV-O association names its agent, and a Verdant participant is named by its Prism ID (REQ-SELF-RUNTIME), so Studio.Observer refuses a participant that names no Prism ID | `Studio.Observer.refuses_a_participant_with_no_prism_id`, refuses with `refused: alex is no Prism ID, so the Verdant Observer associates its observation with no participant; name one as prism: and its name` |
+| `VS-214` | `build` | Observing never changes what a participant experiences, so Studio.Observer answers every participant and request with its observation followed by exactly the answer Studio.User gives | `Studio.Observer.observing_never_changes_what_a_participant_experiences` |
+
+## accessibility
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-219` | `build` | The Studio UI meets the WCAG 2.2 success criteria a view tree can be checked against (W3C-WCAG22-JSON), so Studio.Gui.Accessibility audits the creator journey of the seed Verdant Studio and finds every title, view label and action name, role and state present | `Studio.Gui.Accessibility.the_creator_journey_conforms` |
+| `VS-220` | `build` | WCAG 2.2 success criterion 3.3.1 Error Identification asks that an error be described in text, so Studio.Gui.Accessibility finds the approval journey's refused view conforming because it says why the request was refused | `Studio.Gui.Accessibility.a_refused_view_identifies_its_error` |
+| `VS-221` | `build` | WCAG 2.2 success criterion 2.4.2 Page Titled asks for a title that describes the purpose, so Studio.Gui.Accessibility fails a view tree that opens with no journey title, naming its first line | `Studio.Gui.Accessibility.refuses_a_view_tree_with_no_title`, refuses with `fails WCAG 2.2 success criterion 2.4.2 Page Titled: the view tree opens with no journey title: view prismSeed: NO SEED, enter one word or sentence` |
+| `VS-222` | `build` | WCAG 2.2 success criterion 4.1.2 Name, Role, Value asks that a component's name, role and state be programmatically determined, so Studio.Gui.Accessibility fails an action that states neither enabled nor disabled, naming it | `Studio.Gui.Accessibility.refuses_an_action_with_no_state`, refuses with `fails WCAG 2.2 success criterion 4.1.2 Name, Role, Value: action tune` |
+| `VS-223` | `build` | WCAG 2.2 success criterion 3.3.1 Error Identification asks that an error be described in text, so Studio.Gui.Accessibility fails a refused view that does not say why, naming it | `Studio.Gui.Accessibility.refuses_an_error_it_does_not_describe`, refuses with `fails WCAG 2.2 success criterion 3.3.1 Error Identification: view prismRefused: refused:` |
+| `VS-224` | `build` | An agent is audited as a person is (REQ-AGENT-USERS), so Studio.Gui.Accessibility gives the view tree an agent perceives exactly the audit it gives a person's, for every journey and request | `Studio.Gui.Accessibility.an_agent_and_a_person_get_the_same_audit` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
