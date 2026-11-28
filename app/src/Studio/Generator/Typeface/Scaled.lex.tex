@@ -1,0 +1,395 @@
+\begin{lexlean}{Studio.Generator.Typeface.Scaled}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: elGordo,
+  parameters: [],
+  result: Nat,
+  body: 2147483647
+}
+
+definition{
+  name: unity,
+  parameters: [],
+  result: Nat,
+  body: 65536
+}
+
+definition{
+  name: halfUnit,
+  parameters: [],
+  result: Nat,
+  body: 32768
+}
+
+definition{
+  name: fractionHalf,
+  parameters: [],
+  result: Nat,
+  body: 134217728
+}
+
+definition{
+  name: fractionOne,
+  parameters: [],
+  result: Nat,
+  body: 268435456
+}
+
+definition{
+  name: fractionTwo,
+  parameters: [],
+  result: Nat,
+  body: 536870912
+}
+
+definition{
+  name: fractionFour,
+  parameters: [],
+  result: Nat,
+  body: 1073741824
+}
+
+structure{
+  name: Integer,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: negative, type: Bool}, {name: magnitude, type: Nat}]
+}
+
+definition{
+  name: signed,
+  parameters: [negative : Bool, magnitude : Nat],
+  result: Integer,
+  body: (record Integer {negative := (negative && (not (magnitude =? 0))), magnitude := magnitude})
+}
+
+definition{
+  name: agrees,
+  parameters: [value : Integer, negative : Bool, magnitude : Nat],
+  result: Bool,
+  body: ((if (project value negative) then negative else (not negative)) && ((project value magnitude) =? magnitude))
+}
+
+definition{
+  name: makeBits,
+  parameters: [p : Nat, q : Nat, f : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => (if (q <=? (p + p)) then (f + 1) else f)
+    | Nat.succ rest => (if (q <=? (p + p)) then (makeBits (prim subtract (p + p) q : Nat) q ((f + f) + 1) rest) else (makeBits (p + p) q (f + f) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: makeMagnitude,
+  parameters: [p : Nat, q : Nat, one : Nat, limit : Nat, steps : Nat],
+  result: Nat,
+  body: (let n : Nat := (prim quotient p q 0 : Nat); (if (limit <=? n) then (elGordo) else (prim subtract ((makeBits (prim remainder p q 0 : Nat) q 1 steps) + (prim multiply n one : Nat)) one : Nat)))
+}
+
+definition{
+  name: makeFraction,
+  parameters: [p : Integer, q : Integer],
+  result: Integer,
+  body: (signed (if (project p negative) then (not ((project q negative) || ((project q magnitude) =? 0))) else ((project q negative) || ((project q magnitude) =? 0))) (makeMagnitude (project p magnitude) (project q magnitude) (fractionOne) 8 28))
+}
+
+definition{
+  name: makeScaled,
+  parameters: [p : Integer, q : Integer],
+  result: Integer,
+  body: (signed (if (project p negative) then (not ((project q negative) || ((project q magnitude) =? 0))) else ((project q negative) || ((project q magnitude) =? 0))) (makeMagnitude (project p magnitude) (project q magnitude) (unity) 32768 16))
+}
+
+definition{
+  name: takeHalving,
+  parameters: [p : Nat, q : Nat, f : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => p
+    | Nat.succ rest => (takeHalving (if ((prim remainder f 2 0 : Nat) =? 1) then (if (q <? (fractionFour)) then (prim quotient (p + q) 2 0 : Nat) else (p + (prim quotient (prim subtract q p : Nat) 2 0 : Nat))) else (prim quotient p 2 0 : Nat)) q (prim quotient f 2 0 : Nat) rest)),
+  recursive_argument: steps
+}
+
+definition{
+  name: takeMagnitude,
+  parameters: [q : Nat, f : Nat, one : Nat, halfOne : Nat, steps : Nat],
+  result: Nat,
+  body: (let whole : Nat := (prim quotient f one 0 : Nat); (let n : Nat := (if (whole =? 0) then 0 else (if (q <=? (prim quotient (elGordo) whole 0 : Nat)) then (prim multiply whole q : Nat) else (elGordo))); (let p : Nat := (takeHalving halfOne q ((prim remainder f one 0 : Nat) + one) steps); (if ((elGordo) <? (n + p)) then (elGordo) else (n + p)))))
+}
+
+definition{
+  name: takeFraction,
+  parameters: [q : Integer, f : Integer],
+  result: Integer,
+  body: (signed (if (project q negative) then (not (project f negative)) else (project f negative)) (takeMagnitude (project q magnitude) (project f magnitude) (fractionOne) (fractionHalf) 28))
+}
+
+definition{
+  name: takeScaled,
+  parameters: [q : Integer, f : Integer],
+  result: Integer,
+  body: (signed (if (project q negative) then (not (project f negative)) else (project f negative)) (takeMagnitude (project q magnitude) (project f magnitude) (unity) (halfUnit) 16))
+}
+
+definition{
+  name: rootSteps,
+  parameters: [x : Nat, y : Nat, q : Nat, k : Nat],
+  result: Nat,
+  body: (match k
+    | Nat.zero => (prim quotient q 2 0 : Nat)
+    | Nat.succ rest => (let x1 : Nat := (x + x); (let c1 : Bool := ((fractionFour) <=? x1); (let x2 : Nat := (if c1 then (prim subtract (x1 + x1) (prim multiply 2 (fractionFour) : Nat) : Nat) else (x1 + x1)); (let y1 : Nat := (if c1 then ((y + y) + 1) else (y + y)); (let c2 : Bool := ((fractionFour) <=? x2); (let s : Nat := (if c2 then ((y1 + y1) + 1) else (y1 + y1)); (let x3 : Nat := (if c2 then (prim subtract x2 (fractionFour) : Nat) else x2); (if ((prim multiply 3 q : Nat) <? s) then (rootSteps x3 (prim subtract s (prim multiply 3 q : Nat) : Nat) ((q + q) + 2) rest) else (if (s <=? q) then (rootSteps x3 (prim subtract (s + q) 2 : Nat) (prim subtract (q + q) 2 : Nat) rest) else (rootSteps x3 (prim subtract s q : Nat) (q + q) rest))))))))))),
+  recursive_argument: k
+}
+
+definition{
+  name: rootNormal,
+  parameters: [x : Nat, k : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => 0
+    | Nat.succ rest => (if (x <? (fractionTwo)) then (rootNormal (x + ((x + x) + x)) (prim subtract k 1 : Nat) rest) else (if (x <? (fractionFour)) then (rootSteps x 0 2 k) else (rootSteps (prim subtract x (fractionFour) : Nat) 1 2 k)))),
+  recursive_argument: steps
+}
+
+definition{
+  name: squareRoot,
+  parameters: [x : Integer],
+  result: Integer,
+  body: (signed false (if ((project x negative) || ((project x magnitude) =? 0)) then 0 else (rootNormal (project x magnitude) 23 16)))
+}
+
+definition{
+  name: pythagoreanSteps,
+  parameters: [a : Nat, b : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => a
+    | Nat.succ rest => (let r : Nat := (project (takeFraction (signed false (project (makeFraction (signed false b) (signed false a)) magnitude)) (signed false (project (makeFraction (signed false b) (signed false a)) magnitude))) magnitude); (if (r =? 0) then a else (let t : Nat := (project (makeFraction (signed false r) (signed false ((fractionFour) + r))) magnitude); (pythagoreanSteps (a + (project (takeFraction (signed false (a + a)) (signed false t)) magnitude)) (project (takeFraction (signed false b) (signed false t)) magnitude) rest))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: pythagoreanMagnitude,
+  parameters: [a : Nat, b : Nat],
+  result: Nat,
+  body: (if (b =? 0) then a else (if (a <? (fractionTwo)) then (pythagoreanSteps a b 31) else (let s : Nat := (pythagoreanSteps (prim quotient a 4 0 : Nat) (prim quotient b 4 0 : Nat) 31); (if (s <? (fractionTwo)) then (prim multiply 4 s : Nat) else (elGordo)))))
+}
+
+definition{
+  name: pythagoreanAdd,
+  parameters: [a : Integer, b : Integer],
+  result: Integer,
+  body: (signed false (if ((project a magnitude) <? (project b magnitude)) then (pythagoreanMagnitude (project b magnitude) (project a magnitude)) else (pythagoreanMagnitude (project a magnitude) (project b magnitude))))
+}
+
+definition{
+  name: negated,
+  parameters: [a : Integer],
+  result: Integer,
+  body: (signed (not (project a negative)) (project a magnitude))
+}
+
+definition{
+  name: plus,
+  parameters: [a : Integer, b : Integer],
+  result: Integer,
+  body: (if (if (project a negative) then (project b negative) else (not (project b negative))) then (signed (project a negative) ((project a magnitude) + (project b magnitude))) else (if ((project b magnitude) <=? (project a magnitude)) then (signed (project a negative) (prim subtract (project a magnitude) (project b magnitude) : Nat)) else (signed (project b negative) (prim subtract (project b magnitude) (project a magnitude) : Nat))))
+}
+
+definition{
+  name: minus,
+  parameters: [a : Integer, b : Integer],
+  result: Integer,
+  body: (plus a (negated b))
+}
+
+definition{
+  name: truncated,
+  parameters: [a : Integer, divisor : Nat],
+  result: Integer,
+  body: (signed (project a negative) (prim quotient (project a magnitude) divisor 0 : Nat))
+}
+
+definition{
+  name: fortyFiveDegrees,
+  parameters: [],
+  result: Nat,
+  body: 47185920
+}
+
+definition{
+  name: ninetyDegrees,
+  parameters: [],
+  result: Nat,
+  body: 94371840
+}
+
+definition{
+  name: oneEightyDegrees,
+  parameters: [],
+  result: Nat,
+  body: 188743680
+}
+
+definition{
+  name: threeSixtyDegrees,
+  parameters: [],
+  result: Nat,
+  body: 377487360
+}
+
+definition{
+  name: specAtan,
+  parameters: [k : Nat],
+  result: Nat,
+  body: (if (k =? 1) then 27855475 else (if (k =? 2) then 14718068 else (if (k =? 3) then 7471121 else (if (k =? 4) then 3750058 else (if (k =? 5) then 1876857 else (if (k =? 6) then 938658 else (if (k =? 7) then 469357 else (if (k =? 8) then 234682 else (if (k =? 9) then 117342 else (if (k =? 10) then 58671 else (if (k =? 11) then 29335 else (if (k =? 12) then 14668 else (if (k =? 13) then 7334 else (if (k =? 14) then 3667 else (if (k =? 15) then 1833 else (if (k =? 16) then 917 else (if (k =? 17) then 458 else (if (k =? 18) then 229 else (if (k =? 19) then 115 else (if (k =? 20) then 57 else (if (k =? 21) then 29 else (if (k =? 22) then 14 else (if (k =? 23) then 7 else (if (k =? 24) then 4 else (if (k =? 25) then 2 else (if (k =? 26) then 1 else 0))))))))))))))))))))))))))
+}
+
+definition{
+  name: argFar,
+  parameters: [x : Nat, y : Nat, z : Nat, k : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => z
+    | Nat.succ rest => (if (x <? (y + y)) then (argFar x (prim subtract (y + y) x : Nat) (z + (specAtan (k + 1))) (k + 1) rest) else (argFar x (y + y) z (k + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: argNear,
+  parameters: [x : Nat, y : Nat, z : Nat, k : Nat, divisor : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => (argFar x y z k 11)
+    | Nat.succ rest => (if (x <? (y + y)) then (argNear (x + (prim quotient (y + y) (prim multiply 4 divisor : Nat) 0 : Nat)) (prim subtract (y + y) x : Nat) (z + (specAtan (k + 1))) (k + 1) (prim multiply 4 divisor : Nat) rest) else (argNear x (y + y) z (k + 1) (prim multiply 4 divisor : Nat) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: argGrow,
+  parameters: [x : Nat, y : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => (argNear x y 0 0 1 15)
+    | Nat.succ rest => (if (x <? (fractionOne)) then (argGrow (x + x) (y + y) rest) else (argNear x y 0 0 1 15))),
+  recursive_argument: steps
+}
+
+definition{
+  name: argShrink,
+  parameters: [x : Nat, y : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => (if (y =? 0) then 0 else (argGrow x y 28))
+    | Nat.succ rest => (if ((fractionTwo) <=? x) then (argShrink (prim quotient x 2 0 : Nat) (prim quotient y 2 0 : Nat) rest) else (if (y =? 0) then 0 else (argGrow x y 28)))),
+  recursive_argument: steps
+}
+
+definition{
+  name: arg,
+  parameters: [x : Integer, y : Integer],
+  result: Integer,
+  body: (let swap : Bool := ((project x magnitude) <? (project y magnitude)); (let big : Nat := (if swap then (project y magnitude) else (project x magnitude)); (let z : Nat := (argShrink big (if swap then (project x magnitude) else (project y magnitude)) 2); (if (big =? 0) then (signed false 0) else (if (project x negative) then (if (project y negative) then (if swap then (minus (negated (signed false z)) (signed false (ninetyDegrees))) else (minus (signed false z) (signed false (oneEightyDegrees)))) else (if swap then (plus (signed false (ninetyDegrees)) (signed false z)) else (minus (signed false (oneEightyDegrees)) (signed false z)))) else (if (project y negative) then (if swap then (minus (signed false z) (signed false (ninetyDegrees))) else (negated (signed false z))) else (if swap then (minus (signed false (ninetyDegrees)) (signed false z)) else (signed false z))))))))
+}
+
+structure{
+  name: SineCosine,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: cosine, type: Integer}, {name: sine, type: Integer}]
+}
+
+definition{
+  name: sineCosineOf,
+  parameters: [x : Integer, y : Integer],
+  result: SineCosine,
+  body: (let r : Integer := (pythagoreanAdd x y); (record SineCosine {cosine := (makeFraction x r), sine := (makeFraction y r)}))
+}
+
+definition{
+  name: sineCosineSteps,
+  parameters: [z : Nat, x : Integer, y : Integer, k : Nat, divisor : Nat, q : Nat, steps : Nat],
+  result: SineCosine,
+  body: (match steps
+    | Nat.zero => (if (q =? 0) then (sineCosineOf x y) else (if (q =? 1) then (sineCosineOf y x) else (if (q =? 2) then (sineCosineOf (negated y) x) else (if (q =? 3) then (sineCosineOf (negated x) y) else (if (q =? 4) then (sineCosineOf (negated x) (negated y)) else (if (q =? 5) then (sineCosineOf (negated y) (negated x)) else (if (q =? 6) then (sineCosineOf y (negated x)) else (sineCosineOf x (negated y)))))))))
+    | Nat.succ rest => (if ((specAtan k) <=? z) then (sineCosineSteps (prim subtract z (specAtan k) : Nat) (plus x (truncated y divisor)) (minus y (truncated x divisor)) (k + 1) (prim multiply 2 divisor : Nat) q rest) else (sineCosineSteps z x y (k + 1) (prim multiply 2 divisor : Nat) q rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: sineCosine,
+  parameters: [z : Integer],
+  result: SineCosine,
+  body: (let m : Nat := (prim remainder (project z magnitude) (threeSixtyDegrees) 0 : Nat); (let w : Nat := (if (project z negative) then (if (m =? 0) then 0 else (prim subtract (threeSixtyDegrees) m : Nat)) else m); (let q : Nat := (prim quotient w (fortyFiveDegrees) 0 : Nat); (let r : Nat := (prim remainder w (fortyFiveDegrees) 0 : Nat); (sineCosineSteps (if ((prim remainder q 2 0 : Nat) =? 1) then r else (prim subtract (fortyFiveDegrees) r : Nat)) (signed false (fractionOne)) (signed false (fractionOne)) 1 2 q 26)))))
+}
+
+theorem{
+  name: makes_fractions_as_mf_web_does,
+  parameters: [],
+  statement: (((((((agrees (makeFraction (record Integer {negative := false, magnitude := 1}) (record Integer {negative := false, magnitude := 3})) false 89478485) && (agrees (makeFraction (record Integer {negative := true, magnitude := 5}) (record Integer {negative := false, magnitude := 7})) true 191739611)) && (agrees (makeFraction (record Integer {negative := false, magnitude := 7}) (record Integer {negative := true, magnitude := 2})) true 939524096)) && (agrees (makeFraction (record Integer {negative := false, magnitude := 2147483647}) (record Integer {negative := false, magnitude := 3})) false 2147483647)) && (agrees (makeFraction (record Integer {negative := false, magnitude := 196608}) (record Integer {negative := false, magnitude := 65536})) false 805306368)) && (agrees (makeFraction (record Integer {negative := false, magnitude := 100}) (record Integer {negative := false, magnitude := 1})) false 2147483647)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: takes_fractions_as_mf_web_does,
+  parameters: [],
+  statement: ((((((agrees (takeFraction (record Integer {negative := false, magnitude := 196608}) (record Integer {negative := false, magnitude := 89478485})) false 65536) && (agrees (takeFraction (record Integer {negative := true, magnitude := 100}) (record Integer {negative := true, magnitude := 134217728})) false 50)) && (agrees (takeFraction (record Integer {negative := false, magnitude := 1073741829}) (record Integer {negative := false, magnitude := 134217731})) false 536870927)) && (agrees (takeFraction (record Integer {negative := false, magnitude := 2147483647}) (record Integer {negative := false, magnitude := 805306368})) false 2147483647)) && (agrees (takeFraction (record Integer {negative := false, magnitude := 12345}) (record Integer {negative := true, magnitude := 536870905})) true 24690)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: makes_scaled_as_mf_web_does,
+  parameters: [],
+  statement: (((((agrees (makeScaled (record Integer {negative := false, magnitude := 7}) (record Integer {negative := false, magnitude := 2})) false 229376) && (agrees (makeScaled (record Integer {negative := true, magnitude := 1}) (record Integer {negative := false, magnitude := 3})) true 21845)) && (agrees (makeScaled (record Integer {negative := false, magnitude := 1048576}) (record Integer {negative := false, magnitude := 3})) false 2147483647)) && (agrees (makeScaled (record Integer {negative := false, magnitude := 5}) (record Integer {negative := true, magnitude := 65536})) true 5)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: takes_scaled_as_mf_web_does,
+  parameters: [],
+  statement: ((((agrees (takeScaled (record Integer {negative := true, magnitude := 196608}) (record Integer {negative := false, magnitude := 32768})) true 98304) && (agrees (takeScaled (record Integer {negative := false, magnitude := 1073741824}) (record Integer {negative := false, magnitude := 196609})) false 2147483647)) && (agrees (takeScaled (record Integer {negative := false, magnitude := 123456789}) (record Integer {negative := false, magnitude := 40000})) false 75352044)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: roots_as_mf_web_does,
+  parameters: [],
+  statement: (((((((agrees (squareRoot (record Integer {negative := false, magnitude := 131072})) false 92682) && (agrees (squareRoot (record Integer {negative := false, magnitude := 1})) false 256)) && (agrees (squareRoot (record Integer {negative := false, magnitude := 2147483647})) false 11863283)) && (agrees (squareRoot (record Integer {negative := true, magnitude := 4})) false 0)) && (agrees (squareRoot (record Integer {negative := false, magnitude := 0})) false 0)) && (agrees (squareRoot (record Integer {negative := false, magnitude := 589824})) false 196608)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: measures_angles_as_mf_web_does,
+  parameters: [],
+  statement: (((((((((((((agrees (arg (record Integer {negative := false, magnitude := 1}) (record Integer {negative := false, magnitude := 1})) false 47185919) && (agrees (arg (record Integer {negative := true, magnitude := 3}) (record Integer {negative := false, magnitude := 4})) false 133032729)) && (agrees (arg (record Integer {negative := false, magnitude := 0}) (record Integer {negative := true, magnitude := 5})) true 94371840)) && (agrees (arg (record Integer {negative := false, magnitude := 5}) (record Integer {negative := false, magnitude := 0})) false 0)) && (agrees (arg (record Integer {negative := true, magnitude := 1}) (record Integer {negative := true, magnitude := 1})) true 141557761)) && (agrees (arg (record Integer {negative := false, magnitude := 100000}) (record Integer {negative := false, magnitude := 1})) false 601)) && (agrees (arg (record Integer {negative := false, magnitude := 3}) (record Integer {negative := true, magnitude := 7})) true 70046355)) && (agrees (arg (record Integer {negative := true, magnitude := 7}) (record Integer {negative := true, magnitude := 3})) true 164418195)) && (agrees (arg (record Integer {negative := true, magnitude := 9}) (record Integer {negative := false, magnitude := 2})) false 175606276)) && (agrees (arg (record Integer {negative := false, magnitude := 2}) (record Integer {negative := false, magnitude := 9})) false 81234436)) && (agrees (arg (record Integer {negative := false, magnitude := 0}) (record Integer {negative := false, magnitude := 0})) false 0)) && (agrees (arg (record Integer {negative := false, magnitude := 2147483647}) (record Integer {negative := false, magnitude := 1073741824})) false 27855475)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: adds_pythagorean_as_mf_web_does,
+  parameters: [],
+  statement: ((((((agrees (pythagoreanAdd (record Integer {negative := false, magnitude := 196608}) (record Integer {negative := false, magnitude := 262144})) false 327680) && (agrees (pythagoreanAdd (record Integer {negative := true, magnitude := 5}) (record Integer {negative := false, magnitude := 12})) false 13)) && (agrees (pythagoreanAdd (record Integer {negative := false, magnitude := 1073741824}) (record Integer {negative := false, magnitude := 1073741824})) false 1518500248)) && (agrees (pythagoreanAdd (record Integer {negative := false, magnitude := 0}) (record Integer {negative := true, magnitude := 7})) false 7)) && (agrees (pythagoreanAdd (record Integer {negative := false, magnitude := 1}) (record Integer {negative := false, magnitude := 2147483647})) false 2147483644)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: sines_and_cosines_as_mf_web_does,
+  parameters: [],
+  statement: (((((((((((((((((((((agrees (project (sineCosine (record Integer {negative := false, magnitude := 0})) cosine) false 268435456) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 0})) sine) true 1)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 31457280})) cosine) false 232471922)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 31457280})) sine) false 134217731)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 47185920})) cosine) false 189812531)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 47185920})) sine) false 189812531)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 94371840})) cosine) false 1)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 94371840})) sine) false 268435456)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 141557760})) cosine) true 189812531)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 141557760})) sine) false 189812531)) && (agrees (project (sineCosine (record Integer {negative := true, magnitude := 62914560})) cosine) false 134217731)) && (agrees (project (sineCosine (record Integer {negative := true, magnitude := 62914560})) sine) true 232471922)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 209715200})) cosine) true 252246817)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 209715200})) sine) true 91810333)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 376963072})) cosine) false 268425234)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 376963072})) sine) true 2342509)) && (agrees (project (sineCosine (record Integer {negative := true, magnitude := 754974720})) cosine) false 268435456)) && (agrees (project (sineCosine (record Integer {negative := true, magnitude := 754974720})) sine) true 1)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 1048576000})) cosine) false 46613336)) && (agrees (project (sineCosine (record Integer {negative := false, magnitude := 1048576000})) sine) true 264357318)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}
