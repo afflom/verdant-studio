@@ -716,7 +716,7 @@ id = "VS-85"
 level = "build"
 suite = "prism"
 statement = "A Prism's closure closes a domain over every domain it shares a standard or a role with, to a fixed point, and spreads a cell to the same phase of each domain in that closure"
-theorems = ["Studio.Prism.Closure.closes_domains_that_share_a_standard", "Studio.Prism.Closure.closes_domains_through_shared_roles", "Studio.Prism.Closure.a_domain_that_shares_nothing_is_its_own_closure", "Studio.Prism.Closure.the_closure_is_a_fixed_point", "Studio.Prism.Closure.spreads_a_cell_to_the_same_phase_of_its_closure"]
+theorems = ["Studio.Prism.Closure.closes_domains_that_share_a_standard", "Studio.Prism.Closure.closes_domains_through_shared_roles", "Studio.Prism.Closure.a_domain_that_shares_nothing_is_its_own_closure", "Studio.Prism.Closure.the_closure_is_a_fixed_point", "Studio.Prism.Closure.spreads_a_cell_to_the_same_phase_of_its_closure", "Studio.Prism.Closure.spreads_only_to_cells_the_register_holds"]
 
 [[id]]
 id = "VS-86"
