@@ -1030,3 +1030,33 @@ level = "build"
 suite = "user"
 statement = "An agent acts under the same guards as a person (REQ-AGENT-USERS), so Studio.User enables an action for an agent exactly when it enables it for a person, for every journey, action and request"
 theorems = ["Studio.User.an_agent_is_held_to_the_guards_a_human_is_held_to"]
+
+[[id]]
+id = "VS-215"
+level = "build"
+suite = "brand"
+statement = "Verdant Studio has a cohesive brand that its UI carries (REQ-BRAND), and as a Prism of itself it generates its own brand from its seed, so Studio.Gui.Brand names the generated facets of the Verdant Studio Prism that make up the brand: its wordmark and its typeface"
+theorems = ["Studio.Gui.Brand.lists_the_parts_of_the_brand"]
+
+[[id]]
+id = "VS-216"
+level = "build"
+suite = "brand"
+statement = "The wordmark of the Verdant Studio brand is the image/svg+xml facet that Studio.PrismGeneration generates from the seed Verdant Studio, composed and never generated again"
+theorems = ["Studio.Gui.Brand.the_wordmark_is_the_svg_facet_of_the_seed"]
+
+[[id]]
+id = "VS-217"
+level = "build"
+suite = "brand"
+statement = "Studio.Gui.Brand composes only facets a generator produces, so it refuses a part no generator of the Verdant Studio Prism makes, naming it"
+theorems = ["Studio.Gui.Brand.refuses_a_part_the_brand_has_not"]
+failure = "refused: the Verdant Studio brand has no part palette; its parts are the wordmark and the typeface"
+negative = "VS-217"
+
+[[id]]
+id = "VS-218"
+level = "build"
+suite = "brand"
+statement = "The brand regenerates nothing: Studio.Gui.Brand answers each part with exactly the facet Studio.PrismGeneration generates for its media type from the seed Verdant Studio"
+theorems = ["Studio.Gui.Brand.the_brand_regenerates_nothing"]

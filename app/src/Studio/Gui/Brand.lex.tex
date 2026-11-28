@@ -1,0 +1,93 @@
+\begin{lexlean}{Studio.Gui.Brand}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.PrismGeneration}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: seed,
+  parameters: [],
+  result: Bytes,
+  body: 0x56657264616e742053747564696f
+}
+
+definition{
+  name: mediaOf,
+  parameters: [part : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same part 0x776f72646d61726b) then 0x696d6167652f7376672b786d6c else (if (Studio.Runtime::same part 0x7479706566616365) then 0x666f6e742f6f7466 else 0x)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: known,
+  parameters: [part : Bytes],
+  result: Bool,
+  body: (not ((prim length (mediaOf part) : Nat) =? 0)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: composed,
+  parameters: [part : Bytes],
+  result: Bytes,
+  body: (Studio.PrismGeneration::facet (mediaOf part) (seed)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: parts,
+  parameters: [],
+  result: Bytes,
+  body: 0x6272616e64206f66207468652056657264616e742053747564696f20507269736d2c20636f6d706f7365642066726f6d2074686520666163657473206974732067656e657261746f72732070726f647563652066726f6d2069747320736565642056657264616e742053747564696f0a776f72646d61726b3a20696d6167652f7376672b786d6c2c2066726f6d2053747564696f2e47656e657261746f722e566563746f72496d6167652e5376670a74797065666163653a20666f6e742f6f74662c2066726f6d2053747564696f2e47656e657261746f722e5479706566616365
+}
+
+definition{
+  name: partRefusal,
+  parameters: [part : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a207468652056657264616e742053747564696f206272616e6420686173206e6f207061727420 part : Bytes) 0x3b20697473207061727473206172652074686520776f72646d61726b20616e6420746865207479706566616365 : Bytes)
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (if ((prim length value : Nat) =? 0) then (parts) else (if (known value) then (composed value) else (partRefusal value))),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_brand_regenerates_nothing,
+  parameters: [part : Bytes],
+  statement: ((composed part) = (Studio.PrismGeneration::facet (mediaOf part) 0x56657264616e742053747564696f)),
+  proof: reflexivity{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: lists_the_parts_of_the_brand,
+  parameters: [],
+  statement: ((request 0x) = 0x6272616e64206f66207468652056657264616e742053747564696f20507269736d2c20636f6d706f7365642066726f6d2074686520666163657473206974732067656e657261746f72732070726f647563652066726f6d2069747320736565642056657264616e742053747564696f0a776f72646d61726b3a20696d6167652f7376672b786d6c2c2066726f6d2053747564696f2e47656e657261746f722e566563746f72496d6167652e5376670a74797065666163653a20666f6e742f6f74662c2066726f6d2053747564696f2e47656e657261746f722e5479706566616365),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_wordmark_is_the_svg_facet_of_the_seed,
+  parameters: [],
+  statement: ((request 0x776f72646d61726b) = 0x3c73766720786d6c6e733d22687474703a2f2f7777772e77332e6f72672f323030302f737667223e3c7465787420783d22302220793d2231656d223e56657264616e740a53747564696f3c2f746578743e3c2f7376673e),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_part_the_brand_has_not,
+  parameters: [],
+  statement: ((request 0x70616c65747465) = 0x726566757365643a207468652056657264616e742053747564696f206272616e6420686173206e6f20706172742070616c657474653b20697473207061727473206172652074686520776f72646d61726b20616e6420746865207479706566616365),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
