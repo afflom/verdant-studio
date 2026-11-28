@@ -28,3 +28,9 @@ Feature: typeface
     Given the cycle spec model in app/src/Studio/Generator/Typeface/Spec.lex.tex
     When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Spec.divides_a_circle_into_eight_octants_as_metafont_does and Studio.Generator.Typeface.Spec.divides_a_triangle_at_its_corners_as_metafont_does and Studio.Generator.Typeface.Spec.turns_a_reversal_counterclockwise_as_metafont_does and Studio.Generator.Typeface.Spec.turns_a_doubled_reversal_clockwise_as_metafont_does and Studio.Generator.Typeface.Spec.splits_an_inflected_curve_as_metafont_does
     Then each path gets the octant knots and the turning number mf.web's make_spec computes for the same path
+
+  @VS-93 @build
+  Scenario: The typeface generator strokes a cycle spec with a pen as METAFONT does: make_pen's offsets, offset_prep and fill_envelope of mf.web 2.71828182 give mf.web's envelope outline segment for segment
+    Given the stroke envelope model in app/src/Studio/Generator/Typeface/Envelope.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Envelope.strokes_a_circle_with_a_round_pen_as_metafont_does and Studio.Generator.Typeface.Envelope.strokes_a_triangle_with_a_flat_pen_as_metafont_does and Studio.Generator.Typeface.Envelope.strokes_an_inflected_curve_with_a_slanted_pen_as_metafont_does and Studio.Generator.Typeface.Envelope.strokes_a_line_there_and_back_with_a_round_pen_as_metafont_does
+    Then each path and pen get the envelope lines and cubics mf.web's fill_envelope traces for the same stroke

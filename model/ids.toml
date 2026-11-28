@@ -766,3 +766,10 @@ level = "build"
 suite = "typeface"
 statement = "The typeface generator cuts a cyclic path into octants as METAFONT does: make_spec of mf.web 2.71828182 (quadrant and octant subdivision, dead cubics, octant boundaries) gives mf.web's cycle spec knot for knot and its turning number"
 theorems = ["Studio.Generator.Typeface.Spec.divides_a_circle_into_eight_octants_as_metafont_does", "Studio.Generator.Typeface.Spec.divides_a_triangle_at_its_corners_as_metafont_does", "Studio.Generator.Typeface.Spec.turns_a_reversal_counterclockwise_as_metafont_does", "Studio.Generator.Typeface.Spec.turns_a_doubled_reversal_clockwise_as_metafont_does", "Studio.Generator.Typeface.Spec.splits_an_inflected_curve_as_metafont_does"]
+
+[[id]]
+id = "VS-93"
+level = "build"
+suite = "typeface"
+statement = "The typeface generator strokes a cycle spec with a pen as METAFONT does: make_pen's offsets, offset_prep and fill_envelope of mf.web 2.71828182 give mf.web's envelope outline segment for segment"
+theorems = ["Studio.Generator.Typeface.Envelope.strokes_a_circle_with_a_round_pen_as_metafont_does", "Studio.Generator.Typeface.Envelope.strokes_a_triangle_with_a_flat_pen_as_metafont_does", "Studio.Generator.Typeface.Envelope.strokes_an_inflected_curve_with_a_slanted_pen_as_metafont_does", "Studio.Generator.Typeface.Envelope.strokes_a_line_there_and_back_with_a_round_pen_as_metafont_does"]

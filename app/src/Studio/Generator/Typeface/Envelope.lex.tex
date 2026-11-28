@@ -1,0 +1,305 @@
+\begin{lexlean}{Studio.Generator.Typeface.Envelope}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.Typeface.Scaled}
+\importmodule{Studio.Generator.Typeface.Choices}
+\importmodule{Studio.Generator.Typeface.Spec}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: pointX,
+  parameters: [l : (List Nat), i : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Choices::unzigzag (Studio.Generator.Typeface.Choices::item l (prim multiply 2 i : Nat)))
+}
+
+definition{
+  name: pointY,
+  parameters: [l : (List Nat), i : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Choices::unzigzag (Studio.Generator.Typeface.Choices::item l ((prim multiply 2 i : Nat) + 1)))
+}
+
+definition{
+  name: points,
+  parameters: [l : (List Nat)],
+  result: Nat,
+  body: (prim quotient (Studio.Generator.Typeface.Choices::size l) 2 0 : Nat)
+}
+
+definition{
+  name: point,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer],
+  result: (List Nat),
+  body: (cons (Studio.Generator.Typeface.Choices::zigzag x) (cons (Studio.Generator.Typeface.Choices::zigzag y) (nil Nat)))
+}
+
+definition{
+  name: edgeOctant,
+  parameters: [dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer],
+  result: Nat,
+  body: (let o0 : Nat := (if ((not (project dx negative)) && (not ((project dx magnitude) =? 0))) then 1 else (if ((project dx magnitude) =? 0) then (if ((not (project dy negative)) && (not ((project dy magnitude) =? 0))) then 1 else 2) else 2)); (let ax : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project dx magnitude)); (let ay : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::signed false (project dy magnitude)); (let o1 : Nat := (if (project dy negative) then (o0 + 2) else (if ((project dy magnitude) =? 0) then (if (1 <? o0) then 4 else o0) else o0)); (if (project (Studio.Generator.Typeface.Scaled::minus ax ay) negative) then (o1 + 4) else o1)))))
+}
+
+definition{
+  name: stamp,
+  parameters: [poly : (List Nat), i : Nat],
+  result: Nat,
+  body: (let m : Nat := (points poly); (let j : Nat := (prim remainder (i + 1) m 0 : Nat); (edgeOctant (Studio.Generator.Typeface.Scaled::minus (pointX poly j) (pointX poly i)) (Studio.Generator.Typeface.Scaled::minus (pointY poly j) (pointY poly i)))))
+}
+
+definition{
+  name: firstOctantStart,
+  parameters: [poly : (List Nat), i : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => 0
+    | Nat.succ rest => (let m : Nat := (points poly); (if ((Studio.Generator.Typeface.Spec::octantNumber (stamp poly i)) <? (Studio.Generator.Typeface.Spec::octantNumber (stamp poly (prim subtract i 1 : Nat)))) then i else (if ((i + 1) =? m) then 0 else (firstOctantStart poly (i + 1) rest))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: octantRun,
+  parameters: [poly : (List Nat), s : Nat, code : Nat, n : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => n
+    | Nat.succ rest => (if ((stamp poly (prim remainder (s + n) (points poly) 0 : Nat)) =? code) then (octantRun poly s code (n + 1) rest) else n)),
+  recursive_argument: steps
+}
+
+definition{
+  name: octantStart,
+  parameters: [poly : (List Nat), s : Nat, j : Nat, k : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => s
+    | Nat.succ rest => (if (j =? k) then s else (let m : Nat := (points poly); (octantStart poly (prim remainder (s + (octantRun poly s (Studio.Generator.Typeface.Spec::octantCode j) 0 m)) m 0 : Nat) (j + 1) k rest)))),
+  recursive_argument: steps
+}
+
+definition{
+  name: skewedRun,
+  parameters: [poly : (List Nat), s : Nat, j : Nat, code : Nat, odd : Bool, acc : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => acc
+    | Nat.succ rest => (let i : Nat := (prim remainder (s + j) (points poly) 0 : Nat); (let w : Studio.Generator.Typeface.Spec::Pair := (Studio.Generator.Typeface.Spec::skewed (pointX poly i) (pointY poly i) code); (let pt : (List Nat) := (point (project w first) (project w second)); (skewedRun poly s (j + 1) code odd (if odd then (Studio.Generator.Typeface.Spec::concatenated acc pt) else (Studio.Generator.Typeface.Spec::concatenated pt acc)) rest))))),
+  recursive_argument: steps
+}
+
+structure{
+  name: Offsets,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: n, type: Nat}, {name: w, type: (List Nat)}]
+}
+
+definition{
+  name: offsets,
+  parameters: [poly : (List Nat), k : Nat],
+  result: Offsets,
+  body: (let m : Nat := (points poly); (let code : Nat := (Studio.Generator.Typeface.Spec::octantCode k); (let hh : Nat := (if (m =? 1) then 0 else (firstOctantStart poly 1 m)); (let single : Bool := (m =? 1); (let s : Nat := (if single then 0 else (octantStart poly hh 1 k 8)); (let n0 : Nat := (if single then 0 else (octantRun poly s code 0 m)); (let l0 : (List Nat) := (skewedRun poly s 0 code ((prim remainder k 2 0 : Nat) =? 1) (nil Nat) (n0 + 1)); (let c : (List Nat) := (Studio.Generator.Typeface.Spec::taken l0 2); (let front : Bool := ((n0 =? 0) || (not ((project (Studio.Generator.Typeface.Scaled::minus (pointY l0 0) (pointY l0 1)) magnitude) =? 0))); (let l1 : (List Nat) := (if front then (Studio.Generator.Typeface.Spec::concatenated c l0) else l0); (let n1 : Nat := (if front then (n0 + 1) else n0); (let e : Nat := (prim subtract (points l1) 1 : Nat); (let last : Bool := (not ((project (Studio.Generator.Typeface.Scaled::minus (pointX l1 e) (pointX l1 (prim subtract e 1 : Nat))) magnitude) =? 0)); (record Offsets {n := (if last then n1 else (prim subtract n1 1 : Nat)), w := (if last then (Studio.Generator.Typeface.Spec::concatenated l1 (point (pointX l1 e) (pointY l1 e))) else l1)}))))))))))))))
+}
+
+definition{
+  name: splitForOffset,
+  parameters: [p : Studio.Generator.Typeface.Spec::Knot, q : Studio.Generator.Typeface.Spec::Knot, t : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Spec::Split,
+  body: (let sp : Studio.Generator.Typeface.Spec::Split := (Studio.Generator.Typeface.Spec::split p q t (project q x) (project q y)); (let r : Studio.Generator.Typeface.Spec::Knot := (project sp r); (let ry : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r y) (project p y)) negative) then (project p y) else (if (project (Studio.Generator.Typeface.Scaled::minus (project q y) (project r y)) negative) then (project q y) else (project r y))); (let rx : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r x) (project p x)) negative) then (project p x) else (if (project (Studio.Generator.Typeface.Scaled::minus (project q x) (project r x)) negative) then (project q x) else (project r x))); (record Studio.Generator.Typeface.Spec::Split {p := (project sp p), r := (record Studio.Generator.Typeface.Spec::Knot {leftType := (project r leftType), rightType := (project r rightType), x := rx, y := ry, leftX := (project r leftX), leftY := (project r leftY), rightX := (project r rightX), rightY := (project r rightY)}), q := (project sp q)})))))
+}
+
+structure{
+  name: Derivative,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: x0, type: Studio.Generator.Typeface.Scaled::Integer}, {name: x1, type: Studio.Generator.Typeface.Scaled::Integer}, {name: x2, type: Studio.Generator.Typeface.Scaled::Integer}, {name: y0, type: Studio.Generator.Typeface.Scaled::Integer}, {name: y1, type: Studio.Generator.Typeface.Scaled::Integer}, {name: y2, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: negatedDerivative,
+  parameters: [d : Derivative],
+  result: Derivative,
+  body: (record Derivative {x0 := (Studio.Generator.Typeface.Scaled::negated (project d x0)), x1 := (Studio.Generator.Typeface.Scaled::negated (project d x1)), x2 := (Studio.Generator.Typeface.Scaled::negated (project d x2)), y0 := (Studio.Generator.Typeface.Scaled::negated (project d y0)), y1 := (Studio.Generator.Typeface.Scaled::negated (project d y1)), y2 := (Studio.Generator.Typeface.Scaled::negated (project d y2))})
+}
+
+structure{
+  name: Test,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: t0, type: Studio.Generator.Typeface.Scaled::Integer}, {name: t1, type: Studio.Generator.Typeface.Scaled::Integer}, {name: t2, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: tested,
+  parameters: [w : (List Nat), k : Nat, kk : Nat, d : Derivative],
+  result: Test,
+  body: (let du : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (pointX w kk) (pointX w k)); (let dv : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (pointY w kk) (pointY w k)); (if ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false (project dv magnitude)) (Studio.Generator.Typeface.Scaled::signed false (project du magnitude))) negative) || ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false (project dv magnitude)) (Studio.Generator.Typeface.Scaled::signed false (project du magnitude))) magnitude) =? 0)) then (let s : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction dv du); (record Test {t0 := (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction (project d x0) s) (project d y0)), t1 := (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction (project d x1) s) (project d y1)), t2 := (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction (project d x2) s) (project d y2))})) else (let s : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::makeFraction du dv); (record Test {t0 := (Studio.Generator.Typeface.Scaled::minus (project d x0) (Studio.Generator.Typeface.Scaled::takeFraction (project d y0) s)), t1 := (Studio.Generator.Typeface.Scaled::minus (project d x1) (Studio.Generator.Typeface.Scaled::takeFraction (project d y1) s)), t2 := (Studio.Generator.Typeface.Scaled::minus (project d x2) (Studio.Generator.Typeface.Scaled::takeFraction (project d y2) s))})))))
+}
+
+definition{
+  name: finishedOffsets,
+  parameters: [p : Studio.Generator.Typeface.Spec::Knot, q : Studio.Generator.Typeface.Spec::Knot, k : Nat, d : Derivative, rising : Bool, w : (List Nat), n : Nat, steps : Nat],
+  result: Studio.Generator.Typeface.Spec::Run,
+  body: (match steps
+    | Nat.zero => (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::encoded (record Studio.Generator.Typeface.Spec::Knot {leftType := (project p leftType), rightType := k, x := (project p x), y := (project p y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project p rightX), rightY := (project p rightY)})), next := q})
+    | Nat.succ rest => (let p1 : Studio.Generator.Typeface.Spec::Knot := (record Studio.Generator.Typeface.Spec::Knot {leftType := (project p leftType), rightType := k, x := (project p x), y := (project p y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project p rightX), rightY := (project p rightY)}); (if (if rising then (k =? n) else (k =? 1)) then (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::encoded p1), next := q}) else (let kk : Nat := (if rising then (k + 1) else (prim subtract k 1 : Nat)); (let ts : Test := (tested w k kk d); (let t : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::crossing (project ts t0) (project ts t1) (project ts t2)); (if ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) t) negative) || ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) t) magnitude) =? 0)) then (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::encoded p1), next := q}) else (let sp : Studio.Generator.Typeface.Spec::Split := (splitForOffset p1 q t); (let r : Studio.Generator.Typeface.Spec::Knot := (project sp r); (let q1 : Studio.Generator.Typeface.Spec::Knot := (project sp q); (let vx : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d x0) (project d x1) t); (let x1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d x1) (project d x2) t); (let x0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween vx x1 t); (let vy : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d y0) (project d y1) t); (let y1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d y1) (project d y2) t); (let y0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween vy y1 t); (let e1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project ts t1) (project ts t2) t); (let e2 : Studio.Generator.Typeface.Scaled::Integer := (if ((not (project e1 negative)) && (not ((project e1 magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false 0) else e1); (let u : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::crossing (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::negated e2) (Studio.Generator.Typeface.Scaled::negated (project ts t2))); (if (project (Studio.Generator.Typeface.Scaled::minus u (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (let sp2 : Studio.Generator.Typeface.Spec::Split := (splitForOffset r q1 u); (let wx : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x1 (project d x2) u); (let x1b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x0 x1 u); (let x2b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x1b wx u); (let wy : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y1 (project d y2) u); (let y1b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y0 y1 u); (let y2b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y1b wy u); (let inner : Studio.Generator.Typeface.Spec::Run := (finishedOffsets (project sp2 p) (record Studio.Generator.Typeface.Spec::Knot {leftType := (project (project sp2 r) leftType), rightType := k, x := (project (project sp2 r) x), y := (project (project sp2 r) y), leftX := (project (project sp2 r) leftX), leftY := (project (project sp2 r) leftY), rightX := (project (project sp2 r) rightX), rightY := (project (project sp2 r) rightY)}) kk (record Derivative {x0 := x0, x1 := x1b, x2 := x2b, y0 := y0, y1 := y1b, y2 := y2b}) rising w n rest); (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::concatenated (Studio.Generator.Typeface.Spec::encoded (project sp p)) (Studio.Generator.Typeface.Spec::concatenated (project inner knots) (Studio.Generator.Typeface.Spec::encoded (project inner next)))), next := (project sp2 q)}))))))))) else (let inner : Studio.Generator.Typeface.Spec::Run := (finishedOffsets r q1 kk (record Derivative {x0 := x0, x1 := x1, x2 := (project d x2), y0 := y0, y1 := y1, y2 := (project d y2)}) rising w n rest); (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::concatenated (Studio.Generator.Typeface.Spec::encoded (project sp p)) (project inner knots)), next := (project inner next)})))))))))))))))))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: slopeIndex,
+  parameters: [w : (List Nat), n : Nat, k : Nat, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => k
+    | Nat.succ rest => (if (k =? n) then k else (if (0 <? (Studio.Generator.Typeface.Choices::productOrder dy (Studio.Generator.Typeface.Scaled::signed false (project (Studio.Generator.Typeface.Scaled::minus (pointX w (k + 1)) (pointX w k)) magnitude)) dx (Studio.Generator.Typeface.Scaled::signed false (project (Studio.Generator.Typeface.Scaled::minus (pointY w (k + 1)) (pointY w k)) magnitude)))) then (slopeIndex w n (k + 1) dx dy rest) else k))),
+  recursive_argument: steps
+}
+
+definition{
+  name: derivDoubled,
+  parameters: [d : Derivative, m : Nat, steps : Nat],
+  result: Derivative,
+  body: (match steps
+    | Nat.zero => d
+    | Nat.succ rest => (if (m <? 134217728) then (derivDoubled (record Derivative {x0 := (Studio.Generator.Typeface.Scaled::plus (project d x0) (project d x0)), x1 := (Studio.Generator.Typeface.Scaled::plus (project d x1) (project d x1)), x2 := (Studio.Generator.Typeface.Scaled::plus (project d x2) (project d x2)), y0 := (Studio.Generator.Typeface.Scaled::plus (project d y0) (project d y0)), y1 := (Studio.Generator.Typeface.Scaled::plus (project d y1) (project d y1)), y2 := (Studio.Generator.Typeface.Scaled::plus (project d y2) (project d y2))}) (prim multiply 2 m : Nat) rest) else d)),
+  recursive_argument: steps
+}
+
+definition{
+  name: offsetCubic,
+  parameters: [p : Studio.Generator.Typeface.Spec::Knot, q : Studio.Generator.Typeface.Spec::Knot, w : (List Nat), n : Nat],
+  result: Studio.Generator.Typeface.Spec::Run,
+  body: (if (n <=? 1) then (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::encoded (record Studio.Generator.Typeface.Spec::Knot {leftType := (project p leftType), rightType := 1, x := (project p x), y := (project p y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project p rightX), rightY := (project p rightY)})), next := q}) else (let d0 : Derivative := (record Derivative {x0 := (Studio.Generator.Typeface.Scaled::minus (project p rightX) (project p x)), x1 := (Studio.Generator.Typeface.Scaled::minus (project q leftX) (project p rightX)), x2 := (Studio.Generator.Typeface.Scaled::minus (project q x) (project q leftX)), y0 := (Studio.Generator.Typeface.Scaled::minus (project p rightY) (project p y)), y1 := (Studio.Generator.Typeface.Scaled::minus (project q leftY) (project p rightY)), y2 := (Studio.Generator.Typeface.Scaled::minus (project q y) (project q leftY))}); (let mc : Nat := (if ((if ((if ((project (project d0 x0) magnitude) <? (project (project d0 x1) magnitude)) then (project (project d0 x1) magnitude) else (project (project d0 x0) magnitude)) <? (if ((project (project d0 x2) magnitude) <? (project (project d0 y0) magnitude)) then (project (project d0 y0) magnitude) else (project (project d0 x2) magnitude))) then (if ((project (project d0 x2) magnitude) <? (project (project d0 y0) magnitude)) then (project (project d0 y0) magnitude) else (project (project d0 x2) magnitude)) else (if ((project (project d0 x0) magnitude) <? (project (project d0 x1) magnitude)) then (project (project d0 x1) magnitude) else (project (project d0 x0) magnitude))) <? (if ((project (project d0 y1) magnitude) <? (project (project d0 y2) magnitude)) then (project (project d0 y2) magnitude) else (project (project d0 y1) magnitude))) then (if ((project (project d0 y1) magnitude) <? (project (project d0 y2) magnitude)) then (project (project d0 y2) magnitude) else (project (project d0 y1) magnitude)) else (if ((if ((project (project d0 x0) magnitude) <? (project (project d0 x1) magnitude)) then (project (project d0 x1) magnitude) else (project (project d0 x0) magnitude)) <? (if ((project (project d0 x2) magnitude) <? (project (project d0 y0) magnitude)) then (project (project d0 y0) magnitude) else (project (project d0 x2) magnitude))) then (if ((project (project d0 x2) magnitude) <? (project (project d0 y0) magnitude)) then (project (project d0 y0) magnitude) else (project (project d0 x2) magnitude)) else (if ((project (project d0 x0) magnitude) <? (project (project d0 x1) magnitude)) then (project (project d0 x1) magnitude) else (project (project d0 x0) magnitude)))); (if (mc =? 0) then (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::encoded p), next := q}) else (let d : Derivative := (derivDoubled d0 mc 30); (let z0 : Bool := (((project (project d x0) magnitude) =? 0) && ((project (project d y0) magnitude) =? 0)); (let z1 : Bool := (((project (project d x1) magnitude) =? 0) && ((project (project d y1) magnitude) =? 0)); (let dx : Studio.Generator.Typeface.Scaled::Integer := (if (not z0) then (project d x0) else (if (not z1) then (project d x1) else (project d x2))); (let dy : Studio.Generator.Typeface.Scaled::Integer := (if (not z0) then (project d y0) else (if (not z1) then (project d y1) else (project d y2))); (if ((project dx magnitude) =? 0) then (finishedOffsets p q n (negatedDerivative d) false w n ((prim multiply 2 n : Nat) + 4)) else (let k : Nat := (slopeIndex w n 1 dx dy n); (let ts : Test := (if (k =? 1) then (record Test {t0 := (Studio.Generator.Typeface.Scaled::signed false 0), t1 := (Studio.Generator.Typeface.Scaled::signed false 0), t2 := (Studio.Generator.Typeface.Scaled::signed false 0)}) else (tested w k (prim subtract k 1 : Nat) d)); (let t : Studio.Generator.Typeface.Scaled::Integer := (if (k =? 1) then (Studio.Generator.Typeface.Scaled::signed false 268435457) else (Studio.Generator.Typeface.Spec::crossing (Studio.Generator.Typeface.Scaled::negated (project ts t0)) (Studio.Generator.Typeface.Scaled::negated (project ts t1)) (Studio.Generator.Typeface.Scaled::negated (project ts t2)))); (if ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) t) negative) || ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 268435456) t) magnitude) =? 0)) then (finishedOffsets p q k d true w n ((prim multiply 2 n : Nat) + 4)) else (let sp : Studio.Generator.Typeface.Spec::Split := (splitForOffset p q t); (let q1 : Studio.Generator.Typeface.Spec::Knot := (project sp q); (let x1a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d x0) (project d x1) t); (let x1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d x1) (project d x2) t); (let x2a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x1a x1 t); (let y1a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d y0) (project d y1) t); (let y1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project d y1) (project d y2) t); (let y2a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y1a y1 t); (let a : Studio.Generator.Typeface.Spec::Run := (finishedOffsets (project sp p) (project sp r) k (record Derivative {x0 := (project d x0), x1 := x1a, x2 := x2a, y0 := (project d y0), y1 := y1a, y2 := y2a}) true w n ((prim multiply 2 n : Nat) + 4)); (let e1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween (project ts t1) (project ts t2) t); (let e2 : Studio.Generator.Typeface.Scaled::Integer := (if (project e1 negative) then (Studio.Generator.Typeface.Scaled::signed false 0) else e1); (let u : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::crossing (Studio.Generator.Typeface.Scaled::signed false 0) e2 (project ts t2)); (if (project (Studio.Generator.Typeface.Scaled::minus u (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (let sp2 : Studio.Generator.Typeface.Spec::Split := (splitForOffset (project a next) q1 u); (let x1c : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x1 (project d x2) u); (let x1b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x2a x1 u); (let x0a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween x1b x1c u); (let y1c : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y1 (project d y2) u); (let y1b : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y2a y1 u); (let y0a : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Spec::wayBetween y1b y1c u); (let b : Studio.Generator.Typeface.Spec::Run := (finishedOffsets (project sp2 r) (project sp2 q) k (record Derivative {x0 := x0a, x1 := x1c, x2 := (project d x2), y0 := y0a, y1 := y1c, y2 := (project d y2)}) true w n ((prim multiply 2 n : Nat) + 4)); (let c : Studio.Generator.Typeface.Spec::Run := (finishedOffsets (project sp2 p) (Studio.Generator.Typeface.Spec::knotAt (project b knots) 0) (prim subtract k 1 : Nat) (negatedDerivative (record Derivative {x0 := x2a, x1 := x1b, x2 := x0a, y0 := y2a, y1 := y1b, y2 := y0a})) false w n ((prim multiply 2 n : Nat) + 4)); (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::concatenated (project a knots) (Studio.Generator.Typeface.Spec::concatenated (project c knots) (Studio.Generator.Typeface.Spec::concatenated (Studio.Generator.Typeface.Spec::encoded (project c next)) (Studio.Generator.Typeface.Spec::dropped (project b knots) 0 8)))), next := (project b next)})))))))))) else (let c : Studio.Generator.Typeface.Spec::Run := (finishedOffsets (project a next) q1 (prim subtract k 1 : Nat) (negatedDerivative (record Derivative {x0 := x2a, x1 := x1, x2 := (project d x2), y0 := y2a, y1 := y1, y2 := (project d y2)})) false w n ((prim multiply 2 n : Nat) + 4)); (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::concatenated (project a knots) (project c knots)), next := (project c next)})))))))))))))))))))))))))))))
+}
+
+definition{
+  name: deadFree,
+  parameters: [l : (List Nat), q : Studio.Generator.Typeface.Spec::Knot, p : Studio.Generator.Typeface.Spec::Knot, i : Nat, acc : (List Nat), steps : Nat],
+  result: Studio.Generator.Typeface.Spec::Run,
+  body: (match steps
+    | Nat.zero => (record Studio.Generator.Typeface.Spec::Run {knots := acc, next := q})
+    | Nat.succ rest => (let last : Bool := ((Studio.Generator.Typeface.Spec::knots l) <=? (i + 1)); (let r : Studio.Generator.Typeface.Spec::Knot := (if last then q else (Studio.Generator.Typeface.Spec::knotAt l (i + 1))); (let dead : Bool := (((((project (Studio.Generator.Typeface.Scaled::minus (project p x) (project p rightX)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (project p y) (project p rightY)) magnitude) =? 0)) && (((project (Studio.Generator.Typeface.Scaled::minus (project p x) (project r leftX)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (project p y) (project r leftY)) magnitude) =? 0))) && (((project (Studio.Generator.Typeface.Scaled::minus (project p x) (project r x)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (project p y) (project r y)) magnitude) =? 0))); (if dead then (if last then (record Studio.Generator.Typeface.Spec::Run {knots := acc, next := (record Studio.Generator.Typeface.Spec::Knot {leftType := (project p leftType), rightType := (project r rightType), x := (project r x), y := (project r y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project r rightX), rightY := (project r rightY)})}) else (deadFree l q (record Studio.Generator.Typeface.Spec::Knot {leftType := (project p leftType), rightType := (project r rightType), x := (project r x), y := (project r y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project r rightX), rightY := (project r rightY)}) (i + 1) acc rest)) else (if last then (record Studio.Generator.Typeface.Spec::Run {knots := (Studio.Generator.Typeface.Spec::concatenated acc (Studio.Generator.Typeface.Spec::encoded p)), next := q}) else (deadFree l q r (i + 1) (Studio.Generator.Typeface.Spec::concatenated acc (Studio.Generator.Typeface.Spec::encoded p)) rest))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: prepared,
+  parameters: [out : (List Nat), p : Studio.Generator.Typeface.Spec::Knot, rest : (List Nat), w : (List Nat), n : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (Studio.Generator.Typeface.Spec::concatenated out (Studio.Generator.Typeface.Spec::encoded p))
+    | Nat.succ more => (if ((project p rightType) =? 0) then (Studio.Generator.Typeface.Spec::concatenated out (Studio.Generator.Typeface.Spec::encoded p)) else (let c : Studio.Generator.Typeface.Spec::Run := (offsetCubic p (Studio.Generator.Typeface.Spec::knotAt rest 0) w n); (let f : Studio.Generator.Typeface.Spec::Run := (deadFree (project c knots) (project c next) (Studio.Generator.Typeface.Spec::knotAt (project c knots) 0) 0 (nil Nat) (Studio.Generator.Typeface.Spec::knots (project c knots))); (prepared (Studio.Generator.Typeface.Spec::concatenated out (project f knots)) (project f next) (Studio.Generator.Typeface.Spec::dropped rest 0 8) w n more))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: segment,
+  parameters: [kind : Nat, a : Studio.Generator.Typeface.Spec::Pair, b : Studio.Generator.Typeface.Spec::Pair, c : Studio.Generator.Typeface.Spec::Pair, d : Studio.Generator.Typeface.Spec::Pair],
+  result: (List Nat),
+  body: (cons kind (Studio.Generator.Typeface.Spec::concatenated (point (project a first) (project a second)) (Studio.Generator.Typeface.Spec::concatenated (point (project b first) (project b second)) (Studio.Generator.Typeface.Spec::concatenated (point (project c first) (project c second)) (point (project d first) (project d second))))))
+}
+
+definition{
+  name: offsetPoint,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer, w : (List Nat), k : Nat, o : Nat],
+  result: Studio.Generator.Typeface.Spec::Pair,
+  body: (Studio.Generator.Typeface.Spec::unskewed (Studio.Generator.Typeface.Scaled::plus x (pointX w k)) (Studio.Generator.Typeface.Scaled::plus y (pointY w k)) o)
+}
+
+definition{
+  name: line,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer, w : (List Nat), j : Nat, k : Nat, o : Nat],
+  result: (List Nat),
+  body: (if (((project (Studio.Generator.Typeface.Scaled::minus (pointX w j) (pointX w k)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (pointY w j) (pointY w k)) magnitude) =? 0)) then (nil Nat) else (let a : Studio.Generator.Typeface.Spec::Pair := (offsetPoint x y w j o); (let b : Studio.Generator.Typeface.Spec::Pair := (offsetPoint x y w k o); (segment 0 a a b b))))
+}
+
+structure{
+  name: Step,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: segments, type: (List Nat)}, {name: k, type: Nat}]
+}
+
+definition{
+  name: approached,
+  parameters: [r : Studio.Generator.Typeface.Spec::Knot, k : Nat, w : (List Nat), o : Nat, acc : (List Nat), steps : Nat],
+  result: Step,
+  body: (match steps
+    | Nat.zero => (record Step {segments := acc, k := k})
+    | Nat.succ rest => (if ((project r rightType) =? k) then (record Step {segments := acc, k := k}) else (let kk : Nat := (if (k <? (project r rightType)) then (k + 1) else (prim subtract k 1 : Nat)); (let a : Studio.Generator.Typeface.Spec::Pair := (offsetPoint (project r x) (project r y) w k o); (let b : Studio.Generator.Typeface.Spec::Pair := (offsetPoint (project r x) (project r y) w kk o); (approached r kk w o (Studio.Generator.Typeface.Spec::concatenated acc (segment 0 a a b b)) rest)))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: moves,
+  parameters: [l : (List Nat), i : Nat, k : Nat, w : (List Nat), n : Nat, o : Nat, acc : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => acc
+    | Nat.succ rest => (let r : Studio.Generator.Typeface.Spec::Knot := (Studio.Generator.Typeface.Spec::knotAt l i); (let st : Step := (approached r k w o acc (n + 2)); (let k1 : Nat := (project st k); (if ((Studio.Generator.Typeface.Spec::knots l) <=? (i + 1)) then (project st segments) else (let s : Studio.Generator.Typeface.Spec::Knot := (Studio.Generator.Typeface.Spec::knotAt l (i + 1)); (moves l (i + 1) k1 w n o (Studio.Generator.Typeface.Spec::concatenated (project st segments) (segment 1 (offsetPoint (project r x) (project r y) w k1 o) (offsetPoint (project r rightX) (project r rightY) w k1 o) (offsetPoint (project s leftX) (project s leftY) w k1 o) (offsetPoint (project s x) (project s y) w k1 o))) rest))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: octantEnd,
+  parameters: [l : (List Nat), i : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => i
+    | Nat.succ rest => (if ((Studio.Generator.Typeface.Choices::kind l i 1) =? 0) then i else (octantEnd l (i + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: envelopeFrom,
+  parameters: [l : (List Nat), poly : (List Nat), i : Nat, acc : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => acc
+    | Nat.succ rest => (let e : Nat := (octantEnd l i (Studio.Generator.Typeface.Spec::knots l)); (let p : Studio.Generator.Typeface.Spec::Knot := (Studio.Generator.Typeface.Spec::knotAt l i); (let q : Studio.Generator.Typeface.Spec::Knot := (Studio.Generator.Typeface.Spec::knotAt l e); (let o : Nat := (project (project p leftX) magnitude); (let odd : Bool := ((prim remainder (Studio.Generator.Typeface.Spec::octantNumber o) 2 0 : Nat) =? 1); (let of : Offsets := (offsets poly (Studio.Generator.Typeface.Spec::octantNumber o)); (let n : Nat := (project of n); (let w : (List Nat) := (project of w); (let entry : Nat := (if ((project (project p leftY) magnitude) =? 1) then (n + 1) else 0); (let start : Nat := (if odd then 0 else (n + 1)); (let finish : Nat := (if odd then (n + 1) else 0); (let a0 : (List Nat) := (if (entry =? start) then (nil Nat) else (line (project p x) (project p y) w entry start o)); (let pr : (List Nat) := (prepared (nil Nat) p (Studio.Generator.Typeface.Spec::taken (Studio.Generator.Typeface.Spec::dropped l 0 (prim multiply 8 (i + 1) : Nat)) (prim multiply 8 (prim subtract e i : Nat) : Nat)) w n ((prim multiply 2 (prim subtract e i : Nat) : Nat) + 1)); (let m : Studio.Generator.Typeface.Spec::Knot := (Studio.Generator.Typeface.Spec::knotAt pr (prim subtract (Studio.Generator.Typeface.Spec::knots pr) 1 : Nat)); (let pr1 : (List Nat) := (if odd then (Studio.Generator.Typeface.Spec::concatenated (Studio.Generator.Typeface.Spec::taken pr (prim multiply 8 (prim subtract (Studio.Generator.Typeface.Spec::knots pr) 1 : Nat) : Nat)) (Studio.Generator.Typeface.Spec::encoded (record Studio.Generator.Typeface.Spec::Knot {leftType := (project m leftType), rightType := (n + 1), x := (project m x), y := (project m y), leftX := (project m leftX), leftY := (project m leftY), rightX := (project m rightX), rightY := (project m rightY)}))) else pr); (let mv : (List Nat) := (moves pr1 0 start w n o (nil Nat) (Studio.Generator.Typeface.Spec::knots pr1)); (let exit : Bool := (if odd then ((project (project m rightY) magnitude) =? 0) else ((project (project m rightY) magnitude) =? 1)); (let a1 : (List Nat) := (if exit then (line (project m x) (project m y) w (if odd then (n + 1) else 0) (if odd then 0 else (n + 1)) o) else (nil Nat)); (let acc1 : (List Nat) := (Studio.Generator.Typeface.Spec::concatenated acc (Studio.Generator.Typeface.Spec::concatenated a0 (Studio.Generator.Typeface.Spec::concatenated mv a1))); (if ((Studio.Generator.Typeface.Spec::knots l) <=? (e + 1)) then acc1 else (envelopeFrom l poly (e + 1) acc1 rest)))))))))))))))))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: envelope,
+  parameters: [l : (List Nat), poly : (List Nat)],
+  result: (List Nat),
+  body: (envelopeFrom l poly 0 (nil Nat) (Studio.Generator.Typeface.Spec::knots l))
+}
+
+theorem{
+  name: strokes_a_circle_with_a_round_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (envelope (cons 0 (cons 12 (cons 1310720 (cons 1310721 (cons 12 (cons 0 (cons 1672670 (cons 1310721 (cons 2 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 12 (cons 2 (cons 0 (cons 4 (cons 1853645 (cons 926822 (cons 4 (cons 2 (cons 1853645 (cons 1164014 (cons 2 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 4 (cons 0 (cons 0 (cons 8 (cons 1310720 (cons 1310721 (cons 8 (cons 0 (cons 1672670 (cons 1310721 (cons 4 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 8 (cons 2 (cons 0 (cons 16 (cons 1853645 (cons 926822 (cons 16 (cons 2 (cons 1853645 (cons 1164014 (cons 4 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 16 (cons 0 (cons 0 (cons 14 (cons 1310720 (cons 1310721 (cons 14 (cons 0 (cons 1672670 (cons 1310721 (cons 6 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 14 (cons 2 (cons 0 (cons 6 (cons 1853645 (cons 926822 (cons 6 (cons 2 (cons 1853645 (cons 1164014 (cons 6 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 6 (cons 0 (cons 0 (cons 2 (cons 1310720 (cons 1310721 (cons 2 (cons 0 (cons 1672670 (cons 1310721 (cons 8 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 2 (cons 2 (cons 0 (cons 10 (cons 1853645 (cons 926822 (cons 10 (cons 2 (cons 1853645 (cons 1164014 (cons 8 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 10 (cons 0 (nil Nat))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) (cons 0 (cons 131073 (cons 131072 (cons 65537 (cons 131072 (cons 65536 (cons 0 (cons 131072 (cons 131073 (cons 65536 (cons 131073 (cons 65537 (nil Nat)))))))))))))) (cons 0 (cons 1441792 (cons 65536 (cons 1441792 (cons 65536 (cons 1441792 (cons 65536 (cons 1441792 (cons 65536 (cons 1 (cons 1441792 (cons 65536 (cons 1441792 (cons 427486 (cons 1295086 (cons 755166 (cons 1057894 (cons 992358 (cons 0 (cons 1057894 (cons 992358 (cons 1057894 (cons 992358 (cons 1057894 (cons 992358 (cons 1057894 (cons 992358 (cons 1 (cons 1057894 (cons 992358 (cons 958576 (cons 1091676 (cons 843392 (cons 1175130 (cons 716468 (cons 1238592 (cons 0 (cons 716468 (cons 1238592 (cons 716468 (cons 1238592 (cons 585396 (cons 1304128 (cons 585396 (cons 1304128 (cons 1 (cons 585396 (cons 1304128 (cons 409204 (cons 1392224 (cons 210392 (cons 1441792 (cons 0 (cons 1441792 (cons 0 (cons 0 (cons 1441792 (cons 0 (cons 1441792 (cons 0 (cons 1441792 (cons 0 (cons 1441792 (cons 0 (cons 0 (cons 1441792 (cons 0 (cons 1441792 (cons 0 (cons 1441792 (cons 0 (cons 1441792 (cons 1 (cons 0 (cons 1441792 (cons 210393 (cons 1441792 (cons 409205 (cons 1392224 (cons 585397 (cons 1304128 (cons 0 (cons 585397 (cons 1304128 (cons 585397 (cons 1304128 (cons 716469 (cons 1238592 (cons 716469 (cons 1238592 (cons 1 (cons 716469 (cons 1238592 (cons 843393 (cons 1175130 (cons 958577 (cons 1091676 (cons 1057895 (cons 992358 (cons 0 (cons 1057895 (cons 992358 (cons 1057895 (cons 992358 (cons 1057895 (cons 992358 (cons 1057895 (cons 992358 (cons 0 (cons 1057895 (cons 992358 (cons 1057895 (cons 992358 (cons 1057895 (cons 992358 (cons 1057895 (cons 992358 (cons 1 (cons 1057895 (cons 992358 (cons 1295087 (cons 755166 (cons 1441793 (cons 427486 (cons 1441793 (cons 65536 (cons 0 (cons 1441793 (cons 65536 (cons 1441793 (cons 65536 (cons 1441793 (cons 65537 (cons 1441793 (cons 65537 (cons 0 (cons 1441793 (cons 65537 (cons 1441793 (cons 65537 (cons 1441793 (cons 65537 (cons 1441793 (cons 65537 (cons 1 (cons 1441793 (cons 65537 (cons 1441793 (cons 427487 (cons 1295087 (cons 755167 (cons 1057895 (cons 992359 (cons 0 (cons 1057895 (cons 992359 (cons 1057895 (cons 992359 (cons 1057895 (cons 992359 (cons 1057895 (cons 992359 (cons 1 (cons 1057895 (cons 992359 (cons 958577 (cons 1091677 (cons 843393 (cons 1175131 (cons 716469 (cons 1238593 (cons 0 (cons 716469 (cons 1238593 (cons 716469 (cons 1238593 (cons 585397 (cons 1304129 (cons 585397 (cons 1304129 (cons 1 (cons 585397 (cons 1304129 (cons 409205 (cons 1392225 (cons 210393 (cons 1441793 (cons 0 (cons 1441793 (cons 0 (cons 0 (cons 1441793 (cons 0 (cons 1441793 (cons 0 (cons 1441793 (cons 0 (cons 1441793 (cons 0 (cons 0 (cons 1441793 (cons 0 (cons 1441793 (cons 0 (cons 1441793 (cons 0 (cons 1441793 (cons 1 (cons 0 (cons 1441793 (cons 210392 (cons 1441793 (cons 409204 (cons 1392225 (cons 585396 (cons 1304129 (cons 0 (cons 585396 (cons 1304129 (cons 585396 (cons 1304129 (cons 716468 (cons 1238593 (cons 716468 (cons 1238593 (cons 1 (cons 716468 (cons 1238593 (cons 843392 (cons 1175131 (cons 958576 (cons 1091677 (cons 1057894 (cons 992359 (cons 0 (cons 1057894 (cons 992359 (cons 1057894 (cons 992359 (cons 1057894 (cons 992359 (cons 1057894 (cons 992359 (cons 0 (cons 1057894 (cons 992359 (cons 1057894 (cons 992359 (cons 1057894 (cons 992359 (cons 1057894 (cons 992359 (cons 1 (cons 1057894 (cons 992359 (cons 1295086 (cons 755167 (cons 1441792 (cons 427487 (cons 1441792 (cons 65537 (cons 0 (cons 1441792 (cons 65537 (cons 1441792 (cons 65537 (cons 1441792 (cons 65536 (cons 1441792 (cons 65536 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: strokes_a_triangle_with_a_flat_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (envelope (cons 0 (cons 2 (cons 0 (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 2 (cons 0 (cons 1310720 (cons 0 (cons 1310720 (cons 0 (cons 2 (cons 2 (cons 0 (cons 0 (cons 1310721 (cons 1310720 (cons 10 (cons 2 (cons 10 (cons 0 (cons 0 (cons 12 (cons 1310720 (cons 1310721 (cons 12 (cons 0 (cons 1310720 (cons 1310721 (cons 4 (cons 0 (cons 1703936 (cons 655361 (cons 1703936 (cons 655361 (cons 12 (cons 2 (cons 0 (cons 0 (cons 1703937 (cons 1048576 (cons 4 (cons 2 (cons 4 (cons 0 (cons 0 (cons 0 (cons 393216 (cons 1048577 (cons 8 (cons 0 (cons 8 (cons 2 (cons 0 (cons 16 (cons 393217 (cons 655361 (cons 16 (cons 2 (cons 393217 (cons 655361 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 16 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 14 (cons 0 (cons 14 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 6 (cons 2 (cons 6 (cons 0 (nil Nat))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) (cons 131072 (cons 65537 (cons 196608 (cons 0 (cons 131072 (cons 65536 (cons 131073 (cons 65536 (cons 196609 (cons 0 (cons 131073 (cons 65537 (nil Nat)))))))))))))) (cons 0 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 131072 (cons 65537 (cons 131072 (cons 65537 (cons 1 (cons 131072 (cons 65537 (cons 131072 (cons 65537 (cons 1441792 (cons 65537 (cons 1441792 (cons 65537 (cons 0 (cons 1441792 (cons 65537 (cons 1441792 (cons 65537 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 0 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 0 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 1 (cons 1507328 (cons 0 (cons 1507328 (cons 0 (cons 851968 (cons 1048576 (cons 851968 (cons 1048576 (cons 0 (cons 851968 (cons 1048576 (cons 851968 (cons 1048576 (cons 786432 (cons 1114112 (cons 786432 (cons 1114112 (cons 0 (cons 786432 (cons 1114112 (cons 786432 (cons 1114112 (cons 786432 (cons 1114112 (cons 786432 (cons 1114112 (cons 0 (cons 786432 (cons 1114112 (cons 786432 (cons 1114112 (cons 524288 (cons 1114112 (cons 524288 (cons 1114112 (cons 0 (cons 524288 (cons 1114112 (cons 524288 (cons 1114112 (cons 458752 (cons 1048576 (cons 458752 (cons 1048576 (cons 1 (cons 458752 (cons 1048576 (cons 458752 (cons 1048576 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 0 (cons 196609 (cons 0 (cons 196609 (cons 0 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 0 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (nil Nat))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: strokes_an_inflected_curve_with_a_slanted_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (envelope (cons 0 (cons 10 (cons 0 (cons 0 (cons 10 (cons 2 (cons 43490 (cons 86980 (cons 2 (cons 0 (cons 62928 (cons 225298 (cons 62928 (cons 161134 (cons 10 (cons 2 (cons 0 (cons 2 (cons 62929 (cons 288226 (cons 2 (cons 2 (cons 62929 (cons 372022 (cons 2 (cons 0 (cons 26268 (cons 405626 (cons 29775 (cons 405626 (cons 2 (cons 0 (cons 0 (cons 6 (cons 837520 (cons 405627 (cons 6 (cons 0 (cons 882126 (cons 405627 (cons 2 (cons 0 (cons 898652 (cons 350127 (cons 898652 (cons 384339 (cons 6 (cons 2 (cons 0 (cons 14 (cons 898653 (cons 548526 (cons 14 (cons 2 (cons 898653 (cons 646414 (cons 2 (cons 0 (cons 763359 (cons 828340 (cons 763359 (cons 714804 (cons 14 (cons 2 (cons 0 (cons 6 (cons 763358 (cons 64982 (cons 6 (cons 2 (cons 763358 (cons 113732 (cons 2 (cons 0 (cons 859606 (cons 145862 (cons 788300 (cons 145862 (cons 6 (cons 0 (cons 0 (cons 2 (cons 1151330 (cons 145863 (cons 2 (cons 0 (cons 1232008 (cons 145863 (cons 2 (cons 0 (cons 1310720 (cons 0 (cons 1289774 (cons 104731 (cons 2 (cons 2 (cons 0 (cons 10 (cons 1310721 (cons 1310720 (cons 10 (cons 2 (cons 1299395 (cons 1344700 (cons 4 (cons 0 (cons 1235909 (cons 1360082 (cons 1273385 (cons 1360082 (cons 10 (cons 0 (cons 0 (cons 12 (cons 1484256 (cons 1360083 (cons 12 (cons 0 (cons 1524188 (cons 1360083 (cons 4 (cons 0 (cons 1542210 (cons 1311575 (cons 1542210 (cons 1342617 (cons 12 (cons 2 (cons 0 (cons 4 (cons 1542211 (cons 230636 (cons 4 (cons 2 (cons 1542211 (cons 339024 (cons 4 (cons 0 (cons 1048575 (cons 393216 (cons 1322489 (cons 393216 (cons 4 (cons 0 (cons 0 (cons 8 (cons 262143 (cons 393217 (cons 8 (cons 0 (cons 11770 (cons 393217 (cons 4 (cons 0 (cons 231490 (cons 230635 (cons 231490 (cons 339023 (cons 8 (cons 2 (cons 0 (cons 16 (cons 231491 (cons 856 (cons 16 (cons 2 (cons 231491 (cons 31898 (cons 4 (cons 0 (cons 173537 (cons 49362 (cons 213469 (cons 49362 (cons 16 (cons 0 (cons 0 (cons 14 (cons 74813 (cons 49363 (cons 14 (cons 0 (cons 37337 (cons 49363 (cons 4 (cons 0 (cons 0 (cons 0 (cons 11327 (cons 33981 (cons 14 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 6 (cons 2 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2 (cons 0 (cons 2 (cons 2 (nil Nat))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) (cons 0 (cons 65537 (cons 131072 (cons 65536 (cons 0 (cons 65536 (cons 131073 (cons 65537 (nil Nat)))))))))) (cons 1 (cons 131072 (cons 65536 (cons 218052 (cons 196006 (cons 292206 (cons 289598 (cons 356370 (cons 353762 (cons 0 (cons 356370 (cons 353762 (cons 356370 (cons 353762 (cons 356370 (cons 353762 (cons 356370 (cons 353762 (cons 0 (cons 356370 (cons 353762 (cons 356370 (cons 353762 (cons 94226 (cons 222690 (cons 94226 (cons 222690 (cons 0 (cons 94226 (cons 222690 (cons 94226 (cons 222690 (cons 225298 (cons 222690 (cons 225298 (cons 222690 (cons 1 (cons 225298 (cons 222690 (cons 309094 (cons 306486 (cons 375852 (cons 340090 (cons 431894 (cons 340090 (cons 0 (cons 431894 (cons 340090 (cons 431894 (cons 340090 (cons 562966 (cons 471162 (cons 562966 (cons 471162 (cons 0 (cons 562966 (cons 471162 (cons 562966 (cons 471162 (cons 300822 (cons 340090 (cons 300822 (cons 340090 (cons 1 (cons 300822 (cons 340090 (cons 345428 (cons 340090 (cons 383242 (cons 318802 (cons 417454 (cons 284590 (cons 0 (cons 417454 (cons 284590 (cons 417454 (cons 284590 (cons 417454 (cons 284590 (cons 417454 (cons 284590 (cons 0 (cons 417454 (cons 284590 (cons 417454 (cons 284590 (cons 417454 (cons 284590 (cons 417454 (cons 284590 (cons 1 (cons 417454 (cons 284590 (cons 515342 (cons 186702 (cons 583732 (cons 16983 (cons 697268 (cons 130519 (cons 1 (cons 697268 (cons 130519 (cons 746018 (cons 179269 (cons 803090 (cons 211399 (cons 874396 (cons 211399 (cons 0 (cons 874396 (cons 211399 (cons 874396 (cons 211399 (cons 874396 (cons 211399 (cons 874396 (cons 211399 (cons 0 (cons 874396 (cons 211399 (cons 874396 (cons 211399 (cons 1005468 (cons 211399 (cons 1005468 (cons 211399 (cons 1 (cons 1005468 (cons 211399 (cons 1086146 (cons 211399 (cons 1185044 (cons 170267 (cons 1310720 (cons 65537 (cons 0 (cons 1310720 (cons 65537 (cons 1310720 (cons 65537 (cons 1441792 (cons 65536 (cons 1441792 (cons 65536 (cons 1 (cons 1441792 (cons 65536 (cons 1475772 (cons 110842 (cons 1491154 (cons 152234 (cons 1491154 (cons 189710 (cons 0 (cons 1491154 (cons 189710 (cons 1491154 (cons 189710 (cons 1491154 (cons 189710 (cons 1491154 (cons 189710 (cons 0 (cons 1491154 (cons 189710 (cons 1491154 (cons 189710 (cons 1491154 (cons 189710 (cons 1491154 (cons 189710 (cons 1 (cons 1491154 (cons 189710 (cons 1491154 (cons 229642 (cons 1473688 (cons 265130 (cons 1442646 (cons 296172 (cons 1 (cons 1442646 (cons 296172 (cons 1334258 (cons 404560 (cons 1060344 (cons 458752 (cons 786430 (cons 458752 (cons 0 (cons 786430 (cons 458752 (cons 786430 (cons 458752 (cons 786430 (cons 458752 (cons 786430 (cons 458752 (cons 0 (cons 786430 (cons 458752 (cons 786430 (cons 458752 (cons 655358 (cons 458752 (cons 655358 (cons 458752 (cons 1 (cons 655358 (cons 458752 (cons 381446 (cons 458752 (cons 107532 (cons 404558 (cons 857 (cons 296170 (cons 0 (cons 857 (cons 296170 (cons 857 (cons 296170 (cons 131929 (cons 165098 (cons 131929 (cons 165098 (cons 1 (cons 131929 (cons 165098 (cons 162971 (cons 134056 (cons 180435 (cons 98570 (cons 180435 (cons 58638 (cons 0 (cons 180435 (cons 58638 (cons 180435 (cons 58638 (cons 180435 (cons 58638 (cons 180435 (cons 58638 (cons 0 (cons 180435 (cons 58638 (cons 180435 (cons 58638 (cons 180435 (cons 58638 (cons 180435 (cons 58638 (cons 1 (cons 180435 (cons 58638 (cons 180435 (cons 21162 (cons 165053 (cons 20231 (cons 131073 (cons 65537 (cons 0 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 0 (cons 131073 (cons 65537 (cons 131073 (cons 65537 (cons 0 (cons 65537 (cons 0 (cons 65537 (cons 0 (cons 0 (cons 65537 (cons 0 (cons 65537 (cons 131072 (cons 65536 (cons 131072 (cons 65536 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: strokes_a_line_there_and_back_with_a_round_pen_as_metafont_does,
+  parameters: [],
+  statement: ((Studio.Generator.Typeface.Choices::sameList (envelope (cons 0 (cons 2 (cons 0 (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 2 (cons 0 (cons 655360 (cons 393216 (cons 655360 (cons 393216 (cons 2 (cons 2 (cons 0 (cons 0 (cons 655361 (cons 1048576 (cons 10 (cons 2 (cons 10 (cons 0 (cons 0 (cons 0 (cons 1441792 (cons 1048577 (cons 12 (cons 0 (cons 12 (cons 2 (cons 0 (cons 0 (cons 1441793 (cons 393216 (cons 4 (cons 2 (cons 4 (cons 0 (cons 0 (cons 8 (cons 655361 (cons 393217 (cons 8 (cons 0 (cons 655361 (cons 393217 (cons 4 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 8 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 16 (cons 2 (cons 16 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 14 (cons 0 (cons 14 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 6 (cons 2 (cons 6 (cons 0 (nil Nat))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) (cons 65536 (cons 196609 (cons 196608 (cons 65537 (cons 196608 (cons 65536 (cons 65536 (cons 196608 (cons 65537 (cons 196608 (cons 196609 (cons 65536 (cons 196609 (cons 65537 (cons 65537 (cons 196609 (nil Nat)))))))))))))))))) (cons 0 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (cons 65536 (cons 196609 (cons 65536 (cons 196609 (cons 1 (cons 65536 (cons 196609 (cons 65536 (cons 196609 (cons 1114112 (cons 196608 (cons 1114112 (cons 196608 (cons 0 (cons 1114112 (cons 196608 (cons 1114112 (cons 196608 (cons 1245184 (cons 327680 (cons 1245184 (cons 327680 (cons 0 (cons 1245184 (cons 327680 (cons 1245184 (cons 327680 (cons 1245184 (cons 327680 (cons 1245184 (cons 327680 (cons 0 (cons 1245184 (cons 327680 (cons 1245184 (cons 327680 (cons 1245184 (cons 458752 (cons 1245184 (cons 458752 (cons 0 (cons 1245184 (cons 458752 (cons 1245184 (cons 458752 (cons 1245184 (cons 458752 (cons 1245184 (cons 458752 (cons 0 (cons 1245184 (cons 458752 (cons 1245184 (cons 458752 (cons 1114112 (cons 589824 (cons 1114112 (cons 589824 (cons 0 (cons 1114112 (cons 589824 (cons 1114112 (cons 589824 (cons 1114112 (cons 589824 (cons 1114112 (cons 589824 (cons 0 (cons 1114112 (cons 589824 (cons 1114112 (cons 589824 (cons 983040 (cons 589824 (cons 983040 (cons 589824 (cons 1 (cons 983040 (cons 589824 (cons 983040 (cons 589824 (cons 65537 (cons 196608 (cons 65537 (cons 196608 (cons 0 (cons 65537 (cons 196608 (cons 65537 (cons 196608 (cons 196609 (cons 65536 (cons 196609 (cons 65536 (cons 0 (cons 196609 (cons 65536 (cons 196609 (cons 65536 (cons 196609 (cons 65536 (cons 196609 (cons 65536 (cons 0 (cons 196609 (cons 65536 (cons 196609 (cons 65536 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 0 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 0 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (cons 0 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (cons 65537 (cons 196609 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}
