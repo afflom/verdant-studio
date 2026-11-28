@@ -708,3 +708,5 @@ Each construct and the citation that admits it.
 - `Studio.Work.Soundtrack`: std EBU-R128-2023
 - `Studio.Work.CoverArt`: der pattern from Studio.Work, Studio.Generator.Expert.Image, Studio.Generator.VectorImage.Svg, Studio.Generator.RasterImage.Png
 - `Studio.Work.Novel`: std W3C-EPUB-3.3
+- `Studio.Prism.Feature`: std UNICODE-UAX-29-47
+- `Studio.PrismGeneration.Features`: der pattern from Studio.PrismGeneration, Studio.Prism.Seed, Studio.Prism.Feature
