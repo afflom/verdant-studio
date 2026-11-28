@@ -949,3 +949,31 @@ level = "build"
 suite = "typeface"
 statement = "The typeface generator writes its glyphs as an OpenType font file with CFF outlines: the table directory and checksums, head, hhea, maxp, hmtx, cmap format 4, name, OS/2 and post of OpenType 1.9.1, and the CFF INDEX, Top DICT, charset and Type 2 charstrings of Adobe TN 5176 and TN 5177, byte for byte"
 theorems = ["Studio.Generator.Typeface.OpenType.encodes_type2_numbers_as_tn5177_specifies", "Studio.Generator.Typeface.OpenType.writes_a_font_file_as_opentype_and_cff_specify"]
+
+[[id]]
+id = "VS-200"
+level = "build"
+suite = "gui-mirror"
+statement = "Studio.Gui.Mirror presents the mirror journey of the Studio UI Prism in Stitch Product.Experience's pattern: a release Studio.Runtime cuts once every gate passed shows in the mirrorReady view, and its maintainer has the publish action enabled, publishing to GitHub as a mirror only (REQ-SELF-RUNTIME)"
+theorems = ["Studio.Gui.Mirror.the_maintainer_publishes_a_cut_release"]
+
+[[id]]
+id = "VS-201"
+level = "build"
+suite = "gui-mirror"
+statement = "Only the maintainer publishes a release, so Studio.Gui.Mirror shows a cut release to any other viewer with publish disabled"
+theorems = ["Studio.Gui.Mirror.another_viewer_cannot_publish"]
+
+[[id]]
+id = "VS-202"
+level = "build"
+suite = "gui-mirror"
+statement = "Studio.Gui.Mirror presents a release Studio.Runtime does not cut in the mirrorHeld view with its refusal, publish disabled"
+theorems = ["Studio.Gui.Mirror.holds_a_release_with_a_failed_gate"]
+
+[[id]]
+id = "VS-203"
+level = "build"
+suite = "gui-mirror"
+statement = "The publish action of the mirror journey is guarded, so Studio.Gui.Mirror never enables it for a viewer who is not the maintainer, whatever is cut"
+theorems = ["Studio.Gui.Mirror.only_the_maintainer_publishes"]

@@ -1,0 +1,105 @@
+\begin{lexlean}{Studio.Gui.Mirror}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: journey,
+  parameters: [],
+  result: Bytes,
+  body: 0x6a6f75726e6579206d6972726f723a205075626c69736820612072656c65617365206f6e63652065766572792067617465207061737365642c2069747320636f6d6d6974732c20746167732c206d6574616461746120616e642070616765732070757368656420746f2074686520676974687562206d6972726f720a
+}
+
+definition{
+  name: cutPrefix,
+  parameters: [],
+  result: Bytes,
+  body: 0x72656c6561736520
+}
+
+definition{
+  name: isCut,
+  parameters: [answer : Bytes],
+  result: Bool,
+  body: ((8 <=? (prim length answer : Nat)) && (Studio.Runtime::sameFrom answer (cutPrefix) 0 8)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: publishEnabled,
+  parameters: [maintainerViews : Bool, cutReady : Bool],
+  result: Bool,
+  body: (maintainerViews && cutReady),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: action,
+  parameters: [enabled : Bool],
+  result: Bytes,
+  body: (if enabled then 0x616374696f6e207075626c6973683a20656e61626c6564 else 0x616374696f6e207075626c6973683a2064697361626c6564),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: present,
+  parameters: [viewer : Bytes, maintainer : Bytes, answer : Bytes],
+  result: Bytes,
+  body: (prim append (journey) (prim append (if (isCut answer) then (prim append (prim append 0x76696577206d6972726f7252656164793a20 answer : Bytes) 0x2c20726561647920746f207075626c69736820746f2074686520676974687562206d6972726f720a : Bytes) else (prim append (prim append 0x76696577206d6972726f7248656c643a20 answer : Bytes) 0x0a : Bytes)) (action (publishEnabled (Studio.Runtime::same viewer maintainer) (isCut answer))) : Bytes) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb f1 => (match f1
+      | List.cons viewer f2 => (match f2
+        | List.cons maintainer f3 => (match f3
+          | List.cons revision f4 => (match f4
+            | List.cons current f5 => (match f5
+              | List.cons increment gates => (if (Studio.Runtime::same verb 0x76696577) then (present viewer maintainer (Studio.Runtime::judge revision current increment gates ((prim length value : Nat) + 1))) else 0x696e76616c69642072657175657374)
+              | List.nil => 0x696e76616c69642072657175657374)
+            | List.nil => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: only_the_maintainer_publishes,
+  parameters: [cutReady : Bool],
+  statement: ((publishEnabled false cutReady) = false),
+  proof: reflexivity{},
+  axioms: []
+}
+
+theorem{
+  name: the_maintainer_publishes_a_cut_release,
+  parameters: [],
+  statement: ((request 0x7669657709707269736d3a616c657809707269736d3a616c6578096335383763303109302e312e30096d696e6f7209636865636b3a706173736564096275696c643a706173736564) = 0x6a6f75726e6579206d6972726f723a205075626c69736820612072656c65617365206f6e63652065766572792067617465207061737365642c2069747320636f6d6d6974732c20746167732c206d6574616461746120616e642070616765732070757368656420746f2074686520676974687562206d6972726f720a76696577206d6972726f7252656164793a2072656c6561736520302e322e30206f66207265766973696f6e20633538376330312c20726561647920746f207075626c69736820746f2074686520676974687562206d6972726f720a616374696f6e207075626c6973683a20656e61626c6564),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: another_viewer_cannot_publish,
+  parameters: [],
+  statement: ((request 0x7669657709707269736d3a6167656e7409707269736d3a616c6578096335383763303109302e312e30096d696e6f7209636865636b3a706173736564096275696c643a706173736564) = 0x6a6f75726e6579206d6972726f723a205075626c69736820612072656c65617365206f6e63652065766572792067617465207061737365642c2069747320636f6d6d6974732c20746167732c206d6574616461746120616e642070616765732070757368656420746f2074686520676974687562206d6972726f720a76696577206d6972726f7252656164793a2072656c6561736520302e322e30206f66207265766973696f6e20633538376330312c20726561647920746f207075626c69736820746f2074686520676974687562206d6972726f720a616374696f6e207075626c6973683a2064697361626c6564),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: holds_a_release_with_a_failed_gate,
+  parameters: [],
+  statement: ((request 0x7669657709707269736d3a616c657809707269736d3a616c6578096335383763303109302e312e3009706174636809636865636b3a706173736564096578706f72743a6661696c6564) = 0x6a6f75726e6579206d6972726f723a205075626c69736820612072656c65617365206f6e63652065766572792067617465207061737365642c2069747320636f6d6d6974732c20746167732c206d6574616461746120616e642070616765732070757368656420746f2074686520676974687562206d6972726f720a76696577206d6972726f7248656c643a20726566757365643a207468652067617465206578706f72743a6661696c656420646964206e6f742070617373206f6e207265766973696f6e20633538376330312c20736f206e6f2072656c65617365206973206375740a616374696f6e207075626c6973683a2064697361626c6564),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
