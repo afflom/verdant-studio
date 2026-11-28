@@ -1,0 +1,192 @@
+\begin{lexlean}{Studio.User}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.Gui.Coordination}
+\importmodule{Studio.Gui.Generation}
+\importmodule{Studio.Gui.Approval}
+\importmodule{Studio.Gui.Instance}
+\importmodule{Studio.Gui.Mirror}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: joinTabs,
+  parameters: [fields : (List Bytes)],
+  result: Bytes,
+  body: (match fields
+    | List.nil => 0x
+    | List.cons field rest => (match rest
+      | List.nil => field
+      | List.cons next more => (prim append field (prim append 0x09 (joinTabs rest) : Bytes) : Bytes))),
+  recursive_argument: fields
+}
+
+definition{
+  name: journeyAnswer,
+  parameters: [journey : Bytes, rest : Bytes],
+  result: Bytes,
+  body: (if (Studio.Runtime::same journey 0x636f6f7264696e6174696f6e) then (Studio.Gui.Coordination::request rest) else (if (Studio.Runtime::same journey 0x63726561746f72) then (Studio.Gui.Generation::request rest) else (if (Studio.Runtime::same journey 0x617070726f76616c) then (Studio.Gui.Approval::request rest) else (if (Studio.Runtime::same journey 0x696e7374616e636573) then (Studio.Gui.Instance::request rest) else (if (Studio.Runtime::same journey 0x6d6972726f72) then (Studio.Gui.Mirror::request rest) else 0x696e76616c69642072657175657374))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: view,
+  parameters: [kind : Bytes, journey : Bytes, rest : Bytes],
+  result: Bytes,
+  body: (journeyAnswer journey rest)
+}
+
+definition{
+  name: begins,
+  parameters: [line : Bytes, pattern : Bytes],
+  result: Bool,
+  body: (((prim length pattern : Nat) <=? (prim length line : Nat)) && (Studio.Runtime::sameFrom line pattern 0 (prim length pattern : Nat))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: anyBegins,
+  parameters: [lines : (List Bytes), pattern : Bytes],
+  result: Bool,
+  body: (match lines
+    | List.nil => false
+    | List.cons line rest => ((begins line pattern) || (anyBegins rest pattern))),
+  recursive_argument: lines,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: enabledFor,
+  parameters: [kind : Bytes, journey : Bytes, action : Bytes, rest : Bytes],
+  result: Bool,
+  body: (anyBegins (Studio.Runtime::split (view kind journey rest) 10) (prim append (prim append 0x616374696f6e20 action : Bytes) 0x3a20656e61626c6564 : Bytes)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: human,
+  parameters: [kind : Bytes],
+  result: Bool,
+  body: (Studio.Runtime::same kind 0x68756d616e),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: known,
+  parameters: [kind : Bytes],
+  result: Bool,
+  body: ((human kind) || (Studio.Runtime::same kind 0x6167656e74)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: channel,
+  parameters: [kind : Bytes, journey : Bytes],
+  result: Bytes,
+  body: (if (human kind) then 0x7468652053747564696f205549 else (prim append 0x746865204d4350207265736f757263652076657264616e742d73747564696f3a2f2f6775692f journey : Bytes)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: perceive,
+  parameters: [kind : Bytes, journey : Bytes, rest : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x70657263656976656420627920 kind : Bytes) (prim append 0x207468726f75676820 (channel kind journey) : Bytes) : Bytes) (prim append 0x0a (view kind journey rest) : Bytes) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: enactedRefusal,
+  parameters: [action : Bytes, journey : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a2074686520616374696f6e20 action : Bytes) (prim append 0x206f662074686520 journey : Bytes) : Bytes) 0x206a6f75726e6579206973206e6f7420656e61626c656420666f72207468697320757365722c20736f206974206973206e6f7420656e6163746564 : Bytes)
+}
+
+definition{
+  name: enact,
+  parameters: [kind : Bytes, journey : Bytes, action : Bytes, rest : Bytes],
+  result: Bytes,
+  body: (if (enabledFor kind journey action rest) then (prim append (prim append (prim append (prim append 0x656e616374656420627920 kind : Bytes) (prim append 0x3a2074686520616374696f6e20 action : Bytes) : Bytes) (prim append 0x206f662074686520 journey : Bytes) : Bytes) (if (human kind) then 0x206a6f75726e65792c207468726f756768207468652053747564696f205549 else 0x206a6f75726e65792c20617320616e204d435020746f6f6c732f63616c6c206f766572205374697463682062792053747564696f2e4167656e742e496e746572666163652e5472616e73706f7274) : Bytes) else (enactedRefusal action journey)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: kindRefusal,
+  parameters: [kind : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a20 kind : Bytes) 0x206973206e6f206b696e64206f662056657264616e7420757365723b206120757365722069732068756d616e206f72206167656e74 : Bytes)
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb f1 => (match f1
+      | List.cons kind f2 => (match f2
+        | List.cons journey f3 => (if (not (known kind)) then (kindRefusal kind) else (if (Studio.Runtime::same verb 0x7065726365697665) then (perceive kind journey (joinTabs f3)) else (if (Studio.Runtime::same verb 0x656e616374) then (match f3
+          | List.cons action f4 => (enact kind journey action (joinTabs f4))
+          | List.nil => 0x696e76616c69642072657175657374) else 0x696e76616c69642072657175657374)))
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_agent_perceives_the_view_a_human_perceives,
+  parameters: [journey : Bytes, rest : Bytes],
+  statement: ((view 0x6167656e74 journey rest) = (view 0x68756d616e journey rest)),
+  proof: reflexivity{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_agent_is_held_to_the_guards_a_human_is_held_to,
+  parameters: [journey : Bytes, action : Bytes, rest : Bytes],
+  statement: ((enabledFor 0x6167656e74 journey action rest) = (enabledFor 0x68756d616e journey action rest)),
+  proof: reflexivity{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_agent_perceives_its_journey_through_an_mcp_resource,
+  parameters: [],
+  statement: ((request 0x7065726365697665096167656e7409617070726f76616c097669657709707269736d3a6167656e7409707269736d3a6167656e7409707269736d3a616c6578096170702f73726309626c616b65333a3235663236333334363136353063643332346231353762663636333365366461393031373663653237323938316232636237373137616335373933333633373809707269736d3a6167656e743d707269736d3a616c6578) = 0x706572636569766564206279206167656e74207468726f75676820746865204d4350207265736f757263652076657264616e742d73747564696f3a2f2f6775692f617070726f76616c0a6a6f75726e657920617070726f76616c3a204772616e74206f722072656a656374207768617420796f7572206c696e6b6564206167656e742061736b7320746f206368616e67652c20656163682072657175657374206e616d696e672069747320636f6e74656e74206279206120424c414b453320636f6e74656e7420616464726573730a7669657720617070726f76616c50656e64696e673a20707269736d3a6167656e742061736b7320746f206368616e6765206170702f7372632c20636f6e74656e7420626c616b65333a323566323633333436313635306364333234623135376266363633336536646139303137366365323732393831623263623737313761633537393333363337380a616374696f6e206772616e743a2064697361626c65640a616374696f6e2072656a6563743a2064697361626c6564),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: an_agent_enacts_an_enabled_action_over_stitch,
+  parameters: [],
+  statement: ((request 0x656e616374096167656e7409636f6f7264696e6174696f6e0973656e64097669657709707269736d3a616c657809707269736d3a6167656e74096472616674656409707269736d3a6167656e743d707269736d3a616c6578) = 0x656e6163746564206279206167656e743a2074686520616374696f6e2073656e64206f662074686520636f6f7264696e6174696f6e206a6f75726e65792c20617320616e204d435020746f6f6c732f63616c6c206f766572205374697463682062792053747564696f2e4167656e742e496e746572666163652e5472616e73706f7274),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_an_agent_an_action_its_guard_disables,
+  parameters: [],
+  statement: ((request 0x656e616374096167656e7409617070726f76616c096772616e74097669657709707269736d3a6167656e7409707269736d3a6167656e7409707269736d3a616c6578096170702f73726309626c616b65333a3235663236333334363136353063643332346231353762663636333365366461393031373663653237323938316232636237373137616335373933333633373809707269736d3a6167656e743d707269736d3a616c6578) = 0x726566757365643a2074686520616374696f6e206772616e74206f662074686520617070726f76616c206a6f75726e6579206973206e6f7420656e61626c656420666f72207468697320757365722c20736f206974206973206e6f7420656e6163746564),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_person_enacts_an_enabled_action_through_the_studio_ui,
+  parameters: [],
+  statement: ((request 0x656e6163740968756d616e09617070726f76616c096772616e74097669657709707269736d3a616c657809707269736d3a6167656e7409707269736d3a616c6578096170702f73726309626c616b65333a3235663236333334363136353063643332346231353762663636333365366461393031373663653237323938316232636237373137616335373933333633373809707269736d3a6167656e743d707269736d3a616c6578) = 0x656e61637465642062792068756d616e3a2074686520616374696f6e206772616e74206f662074686520617070726f76616c206a6f75726e65792c207468726f756768207468652053747564696f205549),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_a_user_of_no_known_kind,
+  parameters: [],
+  statement: ((request 0x706572636569766509726f626f7409617070726f76616c097669657709707269736d3a616c657809707269736d3a6167656e7409707269736d3a616c6578096170702f73726309626c616b65333a3235663236333334363136353063643332346231353762663636333365366461393031373663653237323938316232636237373137616335373933333633373809707269736d3a6167656e743d707269736d3a616c6578) = 0x726566757365643a20726f626f74206973206e6f206b696e64206f662056657264616e7420757365723b206120757365722069732068756d616e206f72206167656e74),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
