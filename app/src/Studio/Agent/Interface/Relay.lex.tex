@@ -1,0 +1,192 @@
+\begin{lexlean}{Studio.Agent.Interface.Relay}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Runtime}
+\importmodule{Studio.User}
+\importmodule{Studio.Agent.Interface.Transport}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: hexDigit,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (match (prim slice 0x30313233343536373839616263646566 value 1 : (Option Bytes))
+    | Option.none => 0x30
+    | Option.some piece => piece)
+}
+
+definition{
+  name: escapeByte,
+  parameters: [code : Nat, piece : Bytes],
+  result: Bytes,
+  body: (if (code =? 34) then 0x5c22 else (if (code =? 92) then 0x5c5c else (if (code =? 10) then 0x5c6e else (if (code =? 9) then 0x5c74 else (if (code =? 13) then 0x5c72 else (if (code <? 32) then (prim append (prim append 0x5c753030 (hexDigit (prim quotient code 16 0 : Nat)) : Bytes) (hexDigit (prim remainder code 16 0 : Nat)) : Bytes) else piece)))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: escapeFrom,
+  parameters: [text : Bytes, offset : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (match (prim index text offset : (Option UInt8))
+      | Option.none => out
+      | Option.some byte => (match (prim slice text offset 1 : (Option Bytes))
+        | Option.none => out
+        | Option.some piece => (escapeFrom text (offset + 1) rest (prim append out (escapeByte (prim to_nat byte : Nat) piece) : Bytes))))),
+  recursive_argument: remaining,
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: jsonString,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x22 (escapeFrom text 0 (prim length text : Nat) 0x) : Bytes) 0x22 : Bytes)
+}
+
+definition{
+  name: failed,
+  parameters: [answer : Bytes],
+  result: Bool,
+  body: ((Studio.User::begins answer 0x726566757365643a) || (Studio.Runtime::same answer 0x696e76616c69642072657175657374)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: callToolResult,
+  parameters: [answer : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x7b22636f6e74656e74223a5b7b2274797065223a2274657874222c2274657874223a (jsonString answer) : Bytes) 0x7d5d2c2269734572726f72223a : Bytes) (prim append (if (failed answer) then 0x74727565 else 0x66616c7365) 0x2c22726573756c7454797065223a22636f6d706c657465227d : Bytes) : Bytes),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: verified,
+  parameters: [check : Bytes],
+  result: Bool,
+  body: (Studio.Runtime::same check 0x7665726966696564),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: unverifiedName,
+  parameters: [check : Bytes, label : Bytes, rest : (List Bytes)],
+  result: (List Bytes),
+  body: (if (verified check) then rest else (cons label rest)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: joinComma,
+  parameters: [names : (List Bytes)],
+  result: Bytes,
+  body: (match names
+    | List.nil => 0x
+    | List.cons label rest => (match rest
+      | List.nil => label
+      | List.cons other more => (prim append (prim append label 0x2c20 : Bytes) (joinComma rest) : Bytes))),
+  recursive_argument: names
+}
+
+definition{
+  name: unverifiedRefusal,
+  parameters: [names : (List Bytes)],
+  result: Bytes,
+  body: (prim append 0x726566757365643a207468652072656c61792064656c69766572732061206d657373616765206f6e6c79207768656e20697473206469676573742c205554462d382c20656e76656c6f70652c2073657373696f6e20616e6420636f6e73656e742061726520616c6c20766572696669656420285374697463682e52656c61792064656c6976657279416c6c6f776564293b206e6f742076657269666965643a20 (joinComma names) : Bytes)
+}
+
+definition{
+  name: assemblyRefusal,
+  parameters: [receivedFrames : Bytes, frames : Bytes, receivedBytes : Bytes, bytes : Bytes],
+  result: Bytes,
+  body: (prim append (prim append (prim append 0x726566757365643a207468652072656c617920686f6c647320746865206d65737361676520756e74696c20697420697320617373656d626c656420285374697463682e52656c6179207265616479293a20 receivedFrames : Bytes) (prim append 0x206f6620 frames : Bytes) : Bytes) (prim append (prim append 0x206672616d657320616e6420 receivedBytes : Bytes) (prim append (prim append 0x206f6620 bytes : Bytes) 0x206279746573207265636569766564 : Bytes) : Bytes) : Bytes)
+}
+
+definition{
+  name: deliver,
+  parameters: [frames : Bytes, receivedFrames : Bytes, bytes : Bytes, receivedBytes : Bytes, digest : Bytes, utf8 : Bytes, envelope : Bytes, session : Bytes, consent : Bytes, inner : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::number frames)
+    | Option.none => 0x696e76616c69642072657175657374
+    | Option.some f => (match (Studio.Runtime::number receivedFrames)
+      | Option.none => 0x696e76616c69642072657175657374
+      | Option.some rf => (match (Studio.Runtime::number bytes)
+        | Option.none => 0x696e76616c69642072657175657374
+        | Option.some b => (match (Studio.Runtime::number receivedBytes)
+          | Option.none => 0x696e76616c69642072657175657374
+          | Option.some rb => (if (not ((rf =? f) && (rb =? b))) then (assemblyRefusal receivedFrames frames receivedBytes bytes) else (match (unverifiedName digest 0x646967657374 (unverifiedName utf8 0x5554462d38 (unverifiedName envelope 0x656e76656c6f7065 (unverifiedName session 0x73657373696f6e (unverifiedName consent 0x636f6e73656e74 (nil Bytes))))))
+            | List.nil => (callToolResult (Studio.Agent.Interface.Transport::request inner))
+            | List.cons opening others => (unverifiedRefusal (cons opening others)))))))),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: request,
+  parameters: [value : Bytes],
+  result: Bytes,
+  body: (match (Studio.Runtime::split value 9)
+    | List.cons verb f1 => (match f1
+      | List.cons frames f2 => (match f2
+        | List.cons receivedFrames f3 => (match f3
+          | List.cons bytes f4 => (match f4
+            | List.cons receivedBytes f5 => (match f5
+              | List.cons digest f6 => (match f6
+                | List.cons utf8 f7 => (match f7
+                  | List.cons envelope f8 => (match f8
+                    | List.cons session f9 => (match f9
+                      | List.cons consent call => (if (Studio.Runtime::same verb 0x64656c69766572) then (deliver frames receivedFrames bytes receivedBytes digest utf8 envelope session consent (Studio.User::joinTabs call)) else 0x696e76616c69642072657175657374)
+                      | List.nil => 0x696e76616c69642072657175657374)
+                    | List.nil => 0x696e76616c69642072657175657374)
+                  | List.nil => 0x696e76616c69642072657175657374)
+                | List.nil => 0x696e76616c69642072657175657374)
+              | List.nil => 0x696e76616c69642072657175657374)
+            | List.nil => 0x696e76616c69642072657175657374)
+          | List.nil => 0x696e76616c69642072657175657374)
+        | List.nil => 0x696e76616c69642072657175657374)
+      | List.nil => 0x696e76616c69642072657175657374)
+    | List.nil => 0x696e76616c69642072657175657374),
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: escapes_a_json_string,
+  parameters: [],
+  statement: ((jsonString 0x6122620a) = 0x22615c22625c6e22),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: delivers_an_assembled_verified_call_as_a_call_tool_result,
+  parameters: [],
+  statement: ((request 0x64656c697665720931093109343132093431320976657269666965640976657269666965640976657269666965640976657269666965640976657269666965640963616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = 0x7b22636f6e74656e74223a5b7b2274797065223a2274657874222c2274657874223a2261646d69747465643a20746f6f6c732f63616c6c206e6578742066726f6d20707269736d3a6167656e74206f6e20626568616c66206f6620707269736d3a616c65782c206120537469746368207369676e656420616374696f6e20666f722076657264616e742d73747564696f2c2072756e732074686520776f726b7370616365206f7065726174696f6e206e657874227d5d2c2269734572726f72223a66616c73652c22726573756c7454797065223a22636f6d706c657465227d),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_refused_call_is_an_error_result,
+  parameters: [],
+  statement: ((request 0x64656c697665720931093109343132093431320976657269666965640976657269666965640976657269666965640976657269666965640976657269666965640963616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d656e67696e650976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = 0x7b22636f6e74656e74223a5b7b2274797065223a2274657874222c2274657874223a22726566757365643a207468652063616c6c206973207369676e656420666f722076657264616e742d656e67696e652c206e6f7420666f722076657264616e742d73747564696f2c20736f207468697320696e7374616e636520646f6573206e6f742072756e206974227d5d2c2269734572726f72223a747275652c22726573756c7454797065223a22636f6d706c657465227d),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: holds_an_unverified_message,
+  parameters: [],
+  statement: ((request 0x64656c6976657209310931093431320934313209756e76657269666965640976657269666965640976657269666965640976657269666965640977697468647261776e0963616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = 0x726566757365643a207468652072656c61792064656c69766572732061206d657373616765206f6e6c79207768656e20697473206469676573742c205554462d382c20656e76656c6f70652c2073657373696f6e20616e6420636f6e73656e742061726520616c6c20766572696669656420285374697463682e52656c61792064656c6976657279416c6c6f776564293b206e6f742076657269666965643a206469676573742c20636f6e73656e74),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: holds_an_incomplete_message,
+  parameters: [],
+  statement: ((request 0x64656c697665720932093109343132093230360976657269666965640976657269666965640976657269666965640976657269666965640976657269666965640963616c6c09707269736d3a6167656e7409707269736d3a616c6578096e657874096e6578742c636865636b0976657264616e742d73747564696f0976657264616e742d73747564696f09756e7365656e093130303009333130303009707269736d3a6167656e743d707269736d3a616c6578) = 0x726566757365643a207468652072656c617920686f6c647320746865206d65737361676520756e74696c20697420697320617373656d626c656420285374697463682e52656c6179207265616479293a2031206f662032206672616d657320616e6420323036206f6620343132206279746573207265636569766564),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
