@@ -1,0 +1,151 @@
+\begin{lexlean}{Studio.Prism.Feature}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: aLetter,
+  parameters: [code : Nat],
+  result: Bool,
+  body: (((65 <=? code) && (code <=? 90)) || ((97 <=? code) && (code <=? 122)))
+}
+
+definition{
+  name: numeric,
+  parameters: [code : Nat],
+  result: Bool,
+  body: ((48 <=? code) && (code <=? 57))
+}
+
+definition{
+  name: extendNumLet,
+  parameters: [code : Nat],
+  result: Bool,
+  body: (code =? 95)
+}
+
+definition{
+  name: midLetter,
+  parameters: [code : Nat],
+  result: Bool,
+  body: (code =? 58)
+}
+
+definition{
+  name: midNum,
+  parameters: [code : Nat],
+  result: Bool,
+  body: ((code =? 44) || (code =? 59))
+}
+
+definition{
+  name: midNumLetQ,
+  parameters: [code : Nat],
+  result: Bool,
+  body: ((code =? 46) || (code =? 39))
+}
+
+definition{
+  name: wordPart,
+  parameters: [code : Nat],
+  result: Bool,
+  body: ((aLetter code) || ((numeric code) || (extendNumLet code)))
+}
+
+definition{
+  name: lettered,
+  parameters: [code : Nat],
+  result: Bool,
+  body: ((aLetter code) || (numeric code))
+}
+
+definition{
+  name: joins,
+  parameters: [before : Nat, previous : Nat, code : Nat, after : Nat],
+  result: Bool,
+  body: (((wordPart previous) && (wordPart code)) || ((((aLetter previous) && (((midLetter code) || (midNumLetQ code)) && (aLetter after))) || ((aLetter before) && (((midLetter previous) || (midNumLetQ previous)) && (aLetter code)))) || (((numeric before) && (((midNum previous) || (midNumLetQ previous)) && (numeric code))) || ((numeric previous) && (((midNum code) || (midNumLetQ code)) && (numeric after))))))
+}
+
+definition{
+  name: byteNat,
+  parameters: [value : Bytes, offset : Nat],
+  result: Nat,
+  body: (match (prim index value offset : (Option UInt8))
+    | Option.none => 256
+    | Option.some byte => (prim to_nat byte : Nat))
+}
+
+definition{
+  name: octetAt,
+  parameters: [value : Bytes, offset : Nat],
+  result: Bytes,
+  body: (match (prim slice value offset 1 : (Option Bytes))
+    | Option.none => 0x
+    | Option.some part => part)
+}
+
+definition{
+  name: close,
+  parameters: [segment : Bytes, word : Bool, features : Bytes],
+  result: Bytes,
+  body: (if word then (if ((prim length features : Nat) =? 0) then segment else (prim append (prim append features 0x0a : Bytes) segment : Bytes)) else features)
+}
+
+definition{
+  name: wordsFrom,
+  parameters: [value : Bytes, offset : Nat, remaining : Nat, before : Nat, previous : Nat, segment : Bytes, word : Bool, features : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => (close segment word features)
+    | Nat.succ rest => (if (joins before previous (byteNat value offset) (byteNat value (offset + 1))) then (wordsFrom value (offset + 1) rest previous (byteNat value offset) (prim append segment (octetAt value offset) : Bytes) (word || (lettered (byteNat value offset))) features) else (wordsFrom value (offset + 1) rest previous (byteNat value offset) (octetAt value offset) (lettered (byteNat value offset)) (close segment word features)))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: words,
+  parameters: [seed : Bytes],
+  result: Bytes,
+  body: (wordsFrom seed 0 (prim length seed : Nat) 256 256 0x false 0x)
+}
+
+theorem{
+  name: a_word_is_its_own_feature,
+  parameters: [],
+  statement: ((words 0x76657264616e74) = 0x76657264616e74),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_sentence_has_a_feature_per_word,
+  parameters: [],
+  statement: ((words 0x466174656c696e65732c20612067616d65206f6620666174652e) = 0x466174656c696e65730a610a67616d650a6f660a66617465),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: keeps_a_word_whole_across_its_mid_letters_and_numbers,
+  parameters: [],
+  statement: ((words 0x63616e27742073746f7020332e31342076325f78) = 0x63616e27740a73746f700a332e31340a76325f78),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: punctuation_alone_has_no_feature,
+  parameters: [],
+  statement: ((words 0x2e2e2e205f20613a2062) = 0x610a62),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: features_are_a_fixed_point,
+  parameters: [],
+  statement: ((words 0x466174656c696e65730a610a67616d650a6f660a66617465) = 0x466174656c696e65730a610a67616d650a6f660a66617465),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

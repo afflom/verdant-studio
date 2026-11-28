@@ -5,6 +5,7 @@
 \importmodule{Studio.Generator.Music.Midi}
 \importmodule{Studio.Generator.AudioFile.Bwf}
 \importmodule{Studio.Generator.VectorImage.Svg}
+\importmodule{Studio.Prism.Feature}
 \title{Natural number addition}
 \begin{semanticmodule}
 definition{
@@ -15,10 +16,24 @@ definition{
 }
 
 definition{
+  name: noWordRefusal,
+  parameters: [],
+  result: Bytes,
+  body: 0x726566757365643a20746865207365656420686173206e6f20776f72642062792074686520776f726420626f756e646172696573206f6620556e69636f64652074657874207365676d656e746174696f6e202855415820233239292c20736f2074686520507269736d20686173206e6f206665617475726520746f2067656e65726174652066726f6d
+}
+
+definition{
+  name: features,
+  parameters: [seed : Bytes],
+  result: Bytes,
+  body: (Studio.Prism.Feature::words seed)
+}
+
+definition{
   name: admitted,
   parameters: [seed : Bytes],
   result: Bool,
-  body: ((not ((prim length seed : Nat) =? 0)) && ((Studio.Generator.AudioFile.Bwf::admits (prim length seed : Nat)) && ((Studio.Guard::asciiText seed) && (Studio.Generator.VectorImage.Svg::xmlText seed)))),
+  body: ((not ((prim length seed : Nat) =? 0)) && ((Studio.Generator.AudioFile.Bwf::admits (prim length seed : Nat)) && ((Studio.Guard::asciiText seed) && ((Studio.Generator.VectorImage.Svg::xmlText seed) && (not ((prim length (features seed) : Nat) =? 0)))))),
   axioms: [Quot.sound, propext]
 }
 
@@ -26,15 +41,8 @@ definition{
   name: refusal,
   parameters: [seed : Bytes],
   result: Bytes,
-  body: (if ((prim length seed : Nat) =? 0) then (emptyRefusal) else (if (not (Studio.Generator.AudioFile.Bwf::admits (prim length seed : Nat))) then (Studio.Generator.AudioFile.Bwf::capacityRefusal) else (if (not (Studio.Guard::asciiText seed)) then (Studio.Generator.Music.Midi::refusal seed) else (Studio.Generator.VectorImage.Svg::textRefusal)))),
+  body: (if ((prim length seed : Nat) =? 0) then (emptyRefusal) else (if (not (Studio.Generator.AudioFile.Bwf::admits (prim length seed : Nat))) then (Studio.Generator.AudioFile.Bwf::capacityRefusal) else (if (not (Studio.Guard::asciiText seed)) then (Studio.Generator.Music.Midi::refusal seed) else (if (not (Studio.Generator.VectorImage.Svg::xmlText seed)) then (Studio.Generator.VectorImage.Svg::textRefusal) else (noWordRefusal))))),
   axioms: [Quot.sound, propext]
-}
-
-definition{
-  name: features,
-  parameters: [seed : Bytes],
-  result: Bytes,
-  body: seed
 }
 
 theorem{
@@ -57,6 +65,29 @@ theorem{
   name: refuses_a_seed_a_generator_refuses,
   parameters: [],
   statement: (((admitted 0x636166c3a9) = false) /\ (((refusal 0x636166c3a9) = (Studio.Generator.Music.Midi::refusal 0x636166c3a9)) /\ (((admitted 0x6101) = false) /\ ((refusal 0x6101) = (Studio.Generator.VectorImage.Svg::textRefusal))))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+theorem{
+  name: refuses_a_seed_with_no_word,
+  parameters: [],
+  statement: ((refusal 0x2e2e2e) = (noWordRefusal)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: does_not_admit_a_seed_with_no_word,
+  parameters: [],
+  statement: ((admitted 0x2e2e2e) = false),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: specifies_a_feature_per_word,
+  parameters: [],
+  statement: ((features 0x466174656c696e65732c20612067616d65206f6620666174652e) = 0x466174656c696e65730a610a67616d650a6f660a66617465),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }

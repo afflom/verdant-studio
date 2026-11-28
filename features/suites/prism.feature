@@ -61,3 +61,22 @@ Feature: prism
     When prism-code check has Lean's kernel prove Studio.Prism.Bundle.bags_each_facet_with_both_manifests, Studio.Prism.Bundle.manifests_each_facet_by_sha256, Studio.Prism.Bundle.manifests_each_facet_by_sha512 and Studio.PrismGeneration.the_bundle_is_a_zip_archive
     Then the bag of three facets holds bagit.txt, manifest-sha256.txt, manifest-sha512.txt and data/audio/midi, data/audio/wave and data/image/svg+xml
     And it begins as application/zip requires, and a Standard MIDI File does not
+
+  @VS-82 @build
+  Scenario: A Prism's features are its seed segmented into words by the word boundaries of Unicode text segmentation (UAX #29), one feature per line, so a word is its own feature, a sentence has a feature per word, and a feature list is a fixed point
+    Given the feature model in app/src/Studio/Prism/Feature.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Feature.a_word_is_its_own_feature, Studio.Prism.Feature.a_sentence_has_a_feature_per_word, Studio.Prism.Feature.keeps_a_word_whole_across_its_mid_letters_and_numbers, Studio.Prism.Feature.punctuation_alone_has_no_feature, Studio.Prism.Feature.features_are_a_fixed_point and Studio.Prism.Seed.specifies_a_feature_per_word
+    Then the seed verdant has the one feature verdant, and Fatelines, a game of fate. has the features Fatelines, a, game, of and fate
+    And can't, 3.14 and v2_x stay whole by rules WB6, WB7, WB11, WB12 and WB13a, and punctuation alone is no feature
+
+  @VS-83 @build
+  Scenario: The Prism generation answers features with the Prism's features, generates every facet from them, and takes a tuned feature list as its own seed
+    Given the Prism generation in app/src/Studio/PrismGeneration.lex.tex
+    When prism-code check has Lean's kernel prove Studio.PrismGeneration.lists_the_features, Studio.PrismGeneration.generates_each_facet_from_the_features and Studio.PrismGeneration.a_tuned_feature_list_is_its_own_seed
+    Then prism-code build replays the request prism TAB features TAB Fatelines, a game of fate., answered with its five features one per line
+
+  @VS-84 @build @rejects
+  Scenario: The Prism generation refuses by name a seed with no word, since such a Prism has no feature
+    Given the seed model in app/src/Studio/Prism/Seed.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Seed.refuses_a_seed_with_no_word, Studio.Prism.Seed.does_not_admit_a_seed_with_no_word and Studio.PrismGeneration.refuses_features_of_a_seed_with_no_word
+    Then prism-code build replays the request prism TAB features TAB ..., answered with the no-word refusal

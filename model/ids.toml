@@ -687,3 +687,26 @@ level = "build"
 suite = "typeface"
 statement = "The typeface generator's arithmetic is METAFONT's, as mf.web 2.71828182 computes it: make_fraction, take_fraction, make_scaled, take_scaled, square_rt, pyth_add, n_arg and n_sin_cos give mf.web's results bit for bit, rounding and overflow to el_gordo included"
 theorems = ["Studio.Generator.Typeface.Scaled.makes_fractions_as_mf_web_does", "Studio.Generator.Typeface.Scaled.takes_fractions_as_mf_web_does", "Studio.Generator.Typeface.Scaled.makes_scaled_as_mf_web_does", "Studio.Generator.Typeface.Scaled.takes_scaled_as_mf_web_does", "Studio.Generator.Typeface.Scaled.roots_as_mf_web_does", "Studio.Generator.Typeface.Scaled.measures_angles_as_mf_web_does", "Studio.Generator.Typeface.Scaled.adds_pythagorean_as_mf_web_does", "Studio.Generator.Typeface.Scaled.sines_and_cosines_as_mf_web_does"]
+
+[[id]]
+id = "VS-82"
+level = "build"
+suite = "prism"
+statement = "A Prism's features are its seed segmented into words by the word boundaries of Unicode text segmentation (UAX #29), one feature per line, so a word is its own feature, a sentence has a feature per word, and a feature list is a fixed point"
+theorems = ["Studio.Prism.Feature.a_word_is_its_own_feature", "Studio.Prism.Feature.a_sentence_has_a_feature_per_word", "Studio.Prism.Feature.keeps_a_word_whole_across_its_mid_letters_and_numbers", "Studio.Prism.Feature.punctuation_alone_has_no_feature", "Studio.Prism.Feature.features_are_a_fixed_point", "Studio.Prism.Seed.specifies_a_feature_per_word"]
+
+[[id]]
+id = "VS-83"
+level = "build"
+suite = "prism"
+statement = "The Prism generation answers features with the Prism's features, generates every facet from them, and takes a tuned feature list as its own seed"
+theorems = ["Studio.PrismGeneration.lists_the_features", "Studio.PrismGeneration.generates_each_facet_from_the_features", "Studio.PrismGeneration.a_tuned_feature_list_is_its_own_seed"]
+
+[[id]]
+id = "VS-84"
+level = "build"
+suite = "prism"
+statement = "The Prism generation refuses by name a seed with no word, since such a Prism has no feature"
+theorems = ["Studio.Prism.Seed.refuses_a_seed_with_no_word", "Studio.Prism.Seed.does_not_admit_a_seed_with_no_word", "Studio.PrismGeneration.refuses_features_of_a_seed_with_no_word"]
+failure = "refused: the seed has no word by the word boundaries of Unicode text segmentation (UAX #29), so the Prism has no feature to generate from"
+negative = "VS-84"

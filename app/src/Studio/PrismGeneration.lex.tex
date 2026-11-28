@@ -37,6 +37,13 @@ definition{
 }
 
 definition{
+  name: featuresKey,
+  parameters: [],
+  result: Bytes,
+  body: 0x6665617475726573
+}
+
+definition{
   name: largeRefusal,
   parameters: [],
   result: Bytes,
@@ -128,7 +135,7 @@ definition{
   name: facet,
   parameters: [mediaType : Bytes, seed : Bytes],
   result: Bytes,
-  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed)) else (if (same mediaType (zipType)) then (bundle seed) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType))))))),
+  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (same mediaType (featuresKey)) then (Studio.Prism.Seed::features seed) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed)) else (if (same mediaType (zipType)) then (bundle seed) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType)))))))),
   axioms: [Quot.sound, propext]
 }
 
@@ -192,6 +199,37 @@ theorem{
   name: refuses_a_request_with_no_seed,
   parameters: [],
   statement: (((generate 0x76657264616e74) = (shapeRefusal)) /\ ((generate 0x617564696f2f6d69646909) = (Studio.Prism.Seed::emptyRefusal))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+theorem{
+  name: lists_the_features,
+  parameters: [],
+  statement: ((generate 0x666561747572657309466174656c696e65732c20612067616d65206f6620666174652e) = 0x466174656c696e65730a610a67616d650a6f660a66617465),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: generates_each_facet_from_the_features,
+  parameters: [],
+  statement: ((generate 0x696d6167652f7376672b786d6c09466174656c696e65732c20612067616d65206f6620666174652e) = (Studio.Generator.VectorImage.Svg::generate 0x466174656c696e65730a610a67616d650a6f660a66617465)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_tuned_feature_list_is_its_own_seed,
+  parameters: [],
+  statement: ((generate 0x666561747572657309466174656c696e65730a610a67616d650a6f660a66617465) = 0x466174656c696e65730a610a67616d650a6f660a66617465),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: refuses_features_of_a_seed_with_no_word,
+  parameters: [],
+  statement: ((generate 0x6665617475726573092e2e2e) = (Studio.Prism.Seed::noWordRefusal)),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }
