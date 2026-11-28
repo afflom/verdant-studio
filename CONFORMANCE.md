@@ -742,6 +742,8 @@ An authority is cited, never re-derived: what it states is not claimed as establ
 | `STITCH-PRODUCT-EXPERIENCE-68A9222` | Stitch's experience model: its journeys, views, evidence labels and action guards are model definitions, and the same action predicate gates both the control a person presses and the handler that runs, so no path bypasses readiness. Cited by Verdant Studio's journeys and actions, shared by human and agent users (REQ-AGENT-USERS). |  |
 | `STITCH-RELAY-68A9222` | Stitch's relay model at the commit Verdant Engine v2.22.4 pins: framed, bounded messages under topics hashed from secrets only holders know, which carry the sealed sync between the instances of one Prism ID. Cited by the agent interface's transport between instances (REQ-AGENT-INTERFACE, REQ-DISTRIBUTED-INSTANCES). |  |
 | `VERDANT-ENGINE-OBSERVER-2.22.4` | Verdant Engine's Observer: a self-observing second-order Prism holon that composes its organs, a full Prism model per stakeholder that it observes, and Prism ID signed, SOSA and PROV-O observed communication channels, among them channels between people and agents and between agents. Only its runtime holon, stakeholder models and channels are cited, not its Studio organ (REQ-ENGINE-RUNTIME-ONLY). Cited by REQ-AGENT-OBSERVER. |  |
+| `UNICODE-UAX-29-47` | The default word boundary rules WB1 to WB999 (section 4.1.1) of Unicode 17.0.0 text segmentation, by which a Prism's seed is segmented into words, its features. |  |
+| `UNICODE-UCD-17.0.0-WORD-BREAK` | The Word_Break property value of every code point in Unicode 17.0.0, in the Consortium's official UCD text form, which UAX #29's word boundary rules read. |  |
 
 ## Claims that are not conformance IDs
 
