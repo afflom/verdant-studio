@@ -245,6 +245,15 @@ The three honesty levels (R2):
 | `VS-111` | `build` | Studio.Gui.Approval presents a request Studio.Agent.Contributor refuses in the approvalRefused view with that refusal, grant and reject disabled | `Studio.Gui.Approval.shows_why_a_request_is_refused` |
 | `VS-112` | `build` | The grant and reject actions of the approval journey are guarded, so Studio.Gui.Approval never enables them for a viewer who is not the request's maintainer, whatever is pending | `Studio.Gui.Approval.only_the_maintainer_decides` |
 
+## gui-instance
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-113` | `build` | Studio.Gui.Instance presents the instances journey of the Studio UI Prism in Stitch Product.Experience's pattern: the instances of a Prism ID on a runtime host other than the github mirror (Studio.Instance, VE-77) show in the instancesHosted view, and their owner has the sync action enabled (VE-24) | `Studio.Gui.Instance.the_owner_sees_its_hosted_instances` |
+| `VS-114` | `build` | The instances of a Prism ID synchronize only under that Prism ID (Studio.Instance), so Studio.Gui.Instance shows them to any other Prism ID with sync disabled | `Studio.Gui.Instance.another_prism_id_cannot_synchronize` |
+| `VS-115` | `build` | GitHub is only a mirror, never a runtime, so Studio.Gui.Instance presents instances on github alone in the instancesMirrorOnly view with the hosting refusal of Studio.Instance, sync disabled | `Studio.Gui.Instance.shows_instances_on_the_mirror_alone` |
+| `VS-116` | `build` | The sync action of the instances journey is guarded, so Studio.Gui.Instance never enables it for a viewer that is not the instances' own Prism ID, wherever they are hosted | `Studio.Gui.Instance.only_the_owner_synchronizes` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
