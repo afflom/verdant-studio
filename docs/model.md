@@ -713,3 +713,4 @@ Each construct and the citation that admits it.
 - `Studio.Generator.Typeface.Choices`: std KNUTH-MF-WEB-2.71828182
 - `Studio.Generator.Typeface.Pen`: std KNUTH-MF-WEB-2.71828182
 - `Studio.Generator.Typeface.Spec`: std KNUTH-MF-WEB-2.71828182
+- `Studio.Generator.Typeface.Envelope`: std KNUTH-MF-WEB-2.71828182
