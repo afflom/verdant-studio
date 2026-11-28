@@ -9229,3 +9229,37 @@ statement = "Verdant Engine's Observer: a self-observing second-order Prism holo
 artifact = "authorities/VERDANT-ENGINE-OBSERVER-2.22.4/Observer.lex.tex"
 checksum = "388d27dc40ae8ac337d29a475d83933d91f07bccfc07bcf587a15a5cda39d7bc"
 realized_by = []
+
+[[authority]]
+id = "UNICODE-UAX-29-47"
+name = "Unicode Standard Annex #29: Unicode Text Segmentation"
+issuer = "Unicode Consortium"
+edition = "Unicode 17.0.0, UAX #29 revision 47"
+canonical_id = "https://www.unicode.org/reports/tr29/tr29-47.html"
+source_role = "normative"
+retrieval_date = "2026-11-28"
+url = "https://www.unicode.org/reports/tr29/tr29-47.html"
+media_type = "text/html"
+license = "Unicode Terms of Use"
+redistribution = "citation-only"
+statement = "The default word boundary rules WB1 to WB999 (section 4.1.1) of Unicode 17.0.0 text segmentation, by which a Prism's seed is segmented into words, its features."
+checksum = "none"
+checksum_reason = "The authority is citation-only, so no artifact is committed."
+realized_by = []
+
+[[authority]]
+id = "UNICODE-UCD-17.0.0-WORD-BREAK"
+name = "Unicode Character Database WordBreakProperty.txt"
+issuer = "Unicode Consortium"
+edition = "17.0.0"
+canonical_id = "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/WordBreakProperty.txt"
+source_role = "normative"
+retrieval_date = "2026-11-28"
+url = "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/WordBreakProperty.txt"
+media_type = "text/plain"
+license = "Unicode License v3"
+redistribution = "redistributable"
+statement = "The Word_Break property value of every code point in Unicode 17.0.0, in the Consortium's official UCD text form, which UAX #29's word boundary rules read."
+artifact = "authorities/UNICODE-UCD-17.0.0-WORD-BREAK/WordBreakProperty.txt"
+checksum = "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+realized_by = []
