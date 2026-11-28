@@ -144,8 +144,8 @@ negative = "VS-17"
 id = "VS-18"
 level = "build"
 suite = "generator"
-statement = "The synthesis, Studio.Generator.AudioFile.Synthesis, renders the Standard MIDI File the MIDI generator writes as 16-bit PCM at 48 kHz: each sounding key a sine at its MIDI tuning frequency, key 69 at 440 Hz, peaking at 3281, the level at which a 997 Hz tone reads -23 LUFS"
-theorems = ["Studio.Generator.AudioFile.Synthesis.key_69_steps_at_440_hertz", "Studio.Generator.AudioFile.Synthesis.sine_starts_at_zero", "Studio.Generator.AudioFile.Synthesis.sine_peaks_at_the_level", "Studio.Generator.AudioFile.Synthesis.sine_troughs_at_the_negated_level"]
+statement = "The synthesis, Studio.Generator.AudioFile.Synthesis, renders the Standard MIDI File the MIDI generator writes as 16-bit PCM at 48 kHz: each sounding key a sine at its MIDI tuning frequency, key 69 at 440 Hz, peaking where its ITU-R BS.1770-5 K-weighted loudness reads -24 LKFS, the home-platform target of Sony ASWG-R001, and never above that target's -1 dBTP true peak, 29204"
+theorems = ["Studio.Generator.AudioFile.Synthesis.key_69_steps_at_440_hertz", "Studio.Generator.AudioFile.Synthesis.sine_starts_at_zero", "Studio.Generator.AudioFile.Synthesis.sine_peaks_at_the_level", "Studio.Generator.AudioFile.Synthesis.sine_troughs_at_the_negated_level", "Studio.Generator.AudioFile.Synthesis.key_69_reads_minus_24_lkfs", "Studio.Generator.AudioFile.Synthesis.every_key_stays_under_the_true_peak", "Studio.Generator.AudioFile.Synthesis.the_lowest_key_is_held_at_the_true_peak"]
 
 [[id]]
 id = "VS-19"
