@@ -2201,6 +2201,25 @@ definition{
     (cons (Studio.Doc::lit "        return 'is no format 0 SMF with one track at 96 ticks per quarter note'\n")
     (cons (Studio.Doc::lit "    if struct.unpack('>I', data[18:22])[0] != len(data) - 22:\n")
     (cons (Studio.Doc::lit "        return 'has a track length that is not the rest of the file'\n")
+    (cons (Studio.Doc::lit "    # Coverage (Der from REQ-PRISM-GENERATION): every facet carries every feature. The SMF carries each as a Marker\n")
+    (cons (Studio.Doc::lit "    # meta event (FF 06, MIDI-SMF-RP-001-1.0-PAGE), in the order the features route lists them.\n")
+    (cons (Studio.Doc::lit "    markers, at = [], 22\n")
+    (cons (Studio.Doc::lit "    while at < len(data):\n")
+    (cons (Studio.Doc::lit "        while data[at] & 128:\n")
+    (cons (Studio.Doc::lit "            at += 1\n")
+    (cons (Studio.Doc::lit "        at += 1\n")
+    (cons (Studio.Doc::lit "        if data[at] == 255:\n")
+    (cons (Studio.Doc::lit "            kind, size, at = data[at + 1], 0, at + 2\n")
+    (cons (Studio.Doc::lit "            while data[at] & 128:\n")
+    (cons (Studio.Doc::lit "                size, at = size * 128 + (data[at] & 127), at + 1\n")
+    (cons (Studio.Doc::lit "            size, at = size * 128 + data[at], at + 1\n")
+    (cons (Studio.Doc::lit "            if kind == 6:\n")
+    (cons (Studio.Doc::lit "                markers.append(data[at:at + size].decode(errors='replace'))\n")
+    (cons (Studio.Doc::lit "            at += size\n")
+    (cons (Studio.Doc::lit "        else:\n")
+    (cons (Studio.Doc::lit "            at += 2 if data[at] >> 4 in (12, 13) else 3\n")
+    (cons (Studio.Doc::lit "    if markers != FEATURES:\n")
+    (cons (Studio.Doc::lit "        return 'marks the features ' + repr(markers) + ', not ' + repr(FEATURES)\n")
     (cons (Studio.Doc::lit "\n")
     (cons (Studio.Doc::lit "def wave(data):\n")
     (cons (Studio.Doc::lit "    # Bwf.lex.tex format_is_pcm_mono_48000_16 and wave_orders_bext_fmt_data: bext (646 bytes), fmt, data.\n")
@@ -2233,12 +2252,27 @@ definition{
     (cons (Studio.Doc::lit "        return 'is not well-formed XML: ' + str(failure)\n")
     (cons (Studio.Doc::lit "    if root.tag != SVG_ROOT:\n")
     (cons (Studio.Doc::lit "        return 'has the root ' + root.tag + ', not svg in the SVG namespace'\n")
+    (cons (Studio.Doc::lit "    # Coverage (Der from REQ-PRISM-GENERATION): the artwork's text carries every feature of the Prism.\n")
+    (cons (Studio.Doc::lit "    words = ' '.join(root.itertext()).split()\n")
+    (cons (Studio.Doc::lit "    missing = [feature for feature in FEATURES if feature not in words]\n")
+    (nil Bytes)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+  executable: true
+}
+
+definition{
+  name: acceptanceScript3,
+  parameters: [],
+  result: Bytes,
+  body: (Studio.Doc::cat
+    (cons (Studio.Doc::lit "    if missing:\n")
+    (cons (Studio.Doc::lit "        return 'leaves out the features ' + repr(missing)\n")
     (cons (Studio.Doc::lit "\n")
     (cons (Studio.Doc::lit "def bundle(data):\n")
     (cons (Studio.Doc::lit "    if data[:4] != b'PK' + bytes([3, 4]) or b'bagit.txt' not in data:\n")
     (cons (Studio.Doc::lit "        return 'is no ZIP holding a BagIt bag'\n")
     (cons (Studio.Doc::lit "\n")
     (cons (Studio.Doc::lit "RULES = {'audio/midi': midi, 'audio/wave': wave, 'image/svg+xml': svg, 'application/zip': bundle}\n")
+    (cons (Studio.Doc::lit "FEATURES = [line for line in run('prism' + chr(9) + 'features' + chr(9) + SEED).decode().split(chr(10)) if line]\n")
     (cons (Studio.Doc::lit "facets = [line for line in run('prism' + chr(9) + chr(9) + SEED).decode().split(chr(10)) if line]\n")
     (cons (Studio.Doc::lit "if not facets:\n")
     (cons (Studio.Doc::lit "    raise SystemExit('::error::the Prism of ' + SEED + ' lists no facet')\n")
@@ -2253,7 +2287,7 @@ definition{
     (cons (Studio.Doc::lit "    else:\n")
     (cons (Studio.Doc::lit "        print('accepted: the ' + facet + ' facet of ' + SEED + ', ' + str(len(data)) + ' bytes')\n")
     (cons (Studio.Doc::lit "sys.exit(1 if failed else 0)\n")
-    (nil Bytes)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+    (nil Bytes))))))))))))))))))))))))),
   executable: true
 }
 
@@ -2261,7 +2295,7 @@ definition{
   name: acceptanceScript,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::cat (cons (acceptanceScript1) (cons (acceptanceScript2) (nil Bytes)))),
+  body: (Studio.Doc::cat (cons (acceptanceScript1) (cons (acceptanceScript2) (cons (acceptanceScript3) (nil Bytes))))),
   executable: true
 }
 
