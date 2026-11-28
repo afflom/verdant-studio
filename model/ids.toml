@@ -914,3 +914,31 @@ level = "build"
 suite = "gui-approval"
 statement = "The grant and reject actions of the approval journey are guarded, so Studio.Gui.Approval never enables them for a viewer who is not the request's maintainer, whatever is pending"
 theorems = ["Studio.Gui.Approval.only_the_maintainer_decides"]
+
+[[id]]
+id = "VS-113"
+level = "build"
+suite = "gui-instance"
+statement = "Studio.Gui.Instance presents the instances journey of the Studio UI Prism in Stitch Product.Experience's pattern: the instances of a Prism ID on a runtime host other than the github mirror (Studio.Instance, VE-77) show in the instancesHosted view, and their owner has the sync action enabled (VE-24)"
+theorems = ["Studio.Gui.Instance.the_owner_sees_its_hosted_instances"]
+
+[[id]]
+id = "VS-114"
+level = "build"
+suite = "gui-instance"
+statement = "The instances of a Prism ID synchronize only under that Prism ID (Studio.Instance), so Studio.Gui.Instance shows them to any other Prism ID with sync disabled"
+theorems = ["Studio.Gui.Instance.another_prism_id_cannot_synchronize"]
+
+[[id]]
+id = "VS-115"
+level = "build"
+suite = "gui-instance"
+statement = "GitHub is only a mirror, never a runtime, so Studio.Gui.Instance presents instances on github alone in the instancesMirrorOnly view with the hosting refusal of Studio.Instance, sync disabled"
+theorems = ["Studio.Gui.Instance.shows_instances_on_the_mirror_alone"]
+
+[[id]]
+id = "VS-116"
+level = "build"
+suite = "gui-instance"
+statement = "The sync action of the instances journey is guarded, so Studio.Gui.Instance never enables it for a viewer that is not the instances' own Prism ID, wherever they are hosted"
+theorems = ["Studio.Gui.Instance.only_the_owner_synchronizes"]
