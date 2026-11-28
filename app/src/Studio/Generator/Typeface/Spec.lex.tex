@@ -1,0 +1,497 @@
+\begin{lexlean}{Studio.Generator.Typeface.Spec}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Studio.Generator.Typeface.Scaled}
+\importmodule{Studio.Generator.Typeface.Choices}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: concatenated,
+  parameters: [a : (List Nat), b : (List Nat)],
+  result: (List Nat),
+  body: (match a
+    | List.nil => b
+    | List.cons h t => (cons h (concatenated t b))),
+  recursive_argument: a
+}
+
+definition{
+  name: dropped,
+  parameters: [l : (List Nat), k : Nat, n : Nat],
+  result: (List Nat),
+  body: (match l
+    | List.nil => (nil Nat)
+    | List.cons h t => (if (k =? 0) then (if (n =? 0) then (cons h t) else (dropped t 0 (prim subtract n 1 : Nat))) else (cons h (dropped t (prim subtract k 1 : Nat) n)))),
+  recursive_argument: l
+}
+
+definition{
+  name: taken,
+  parameters: [l : (List Nat), k : Nat],
+  result: (List Nat),
+  body: (match l
+    | List.nil => (nil Nat)
+    | List.cons h t => (if (k =? 0) then (nil Nat) else (cons h (taken t (prim subtract k 1 : Nat))))),
+  recursive_argument: l
+}
+
+structure{
+  name: Knot,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: leftType, type: Nat}, {name: rightType, type: Nat}, {name: x, type: Studio.Generator.Typeface.Scaled::Integer}, {name: y, type: Studio.Generator.Typeface.Scaled::Integer}, {name: leftX, type: Studio.Generator.Typeface.Scaled::Integer}, {name: leftY, type: Studio.Generator.Typeface.Scaled::Integer}, {name: rightX, type: Studio.Generator.Typeface.Scaled::Integer}, {name: rightY, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: knotAt,
+  parameters: [l : (List Nat), i : Nat],
+  result: Knot,
+  body: (record Knot {leftType := (Studio.Generator.Typeface.Choices::kind l i 0), rightType := (Studio.Generator.Typeface.Choices::kind l i 1), x := (Studio.Generator.Typeface.Choices::field l i 2), y := (Studio.Generator.Typeface.Choices::field l i 3), leftX := (Studio.Generator.Typeface.Choices::field l i 4), leftY := (Studio.Generator.Typeface.Choices::field l i 5), rightX := (Studio.Generator.Typeface.Choices::field l i 6), rightY := (Studio.Generator.Typeface.Choices::field l i 7)})
+}
+
+definition{
+  name: encoded,
+  parameters: [k : Knot],
+  result: (List Nat),
+  body: (cons (prim multiply 2 (project k leftType) : Nat) (cons (prim multiply 2 (project k rightType) : Nat) (cons (Studio.Generator.Typeface.Choices::zigzag (project k x)) (cons (Studio.Generator.Typeface.Choices::zigzag (project k y)) (cons (Studio.Generator.Typeface.Choices::zigzag (project k leftX)) (cons (Studio.Generator.Typeface.Choices::zigzag (project k leftY)) (cons (Studio.Generator.Typeface.Choices::zigzag (project k rightX)) (cons (Studio.Generator.Typeface.Choices::zigzag (project k rightY)) (nil Nat)))))))))
+}
+
+definition{
+  name: knots,
+  parameters: [l : (List Nat)],
+  result: Nat,
+  body: (prim quotient (Studio.Generator.Typeface.Choices::size l) 8 0 : Nat)
+}
+
+structure{
+  name: Pair,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: first, type: Studio.Generator.Typeface.Scaled::Integer}, {name: second, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: skewed,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer, o : Nat],
+  result: Pair,
+  body: (if (o =? 1) then (record Pair {first := (Studio.Generator.Typeface.Scaled::minus x y), second := y}) else (if (o =? 5) then (record Pair {first := (Studio.Generator.Typeface.Scaled::minus y x), second := x}) else (if (o =? 6) then (record Pair {first := (Studio.Generator.Typeface.Scaled::plus y x), second := (Studio.Generator.Typeface.Scaled::negated x)}) else (if (o =? 2) then (record Pair {first := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::plus x y)), second := y}) else (if (o =? 4) then (record Pair {first := (Studio.Generator.Typeface.Scaled::minus y x), second := (Studio.Generator.Typeface.Scaled::negated y)}) else (if (o =? 8) then (record Pair {first := (Studio.Generator.Typeface.Scaled::minus x y), second := (Studio.Generator.Typeface.Scaled::negated x)}) else (if (o =? 7) then (record Pair {first := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::plus y x)), second := x}) else (record Pair {first := (Studio.Generator.Typeface.Scaled::plus x y), second := (Studio.Generator.Typeface.Scaled::negated y)}))))))))
+}
+
+definition{
+  name: unskewed,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer, o : Nat],
+  result: Pair,
+  body: (if (o =? 1) then (record Pair {first := (Studio.Generator.Typeface.Scaled::plus x y), second := y}) else (if (o =? 5) then (record Pair {first := y, second := (Studio.Generator.Typeface.Scaled::plus x y)}) else (if (o =? 6) then (record Pair {first := (Studio.Generator.Typeface.Scaled::negated y), second := (Studio.Generator.Typeface.Scaled::plus x y)}) else (if (o =? 2) then (record Pair {first := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::plus x y)), second := y}) else (if (o =? 4) then (record Pair {first := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::plus x y)), second := (Studio.Generator.Typeface.Scaled::negated y)}) else (if (o =? 8) then (record Pair {first := (Studio.Generator.Typeface.Scaled::negated y), second := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::plus x y))}) else (if (o =? 7) then (record Pair {first := y, second := (Studio.Generator.Typeface.Scaled::negated (Studio.Generator.Typeface.Scaled::plus x y))}) else (record Pair {first := (Studio.Generator.Typeface.Scaled::plus x y), second := (Studio.Generator.Typeface.Scaled::negated y)}))))))))
+}
+
+definition{
+  name: abnegated,
+  parameters: [x : Studio.Generator.Typeface.Scaled::Integer, y : Studio.Generator.Typeface.Scaled::Integer, ob : Nat, oa : Nat],
+  result: Pair,
+  body: (record Pair {first := (if ((prim remainder ob 2 0 : Nat) =? (prim remainder oa 2 0 : Nat)) then x else (Studio.Generator.Typeface.Scaled::negated x)), second := (if (if (2 <? ob) then (2 <? oa) else (not (2 <? oa))) then y else (Studio.Generator.Typeface.Scaled::negated y))})
+}
+
+definition{
+  name: crossingSteps,
+  parameters: [d : Nat, x0 : Studio.Generator.Typeface.Scaled::Integer, x1 : Studio.Generator.Typeface.Scaled::Integer, x2 : Studio.Generator.Typeface.Scaled::Integer, steps : Nat],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (match steps
+    | Nat.zero => (Studio.Generator.Typeface.Scaled::signed false (prim subtract d 268435456 : Nat))
+    | Nat.succ rest => (let x : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::truncated (Studio.Generator.Typeface.Scaled::plus x1 x2) 2); (if ((project (Studio.Generator.Typeface.Scaled::minus x0 (Studio.Generator.Typeface.Scaled::minus x1 x0)) negative) || (project (Studio.Generator.Typeface.Scaled::minus x0 (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus x1 x) x0)) negative)) then (let d2 : Nat := (prim multiply 2 d : Nat); (if (268435456 <=? d2) then (Studio.Generator.Typeface.Scaled::signed false (prim subtract d2 268435456 : Nat)) else (crossingSteps d2 (Studio.Generator.Typeface.Scaled::plus x0 x0) x1 x rest))) else (let y0 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus x0 (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus x1 x) x0)); (if (((project (Studio.Generator.Typeface.Scaled::minus x y0) negative) || ((project (Studio.Generator.Typeface.Scaled::minus x y0) magnitude) =? 0)) && ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus x x2) y0) negative) || ((project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::plus x x2) y0) magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false 268435457) else (let d2 : Nat := ((prim multiply 2 d : Nat) + 1); (if (268435456 <=? d2) then (Studio.Generator.Typeface.Scaled::signed false (prim subtract d2 268435456 : Nat)) else (crossingSteps d2 y0 x x2 rest)))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: crossing,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer, b : Studio.Generator.Typeface.Scaled::Integer, c : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (if (project a negative) then (Studio.Generator.Typeface.Scaled::signed false 0) else (if (not (project c negative)) then (if (not (project b negative)) then (if ((not (project c negative)) && (not ((project c magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false 268435457) else (if (((project a magnitude) =? 0) && ((project b magnitude) =? 0)) then (Studio.Generator.Typeface.Scaled::signed false 268435457) else (Studio.Generator.Typeface.Scaled::signed false 268435456))) else (if ((project a magnitude) =? 0) then (Studio.Generator.Typeface.Scaled::signed false 0) else (crossingSteps 1 a (Studio.Generator.Typeface.Scaled::minus a b) (Studio.Generator.Typeface.Scaled::minus b c) 30))) else (if ((project a magnitude) =? 0) then (if ((project b negative) || ((project b magnitude) =? 0)) then (Studio.Generator.Typeface.Scaled::signed false 0) else (crossingSteps 1 a (Studio.Generator.Typeface.Scaled::minus a b) (Studio.Generator.Typeface.Scaled::minus b c) 30)) else (crossingSteps 1 a (Studio.Generator.Typeface.Scaled::minus a b) (Studio.Generator.Typeface.Scaled::minus b c) 30))))
+}
+
+definition{
+  name: wayBetween,
+  parameters: [a : Studio.Generator.Typeface.Scaled::Integer, b : Studio.Generator.Typeface.Scaled::Integer, t : Studio.Generator.Typeface.Scaled::Integer],
+  result: Studio.Generator.Typeface.Scaled::Integer,
+  body: (Studio.Generator.Typeface.Scaled::minus a (Studio.Generator.Typeface.Scaled::takeFraction (Studio.Generator.Typeface.Scaled::minus a b) t))
+}
+
+structure{
+  name: Scale,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: first, type: Studio.Generator.Typeface.Scaled::Integer}, {name: second, type: Studio.Generator.Typeface.Scaled::Integer}, {name: third, type: Studio.Generator.Typeface.Scaled::Integer}, {name: lead, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: doubled,
+  parameters: [d1 : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer, dm : Nat, lead : Studio.Generator.Typeface.Scaled::Integer, steps : Nat],
+  result: Scale,
+  body: (match steps
+    | Nat.zero => (record Scale {first := d1, second := d2, third := d3, lead := lead})
+    | Nat.succ rest => (if (dm <? 134217728) then (doubled (Studio.Generator.Typeface.Scaled::plus d1 d1) (Studio.Generator.Typeface.Scaled::plus d2 d2) (Studio.Generator.Typeface.Scaled::plus d3 d3) (prim multiply 2 dm : Nat) lead rest) else (record Scale {first := d1, second := d2, third := d3, lead := lead}))),
+  recursive_argument: steps
+}
+
+definition{
+  name: scaledUp,
+  parameters: [d1 : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Scale,
+  body: (let lead : Studio.Generator.Typeface.Scaled::Integer := (if (not ((project d1 magnitude) =? 0)) then d1 else (if (not ((project d2 magnitude) =? 0)) then d2 else d3)); (if ((project lead magnitude) =? 0) then (record Scale {first := d1, second := d2, third := d3, lead := lead}) else (doubled d1 d2 d3 (if ((project d1 magnitude) <? (if ((project d2 magnitude) <? (project d3 magnitude)) then (project d3 magnitude) else (project d2 magnitude))) then (if ((project d2 magnitude) <? (project d3 magnitude)) then (project d3 magnitude) else (project d2 magnitude)) else (project d1 magnitude)) lead 29)))
+}
+
+structure{
+  name: Split,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: p, type: Knot}, {name: r, type: Knot}, {name: q, type: Knot}]
+}
+
+definition{
+  name: split,
+  parameters: [p : Knot, q : Knot, t : Studio.Generator.Typeface.Scaled::Integer, xq : Studio.Generator.Typeface.Scaled::Integer, yq : Studio.Generator.Typeface.Scaled::Integer],
+  result: Split,
+  body: (let vx : Studio.Generator.Typeface.Scaled::Integer := (wayBetween (project p rightX) (project q leftX) t); (let prx : Studio.Generator.Typeface.Scaled::Integer := (wayBetween (project p x) (project p rightX) t); (let qlx : Studio.Generator.Typeface.Scaled::Integer := (wayBetween (project q leftX) xq t); (let rlx : Studio.Generator.Typeface.Scaled::Integer := (wayBetween prx vx t); (let rrx : Studio.Generator.Typeface.Scaled::Integer := (wayBetween vx qlx t); (let vy : Studio.Generator.Typeface.Scaled::Integer := (wayBetween (project p rightY) (project q leftY) t); (let pry : Studio.Generator.Typeface.Scaled::Integer := (wayBetween (project p y) (project p rightY) t); (let qly : Studio.Generator.Typeface.Scaled::Integer := (wayBetween (project q leftY) yq t); (let rly : Studio.Generator.Typeface.Scaled::Integer := (wayBetween pry vy t); (let rry : Studio.Generator.Typeface.Scaled::Integer := (wayBetween vy qly t); (record Split {p := (record Knot {leftType := (project p leftType), rightType := (project p rightType), x := (project p x), y := (project p y), leftX := (project p leftX), leftY := (project p leftY), rightX := prx, rightY := pry}), r := (record Knot {leftType := (project q leftType), rightType := (project p rightType), x := (wayBetween rlx rrx t), y := (wayBetween rly rry t), leftX := rlx, leftY := rly, rightX := rrx, rightY := rry}), q := (record Knot {leftType := (project q leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := qlx, leftY := qly, rightX := (project q rightX), rightY := (project q rightY)})})))))))))))
+}
+
+structure{
+  name: Group,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: a, type: Knot}, {name: b, type: Knot}, {name: c, type: Knot}, {name: n, type: Nat}, {name: next, type: Knot}, {name: dead, type: Bool}]
+}
+
+definition{
+  name: xSecond,
+  parameters: [p : Knot, r : Knot, q : Knot, t : Studio.Generator.Typeface.Scaled::Integer, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let e2 : Studio.Generator.Typeface.Scaled::Integer := (wayBetween d2 d3 t); (let e3 : Studio.Generator.Typeface.Scaled::Integer := (if ((not (project e2 negative)) && (not ((project e2 magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false 0) else e2); (let u : Studio.Generator.Typeface.Scaled::Integer := (crossing (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::negated e3) (Studio.Generator.Typeface.Scaled::negated d3)); (if (project (Studio.Generator.Typeface.Scaled::minus u (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (let sp : Split := (split r q u dx dy); (let r1 : Knot := (project sp p); (let s0 : Knot := (project sp r); (let q1 : Knot := (project sp q); (let sx1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project s0 x) dx) negative) then dx else (project s0 x)); (let sx2 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus sx1 (project r1 x)) negative) then (project r1 x) else sx1); (let qlx : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project q1 leftX) dx) negative) then (Studio.Generator.Typeface.Scaled::negated dx) else (if (project (Studio.Generator.Typeface.Scaled::minus sx2 (project q1 leftX)) negative) then (Studio.Generator.Typeface.Scaled::negated sx2) else (Studio.Generator.Typeface.Scaled::negated (project q1 leftX)))); (record Group {a := p, b := r1, c := (record Knot {leftType := (project s0 leftType), rightType := (project p rightType), x := (Studio.Generator.Typeface.Scaled::negated sx2), y := (project s0 y), leftX := sx2, leftY := (project s0 leftY), rightX := (Studio.Generator.Typeface.Scaled::negated sx2), rightY := (project s0 rightY)}), n := 3, next := (record Knot {leftType := (project q1 leftType), rightType := (project q1 rightType), x := (project q1 x), y := (project q1 y), leftX := qlx, leftY := (project q1 leftY), rightX := (project q1 rightX), rightY := (project q1 rightY)}), dead := false})))))))) else (let big : Bool := (project (Studio.Generator.Typeface.Scaled::minus dx (project r x)) negative); (let r1 : Knot := (if big then (record Knot {leftType := (project r leftType), rightType := (project r rightType), x := dx, y := (project r y), leftX := (Studio.Generator.Typeface.Scaled::negated dx), leftY := (project r leftY), rightX := dx, rightY := (project r rightY)}) else r); (let qlx : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus dx (project q leftX)) negative) then dx else (if (project (Studio.Generator.Typeface.Scaled::minus (project q leftX) (project r1 x)) negative) then (project r1 x) else (project q leftX))); (record Group {a := p, b := r1, c := r1, n := 2, next := (record Knot {leftType := (project q leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := qlx, leftY := (project q leftY), rightX := (project q rightX), rightY := (project q rightY)}), dead := false}))))))))
+}
+
+definition{
+  name: xSplit,
+  parameters: [p : Knot, q : Knot, t : Studio.Generator.Typeface.Scaled::Integer, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let sp : Split := (split p q t dx dy); (let p1 : Knot := (project sp p); (let r0 : Knot := (project sp r); (let q1 : Knot := (project sp q); (let rx0 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r0 x) (project p1 x)) negative) then (project p1 x) else (project r0 x)); (let p2 : Knot := (if (project (Studio.Generator.Typeface.Scaled::minus rx0 (project p1 rightX)) negative) then (record Knot {leftType := (project p1 leftType), rightType := (project p1 rightType), x := (project p1 x), y := (project p1 y), leftX := (project p1 leftX), leftY := (project p1 leftY), rightX := rx0, rightY := (project p1 rightY)}) else p1); (let r1 : Knot := (record Knot {leftType := (project r0 leftType), rightType := (if (1 <? (project r0 rightType)) then 1 else 2), x := (Studio.Generator.Typeface.Scaled::negated rx0), y := (project r0 y), leftX := rx0, leftY := (project r0 leftY), rightX := (Studio.Generator.Typeface.Scaled::negated rx0), rightY := (project r0 rightY)}); (xSecond p2 r1 (record Knot {leftType := (project q1 leftType), rightType := (project q1 rightType), x := (project q1 x), y := (project q1 y), leftX := (Studio.Generator.Typeface.Scaled::negated (project q1 leftX)), leftY := (project q1 leftY), rightX := (project q1 rightX), rightY := (project q1 rightY)}) t (Studio.Generator.Typeface.Scaled::negated dx) dy d2 d3))))))))
+}
+
+definition{
+  name: xPhase,
+  parameters: [p : Knot, q : Knot, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let sc : Scale := (scaledUp (Studio.Generator.Typeface.Scaled::minus (project p rightX) (project p x)) (Studio.Generator.Typeface.Scaled::minus (project q leftX) (project p rightX)) (Studio.Generator.Typeface.Scaled::minus dx (project q leftX))); (if ((project (project sc lead) magnitude) =? 0) then (record Group {a := p, b := p, c := p, n := 1, next := q, dead := true}) else (let ng : Bool := (project (project sc lead) negative); (let p1 : Knot := (if ng then (record Knot {leftType := (project p leftType), rightType := 2, x := (Studio.Generator.Typeface.Scaled::negated (project p x)), y := (project p y), leftX := (project p leftX), leftY := (project p leftY), rightX := (Studio.Generator.Typeface.Scaled::negated (project p rightX)), rightY := (project p rightY)}) else p); (let q1 : Knot := (if ng then (record Knot {leftType := (project q leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (Studio.Generator.Typeface.Scaled::negated (project q leftX)), leftY := (project q leftY), rightX := (project q rightX), rightY := (project q rightY)}) else q); (let e1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc first)) else (project sc first)); (let e2 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc second)) else (project sc second)); (let e3 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc third)) else (project sc third)); (let dx1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated dx) else dx); (let t : Studio.Generator.Typeface.Scaled::Integer := (crossing e1 e2 e3); (if (project (Studio.Generator.Typeface.Scaled::minus t (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (xSplit p1 q1 t dx1 dy e2 e3) else (record Group {a := p1, b := p1, c := p1, n := 1, next := q1, dead := false}))))))))))))
+}
+
+definition{
+  name: ySecond,
+  parameters: [pp : Knot, r : Knot, qq : Knot, t : Studio.Generator.Typeface.Scaled::Integer, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let e2 : Studio.Generator.Typeface.Scaled::Integer := (wayBetween d2 d3 t); (let e3 : Studio.Generator.Typeface.Scaled::Integer := (if ((not (project e2 negative)) && (not ((project e2 magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false 0) else e2); (let u : Studio.Generator.Typeface.Scaled::Integer := (crossing (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::negated e3) (Studio.Generator.Typeface.Scaled::negated d3)); (if (project (Studio.Generator.Typeface.Scaled::minus u (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (let sp : Split := (split r qq u dx dy); (let r1 : Knot := (project sp p); (let s0 : Knot := (project sp r); (let q1 : Knot := (project sp q); (let sy1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project s0 y) dy) negative) then dy else (project s0 y)); (let sy2 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus sy1 (project r1 y)) negative) then (project r1 y) else sy1); (let qly : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project q1 leftY) dy) negative) then (Studio.Generator.Typeface.Scaled::negated dy) else (if (project (Studio.Generator.Typeface.Scaled::minus sy2 (project q1 leftY)) negative) then (Studio.Generator.Typeface.Scaled::negated sy2) else (Studio.Generator.Typeface.Scaled::negated (project q1 leftY)))); (let sx1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project s0 x) (project r1 x)) negative) then (project r1 x) else (if (project (Studio.Generator.Typeface.Scaled::minus dx (project s0 x)) negative) then dx else (project s0 x))); (let lo : Bool := (project (Studio.Generator.Typeface.Scaled::minus sx1 (project s0 leftX)) negative); (let r2 : Knot := (if (lo && (project (Studio.Generator.Typeface.Scaled::minus sx1 (project r1 rightX)) negative)) then (record Knot {leftType := (project r1 leftType), rightType := (project r1 rightType), x := (project r1 x), y := (project r1 y), leftX := (project r1 leftX), leftY := (project r1 leftY), rightX := sx1, rightY := (project r1 rightY)}) else r1); (let hi : Bool := (project (Studio.Generator.Typeface.Scaled::minus (project s0 rightX) sx1) negative); (let q2 : Knot := (record Knot {leftType := (project q1 leftType), rightType := (project q1 rightType), x := (project q1 x), y := (project q1 y), leftX := (if (hi && (project (Studio.Generator.Typeface.Scaled::minus (project q1 leftX) sx1) negative)) then sx1 else (project q1 leftX)), leftY := qly, rightX := (project q1 rightX), rightY := (project q1 rightY)}); (record Group {a := pp, b := r2, c := (record Knot {leftType := (project s0 leftType), rightType := (project pp rightType), x := sx1, y := (Studio.Generator.Typeface.Scaled::negated sy2), leftX := (if lo then sx1 else (project s0 leftX)), leftY := sy2, rightX := (if hi then sx1 else (project s0 rightX)), rightY := (Studio.Generator.Typeface.Scaled::negated sy2)}), n := 3, next := q2, dead := false}))))))))))))) else (let big : Bool := (project (Studio.Generator.Typeface.Scaled::minus dy (project r y)) negative); (let r1 : Knot := (if big then (record Knot {leftType := (project r leftType), rightType := (project r rightType), x := (project r x), y := dy, leftX := (project r leftX), leftY := (Studio.Generator.Typeface.Scaled::negated dy), rightX := (project r rightX), rightY := dy}) else r); (let qly : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus dy (project qq leftY)) negative) then dy else (if (project (Studio.Generator.Typeface.Scaled::minus (project qq leftY) (project r1 y)) negative) then (project r1 y) else (project qq leftY))); (record Group {a := pp, b := r1, c := r1, n := 2, next := (record Knot {leftType := (project qq leftType), rightType := (project qq rightType), x := (project qq x), y := (project qq y), leftX := (project qq leftX), leftY := qly, rightX := (project qq rightX), rightY := (project qq rightY)}), dead := false}))))))))
+}
+
+definition{
+  name: ySplit,
+  parameters: [pp : Knot, qq : Knot, t : Studio.Generator.Typeface.Scaled::Integer, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let sp : Split := (split pp qq t dx dy); (let p1 : Knot := (project sp p); (let r0 : Knot := (project sp r); (let q1 : Knot := (project sp q); (let ry0 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r0 y) (project p1 y)) negative) then (project p1 y) else (project r0 y)); (let p2 : Knot := (if (project (Studio.Generator.Typeface.Scaled::minus ry0 (project p1 rightY)) negative) then (record Knot {leftType := (project p1 leftType), rightType := (project p1 rightType), x := (project p1 x), y := (project p1 y), leftX := (project p1 leftX), leftY := (project p1 leftY), rightX := (project p1 rightX), rightY := ry0}) else p1); (let rx0 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r0 x) (project p2 x)) negative) then (project p2 x) else (if (project (Studio.Generator.Typeface.Scaled::minus dx (project r0 x)) negative) then dx else (project r0 x))); (let lo : Bool := (project (Studio.Generator.Typeface.Scaled::minus rx0 (project r0 leftX)) negative); (let p3 : Knot := (if (lo && (project (Studio.Generator.Typeface.Scaled::minus rx0 (project p2 rightX)) negative)) then (record Knot {leftType := (project p2 leftType), rightType := (project p2 rightType), x := (project p2 x), y := (project p2 y), leftX := (project p2 leftX), leftY := (project p2 leftY), rightX := rx0, rightY := (project p2 rightY)}) else p2); (let hi : Bool := (project (Studio.Generator.Typeface.Scaled::minus (project r0 rightX) rx0) negative); (let q2 : Knot := (record Knot {leftType := (project q1 leftType), rightType := (project q1 rightType), x := (project q1 x), y := (project q1 y), leftX := (if (hi && (project (Studio.Generator.Typeface.Scaled::minus (project q1 leftX) rx0) negative)) then rx0 else (project q1 leftX)), leftY := (Studio.Generator.Typeface.Scaled::negated (project q1 leftY)), rightX := (project q1 rightX), rightY := (project q1 rightY)}); (let rt : Nat := (project r0 rightType); (let r1 : Knot := (record Knot {leftType := (project r0 leftType), rightType := (if (2 <? rt) then (prim subtract rt 2 : Nat) else (rt + 2)), x := rx0, y := (Studio.Generator.Typeface.Scaled::negated ry0), leftX := (if lo then rx0 else (project r0 leftX)), leftY := ry0, rightX := (if hi then rx0 else (project r0 rightX)), rightY := (Studio.Generator.Typeface.Scaled::negated ry0)}); (ySecond p3 r1 q2 t dx (Studio.Generator.Typeface.Scaled::negated dy) d2 d3))))))))))))))
+}
+
+definition{
+  name: yPhase,
+  parameters: [pp : Knot, qq : Knot, cx : Bool],
+  result: Group,
+  body: (let dd : Pair := (abnegated (project qq x) (project qq y) (project qq rightType) (project pp rightType)); (let dx : Studio.Generator.Typeface.Scaled::Integer := (project dd first); (let dy : Studio.Generator.Typeface.Scaled::Integer := (project dd second); (let sc : Scale := (scaledUp (Studio.Generator.Typeface.Scaled::minus (project pp rightY) (project pp y)) (Studio.Generator.Typeface.Scaled::minus (project qq leftY) (project pp rightY)) (Studio.Generator.Typeface.Scaled::minus dy (project qq leftY))); (if ((project (project sc lead) magnitude) =? 0) then (if cx then (record Group {a := pp, b := pp, c := pp, n := 1, next := qq, dead := true}) else (if ((prim remainder (project pp rightType) 2 0 : Nat) =? 0) then (record Group {a := (record Knot {leftType := (project pp leftType), rightType := ((project pp rightType) + 2), x := (project pp x), y := (Studio.Generator.Typeface.Scaled::negated (project pp y)), leftX := (project pp leftX), leftY := (project pp leftY), rightX := (project pp rightX), rightY := (Studio.Generator.Typeface.Scaled::negated (project pp rightY))}), b := pp, c := pp, n := 1, next := (record Knot {leftType := (project qq leftType), rightType := (project qq rightType), x := (project qq x), y := (project qq y), leftX := (project qq leftX), leftY := (Studio.Generator.Typeface.Scaled::negated (project qq leftY)), rightX := (project qq rightX), rightY := (project qq rightY)}), dead := false}) else (record Group {a := pp, b := pp, c := pp, n := 1, next := qq, dead := false}))) else (let ng : Bool := (project (project sc lead) negative); (let p1 : Knot := (if ng then (record Knot {leftType := (project pp leftType), rightType := ((project pp rightType) + 2), x := (project pp x), y := (Studio.Generator.Typeface.Scaled::negated (project pp y)), leftX := (project pp leftX), leftY := (project pp leftY), rightX := (project pp rightX), rightY := (Studio.Generator.Typeface.Scaled::negated (project pp rightY))}) else pp); (let q1 : Knot := (if ng then (record Knot {leftType := (project qq leftType), rightType := (project qq rightType), x := (project qq x), y := (project qq y), leftX := (project qq leftX), leftY := (Studio.Generator.Typeface.Scaled::negated (project qq leftY)), rightX := (project qq rightX), rightY := (project qq rightY)}) else qq); (let e1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc first)) else (project sc first)); (let e2 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc second)) else (project sc second)); (let e3 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc third)) else (project sc third)); (let dy1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated dy) else dy); (let t : Studio.Generator.Typeface.Scaled::Integer := (crossing e1 e2 e3); (if (project (Studio.Generator.Typeface.Scaled::minus t (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (ySplit p1 q1 t dx dy1 e2 e3) else (record Group {a := p1, b := p1, c := p1, n := 1, next := q1, dead := false})))))))))))))))
+}
+
+definition{
+  name: groupKnots,
+  parameters: [g : Group],
+  result: (List Nat),
+  body: (let n : Nat := (project g n); (concatenated (encoded (project g a)) (if (1 <? n) then (concatenated (encoded (project g b)) (if (2 <? n) then (encoded (project g c)) else (nil Nat))) else (nil Nat))))
+}
+
+structure{
+  name: Run,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: knots, type: (List Nat)}, {name: next, type: Knot}]
+}
+
+definition{
+  name: yRun,
+  parameters: [pp : Knot, qq : Knot, cx : Bool],
+  result: Run,
+  body: (let g : Group := (yPhase pp qq cx); (record Run {knots := (groupKnots g), next := (project g next)}))
+}
+
+definition{
+  name: yAll,
+  parameters: [g : Group, cx : Bool],
+  result: Run,
+  body: (let n : Nat := (project g n); (if (n =? 1) then (yRun (project g a) (project g next) cx) else (let y1 : Run := (yRun (project g a) (project g b) cx); (if (n =? 2) then (let y2 : Run := (yRun (project y1 next) (project g next) cx); (record Run {knots := (concatenated (project y1 knots) (project y2 knots)), next := (project y2 next)})) else (let y2 : Run := (yRun (project y1 next) (project g c) cx); (let y3 : Run := (yRun (project y2 next) (project g next) cx); (record Run {knots := (concatenated (project y1 knots) (concatenated (project y2 knots) (project y3 knots))), next := (project y3 next)})))))))
+}
+
+definition{
+  name: xNegated,
+  parameters: [l : (List Nat), next : Knot, i : Nat, acc : (List Nat), flip : Bool, steps : Nat],
+  result: Run,
+  body: (match steps
+    | Nat.zero => (record Run {knots := acc, next := next})
+    | Nat.succ rest => (let k0 : Knot := (knotAt l i); (let k1 : Knot := (if flip then (record Knot {leftType := (project k0 leftType), rightType := (project k0 rightType), x := (project k0 x), y := (project k0 y), leftX := (Studio.Generator.Typeface.Scaled::negated (project k0 leftX)), leftY := (project k0 leftY), rightX := (project k0 rightX), rightY := (project k0 rightY)}) else k0); (let f : Bool := (2 <? (project k1 rightType)); (let k2 : Knot := (if f then (record Knot {leftType := (project k1 leftType), rightType := ((project k1 rightType) + 1), x := (Studio.Generator.Typeface.Scaled::negated (project k1 x)), y := (project k1 y), leftX := (project k1 leftX), leftY := (project k1 leftY), rightX := (Studio.Generator.Typeface.Scaled::negated (project k1 rightX)), rightY := (project k1 rightY)}) else k1); (if (rest =? 0) then (record Run {knots := (concatenated acc (encoded k2)), next := (if f then (record Knot {leftType := (project next leftType), rightType := (project next rightType), x := (project next x), y := (project next y), leftX := (Studio.Generator.Typeface.Scaled::negated (project next leftX)), leftY := (project next leftY), rightX := (project next rightX), rightY := (project next rightY)}) else next)}) else (xNegated l next (i + 1) (concatenated acc (encoded k2)) f rest))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: quadrants,
+  parameters: [out : (List Nat), p : Knot, rest : (List Nat), fx : Studio.Generator.Typeface.Scaled::Integer, fy : Studio.Generator.Typeface.Scaled::Integer, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => out
+    | Nat.succ more => (let last : Bool := ((Studio.Generator.Typeface.Choices::size rest) =? 0); (let q : Knot := (if last then (knotAt out 0) else (knotAt rest 0)); (let gx : Group := (xPhase p q (if last then fx else (project q x)) (if last then fy else (project q y))); (let cx : Bool := (project gx dead); (let gy : Group := (yPhase (project gx a) (project gx next) cx); (if (cx && (project gy dead)) then (if last then (concatenated (encoded (record Knot {leftType := (project p leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project q rightX), rightY := (project q rightY)})) (dropped out 0 8)) else (quadrants out (record Knot {leftType := (project p leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project q rightX), rightY := (project q rightY)}) (dropped rest 0 8) fx fy more)) else (let y : Run := (yAll gx cx); (let z : Run := (if cx then (xNegated (project y knots) (project y next) 0 (nil Nat) false (knots (project y knots))) else y); (let out1 : (List Nat) := (concatenated out (project z knots)); (if last then (concatenated (encoded (project z next)) (dropped out1 0 8)) else (quadrants out1 (project z next) (dropped rest 0 8) fx fy more)))))))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: quadrantSubdivided,
+  parameters: [l : (List Nat)],
+  result: (List Nat),
+  body: (let k : Knot := (knotAt l 0); (quadrants (nil Nat) k (dropped l 0 8) (project k x) (project k y) ((knots l) + 1)))
+}
+
+definition{
+  name: oSecond,
+  parameters: [p : Knot, r : Knot, q : Knot, t : Studio.Generator.Typeface.Scaled::Integer, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let e2 : Studio.Generator.Typeface.Scaled::Integer := (wayBetween d2 d3 t); (let e3 : Studio.Generator.Typeface.Scaled::Integer := (if ((not (project e2 negative)) && (not ((project e2 magnitude) =? 0))) then (Studio.Generator.Typeface.Scaled::signed false 0) else e2); (let u : Studio.Generator.Typeface.Scaled::Integer := (crossing (Studio.Generator.Typeface.Scaled::signed false 0) (Studio.Generator.Typeface.Scaled::negated e3) (Studio.Generator.Typeface.Scaled::negated d3)); (let dd : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus dx dy); (if (project (Studio.Generator.Typeface.Scaled::minus u (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (let sp : Split := (split r q u dx dy); (let r1 : Knot := (project sp p); (let s0 : Knot := (project sp r); (let q1 : Knot := (project sp q); (let sy1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project s0 y) (project r1 y)) negative) then (project r1 y) else (if (project (Studio.Generator.Typeface.Scaled::minus dy (project s0 y)) negative) then dy else (project s0 y))); (let sy2 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus dd (Studio.Generator.Typeface.Scaled::plus (project r1 x) sy1)) negative) then (Studio.Generator.Typeface.Scaled::minus dd (project r1 x)) else sy1); (let lo : Bool := (project (Studio.Generator.Typeface.Scaled::minus sy2 (project s0 leftY)) negative); (let r2 : Knot := (if (lo && (project (Studio.Generator.Typeface.Scaled::minus sy2 (project r1 rightY)) negative)) then (record Knot {leftType := (project r1 leftType), rightType := (project r1 rightType), x := (project r1 x), y := (project r1 y), leftX := (project r1 leftX), leftY := (project r1 leftY), rightX := (project r1 rightX), rightY := sy2}) else r1); (let hi : Bool := (project (Studio.Generator.Typeface.Scaled::minus (project s0 rightY) sy2) negative); (let sry : Studio.Generator.Typeface.Scaled::Integer := (if hi then sy2 else (project s0 rightY)); (let qly1 : Studio.Generator.Typeface.Scaled::Integer := (if (hi && (project (Studio.Generator.Typeface.Scaled::minus (project q1 leftY) sy2) negative)) then sy2 else (project q1 leftY)); (let sx1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus dd (Studio.Generator.Typeface.Scaled::plus (project s0 x) sy2)) negative) then (Studio.Generator.Typeface.Scaled::minus dd sy2) else (let a1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project s0 x) dx) negative) then dx else (project s0 x)); (if (project (Studio.Generator.Typeface.Scaled::minus a1 (project r2 x)) negative) then (project r2 x) else a1))); (let qlx0 : Studio.Generator.Typeface.Scaled::Integer := (project q1 leftX); (let qly2 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus qlx0 dx) negative) then (Studio.Generator.Typeface.Scaled::plus qly1 dx) else (if (project (Studio.Generator.Typeface.Scaled::minus sx1 qlx0) negative) then (Studio.Generator.Typeface.Scaled::plus qly1 sx1) else (Studio.Generator.Typeface.Scaled::plus qly1 qlx0))); (let qlx : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus qlx0 dx) negative) then (Studio.Generator.Typeface.Scaled::negated dx) else (if (project (Studio.Generator.Typeface.Scaled::minus sx1 qlx0) negative) then (Studio.Generator.Typeface.Scaled::negated sx1) else (Studio.Generator.Typeface.Scaled::negated qlx0))); (let sy3 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus sy2 sx1); (let sry2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus sry sx1); (let fix : Bool := (project (Studio.Generator.Typeface.Scaled::minus sry2 sy3) negative); (record Group {a := p, b := r2, c := (record Knot {leftType := (project s0 leftType), rightType := (project p rightType), x := (Studio.Generator.Typeface.Scaled::negated sx1), y := sy3, leftX := sx1, leftY := (if lo then sy2 else (project s0 leftY)), rightX := (Studio.Generator.Typeface.Scaled::negated sx1), rightY := (if fix then sy3 else sry2)}), n := 3, next := (record Knot {leftType := (project q1 leftType), rightType := (project q1 rightType), x := (project q1 x), y := (project q1 y), leftX := qlx, leftY := (if (fix && (project (Studio.Generator.Typeface.Scaled::minus qly2 sy3) negative)) then sy3 else qly2), rightX := (project q1 rightX), rightY := (project q1 rightY)}), dead := false}))))))))))))))))))) else (let big : Bool := (project (Studio.Generator.Typeface.Scaled::minus dx (project r x)) negative); (let r1 : Knot := (if big then (record Knot {leftType := (project r leftType), rightType := (project r rightType), x := dx, y := (project r y), leftX := (Studio.Generator.Typeface.Scaled::negated dx), leftY := (project r leftY), rightX := dx, rightY := (project r rightY)}) else r); (let qlx : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus dx (project q leftX)) negative) then dx else (if (project (Studio.Generator.Typeface.Scaled::minus (project q leftX) (project r1 x)) negative) then (project r1 x) else (project q leftX))); (record Group {a := p, b := r1, c := r1, n := 2, next := (record Knot {leftType := (project q leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := qlx, leftY := (project q leftY), rightX := (project q rightX), rightY := (project q rightY)}), dead := false})))))))))
+}
+
+definition{
+  name: oSplit,
+  parameters: [p : Knot, q : Knot, t : Studio.Generator.Typeface.Scaled::Integer, dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, d2 : Studio.Generator.Typeface.Scaled::Integer, d3 : Studio.Generator.Typeface.Scaled::Integer],
+  result: Group,
+  body: (let sp : Split := (split p q t dx dy); (let p1 : Knot := (project sp p); (let r0 : Knot := (project sp r); (let q1 : Knot := (project sp q); (let dd : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus dx dy); (let ry1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r0 y) (project p1 y)) negative) then (project p1 y) else (if (project (Studio.Generator.Typeface.Scaled::minus dy (project r0 y)) negative) then dy else (project r0 y))); (let ry2 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus dd (Studio.Generator.Typeface.Scaled::plus (project p1 x) ry1)) negative) then (Studio.Generator.Typeface.Scaled::minus dd (project p1 x)) else ry1); (let lo : Bool := (project (Studio.Generator.Typeface.Scaled::minus ry2 (project r0 leftY)) negative); (let p2 : Knot := (if (lo && (project (Studio.Generator.Typeface.Scaled::minus ry2 (project p1 rightY)) negative)) then (record Knot {leftType := (project p1 leftType), rightType := (project p1 rightType), x := (project p1 x), y := (project p1 y), leftX := (project p1 leftX), leftY := (project p1 leftY), rightX := (project p1 rightX), rightY := ry2}) else p1); (let hi : Bool := (project (Studio.Generator.Typeface.Scaled::minus (project r0 rightY) ry2) negative); (let rry : Studio.Generator.Typeface.Scaled::Integer := (if hi then ry2 else (project r0 rightY)); (let qly1 : Studio.Generator.Typeface.Scaled::Integer := (if (hi && (project (Studio.Generator.Typeface.Scaled::minus (project q1 leftY) ry2) negative)) then ry2 else (project q1 leftY)); (let rx1 : Studio.Generator.Typeface.Scaled::Integer := (if (project (Studio.Generator.Typeface.Scaled::minus (project r0 x) (project p2 x)) negative) then (project p2 x) else (if (project (Studio.Generator.Typeface.Scaled::minus dd (Studio.Generator.Typeface.Scaled::plus (project r0 x) ry2)) negative) then (Studio.Generator.Typeface.Scaled::minus dd ry2) else (project r0 x))); (let p3 : Knot := (if (project (Studio.Generator.Typeface.Scaled::minus rx1 (project p2 rightX)) negative) then (record Knot {leftType := (project p2 leftType), rightType := (project p2 rightType), x := (project p2 x), y := (project p2 y), leftX := (project p2 leftX), leftY := (project p2 leftY), rightX := rx1, rightY := (project p2 rightY)}) else p2); (let ry3 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus ry2 rx1); (let rry2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus rry rx1); (let qly2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::plus qly1 (project q1 leftX)); (let fix : Bool := (project (Studio.Generator.Typeface.Scaled::minus rry2 ry3) negative); (let rt : Nat := (project r0 rightType); (let r1 : Knot := (record Knot {leftType := (project r0 leftType), rightType := (if (4 <? rt) then (prim subtract rt 4 : Nat) else (rt + 4)), x := (Studio.Generator.Typeface.Scaled::negated rx1), y := ry3, leftX := rx1, leftY := (if lo then ry2 else (project r0 leftY)), rightX := (Studio.Generator.Typeface.Scaled::negated rx1), rightY := (if fix then ry3 else rry2)}); (let q2 : Knot := (record Knot {leftType := (project q1 leftType), rightType := (project q1 rightType), x := (project q1 x), y := (project q1 y), leftX := (Studio.Generator.Typeface.Scaled::negated (project q1 leftX)), leftY := (if (fix && (project (Studio.Generator.Typeface.Scaled::minus qly2 ry3) negative)) then ry3 else qly2), rightX := (project q1 rightX), rightY := (project q1 rightY)}); (oSecond p3 r1 q2 t (Studio.Generator.Typeface.Scaled::negated dx) (Studio.Generator.Typeface.Scaled::plus dy dx) d2 d3))))))))))))))))))))))
+}
+
+definition{
+  name: oPhase,
+  parameters: [p0 : Knot, q0 : Knot, last : Bool],
+  result: Group,
+  body: (let p : Knot := (record Knot {leftType := (project p0 leftType), rightType := (project p0 rightType), x := (Studio.Generator.Typeface.Scaled::minus (project p0 x) (project p0 y)), y := (project p0 y), leftX := (project p0 leftX), leftY := (project p0 leftY), rightX := (Studio.Generator.Typeface.Scaled::minus (project p0 rightX) (project p0 rightY)), rightY := (project p0 rightY)}); (let q : Knot := (record Knot {leftType := (project q0 leftType), rightType := (project q0 rightType), x := (project q0 x), y := (project q0 y), leftX := (Studio.Generator.Typeface.Scaled::minus (project q0 leftX) (project q0 leftY)), leftY := (project q0 leftY), rightX := (project q0 rightX), rightY := (project q0 rightY)}); (let e : Pair := (if last then (let u : Pair := (unskewed (project q x) (project q y) (project q rightType)); (skewed (project u first) (project u second) (project p rightType))) else (let u : Pair := (abnegated (project q x) (project q y) (project q rightType) (project p rightType)); (record Pair {first := (Studio.Generator.Typeface.Scaled::minus (project u first) (project u second)), second := (project u second)}))); (let dx : Studio.Generator.Typeface.Scaled::Integer := (project e first); (let dy : Studio.Generator.Typeface.Scaled::Integer := (project e second); (let sc : Scale := (scaledUp (Studio.Generator.Typeface.Scaled::minus (project p rightX) (project p x)) (Studio.Generator.Typeface.Scaled::minus (project q leftX) (project p rightX)) (Studio.Generator.Typeface.Scaled::minus dx (project q leftX))); (if ((project (project sc lead) magnitude) =? 0) then (record Group {a := p, b := p, c := p, n := 1, next := q, dead := false}) else (let ng : Bool := (project (project sc lead) negative); (let p1 : Knot := (if ng then (record Knot {leftType := (project p leftType), rightType := ((project p rightType) + 4), x := (Studio.Generator.Typeface.Scaled::negated (project p x)), y := (Studio.Generator.Typeface.Scaled::plus (project p x) (project p y)), leftX := (project p leftX), leftY := (project p leftY), rightX := (Studio.Generator.Typeface.Scaled::negated (project p rightX)), rightY := (Studio.Generator.Typeface.Scaled::plus (project p rightX) (project p rightY))}) else p); (let q1 : Knot := (if ng then (record Knot {leftType := (project q leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (Studio.Generator.Typeface.Scaled::negated (project q leftX)), leftY := (Studio.Generator.Typeface.Scaled::plus (project q leftX) (project q leftY)), rightX := (project q rightX), rightY := (project q rightY)}) else q); (let e1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc first)) else (project sc first)); (let e2 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc second)) else (project sc second)); (let e3 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated (project sc third)) else (project sc third)); (let dy1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::plus dx dy) else dy); (let dx1 : Studio.Generator.Typeface.Scaled::Integer := (if ng then (Studio.Generator.Typeface.Scaled::negated dx) else dx); (let t : Studio.Generator.Typeface.Scaled::Integer := (crossing e1 e2 e3); (if (project (Studio.Generator.Typeface.Scaled::minus t (Studio.Generator.Typeface.Scaled::signed false 268435456)) negative) then (oSplit p1 q1 t dx1 dy1 e2 e3) else (record Group {a := p1, b := p1, c := p1, n := 1, next := q1, dead := false}))))))))))))))))))
+}
+
+definition{
+  name: octants,
+  parameters: [out : (List Nat), p : Knot, rest : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => out
+    | Nat.succ more => (let last : Bool := ((Studio.Generator.Typeface.Choices::size rest) =? 0); (let q : Knot := (if last then (knotAt out 0) else (knotAt rest 0)); (let g : Group := (oPhase p q last); (let out1 : (List Nat) := (concatenated out (groupKnots g)); (if last then (concatenated (encoded (project g next)) (dropped out1 0 8)) else (octants out1 (project g next) (dropped rest 0 8) more))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: octantSubdivided,
+  parameters: [l : (List Nat)],
+  result: (List Nat),
+  body: (octants (nil Nat) (knotAt l 0) (dropped l 0 8) (knots l))
+}
+
+definition{
+  name: deadAt,
+  parameters: [p : Knot, q : Knot],
+  result: Bool,
+  body: (if ((((project (Studio.Generator.Typeface.Scaled::minus (project p x) (project p rightX)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (project p y) (project p rightY)) magnitude) =? 0)) && (((project (Studio.Generator.Typeface.Scaled::minus (project p x) (project q leftX)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (project p y) (project q leftY)) magnitude) =? 0))) then (let u : Pair := (unskewed (project q x) (project q y) (project q rightType)); (let w : Pair := (skewed (project u first) (project u second) (project p rightType)); (((project (Studio.Generator.Typeface.Scaled::minus (project p x) (project w first)) magnitude) =? 0) && ((project (Studio.Generator.Typeface.Scaled::minus (project p y) (project w second)) magnitude) =? 0)))) else false)
+}
+
+definition{
+  name: alive,
+  parameters: [out : (List Nat), p : Knot, rest : (List Nat), steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => out
+    | Nat.succ more => (let last : Bool := ((Studio.Generator.Typeface.Choices::size rest) =? 0); (let q : Knot := (if last then (knotAt out 0) else (knotAt rest 0)); (if (deadAt p q) then (if last then (concatenated (encoded (record Knot {leftType := (project p leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project q rightX), rightY := (project q rightY)})) (dropped out 0 8)) else (alive out (record Knot {leftType := (project p leftType), rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (project p leftX), leftY := (project p leftY), rightX := (project q rightX), rightY := (project q rightY)}) (dropped rest 0 8) more)) else (if last then (concatenated out (encoded p)) else (alive (concatenated out (encoded p)) q (dropped rest 0 8) more)))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: withoutDeadCubics,
+  parameters: [l : (List Nat)],
+  result: (List Nat),
+  body: (alive (nil Nat) (knotAt l 0) (dropped l 0 8) (knots l))
+}
+
+definition{
+  name: octantNumber,
+  parameters: [o : Nat],
+  result: Nat,
+  body: (if (o =? 1) then 1 else (if (o =? 5) then 2 else (if (o =? 6) then 3 else (if (o =? 2) then 4 else (if (o =? 4) then 5 else (if (o =? 8) then 6 else (if (o =? 7) then 7 else (if (o =? 3) then 8 else 0))))))))
+}
+
+definition{
+  name: octantCode,
+  parameters: [k : Nat],
+  result: Nat,
+  body: (if (k =? 1) then 1 else (if (k =? 2) then 5 else (if (k =? 3) then 6 else (if (k =? 4) then 2 else (if (k =? 5) then 4 else (if (k =? 6) then 8 else (if (k =? 7) then 7 else (if (k =? 8) then 3 else 0))))))))
+}
+
+structure{
+  name: Transition,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: diagonal, type: Bool}, {name: turn, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: transition,
+  parameters: [o1 : Nat, o2 : Nat, turn : Studio.Generator.Typeface.Scaled::Integer],
+  result: Transition,
+  body: (if ((o2 =? (o1 + 1)) || (o1 =? (o2 + 1))) then (record Transition {diagonal := ((prim remainder (if (o2 <? o1) then o1 else o2) 2 0 : Nat) =? 0), turn := turn}) else (record Transition {diagonal := false, turn := (if (o1 =? 8) then (Studio.Generator.Typeface.Scaled::plus turn (Studio.Generator.Typeface.Scaled::signed false 1)) else (Studio.Generator.Typeface.Scaled::minus turn (Studio.Generator.Typeface.Scaled::signed false 1)))}))
+}
+
+structure{
+  name: Chain,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: knots, type: (List Nat)}, {name: q, type: Knot}, {name: turn, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: finished,
+  parameters: [acc : (List Nat), a : Knot, q : Knot, turn : Studio.Generator.Typeface.Scaled::Integer],
+  result: Chain,
+  body: (let tr : Transition := (transition (octantNumber (project (project a rightX) magnitude)) (octantNumber (project q rightType)) turn); (let ry : Studio.Generator.Typeface.Scaled::Integer := (if (project tr diagonal) then (Studio.Generator.Typeface.Scaled::signed false 1) else (Studio.Generator.Typeface.Scaled::signed false 0)); (record Chain {knots := (concatenated acc (encoded (record Knot {leftType := (project a leftType), rightType := (project a rightType), x := (project a x), y := (project a y), leftX := (project a leftX), leftY := (project a leftY), rightX := (project a rightX), rightY := ry}))), q := (record Knot {leftType := 0, rightType := (project q rightType), x := (project q x), y := (project q y), leftX := (Studio.Generator.Typeface.Scaled::signed false (project q rightType)), leftY := ry, rightX := (project q rightX), rightY := (project q rightY)}), turn := (project tr turn)})))
+}
+
+definition{
+  name: chained,
+  parameters: [acc : (List Nat), a : Knot, o1 : Nat, o2 : Nat, cw : Bool, q : Knot, ux : Studio.Generator.Typeface.Scaled::Integer, uy : Studio.Generator.Typeface.Scaled::Integer, turn : Studio.Generator.Typeface.Scaled::Integer, steps : Nat],
+  result: Chain,
+  body: (match steps
+    | Nat.zero => (finished acc a q turn)
+    | Nat.succ rest => (let n1 : Nat := (if cw then (if (o1 =? 1) then 8 else (prim subtract o1 1 : Nat)) else (if (o1 =? 8) then 1 else (o1 + 1))); (if (n1 =? o2) then (finished acc a q turn) else (let code : Nat := (octantCode n1); (let tr : Transition := (transition (octantNumber (project (project a rightX) magnitude)) n1 turn); (let ry : Studio.Generator.Typeface.Scaled::Integer := (if (project tr diagonal) then (Studio.Generator.Typeface.Scaled::signed false 1) else (Studio.Generator.Typeface.Scaled::signed false 0)); (let w : Pair := (skewed ux uy code); (let b : Knot := (record Knot {leftType := 0, rightType := 0, x := (project w first), y := (project w second), leftX := (Studio.Generator.Typeface.Scaled::signed false code), leftY := ry, rightX := (Studio.Generator.Typeface.Scaled::signed false code), rightY := (Studio.Generator.Typeface.Scaled::signed false 0)}); (chained (concatenated acc (encoded (record Knot {leftType := (project a leftType), rightType := (project a rightType), x := (project a x), y := (project a y), leftX := (project a leftX), leftY := (project a leftY), rightX := (project a rightX), rightY := ry}))) b n1 o2 cw q ux uy (project tr turn) rest))))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: normalized,
+  parameters: [dx : Studio.Generator.Typeface.Scaled::Integer, dy : Studio.Generator.Typeface.Scaled::Integer, dm : Nat, steps : Nat],
+  result: Pair,
+  body: (match steps
+    | Nat.zero => (record Pair {first := dx, second := dy})
+    | Nat.succ rest => (if (dm <? 268435456) then (normalized (Studio.Generator.Typeface.Scaled::plus dx dx) (Studio.Generator.Typeface.Scaled::plus dy dy) (prim multiply 2 dm : Nat) rest) else (record Pair {first := dx, second := dy}))),
+  recursive_argument: steps
+}
+
+definition{
+  name: unitVector,
+  parameters: [d : Pair, o : Nat],
+  result: Pair,
+  body: (let u : Pair := (unskewed (project d first) (project d second) o); (let l : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::pythagoreanAdd (project u first) (project u second)); (record Pair {first := (Studio.Generator.Typeface.Scaled::makeFraction (project u first) l), second := (Studio.Generator.Typeface.Scaled::makeFraction (project u second) l)})))
+}
+
+definition{
+  name: clockwise,
+  parameters: [p : Knot, s : Knot, q : Knot, r : Knot, rev : Bool],
+  result: Bool,
+  body: (let a1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project s x) (project s leftX)); (let b1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project s y) (project s leftY)); (let a2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project s x) (project p rightX)); (let b2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project s y) (project p rightY)); (let z1 : Bool := (((project a1 magnitude) =? 0) && ((project b1 magnitude) =? 0)); (let z2 : Bool := (((project a2 magnitude) =? 0) && ((project b2 magnitude) =? 0)); (let dx1 : Studio.Generator.Typeface.Scaled::Integer := (if (not z1) then a1 else (if (not z2) then a2 else (Studio.Generator.Typeface.Scaled::minus (project s x) (project p x)))); (let dy1 : Studio.Generator.Typeface.Scaled::Integer := (if (not z1) then b1 else (if (not z2) then b2 else (Studio.Generator.Typeface.Scaled::minus (project s y) (project p y)))); (let c1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project q rightX) (project q x)); (let e1 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project q rightY) (project q y)); (let c2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project r leftX) (project q x)); (let e2 : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (project r leftY) (project q y)); (let w : Pair := (if ((project r rightType) =? 0) then (record Pair {first := (project r x), second := (project r y)}) else (let u : Pair := (unskewed (project r x) (project r y) (project r rightType)); (skewed (project u first) (project u second) (project q rightType)))); (let y1 : Bool := (((project c1 magnitude) =? 0) && ((project e1 magnitude) =? 0)); (let y2 : Bool := (((project c2 magnitude) =? 0) && ((project e2 magnitude) =? 0)); (let dx2 : Studio.Generator.Typeface.Scaled::Integer := (if (not y1) then c1 else (if (not y2) then c2 else (Studio.Generator.Typeface.Scaled::minus (project w first) (project q x)))); (let dy2 : Studio.Generator.Typeface.Scaled::Integer := (if (not y1) then e1 else (if (not y2) then e2 else (Studio.Generator.Typeface.Scaled::minus (project w second) (project q y)))); (let u1 : Pair := (unitVector (normalized dx1 dy1 (if ((project dx1 magnitude) <? (project dy1 magnitude)) then (project dy1 magnitude) else (project dx1 magnitude)) 30) (project p rightType)); (let u2 : Pair := (unitVector (normalized dx2 dy2 (if ((project dx2 magnitude) <? (project dy2 magnitude)) then (project dy2 magnitude) else (project dx2 magnitude)) 30) (project q rightType)); (let dl : Studio.Generator.Typeface.Scaled::Integer := (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::takeFraction (project u1 first) (project u2 second)) (Studio.Generator.Typeface.Scaled::takeFraction (project u2 first) (project u1 second))); (if (project (Studio.Generator.Typeface.Scaled::minus (Studio.Generator.Typeface.Scaled::signed false 4684844) dl) negative) then false else (if (project (Studio.Generator.Typeface.Scaled::minus dl (Studio.Generator.Typeface.Scaled::signed true 4684844)) negative) then true else rev))))))))))))))))))))))
+}
+
+definition{
+  name: bounded,
+  parameters: [p : Knot, q : Knot, r : Knot, turn : Studio.Generator.Typeface.Scaled::Integer, rev : Bool],
+  result: Chain,
+  body: (let u : Pair := (unskewed (project q x) (project q y) (project q rightType)); (let w : Pair := (skewed (project u first) (project u second) (project p rightType)); (let s : Knot := (record Knot {leftType := (project q leftType), rightType := 0, x := (project w first), y := (project w second), leftX := (project q leftX), leftY := (project q leftY), rightX := (Studio.Generator.Typeface.Scaled::signed false (project p rightType)), rightY := (Studio.Generator.Typeface.Scaled::signed false 0)}); (let o1 : Nat := (octantNumber (project p rightType)); (let o2 : Nat := (octantNumber (project q rightType)); (let m : Nat := (prim remainder (prim subtract (o2 + 8) o1 : Nat) 8 0 : Nat); (if ((m =? 1) || (m =? 7)) then (finished (nil Nat) s q turn) else (chained (nil Nat) s o1 o2 (if (m =? 2) then false else (if (m =? 6) then true else (clockwise p s q r rev))) q (project u first) (project u second) turn 8))))))))
+}
+
+structure{
+  name: Spec,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: knots, type: (List Nat)}, {name: turn, type: Studio.Generator.Typeface.Scaled::Integer}]
+}
+
+definition{
+  name: boundaries,
+  parameters: [out : (List Nat), p : Knot, rest : (List Nat), turn : Studio.Generator.Typeface.Scaled::Integer, rev : Bool, steps : Nat],
+  result: Spec,
+  body: (match steps
+    | Nat.zero => (record Spec {knots := out, turn := turn})
+    | Nat.succ more => (let last : Bool := ((Studio.Generator.Typeface.Choices::size rest) =? 0); (let q : Knot := (if last then (knotAt out 0) else (knotAt rest 0)); (let r : Knot := (if last then (if (1 <? (knots out)) then (knotAt out 1) else p) else (if (1 <? (knots rest)) then (knotAt rest 1) else (if ((Studio.Generator.Typeface.Choices::size out) =? 0) then p else (knotAt out 0)))); (let ch : Chain := (if ((project p rightType) =? (project q rightType)) then (record Chain {knots := (nil Nat), q := q, turn := turn}) else (bounded p q r turn rev)); (let out1 : (List Nat) := (concatenated out (concatenated (encoded p) (project ch knots))); (if last then (record Spec {knots := (concatenated (encoded (project ch q)) (dropped out1 0 8)), turn := (project ch turn)}) else (boundaries out1 (project ch q) (dropped rest 0 8) (project ch turn) rev more)))))))),
+  recursive_argument: steps
+}
+
+definition{
+  name: firstBoundary,
+  parameters: [l : (List Nat), i : Nat, steps : Nat],
+  result: Nat,
+  body: (match steps
+    | Nat.zero => i
+    | Nat.succ rest => (if ((Studio.Generator.Typeface.Choices::kind l i 0) =? 0) then i else (firstBoundary l (i + 1) rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: rotated,
+  parameters: [l : (List Nat), i : Nat],
+  result: (List Nat),
+  body: (concatenated (dropped l 0 (prim multiply 8 i : Nat)) (taken l (prim multiply 8 i : Nat)))
+}
+
+definition{
+  name: numbered,
+  parameters: [l : (List Nat), i : Nat, n : Nat, steps : Nat],
+  result: (List Nat),
+  body: (match steps
+    | Nat.zero => (nil Nat)
+    | Nat.succ rest => (concatenated (cons (prim multiply 2 (if (i =? 0) then n else i) : Nat) (dropped (taken (dropped l 0 (prim multiply 8 i : Nat)) 8) 0 1)) (numbered l (i + 1) n rest))),
+  recursive_argument: steps
+}
+
+definition{
+  name: makeSpec,
+  parameters: [l : (List Nat), rev : Bool],
+  result: Spec,
+  body: (let n : Nat := (knots l); (let a : (List Nat) := (withoutDeadCubics (octantSubdivided (quadrantSubdivided (numbered l 0 n n)))); (let k : Knot := (knotAt a 0); (let b : Spec := (boundaries (nil Nat) k (dropped a 0 8) (Studio.Generator.Typeface.Scaled::signed false 0) rev (knots a)); (let m : Nat := (knots (project b knots)); (record Spec {knots := (rotated (project b knots) (firstBoundary (project b knots) 0 m)), turn := (project b turn)}))))))
+}
+
+theorem{
+  name: divides_a_circle_into_eight_octants_as_metafont_does,
+  parameters: [],
+  statement: (((Studio.Generator.Typeface.Choices::sameList (project (makeSpec (cons 2 (cons 2 (cons 1310720 (cons 0 (cons 1310720 (cons 723901 (cons 1310720 (cons 723900 (cons 2 (cons 2 (cons 0 (cons 1310720 (cons 723900 (cons 1310720 (cons 723901 (cons 1310720 (cons 2 (cons 2 (cons 1310721 (cons 0 (cons 1310721 (cons 723900 (cons 1310721 (cons 723901 (cons 2 (cons 2 (cons 0 (cons 1310721 (cons 723901 (cons 1310721 (cons 723900 (cons 1310721 (nil Nat))))))))))))))))))))))))))))))))) false) knots) (cons 0 (cons 12 (cons 1310720 (cons 1310721 (cons 12 (cons 0 (cons 1672670 (cons 1310721 (cons 2 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 12 (cons 2 (cons 0 (cons 4 (cons 1853645 (cons 926822 (cons 4 (cons 2 (cons 1853645 (cons 1164014 (cons 2 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 4 (cons 0 (cons 0 (cons 8 (cons 1310720 (cons 1310721 (cons 8 (cons 0 (cons 1672670 (cons 1310721 (cons 4 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 8 (cons 2 (cons 0 (cons 16 (cons 1853645 (cons 926822 (cons 16 (cons 2 (cons 1853645 (cons 1164014 (cons 4 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 16 (cons 0 (cons 0 (cons 14 (cons 1310720 (cons 1310721 (cons 14 (cons 0 (cons 1672670 (cons 1310721 (cons 6 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 14 (cons 2 (cons 0 (cons 6 (cons 1853645 (cons 926822 (cons 6 (cons 2 (cons 1853645 (cons 1164014 (cons 6 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 6 (cons 0 (cons 0 (cons 2 (cons 1310720 (cons 1310721 (cons 2 (cons 0 (cons 1672670 (cons 1310721 (cons 8 (cons 0 (cons 1853644 (cons 926823 (cons 1853644 (cons 1164015 (cons 2 (cons 2 (cons 0 (cons 10 (cons 1853645 (cons 926822 (cons 10 (cons 2 (cons 1853645 (cons 1164014 (cons 8 (cons 0 (cons 1310721 (cons 1310720 (cons 1672671 (cons 1310720 (cons 10 (cons 0 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) && (Studio.Generator.Typeface.Scaled::agrees (project (makeSpec (cons 2 (cons 2 (cons 1310720 (cons 0 (cons 1310720 (cons 723901 (cons 1310720 (cons 723900 (cons 2 (cons 2 (cons 0 (cons 1310720 (cons 723900 (cons 1310720 (cons 723901 (cons 1310720 (cons 2 (cons 2 (cons 1310721 (cons 0 (cons 1310721 (cons 723900 (cons 1310721 (cons 723901 (cons 2 (cons 2 (cons 0 (cons 1310721 (cons 723901 (cons 1310721 (cons 723900 (cons 1310721 (nil Nat))))))))))))))))))))))))))))))))) false) turn) false 1)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: divides_a_triangle_at_its_corners_as_metafont_does,
+  parameters: [],
+  statement: (((Studio.Generator.Typeface.Choices::sameList (project (makeSpec (cons 2 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2 (cons 2 (cons 1310720 (cons 0 (cons 1310720 (cons 0 (cons 1310720 (cons 0 (cons 2 (cons 2 (cons 655360 (cons 1048576 (cons 655360 (cons 1048576 (cons 655360 (cons 1048576 (nil Nat))))))))))))))))))))))))) false) knots) (cons 0 (cons 2 (cons 0 (cons 0 (cons 2 (cons 0 (cons 0 (cons 0 (cons 2 (cons 0 (cons 1310720 (cons 0 (cons 1310720 (cons 0 (cons 2 (cons 2 (cons 0 (cons 0 (cons 1310721 (cons 1310720 (cons 10 (cons 2 (cons 10 (cons 0 (cons 0 (cons 12 (cons 1310720 (cons 1310721 (cons 12 (cons 0 (cons 1310720 (cons 1310721 (cons 4 (cons 0 (cons 1703936 (cons 655361 (cons 1703936 (cons 655361 (cons 12 (cons 2 (cons 0 (cons 0 (cons 1703937 (cons 1048576 (cons 4 (cons 2 (cons 4 (cons 0 (cons 0 (cons 0 (cons 393216 (cons 1048577 (cons 8 (cons 0 (cons 8 (cons 2 (cons 0 (cons 16 (cons 393217 (cons 655361 (cons 16 (cons 2 (cons 393217 (cons 655361 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 16 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 14 (cons 0 (cons 14 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 6 (cons 2 (cons 6 (cons 0 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) && (Studio.Generator.Typeface.Scaled::agrees (project (makeSpec (cons 2 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2 (cons 2 (cons 1310720 (cons 0 (cons 1310720 (cons 0 (cons 1310720 (cons 0 (cons 2 (cons 2 (cons 655360 (cons 1048576 (cons 655360 (cons 1048576 (cons 655360 (cons 1048576 (nil Nat))))))))))))))))))))))))) false) turn) false 1)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: turns_a_reversal_counterclockwise_as_metafont_does,
+  parameters: [],
+  statement: (((Studio.Generator.Typeface.Choices::sameList (project (makeSpec (cons 2 (cons 2 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 2 (cons 2 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (nil Nat))))))))))))))))) false) knots) (cons 0 (cons 6 (cons 2490368 (cons 7208961 (cons 6 (cons 2 (cons 2490368 (cons 7208961 (cons 2 (cons 0 (cons 4456448 (cons 6946817 (cons 4456448 (cons 6946817 (cons 6 (cons 0 (cons 0 (cons 0 (cons 9437185 (cons 6946816 (cons 2 (cons 0 (cons 2 (cons 2 (cons 0 (cons 0 (cons 9437184 (cons 2490369 (cons 10 (cons 2 (cons 10 (cons 0 (cons 0 (cons 0 (cons 4456448 (cons 2490368 (cons 12 (cons 0 (cons 12 (cons 2 (cons 0 (cons 4 (cons 4456449 (cons 6946816 (cons 4 (cons 2 (cons 4456449 (cons 6946816 (cons 4 (cons 0 (cons 2490369 (cons 7208960 (cons 2490369 (cons 7208960 (cons 4 (cons 0 (cons 0 (cons 0 (cons 11927552 (cons 7208961 (cons 8 (cons 0 (cons 8 (cons 2 (cons 0 (cons 0 (cons 11927553 (cons 4718592 (cons 16 (cons 2 (cons 16 (cons 0 (cons 0 (cons 0 (cons 2490369 (cons 4718593 (cons 14 (cons 0 (cons 14 (cons 2 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) && (Studio.Generator.Typeface.Scaled::agrees (project (makeSpec (cons 2 (cons 2 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 2 (cons 2 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (nil Nat))))))))))))))))) false) turn) false 1)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: turns_a_doubled_reversal_clockwise_as_metafont_does,
+  parameters: [],
+  statement: (((Studio.Generator.Typeface.Choices::sameList (project (makeSpec (cons 2 (cons 2 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 2 (cons 2 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (nil Nat))))))))))))))))) true) knots) (cons 0 (cons 6 (cons 2490368 (cons 7208961 (cons 6 (cons 0 (cons 2490368 (cons 7208961 (cons 2 (cons 0 (cons 4456448 (cons 6946817 (cons 4456448 (cons 6946817 (cons 6 (cons 2 (cons 0 (cons 0 (cons 4456449 (cons 2490369 (cons 14 (cons 2 (cons 14 (cons 0 (cons 0 (cons 0 (cons 9437185 (cons 2490368 (cons 16 (cons 0 (cons 16 (cons 2 (cons 0 (cons 0 (cons 9437184 (cons 6946817 (cons 8 (cons 2 (cons 8 (cons 0 (cons 0 (cons 4 (cons 4456449 (cons 6946816 (cons 4 (cons 0 (cons 4456449 (cons 6946816 (cons 4 (cons 0 (cons 2490369 (cons 7208960 (cons 2490369 (cons 7208960 (cons 4 (cons 2 (cons 0 (cons 0 (cons 2490368 (cons 4718592 (cons 12 (cons 2 (cons 12 (cons 0 (cons 0 (cons 0 (cons 11927552 (cons 4718593 (cons 10 (cons 0 (cons 10 (cons 2 (cons 0 (cons 0 (cons 11927553 (cons 7208960 (cons 2 (cons 2 (cons 2 (cons 0 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) && (Studio.Generator.Typeface.Scaled::agrees (project (makeSpec (cons 2 (cons 2 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 4718593 (cons 7208960 (cons 2 (cons 2 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (cons 2490369 (cons 6946816 (nil Nat))))))))))))))))) true) turn) true 1)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: splits_an_inflected_curve_as_metafont_does,
+  parameters: [],
+  statement: (((Studio.Generator.Typeface.Choices::sameList (project (makeSpec (cons 2 (cons 2 (cons 0 (cons 0 (cons 393217 (cons 524288 (cons 786432 (cons 1179648 (cons 2 (cons 2 (cons 1310720 (cons 0 (cons 524288 (cons 655361 (cons 1703936 (cons 524288 (nil Nat))))))))))))))))) false) knots) (cons 0 (cons 10 (cons 0 (cons 0 (cons 10 (cons 2 (cons 43490 (cons 86980 (cons 2 (cons 0 (cons 62928 (cons 225298 (cons 62928 (cons 161134 (cons 10 (cons 2 (cons 0 (cons 2 (cons 62929 (cons 288226 (cons 2 (cons 2 (cons 62929 (cons 372022 (cons 2 (cons 0 (cons 26268 (cons 405626 (cons 29775 (cons 405626 (cons 2 (cons 0 (cons 0 (cons 6 (cons 837520 (cons 405627 (cons 6 (cons 0 (cons 882126 (cons 405627 (cons 2 (cons 0 (cons 898652 (cons 350127 (cons 898652 (cons 384339 (cons 6 (cons 2 (cons 0 (cons 14 (cons 898653 (cons 548526 (cons 14 (cons 2 (cons 898653 (cons 646414 (cons 2 (cons 0 (cons 763359 (cons 828340 (cons 763359 (cons 714804 (cons 14 (cons 2 (cons 0 (cons 6 (cons 763358 (cons 64982 (cons 6 (cons 2 (cons 763358 (cons 113732 (cons 2 (cons 0 (cons 859606 (cons 145862 (cons 788300 (cons 145862 (cons 6 (cons 0 (cons 0 (cons 2 (cons 1151330 (cons 145863 (cons 2 (cons 0 (cons 1232008 (cons 145863 (cons 2 (cons 0 (cons 1310720 (cons 0 (cons 1289774 (cons 104731 (cons 2 (cons 2 (cons 0 (cons 10 (cons 1310721 (cons 1310720 (cons 10 (cons 2 (cons 1299395 (cons 1344700 (cons 4 (cons 0 (cons 1235909 (cons 1360082 (cons 1273385 (cons 1360082 (cons 10 (cons 0 (cons 0 (cons 12 (cons 1484256 (cons 1360083 (cons 12 (cons 0 (cons 1524188 (cons 1360083 (cons 4 (cons 0 (cons 1542210 (cons 1311575 (cons 1542210 (cons 1342617 (cons 12 (cons 2 (cons 0 (cons 4 (cons 1542211 (cons 230636 (cons 4 (cons 2 (cons 1542211 (cons 339024 (cons 4 (cons 0 (cons 1048575 (cons 393216 (cons 1322489 (cons 393216 (cons 4 (cons 0 (cons 0 (cons 8 (cons 262143 (cons 393217 (cons 8 (cons 0 (cons 11770 (cons 393217 (cons 4 (cons 0 (cons 231490 (cons 230635 (cons 231490 (cons 339023 (cons 8 (cons 2 (cons 0 (cons 16 (cons 231491 (cons 856 (cons 16 (cons 2 (cons 231491 (cons 31898 (cons 4 (cons 0 (cons 173537 (cons 49362 (cons 213469 (cons 49362 (cons 16 (cons 0 (cons 0 (cons 14 (cons 74813 (cons 49363 (cons 14 (cons 0 (cons 37337 (cons 49363 (cons 4 (cons 0 (cons 0 (cons 0 (cons 11327 (cons 33981 (cons 14 (cons 2 (cons 0 (cons 0 (cons 0 (cons 0 (cons 6 (cons 2 (cons 6 (cons 0 (cons 0 (cons 0 (cons 0 (cons 0 (cons 2 (cons 0 (cons 2 (cons 2 (nil Nat)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) && (Studio.Generator.Typeface.Scaled::agrees (project (makeSpec (cons 2 (cons 2 (cons 0 (cons 0 (cons 393217 (cons 524288 (cons 786432 (cons 1179648 (cons 2 (cons 2 (cons 1310720 (cons 0 (cons 524288 (cons 655361 (cons 1703936 (cons 524288 (nil Nat))))))))))))))))) false) turn) false 1)) = true),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+\end{semanticmodule}
+\end{lexlean}

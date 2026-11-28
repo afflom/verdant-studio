@@ -22,3 +22,9 @@ Feature: typeface
     Given the pen model in app/src/Studio/Generator/Typeface/Pen.lex.tex
     When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Pen.makes_a_pencircle_of_diameter_three_as_metafont_does and Studio.Generator.Typeface.Pen.makes_a_flat_pen_as_metafont_does and Studio.Generator.Typeface.Pen.makes_a_quarter_turned_pen_as_metafont_does and Studio.Generator.Typeface.Pen.makes_a_slanted_pen_as_metafont_does and Studio.Generator.Typeface.Pen.makes_a_filled_in_pen_as_metafont_does and Studio.Generator.Typeface.Pen.follows_mf_web_where_tex_live_2023_differs
     Then each transform gets the pen polygon mf.web's make_ellipse computes for the same pencircle
+
+  @VS-92 @build
+  Scenario: The typeface generator cuts a cyclic path into octants as METAFONT does: make_spec of mf.web 2.71828182 (quadrant and octant subdivision, dead cubics, octant boundaries) gives mf.web's cycle spec knot for knot and its turning number
+    Given the cycle spec model in app/src/Studio/Generator/Typeface/Spec.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Spec.divides_a_circle_into_eight_octants_as_metafont_does and Studio.Generator.Typeface.Spec.divides_a_triangle_at_its_corners_as_metafont_does and Studio.Generator.Typeface.Spec.turns_a_reversal_counterclockwise_as_metafont_does and Studio.Generator.Typeface.Spec.turns_a_doubled_reversal_clockwise_as_metafont_does and Studio.Generator.Typeface.Spec.splits_an_inflected_curve_as_metafont_does
+    Then each path gets the octant knots and the turning number mf.web's make_spec computes for the same path
