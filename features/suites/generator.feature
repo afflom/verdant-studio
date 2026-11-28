@@ -6,10 +6,10 @@ Feature: generator
   request, generate TAB audio/midi TAB FEATURES, or generate TAB audio/wave TAB FEATURES,, with the file it writes.
 
   @VS-16 @build
-  Scenario: The MIDI generator, Studio.Generator.Music.Midi, writes a Prism's features as a format 0 Standard MIDI File with one track at 96 ticks per quarter note, each feature byte a MIDI 1.0 key number sounded as one quarter note on channel 1
+  Scenario: The MIDI generator, Studio.Generator.Music.Midi, writes a Prism's features as a format 0 Standard MIDI File with one track at 96 ticks per quarter note, each feature a Marker meta event (SMF RP-001) naming it, then each of its bytes a MIDI 1.0 key number sounded as one quarter note on channel 1, and the line feeds between features neither
     Given the MIDI generator in app/src/Studio/Generator/Music/Midi.lex.tex
-    When prism-code check has Lean's kernel prove Studio.Generator.Music.Midi.word32_is_big_endian, Studio.Generator.Music.Midi.writes_a_format_0_file and Studio.Generator.Music.Midi.writes_one_note_per_feature
-    Then the feature E is written as an MThd chunk of format 0, one track and division 96, then one MTrk chunk with a Note On and a Note Off of key 69 and an End of Track
+    When prism-code check has Lean's kernel prove Studio.Generator.Music.Midi.word32_is_big_endian, Studio.Generator.Music.Midi.writes_a_format_0_file, Studio.Generator.Music.Midi.writes_one_note_per_feature, Studio.Generator.Music.Midi.marks_each_feature_and_sounds_no_line_feed and Studio.Generator.Music.Midi.writes_a_long_marker_length_as_a_variable_length_quantity
+    Then the feature E is written as an MThd chunk of format 0, one track and division 96, then one MTrk chunk with a Marker naming E, a Note On and a Note Off of key 69 and an End of Track, and the features E and F, a line feed between them, as two Markers and two notes with no key 10
     And prism-code build replays the request for the feature E, answered with that file
 
   @VS-17 @build @rejects

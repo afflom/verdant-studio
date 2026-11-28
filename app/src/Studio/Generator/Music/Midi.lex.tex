@@ -61,10 +61,62 @@ definition{
 }
 
 definition{
+  name: prefix,
+  parameters: [value : Nat, fuel : Nat],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => 0x
+    | Nat.succ rest => (if (value =? 0) then 0x else (prim append (prefix (prim quotient value 128 0 : Nat) rest) (octet (128 + (prim remainder value 128 0 : Nat))) : Bytes))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: quantity,
+  parameters: [value : Nat],
+  result: Bytes,
+  body: (prim append (prefix (prim quotient value 128 0 : Nat) 4) (octet (prim remainder value 128 0 : Nat)) : Bytes)
+}
+
+definition{
+  name: marker,
+  parameters: [feature : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x00ff06 (quantity (prim length feature : Nat)) : Bytes) feature : Bytes)
+}
+
+definition{
+  name: featureEvents,
+  parameters: [feature : Bytes],
+  result: Bytes,
+  body: (if ((prim length feature : Nat) =? 0) then 0x else (prim append (marker feature) (notesFrom feature 0 (prim length feature : Nat) 0x) : Bytes))
+}
+
+definition{
+  name: span,
+  parameters: [features : Bytes, start : Nat, count : Nat],
+  result: Bytes,
+  body: (match (prim slice features start count : (Option Bytes))
+    | Option.none => 0x
+    | Option.some piece => piece)
+}
+
+definition{
+  name: eventsFrom,
+  parameters: [features : Bytes, offset : Nat, remaining : Nat, start : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => (prim append out (featureEvents (span features start (prim subtract offset start : Nat))) : Bytes)
+    | Nat.succ rest => (match (prim index features offset : (Option UInt8))
+      | Option.none => (prim append out (featureEvents (span features start (prim subtract offset start : Nat))) : Bytes)
+      | Option.some byte => (if ((prim to_nat byte : Nat) =? 10) then (eventsFrom features (offset + 1) rest (offset + 1) (prim append out (featureEvents (span features start (prim subtract offset start : Nat))) : Bytes)) else (eventsFrom features (offset + 1) rest start out)))),
+  recursive_argument: remaining
+}
+
+definition{
   name: trackData,
   parameters: [features : Bytes],
   result: Bytes,
-  body: (prim append (notesFrom features 0 (prim length features : Nat) 0x) (endOfTrack) : Bytes)
+  body: (prim append (eventsFrom features 0 (prim length features : Nat) 0 0x) (endOfTrack) : Bytes)
 }
 
 definition{
@@ -130,7 +182,7 @@ theorem{
 theorem{
   name: writes_a_format_0_file,
   parameters: [],
-  statement: ((file 0x45) = 0x4d546864000000060000000100604d54726b0000000c009045406080454000ff2f00),
+  statement: ((file 0x45) = 0x4d546864000000060000000100604d54726b0000001100ff060145009045406080454000ff2f00),
   proof: decide{},
   axioms: []
 }
@@ -138,9 +190,25 @@ theorem{
 theorem{
   name: writes_one_note_per_feature,
   parameters: [],
-  statement: ((file 0x3c40) = 0x4d546864000000060000000100604d54726b0000001400903c4060803c40009040406080404000ff2f00),
+  statement: ((file 0x3c40) = 0x4d546864000000060000000100604d54726b0000001a00ff06023c4000903c4060803c40009040406080404000ff2f00),
   proof: decide{},
   axioms: []
+}
+
+theorem{
+  name: marks_each_feature_and_sounds_no_line_feed,
+  parameters: [],
+  statement: ((file 0x450a46) = 0x4d546864000000060000000100604d54726b0000001e00ff060145009045406080454000ff060146009046406080464000ff2f00),
+  proof: decide{},
+  axioms: []
+}
+
+theorem{
+  name: writes_a_long_marker_length_as_a_variable_length_quantity,
+  parameters: [],
+  statement: (((quantity 127) = 0x7f) /\ (((quantity 128) = 0x8100) /\ ((quantity 16384) = 0x818000))),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
 }
 \end{semanticmodule}
 \end{lexlean}
