@@ -180,13 +180,18 @@ jobs:
             git clean -fdq
             # readers/lexlean.lock and readers/xml/lexlean.lock are generated: the export below writes them again, so they are left out of the
             # change, and two reader pull requests never conflict on it.
-            git diff "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers admit lexlean-workspace.toml ':!readers/lexlean.lock' ':!readers/xml/lexlean.lock' ':!admit/lexlean.lock' > target/change.patch
+            git diff --full-index "$(git merge-base origin/main "origin/$branch")" "origin/$branch" -- studio/src app/src/Contract.lex.tex app/src/Studio model/ids.toml model/strata.json features/suites README.md readers admit lexlean-workspace.toml ':!readers/lexlean.lock' ':!readers/xml/lexlean.lock' ':!admit/lexlean.lock' > target/change.patch
             # app/src/Contract.lex.tex and model/strata.json each keep their entries on one line, so two changes
             # that each add entries there always conflict. A conflict on those two files alone is merged by entry
             # (merge-entries.py): main's file, then each entry the pull request adds that main does not have.
             # git apply drops a file whose binary patch is corrupt and still exits 0, so that error counts as not applying.
+            # The same path as propose-command: renumber colliding VS IDs, move pure appends aside, and merge
+            # Contract's and strata's entries by entry, so a lane that loses an ID or entry race never dispatches again.
+            python3 .github/scripts/prepare-change.py prepare target/change.patch target/appends.json
+            python3 .github/scripts/merge-entries.py patch target/change.patch
             applied=yes
-            git apply --3way target/change.patch 2> target/apply.err || applied=no
+            : > target/apply.err
+            if grep -q '^diff --git' target/change.patch; then git apply --3way target/change.patch 2> target/apply.err || applied=no; fi
             if grep -q '^error: corrupt' target/apply.err; then applied=no; fi
             if [ "$applied" = no ]; then
               merged=no
@@ -212,6 +217,7 @@ jobs:
                 continue
               fi
             fi
+            python3 .github/scripts/prepare-change.py append target/appends.json
             if ! bash .github/scripts/export.sh "$ll" target/export.log; then
               grep -m 20 'error' target/export.log | sed 's/^/::error::#'"$pr"': /' || echo "::error::#${pr}: the Lean export failed without an error line; its last lines follow"
               tail -n 40 target/export.log
