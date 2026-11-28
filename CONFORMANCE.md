@@ -236,6 +236,15 @@ The three honesty levels (R2):
 | `VS-107` | `build` | Studio.Gui.Generation presents a refused seed in the prismRefused view with the refusal of Studio.PrismGeneration, its tune and bundle actions disabled | `Studio.Gui.Generation.shows_why_a_seed_is_refused` |
 | `VS-108` | `open` | VerdantUI renders the creator journey that Studio.Gui.Generation presents and routes the creator's natural-language tuning onto the Prism's cells (DEC-009), so a creator enters a seed, tunes it and takes the bundle in the Studio UI; until VerdantUI serves the journey, the prism route answers it |  |
 
+## gui-approval
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-109` | `build` | Studio.Gui.Approval presents the approval journey of the Studio UI Prism in Stitch Product.Experience's pattern: a linked agent's content-addressed permission request (Studio.Agent.Contributor) shows in the approvalPending view, and the maintainer viewing it has the grant and reject actions enabled | `Studio.Gui.Approval.the_maintainer_decides_a_pending_request` |
+| `VS-110` | `build` | Only the maintainer grants or rejects a contributor's request, so Studio.Gui.Approval shows the request to any other viewer with grant and reject disabled | `Studio.Gui.Approval.another_viewer_cannot_decide` |
+| `VS-111` | `build` | Studio.Gui.Approval presents a request Studio.Agent.Contributor refuses in the approvalRefused view with that refusal, grant and reject disabled | `Studio.Gui.Approval.shows_why_a_request_is_refused` |
+| `VS-112` | `build` | The grant and reject actions of the approval journey are guarded, so Studio.Gui.Approval never enables them for a viewer who is not the request's maintainer, whatever is pending | `Studio.Gui.Approval.only_the_maintainer_decides` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
