@@ -34,3 +34,9 @@ Feature: typeface
     Given the stroke envelope model in app/src/Studio/Generator/Typeface/Envelope.lex.tex
     When prism-code check has Lean's kernel prove Studio.Generator.Typeface.Envelope.strokes_a_circle_with_a_round_pen_as_metafont_does and Studio.Generator.Typeface.Envelope.strokes_a_triangle_with_a_flat_pen_as_metafont_does and Studio.Generator.Typeface.Envelope.strokes_an_inflected_curve_with_a_slanted_pen_as_metafont_does and Studio.Generator.Typeface.Envelope.strokes_a_line_there_and_back_with_a_round_pen_as_metafont_does
     Then each path and pen get the envelope lines and cubics mf.web's fill_envelope traces for the same stroke
+
+  @VS-117 @build
+  Scenario: The typeface generator writes its glyphs as an OpenType font file with CFF outlines: the table directory and checksums, head, hhea, maxp, hmtx, cmap format 4, name, OS/2 and post of OpenType 1.9.1, and the CFF INDEX, Top DICT, charset and Type 2 charstrings of Adobe TN 5176 and TN 5177, byte for byte
+    Given the OpenType writer model in app/src/Studio/Generator/Typeface/OpenType.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Generator.Typeface.OpenType.encodes_type2_numbers_as_tn5177_specifies and Studio.Generator.Typeface.OpenType.writes_a_font_file_as_opentype_and_cff_specify
+    Then the font file is the one the reference writer produces, which OTS sanitizes and FreeType renders pixel for pixel as METAFONT's glyphs
