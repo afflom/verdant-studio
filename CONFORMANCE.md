@@ -341,6 +341,16 @@ The three honesty levels (R2):
 | `VS-257` | `build` | OTLP/JSON encodes every string as JSON (OTLP-1.11.1-SPECIFICATION), so Studio.Telemetry escapes each quotation mark, reverse solidus and control character of an operation's name, actor, instance and outcome | `Studio.Telemetry.escapes_every_string_as_json` |
 | `VS-258` | `open` | Verdant Studio's own runtime records every operation it runs, on every instance, through Studio.Telemetry, appending its signals to the instance's OTLP JSON lines file, so each operation and each refusal is logged, measured and traced (REQ-OBSERVABILITY, REQ-SELF-RUNTIME); until the runtime host calls the telemetry route for each operation, the signals are answered on request only |  |
 
+## relay
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-242` | `build` | The agent's MCP messages reach Studio over Stitch's sealed relay as a custom MCP transport (VS-100), so Studio.Agent.Interface.Relay delivers an assembled message whose digest, UTF-8, envelope, session and consent are verified (Stitch.Relay ready and deliveryAllowed, STITCH-RELAY-68A9222) to Studio.Agent.Interface.Transport, and answers what it decides as an MCP CallToolResult (MCP-SCHEMA-2026-07-28) | `Studio.Agent.Interface.Relay.delivers_an_assembled_verified_call_as_a_call_tool_result` |
+| `VS-243` | `build` | Errors that originate from a tool are reported inside the CallToolResult with isError true (MCP-SCHEMA-2026-07-28 CallToolResult), so Studio.Agent.Interface.Relay answers a call Transport refuses as an error result carrying the refusal | `Studio.Agent.Interface.Relay.a_refused_call_is_an_error_result` |
+| `VS-244` | `build` | An unverified message cannot deliver (Stitch.Relay unverifiedMessageCannotDeliver and withdrawnConsentCannotPublish), so Studio.Agent.Interface.Relay holds a message any of whose checks is not verified, naming each one | `Studio.Agent.Interface.Relay.holds_an_unverified_message`, refuses with `refused: the relay delivers a message only when its digest, UTF-8, envelope, session and consent are all verified (Stitch.Relay deliveryAllowed); not verified: digest, consent` |
+| `VS-245` | `build` | A message delivers only once every frame and byte of it is received (Stitch.Relay ready), so Studio.Agent.Interface.Relay holds a message still being assembled, naming what it has received | `Studio.Agent.Interface.Relay.holds_an_incomplete_message`, refuses with `refused: the relay holds the message until it is assembled (Stitch.Relay ready): 1 of 2 frames and 206 of 412 bytes received` |
+| `VS-246` | `build` | A CallToolResult's text is a JSON string (MCP-SCHEMA-2026-07-28 TextContent, RFC 8259 section 7), so Studio.Agent.Interface.Relay escapes the quotation mark, the reverse solidus and every control character of the answer it carries | `Studio.Agent.Interface.Relay.escapes_a_json_string` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
