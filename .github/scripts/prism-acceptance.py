@@ -64,6 +64,25 @@ def midi(data):
         return 'is no format 0 SMF with one track at 96 ticks per quarter note'
     if struct.unpack('>I', data[18:22])[0] != len(data) - 22:
         return 'has a track length that is not the rest of the file'
+    # Coverage (Der from REQ-PRISM-GENERATION): every facet carries every feature. The SMF carries each as a Marker
+    # meta event (FF 06, MIDI-SMF-RP-001-1.0-PAGE), in the order the features route lists them.
+    markers, at = [], 22
+    while at < len(data):
+        while data[at] & 128:
+            at += 1
+        at += 1
+        if data[at] == 255:
+            kind, size, at = data[at + 1], 0, at + 2
+            while data[at] & 128:
+                size, at = size * 128 + (data[at] & 127), at + 1
+            size, at = size * 128 + data[at], at + 1
+            if kind == 6:
+                markers.append(data[at:at + size].decode(errors='replace'))
+            at += size
+        else:
+            at += 2 if data[at] >> 4 in (12, 13) else 3
+    if markers != FEATURES:
+        return 'marks the features ' + repr(markers) + ', not ' + repr(FEATURES)
 
 def wave(data):
     # Bwf.lex.tex format_is_pcm_mono_48000_16 and wave_orders_bext_fmt_data: bext (646 bytes), fmt, data.
@@ -96,12 +115,18 @@ def svg(data):
         return 'is not well-formed XML: ' + str(failure)
     if root.tag != SVG_ROOT:
         return 'has the root ' + root.tag + ', not svg in the SVG namespace'
+    # Coverage (Der from REQ-PRISM-GENERATION): the artwork's text carries every feature of the Prism.
+    words = ' '.join(root.itertext()).split()
+    missing = [feature for feature in FEATURES if feature not in words]
+    if missing:
+        return 'leaves out the features ' + repr(missing)
 
 def bundle(data):
     if data[:4] != b'PK' + bytes([3, 4]) or b'bagit.txt' not in data:
         return 'is no ZIP holding a BagIt bag'
 
 RULES = {'audio/midi': midi, 'audio/wave': wave, 'image/svg+xml': svg, 'application/zip': bundle}
+FEATURES = [line for line in run('prism' + chr(9) + 'features' + chr(9) + SEED).decode().split(chr(10)) if line]
 facets = [line for line in run('prism' + chr(9) + chr(9) + SEED).decode().split(chr(10)) if line]
 if not facets:
     raise SystemExit('::error::the Prism of ' + SEED + ' lists no facet')
