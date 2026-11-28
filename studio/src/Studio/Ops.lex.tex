@@ -3696,10 +3696,41 @@ definition{
 }
 
 definition{
+  name: routeEntries,
+  parameters: [],
+  result: (List Bytes),
+  body: (cons (Studio.Doc::lit "prism FACET SEED") (nil Bytes)),
+  executable: true
+}
+
+definition{
+  name: routeTool,
+  parameters: [entry : Bytes],
+  result: Bytes,
+  body: (match (LexLeanStd.Text::splitOn entry (32 : UInt8))
+    | List.nil => 0x
+    | List.cons routeName tokens => (Studio.Doc::cat (cons (Studio.Doc::lit "{\"name\":") (cons (Studio.Schema::quotedText routeName) (cons (Studio.Doc::lit ",\"description\":") (cons (Studio.Schema::quotedText (prim append (Studio.Doc::lit "the instance's app route ") entry : Bytes)) (cons (Studio.Doc::lit ",\"inputSchema\":{\"type\":\"object\",\"properties\":{") (cons (LexLeanStd.Text::joinWith (surfaceProperties tokens) (Studio.Doc::lit ",")) (cons (Studio.Doc::lit "},\"required\":[") (cons (LexLeanStd.Text::joinWith (surfaceRequired tokens) (Studio.Doc::lit ",")) (cons (Studio.Doc::lit "],\"additionalProperties\":false}}") (nil Bytes)))))))))))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: routeTools,
+  parameters: [entries : (List Bytes)],
+  result: (List Bytes),
+  body: (match entries
+    | List.nil => (nil Bytes)
+    | List.cons entry rest => (cons (routeTool entry) (routeTools rest))),
+  axioms: [Quot.sound, propext],
+  recursive_argument: entries,
+  executable: true
+}
+
+definition{
   name: surface,
   parameters: [],
   result: Bytes,
-  body: (Studio.Doc::cat (cons (Studio.Doc::lit "{\"cacheScope\":\"public\",\"resultType\":\"complete\",\"ttlMs\":0,\"tools\":[") (cons (LexLeanStd.Text::joinWith (surfaceTools (usageEntries)) (Studio.Doc::lit ",")) (cons (Studio.Doc::lit "]}\n") (nil Bytes))))),
+  body: (Studio.Doc::cat (cons (Studio.Doc::lit "{\"_meta\":{\"io.github.afflom/instance\":\"verdant-studio\"},\"cacheScope\":\"public\",\"resultType\":\"complete\",\"ttlMs\":0,\"tools\":[") (cons (LexLeanStd.Text::joinWith (surfaceTools (usageEntries)) (Studio.Doc::lit ",")) (cons (Studio.Doc::lit ",") (cons (LexLeanStd.Text::joinWith (routeTools (routeEntries)) (Studio.Doc::lit ",")) (cons (Studio.Doc::lit "]}\n") (nil Bytes))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
