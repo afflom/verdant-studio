@@ -1444,6 +1444,7 @@ definition{
     (cons (Studio.Doc::lit "            : > target/operation.txt\n")
     (cons (Studio.Doc::lit "            last=''\n")
     (cons (Studio.Doc::lit "            skipped=''\n")
+    (cons (Studio.Doc::lit "            : > target/repeated.txt\n")
     (cons (Studio.Doc::lit "            # next prints one operation it can dispatch, or else the lines that say why the\n")
     (cons (Studio.Doc::lit "            # queue waits: each begins with \"waiting\", and none is dispatched.\n")
     (cons (Studio.Doc::lit "            while op=$(target/release/verdant_studio next $skipped) && [ -n \"$op\" ] && [ \"${op#waiting}\" = \"$op\" ]; do\n")
@@ -1459,19 +1460,20 @@ definition{
     (cons (Studio.Doc::lit "                git clean -fdq -- \"authorities/$(basename \"$binding\" .json)\"\n")
     (cons (Studio.Doc::lit "                skipped=\"$skipped $binding\"\n")
     (cons (Studio.Doc::lit "                # The refusal becomes a Studio.Error.Observation in the model (REQ-SELF-HEALING).\n")
-    (cons (Studio.Doc::lit "                vs record-error target/attempt.txt \"$(date -u -Iseconds)\" \"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\" $op | tee -a target/operation.txt\n")
+    (cons (Studio.Doc::lit "                vs record-error target/attempt.txt \"$(date -u -Iseconds)\" \"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\" $op | tee -a target/operation.txt >> target/repeated.txt\n")
     (cons (Studio.Doc::lit "              fi\n")
     (cons (Studio.Doc::lit "            done\n")
     (cons (Studio.Doc::lit "            t0=$EPOCHREALTIME\n")
     (cons (Studio.Doc::lit "            target/release/verdant_studio next $skipped > target/next.txt || true\n")
     (cons (Studio.Doc::lit "            echo \"next: $(echo \"$EPOCHREALTIME - $t0\" | bc) s for one call over $(find model -name '*.json*' | wc -l) model files\" | tee -a \"$GITHUB_STEP_SUMMARY\"\n")
     (cons (Studio.Doc::lit "            if [ \"${op#waiting}\" != \"$op\" ]; then echo \"$op\" > target/waiting.txt; else : > target/waiting.txt; fi\n")
+    (cons (Studio.Doc::lit "            grep '^waiting fix' target/repeated.txt >> target/waiting.txt || true\n")
     (cons (Studio.Doc::lit "            for pr in $(gh api \"repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100\" --jq '.[] | select(.title | startswith(\"verdant_studio propose-command\")) | .number'); do\n")
     (cons (Studio.Doc::lit "              echo \"waiting merge: #${pr} changes the API, and merges once the studio check passes\" >> target/waiting.txt\n")
     (cons (Studio.Doc::lit "            done\n")
     (cons (Studio.Doc::lit "            if [ -s target/waiting.txt ]; then tee -a target/operation.txt < target/waiting.txt >> \"$GITHUB_STEP_SUMMARY\"; fi\n")
     (cons (Studio.Doc::lit "          elif [ \"${ARGS#revert-merge }\" != \"$ARGS\" ]; then\n")
-    (nil Bytes))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
+    (nil Bytes))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))),
   executable: true
 }
 
@@ -4751,7 +4753,9 @@ definition{
         | List.nil => (ctor Plan.refuse (usage))
         | List.cons first others => (match (missing seen (cons path (cons (errorsPath) (nil Bytes))))
           | List.cons head pending => (ctor Plan.reads (cons head pending))
-          | List.nil => (let operation : Bytes := (LexLeanStd.Text::joinWith words (Studio.Doc::lit " ")); (let refusal : Bytes := (contents seen path); (let held : (List Studio.Schema::Value) := (arrayOf seen (errorsPath)); (if (observedBefore held operation refusal) then (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "this refusal of ") (cons operation (cons (Studio.Doc::lit " is already recorded in model/errors.json\n") (nil Bytes)))))) else (ctor Plan.done (cons (registerFile (errorsPath) (appendJson held (cons (errorObservation operation refusal run time) (nil Studio.Schema::Value)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the refusal of ") (cons operation (cons (Studio.Doc::lit " in model/errors.json as a Studio.Error.Observation (W3C-SOSA-2017)\n") (nil Bytes)))))))))))))),
+          | List.nil => (let operation : Bytes := (LexLeanStd.Text::joinWith words (Studio.Doc::lit " ")); (let refusal : Bytes := (contents seen path); (let held : (List Studio.Schema::Value) := (arrayOf seen (errorsPath)); (if (observedBefore held operation refusal) then (ctor Plan.done (nil (Bytes * Bytes)) (Studio.Doc::cat (cons (Studio.Doc::lit "waiting fix: ") (cons operation (cons (Studio.Doc::lit " is refused again with the refusal model/errors.json records, so the API needs a fix before it runs (REQ-SELF-HEALING): ") (cons (match (LexLeanStd.Text::lines refusal)
+              | List.nil => 0x
+              | List.cons line later => line) (cons (Studio.Doc::lit "\n") (nil Bytes)))))))) else (ctor Plan.done (cons (registerFile (errorsPath) (appendJson held (cons (errorObservation operation refusal run time) (nil Studio.Schema::Value)))) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the refusal of ") (cons operation (cons (Studio.Doc::lit " in model/errors.json as a Studio.Error.Observation (W3C-SOSA-2017)\n") (nil Bytes)))))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }

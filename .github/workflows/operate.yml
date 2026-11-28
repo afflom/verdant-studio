@@ -279,6 +279,7 @@ jobs:
             : > target/operation.txt
             last=''
             skipped=''
+            : > target/repeated.txt
             # next prints one operation it can dispatch, or else the lines that say why the
             # queue waits: each begins with "waiting", and none is dispatched.
             while op=$(target/release/verdant_studio next $skipped) && [ -n "$op" ] && [ "${op#waiting}" = "$op" ]; do
@@ -294,13 +295,14 @@ jobs:
                 git clean -fdq -- "authorities/$(basename "$binding" .json)"
                 skipped="$skipped $binding"
                 # The refusal becomes a Studio.Error.Observation in the model (REQ-SELF-HEALING).
-                vs record-error target/attempt.txt "$(date -u -Iseconds)" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" $op | tee -a target/operation.txt
+                vs record-error target/attempt.txt "$(date -u -Iseconds)" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" $op | tee -a target/operation.txt >> target/repeated.txt
               fi
             done
             t0=$EPOCHREALTIME
             target/release/verdant_studio next $skipped > target/next.txt || true
             echo "next: $(echo "$EPOCHREALTIME - $t0" | bc) s for one call over $(find model -name '*.json*' | wc -l) model files" | tee -a "$GITHUB_STEP_SUMMARY"
             if [ "${op#waiting}" != "$op" ]; then echo "$op" > target/waiting.txt; else : > target/waiting.txt; fi
+            grep '^waiting fix' target/repeated.txt >> target/waiting.txt || true
             for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.title | startswith("verdant_studio propose-command")) | .number'); do
               echo "waiting merge: #${pr} changes the API, and merges once the studio check passes" >> target/waiting.txt
             done
