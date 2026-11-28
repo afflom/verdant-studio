@@ -255,6 +255,15 @@ The three honesty levels (R2):
 | `VS-115` | `build` | GitHub is only a mirror, never a runtime, so Studio.Gui.Instance presents instances on github alone in the instancesMirrorOnly view with the hosting refusal of Studio.Instance, sync disabled | `Studio.Gui.Instance.shows_instances_on_the_mirror_alone` |
 | `VS-116` | `build` | The sync action of the instances journey is guarded, so Studio.Gui.Instance never enables it for a viewer that is not the instances' own Prism ID, wherever they are hosted | `Studio.Gui.Instance.only_the_owner_synchronizes` |
 
+## gui-mirror
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-200` | `build` | Studio.Gui.Mirror presents the mirror journey of the Studio UI Prism in Stitch Product.Experience's pattern: a release Studio.Runtime cuts once every gate passed shows in the mirrorReady view, and its maintainer has the publish action enabled, publishing to GitHub as a mirror only (REQ-SELF-RUNTIME) | `Studio.Gui.Mirror.the_maintainer_publishes_a_cut_release` |
+| `VS-201` | `build` | Only the maintainer publishes a release, so Studio.Gui.Mirror shows a cut release to any other viewer with publish disabled | `Studio.Gui.Mirror.another_viewer_cannot_publish` |
+| `VS-202` | `build` | Studio.Gui.Mirror presents a release Studio.Runtime does not cut in the mirrorHeld view with its refusal, publish disabled | `Studio.Gui.Mirror.holds_a_release_with_a_failed_gate` |
+| `VS-203` | `build` | The publish action of the mirror journey is guarded, so Studio.Gui.Mirror never enables it for a viewer who is not the maintainer, whatever is cut | `Studio.Gui.Mirror.only_the_maintainer_publishes` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
