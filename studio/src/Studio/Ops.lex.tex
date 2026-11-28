@@ -3960,6 +3960,17 @@ definition{
 
 
 definition{
+  name: decisionKeys,
+  parameters: [items : (List Studio.Schema::Value)],
+  result: (List Bytes),
+  body: (match items
+    | List.nil => (nil Bytes)
+    | List.cons head rest => (cons (prim append (Studio.Schema::str head (Studio.Doc::lit "at")) (prim append 0x09 (Studio.Schema::str head (Studio.Doc::lit "quote")) : Bytes) : Bytes) (decisionKeys rest))),
+  recursive_argument: items,
+  executable: true
+}
+
+definition{
   name: decisionLines,
   parameters: [lines : (List Bytes)],
   result: (Option (List Studio.Schema::Value)),
@@ -3983,7 +3994,7 @@ definition{
     | List.cons head rest => (ctor Plan.reads (cons head rest))
     | List.nil => (match (decisionLines (LexLeanStd.Text::lines (contents seen path)))
       | Option.none => (ctor Plan.refuse (Studio.Doc::lit "every line must be an owner decision: agent, at, the verbatim quote, and requirements\n"))
-      | Option.some recorded => (let held : (List Studio.Schema::Value) := (arrayOf seen (decisionsPath)); (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (Studio.Check::idsOf held (Studio.Doc::lit "at"))); (if (((prim length times : Nat) =? 0) || (negate ((prim length (LexLeanStd.Order::sortedSet (Studio.Check::concat times known)) : Nat) =? (prim length (Studio.Check::concat times known) : Nat)))) then (ctor Plan.refuse (Studio.Doc::lit "a decision is repeated, or is already recorded\n")) else (ctor Plan.done (cons (registerFile (decisionsPath) (appendJson held recorded)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the owner's decisions of ") (cons (LexLeanStd.Text::joinWith times (Studio.Doc::lit " ")) (cons (Studio.Doc::lit "\n") (nil Bytes)))))))))))),
+      | Option.some recorded => (let held : (List Studio.Schema::Value) := (arrayOf seen (decisionsPath)); (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let known : (List Bytes) := (LexLeanStd.Order::sortedSet (decisionKeys held)); (if (((prim length times : Nat) =? 0) || (negate ((prim length (LexLeanStd.Order::sortedSet (Studio.Check::concat (decisionKeys recorded) known)) : Nat) =? (prim length (Studio.Check::concat (decisionKeys recorded) known) : Nat)))) then (ctor Plan.refuse (Studio.Doc::lit "a decision is repeated, or is already recorded\n")) else (ctor Plan.done (cons (registerFile (decisionsPath) (appendJson held recorded)) (nil (Bytes * Bytes))) (Studio.Doc::cat (cons (Studio.Doc::lit "recorded the owner's decisions of ") (cons (LexLeanStd.Text::joinWith times (Studio.Doc::lit " ")) (cons (Studio.Doc::lit "\n") (nil Bytes)))))))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -4275,7 +4286,7 @@ definition{
   name: queuedDecision,
   parameters: [seen : Seen, path : Bytes, recorded : (List Studio.Schema::Value)],
   result: (Bool * Bytes),
-  body: (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let fresh : (List Bytes) := (absent times (Studio.Check::idsOf (arrayOf seen (decisionsPath)) (Studio.Doc::lit "at"))); (if ((prim length fresh : Nat) =? 0) then (false, 0x) else (if ((prim length fresh : Nat) =? (prim length times : Nat)) then (true, (Studio.Doc::cat (cons (Studio.Doc::lit "record-decision ") (cons path (cons (Studio.Doc::lit "\n") (nil Bytes)))))) else (false, (waiting path (Studio.Doc::lit "some of its decisions are recorded already, so it needs a corrected file"))))))),
+  body: (let times : (List Bytes) := (Studio.Check::idsOf recorded (Studio.Doc::lit "at")); (let fresh : (List Bytes) := (absent (decisionKeys recorded) (decisionKeys (arrayOf seen (decisionsPath)))); (if ((prim length fresh : Nat) =? 0) then (false, 0x) else (if ((prim length fresh : Nat) =? (prim length times : Nat)) then (true, (Studio.Doc::cat (cons (Studio.Doc::lit "record-decision ") (cons path (cons (Studio.Doc::lit "\n") (nil Bytes)))))) else (false, (waiting path (Studio.Doc::lit "some of its decisions are recorded already, so it needs a corrected file"))))))),
   axioms: [Quot.sound, propext],
   executable: true
 }
