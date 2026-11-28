@@ -1,0 +1,180 @@
+\begin{lexlean}{Studio.Prism.Closure}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Natural number addition}
+\begin{semanticmodule}
+definition{
+  name: cells,
+  parameters: [],
+  result: Bytes,
+  body: 0x412f434f4e090a412f505245090a412f50524f090a412f5141090a412f4c4348090a412f4f5053090a412f4d4e54090a412f454f4c090a422f434f4e090a422f505245090a422f50524f090a422f5141090a422f4f5053090a422f454f4c090a432f434f4e090a432f505245090a432f50524f090a432f4f5053090a442f434f4e090a442f505245090a442f50524f090a442f4c4348090a442f4d4e54090a442f454f4c090a452f505245090a452f50524f090a452f4f5053090a462f505245090a462f50524f090a472f505245090a472f50524f090a472f5141090a472f4c4348090a472f4d4e54090a482f434f4e090a482f505245090a482f50524f090a482f5141090a482f4c4348090a482f4f5053090a482f4d4e54090a482f454f4c090a492f505245090a492f50524f090a492f5141090a492f4c4348090a492f4f5053090a492f4d4e54090a4a2f434f4e090a4a2f505245090a4a2f50524f090a4a2f5141090a4a2f4c4348090a4a2f4f5053090a4a2f4d4e54090a4a2f454f4c090a4b2f505245090a4b2f50524f090a4b2f5141090a4b2f4c4348090a4b2f4f5053090a4b2f4d4e54090a4c2f434f4e090a4c2f505245090a4c2f50524f090a4c2f5141090a4c2f4f5053090a4d2f434f4e090a4d2f505245090a4d2f50524f090a4d2f5141090a4d2f4c4348090a4d2f4f5053090a4d2f4d4e54090a4d2f454f4c090a4e2f434f4e090a4e2f505245090a4e2f50524f090a4e2f5141090a4e2f4c4348090a4e2f4f5053090a4f2f505245090a4f2f50524f090a4f2f5141090a4f2f4c4348090a4f2f4f5053090a4f2f4d4e54090a502f50524f090a502f5141090a502f4c4348090a502f4f5053090a512f505245090a512f5141090a512f4c4348090a512f4f5053090a522f434f4e090a522f505245090a522f50524f090a522f5141090a522f4c4348090a522f4f5053090a522f4d4e54090a522f454f4c090a532f434f4e090a532f505245090a532f50524f090a532f4c4348090a532f4f5053090a532f4d4e54090a542f434f4e090a542f505245090a542f50524f090a542f5141090a542f4c4348090a542f4f5053090a542f4d4e54090a542f454f4c090a552f434f4e090a552f505245090a552f50524f090a552f4c4348090a552f4f5053090a552f4d4e54090a552f454f4c090a562f434f4e090a562f505245090a562f4c4348090a562f4f5053090a572f505245090a572f50524f090a572f4c4348090a572f4f5053090a572f4d4e54090a582f434f4e090a582f505245090a582f50524f090a582f5141090a582f4c4348090a582f4f5053090a582f4d4e54090a582f454f4c090a592f4c4348090a592f4f5053090a592f4d4e54090a592f454f4c090a5a2f505245090a5a2f50524f090a5a2f5141090a
+}
+
+definition{
+  name: letters,
+  parameters: [],
+  result: Bytes,
+  body: 0x4142434445464748494a4b4c4d4e4f505152535455565758595a
+}
+
+definition{
+  name: byteNat,
+  parameters: [value : Bytes, offset : Nat],
+  result: Nat,
+  body: (match (prim index value offset : (Option UInt8))
+    | Option.none => 256
+    | Option.some byte => (prim to_nat byte : Nat))
+}
+
+definition{
+  name: octetAt,
+  parameters: [value : Bytes, offset : Nat],
+  result: Bytes,
+  body: (match (prim slice value offset 1 : (Option Bytes))
+    | Option.none => 0x
+    | Option.some part => part)
+}
+
+definition{
+  name: adjacent,
+  parameters: [a : Nat, b : Nat],
+  result: Bool,
+  body: ((((a =? 65) && (b =? 66)) || ((a =? 66) && (b =? 65))) || ((((a =? 68) && (b =? 69)) || ((a =? 69) && (b =? 68))) || ((((a =? 69) && (b =? 72)) || ((a =? 72) && (b =? 69))) || ((((a =? 74) && (b =? 77)) || ((a =? 77) && (b =? 74))) || ((((a =? 74) && (b =? 84)) || ((a =? 84) && (b =? 74))) || ((((a =? 74) && (b =? 87)) || ((a =? 87) && (b =? 74))) || ((((a =? 74) && (b =? 88)) || ((a =? 88) && (b =? 74))) || ((((a =? 77) && (b =? 84)) || ((a =? 84) && (b =? 77))) || ((((a =? 77) && (b =? 85)) || ((a =? 85) && (b =? 77))) || ((((a =? 77) && (b =? 88)) || ((a =? 88) && (b =? 77))) || ((((a =? 83) && (b =? 85)) || ((a =? 85) && (b =? 83))) || (((a =? 84) && (b =? 88)) || ((a =? 88) && (b =? 84))))))))))))))
+}
+
+definition{
+  name: hasFrom,
+  parameters: [set : Bytes, code : Nat, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => false
+    | Nat.succ rest => (((byteNat set offset) =? code) || (hasFrom set code (offset + 1) rest))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: touchesFrom,
+  parameters: [set : Bytes, code : Nat, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => false
+    | Nat.succ rest => ((adjacent (byteNat set offset) code) || (touchesFrom set code (offset + 1) rest))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: reached,
+  parameters: [set : Bytes, code : Nat],
+  result: Bool,
+  body: ((hasFrom set code 0 (prim length set : Nat)) || (touchesFrom set code 0 (prim length set : Nat)))
+}
+
+definition{
+  name: stepFrom,
+  parameters: [set : Bytes, offset : Nat, remaining : Nat, next : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => next
+    | Nat.succ rest => (if (reached set (byteNat (letters) offset)) then (stepFrom set (offset + 1) rest (prim append next (octetAt (letters) offset) : Bytes)) else (stepFrom set (offset + 1) rest next))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: closeFrom,
+  parameters: [set : Bytes, fuel : Nat],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => set
+    | Nat.succ rest => (closeFrom (stepFrom set 0 26 0x) rest)),
+  recursive_argument: fuel
+}
+
+definition{
+  name: closure,
+  parameters: [domains : Bytes],
+  result: Bytes,
+  body: (closeFrom domains 26)
+}
+
+definition{
+  name: sameFrom,
+  parameters: [value : Bytes, pattern : Bytes, offset : Nat, remaining : Nat],
+  result: Bool,
+  body: (match remaining
+    | Nat.zero => true
+    | Nat.succ rest => (((byteNat value offset) =? (byteNat pattern offset)) && (sameFrom value pattern (offset + 1) rest))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: same,
+  parameters: [value : Bytes, pattern : Bytes],
+  result: Bool,
+  body: (((prim length value : Nat) =? (prim length pattern : Nat)) && (sameFrom value pattern 0 (prim length pattern : Nat)))
+}
+
+definition{
+  name: hasCell,
+  parameters: [d : Nat, p : Bytes],
+  result: Bool,
+  body: (((d =? 65) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 66) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))) || (((d =? 67) && ((same p 0x434f4e) || ((same p 0x4f5053) || ((same p 0x505245) || (same p 0x50524f))))) || (((d =? 68) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x505245) || (same p 0x50524f))))))) || (((d =? 69) && ((same p 0x4f5053) || ((same p 0x505245) || (same p 0x50524f)))) || (((d =? 70) && ((same p 0x505245) || (same p 0x50524f))) || (((d =? 71) && ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141)))))) || (((d =? 72) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 73) && ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))) || (((d =? 74) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 75) && ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))) || (((d =? 76) && ((same p 0x434f4e) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141)))))) || (((d =? 77) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 78) && ((same p 0x434f4e) || ((same p 0x4c4348) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))) || (((d =? 79) && ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))) || (((d =? 80) && ((same p 0x4c4348) || ((same p 0x4f5053) || ((same p 0x50524f) || (same p 0x5141))))) || (((d =? 81) && ((same p 0x4c4348) || ((same p 0x4f5053) || ((same p 0x505245) || (same p 0x5141))))) || (((d =? 82) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 83) && ((same p 0x434f4e) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || (same p 0x50524f))))))) || (((d =? 84) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 85) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || (same p 0x50524f)))))))) || (((d =? 86) && ((same p 0x434f4e) || ((same p 0x4c4348) || ((same p 0x4f5053) || (same p 0x505245))))) || (((d =? 87) && ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || (same p 0x50524f)))))) || (((d =? 88) && ((same p 0x434f4e) || ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || ((same p 0x4f5053) || ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141))))))))) || (((d =? 89) && ((same p 0x454f4c) || ((same p 0x4c4348) || ((same p 0x4d4e54) || (same p 0x4f5053))))) || ((d =? 90) && ((same p 0x505245) || ((same p 0x50524f) || (same p 0x5141)))))))))))))))))))))))))))))
+}
+
+definition{
+  name: spreadFrom,
+  parameters: [domains : Bytes, phase : Bytes, offset : Nat, remaining : Nat, out : Bytes],
+  result: Bytes,
+  body: (match remaining
+    | Nat.zero => out
+    | Nat.succ rest => (if (hasCell (byteNat domains offset) phase) then (spreadFrom domains phase (offset + 1) rest (prim append out (prim append (prim append (prim append (octetAt domains offset) 0x2f : Bytes) phase : Bytes) 0x0a : Bytes) : Bytes)) else (spreadFrom domains phase (offset + 1) rest out))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: spread,
+  parameters: [domain : Bytes, phase : Bytes],
+  result: Bytes,
+  body: (spreadFrom (closure domain) phase 0 (prim length (closure domain) : Nat) 0x)
+}
+
+theorem{
+  name: closes_domains_that_share_a_standard,
+  parameters: [],
+  statement: ((closure 0x41) = 0x4142),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: closes_domains_through_shared_roles,
+  parameters: [],
+  statement: ((closure 0x4a) = 0x4a4d5354555758),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_domain_that_shares_nothing_is_its_own_closure,
+  parameters: [],
+  statement: ((closure 0x43) = 0x43),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: the_closure_is_a_fixed_point,
+  parameters: [],
+  statement: ((closure 0x4a4d5354555758) = 0x4a4d5354555758),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: spreads_a_cell_to_the_same_phase_of_its_closure,
+  parameters: [],
+  statement: ((spread 0x4a 0x4f5053) = 0x4a2f4f50530a4d2f4f50530a532f4f50530a542f4f50530a552f4f50530a572f4f50530a582f4f50530a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
