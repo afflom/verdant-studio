@@ -105,8 +105,13 @@ jobs:
           set -euo pipefail
           mkdir -p target/input
           cat > target/input/change.patch <<< "$INPUT"
+          # A sender can name the sha256 of the patch it means to send on a first line of its own, sha256:HEX, the digest of
+          # the patch text as applied (or of the gzip's content). A slip in transcription then fails here in seconds.
+          want=''
+          if head -n 1 target/input/change.patch | grep -qE '^sha256:[0-9a-f]{64}$'; then want=$(head -n 1 target/input/change.patch | cut -c8-); tail -n +2 target/input/change.patch > target/input/change.body; mv target/input/change.body target/input/change.patch; fi
           # A patch larger than a dispatch input can carry arrives gzipped and base64-encoded.
           if head -c 4 target/input/change.patch | grep -q '^H4sI'; then base64 -d < target/input/change.patch | gunzip > target/input/change.diff; mv target/input/change.diff target/input/change.patch; fi
+          if [ -n "$want" ]; then got=$(sha256sum target/input/change.patch | cut -c1-64); if [ "$got" != "$want" ]; then echo "::error::the patch decodes to sha256 $got, not the $want its sender named, so it changed in transcription: send it again"; exit 1; fi; echo "the patch matches the sha256 its sender named"; fi
           outside=$(git apply --numstat target/input/change.patch | cut -f3 | grep -v -e '^studio/src/' -e '^app/src/Contract.lex.tex$' -e '^app/src/Studio/' -e '^model/ids.toml$' -e '^model/strata.json$' -e '^features/suites/' -e '^README.md$' -e '^readers/' -e '^admit/' -e '^lexlean-workspace.toml$' -e '^studio/lexlean.toml$' -e '^studio/production-request.json$' -e '^app/lexlean.toml$' -e '^stdlib/lexlean.toml$' -e '^.github/lexlean.pin$' || true)
           if [ -n "$outside" ]; then echo "::error::propose-command changes only studio/src, app/src/Contract.lex.tex, app/src/Studio, model/ids.toml, model/strata.json, features/suites, README.md, readers, admit, lexlean-workspace.toml, the studio, app and stdlib lexlean.toml, studio/production-request.json and .github/lexlean.pin, not: $outside"; exit 1; fi
           # studio/lexlean.lock, readers/lexlean.lock, readers/xml/lexlean.lock and admit/lexlean.lock are generated, and the export below writes them again.
