@@ -341,6 +341,16 @@ The three honesty levels (R2):
 | `VS-257` | `build` | OTLP/JSON encodes every string as JSON (OTLP-1.11.1-SPECIFICATION), so Studio.Telemetry escapes each quotation mark, reverse solidus and control character of an operation's name, actor, instance and outcome | `Studio.Telemetry.escapes_every_string_as_json` |
 | `VS-258` | `open` | Verdant Studio's own runtime records every operation it runs, on every instance, through Studio.Telemetry, appending its signals to the instance's OTLP JSON lines file, so each operation and each refusal is logged, measured and traced (REQ-OBSERVABILITY, REQ-SELF-RUNTIME); until the runtime host calls the telemetry route for each operation, the signals are answered on request only |  |
 
+## design
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-237` | `build` | Human-centred design begins by understanding and specifying the context of use (ISO 9241-210:2019 7.2, inferred from its public preview, ISO-9241-210-2019-PREVIEW), so Studio.Gui.Design traces that activity to Studio.Observer, which observes each participant in the journey they take part in | `Studio.Gui.Design.the_context_of_use_is_observed` |
+| `VS-238` | `build` | User requirements are specified from user and other stakeholder needs (ISO 9241-210:2019 7.3, inferred), so Studio.Gui.Design traces that activity to Studio.Feedback, where players' masked feedback is distilled by consensus | `Studio.Gui.Design.user_requirements_come_from_feedback` |
+| `VS-239` | `build` | Human-centred design is iterative over its four activities (ISO 9241-210:2019 5.5 and clause 7, inferred), so Studio.Gui.Design answers the whole cycle, each activity traced to the Studio stage that carries it out, the Prism generation producing design solutions and the accessibility and usability rules evaluating them, with evaluation returning to the context of use | `Studio.Gui.Design.the_design_is_one_cycle` |
+| `VS-240` | `build` | Studio.Gui.Design refuses an activity that ISO 9241-210:2019 clause 7 does not name (inferred), naming the activities it has | `Studio.Gui.Design.refuses_an_activity_outside_clause_7`, refuses with `refused: launch is no human-centred design activity of ISO 9241-210:2019 clause 7; the activities are context, requirements, solutions and evaluation` |
+| `VS-241` | `build` | Human-centred design is iterative (ISO 9241-210:2019 5.5, inferred), so Studio.Gui.Design proves that four steps of its cycle return to the context of use | `Studio.Gui.Design.the_design_cycle_closes` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
