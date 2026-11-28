@@ -1189,3 +1189,40 @@ level = "build"
 suite = "view"
 statement = "An agent in a stakeholder role gets the tree a person in that role gets (REQ-AGENT-USERS), so each journey of a Studio.Gui.View tree, with its audit, is the same for an agent as for a person"
 theorems = ["Studio.Gui.View.an_agent_gets_the_tree_a_person_gets"]
+
+[[id]]
+id = "VS-232"
+level = "build"
+suite = "usability"
+statement = "Usability is effectiveness, efficiency and satisfaction in a context of use (ISO 9241-11:2018 3.1.1, inferred from its public preview, ISO-9241-11-2018-PREVIEW), so Studio.Gui.Usability measures a journey's view tree: the maintainer reaches the approval goal with both actions enabled, in one step, and satisfaction is left to the users' own feedback"
+theorems = ["Studio.Gui.Usability.the_maintainer_reaches_the_approval_goal"]
+
+[[id]]
+id = "VS-233"
+level = "build"
+suite = "usability"
+statement = "Effectiveness is the accuracy and completeness with which users achieve specified goals (ISO 9241-11:2018 3.1.12, inferred), so Studio.Gui.Usability measures the approval journey of a viewer whose actions are disabled as not reaching its goal in that context, naming what its view says"
+theorems = ["Studio.Gui.Usability.another_viewer_does_not_reach_the_approval_goal"]
+
+[[id]]
+id = "VS-234"
+level = "build"
+suite = "usability"
+statement = "Efficiency is the resources used in relation to the results achieved (ISO 9241-11:2018 3.1.13, inferred), so Studio.Gui.Usability spends no step on a release a gate holds back, and its effectiveness names the gate that holds it"
+theorems = ["Studio.Gui.Usability.a_held_release_names_what_it_needs"]
+
+[[id]]
+id = "VS-235"
+level = "build"
+suite = "usability"
+statement = "Usability is measured against specified goals (ISO 9241-11:2018 3.1.1, inferred), so Studio.Gui.Usability refuses a view tree that opens with no journey and so names no goal"
+theorems = ["Studio.Gui.Usability.refuses_a_tree_with_no_goal"]
+failure = "refused: the view tree opens with no journey, so it names no goal to measure usability against: view prismSeed: NO SEED, enter one word or sentence"
+negative = "VS-235"
+
+[[id]]
+id = "VS-236"
+level = "build"
+suite = "usability"
+statement = "An agent is measured as a person is (REQ-AGENT-USERS), so Studio.Gui.Usability gives the view tree an agent perceives exactly the usability measures it gives a person's, for every journey and request"
+theorems = ["Studio.Gui.Usability.an_agent_and_a_person_get_the_same_measures"]
