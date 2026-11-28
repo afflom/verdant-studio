@@ -93,3 +93,22 @@ Feature: prism
     Given the Prism generation in app/src/Studio/PrismGeneration.lex.tex
     When prism-code check has Lean's kernel prove Studio.PrismGeneration.lists_the_cells
     Then the cells it answers are the closure register's, which verdant_studio publish writes from the standards index, so they never drift from it
+
+  @VS-88 @build
+  Scenario: A Prism's routed cells fill each register cell with the values routed to the same phase of any domain in its closure, and routed cells are a fixed point
+    Given the closure model in app/src/Studio/Prism/Closure.lex.tex, whose cells VerdantUI routes weights onto (VerdantUI DEC-009 and DEC-016)
+    When prism-code check has Lean's kernel prove Studio.Prism.Closure.fills_a_routed_cell_and_spreads_it_over_its_closure and Studio.Prism.Closure.routed_cells_are_a_fixed_point
+    Then over the pairs A-B, J-M and M-U, the routed line J/OPS TAB lantern fills J/OPS and M/OPS, and leaves U with no OPS cell empty
+    And the filled cells routed again answer themselves
+
+  @VS-89 @build
+  Scenario: The Prism generation refuses by name a routed line that is not a cell of the Prism's register
+    Given the closure model in app/src/Studio/Prism/Closure.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Closure.names_a_routed_line_outside_the_register and Studio.Prism.Closure.admits_routed_lines_the_register_holds
+    Then prism-code build replays the request prism TAB cells TAB Q9/OPS TAB x, answered with the refusal that names that line
+
+  @VS-90 @build
+  Scenario: The Prism generation takes the values routed onto its cells as the Prism's features and generates every facet from them
+    Given the Prism generation in app/src/Studio/PrismGeneration.lex.tex
+    When prism-code check has Lean's kernel prove Studio.Prism.Closure.a_routed_text_carries_its_values and Studio.PrismGeneration.lists_the_routed_values_as_features
+    Then the request prism TAB features TAB J/OPS TAB lantern LF A/CON TAB sea is answered with lantern and sea, one per line

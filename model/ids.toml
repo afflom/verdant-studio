@@ -731,3 +731,24 @@ level = "build"
 suite = "typeface"
 statement = "The typeface generator chooses a path's control points as METAFONT does: make_choices of mf.web 2.71828182 (Hobby's mock-curvature equations with tension, curl, given directions, explicit controls, tension atleast and cycles) gives mf.web's control points bit for bit"
 theorems = ["Studio.Generator.Typeface.Choices.chooses_a_curled_arc_as_metafont_does", "Studio.Generator.Typeface.Choices.chooses_a_cycle_as_metafont_does", "Studio.Generator.Typeface.Choices.chooses_given_directions_and_tensions_as_metafont_does", "Studio.Generator.Typeface.Choices.chooses_beside_explicit_controls_as_metafont_does", "Studio.Generator.Typeface.Choices.chooses_tension_at_least_as_metafont_does", "Studio.Generator.Typeface.Choices.joins_equal_knots_as_metafont_does", "Studio.Generator.Typeface.Choices.chooses_two_given_directions_as_metafont_does", "Studio.Generator.Typeface.Choices.draws_a_curled_straight_line_as_metafont_does"]
+
+[[id]]
+id = "VS-88"
+level = "build"
+suite = "prism"
+statement = "A Prism's routed cells fill each register cell with the values routed to the same phase of any domain in its closure, and routed cells are a fixed point"
+theorems = ["Studio.Prism.Closure.fills_a_routed_cell_and_spreads_it_over_its_closure", "Studio.Prism.Closure.routed_cells_are_a_fixed_point"]
+
+[[id]]
+id = "VS-89"
+level = "build"
+suite = "prism"
+statement = "The Prism generation refuses by name a routed line that is not a cell of the Prism's register"
+theorems = ["Studio.Prism.Closure.names_a_routed_line_outside_the_register", "Studio.Prism.Closure.admits_routed_lines_the_register_holds"]
+
+[[id]]
+id = "VS-90"
+level = "build"
+suite = "prism"
+statement = "The Prism generation takes the values routed onto its cells as the Prism's features and generates every facet from them"
+theorems = ["Studio.Prism.Closure.a_routed_text_carries_its_values", "Studio.PrismGeneration.lists_the_routed_values_as_features"]

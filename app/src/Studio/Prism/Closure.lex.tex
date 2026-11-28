@@ -167,6 +167,138 @@ definition{
   body: (spreadIn (Studio.Prism.Closure.Register::pairs) (cells) domain phase)
 }
 
+definition{
+  name: lineEnd,
+  parameters: [text : Bytes, offset : Nat, remaining : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => offset
+    | Nat.succ rest => (if (((byteNat text offset) =? 10) || ((byteNat text offset) =? 256)) then offset else (lineEnd text (offset + 1) rest))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: tabAt,
+  parameters: [text : Bytes, offset : Nat, stop : Nat, remaining : Nat],
+  result: Nat,
+  body: (match remaining
+    | Nat.zero => stop
+    | Nat.succ rest => (if (stop <=? offset) then stop else (if ((byteNat text offset) =? 9) then offset else (tabAt text (offset + 1) stop rest)))),
+  recursive_argument: remaining
+}
+
+definition{
+  name: span,
+  parameters: [text : Bytes, start : Nat, stop : Nat],
+  result: Bytes,
+  body: (match (prim slice text start (prim subtract stop start : Nat) : (Option Bytes))
+    | Option.none => 0x
+    | Option.some part => part)
+}
+
+definition{
+  name: routed,
+  parameters: [text : Bytes],
+  result: Bool,
+  body: (not ((tabAt text 0 (prim length text : Nat) (prim length text : Nat)) =? (prim length text : Nat)))
+}
+
+definition{
+  name: registered,
+  parameters: [table : Bytes, key : Bytes],
+  result: Bool,
+  body: (occursFrom (prim append 0x0a table : Bytes) (prim append (prim append 0x0a key : Bytes) 0x090a : Bytes) 0 ((prim length table : Nat) + 1))
+}
+
+definition{
+  name: strayFrom,
+  parameters: [table : Bytes, text : Bytes, offset : Nat, fuel : Nat],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => 0x
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then 0x else (let stop : Nat := (lineEnd text offset ((prim length text : Nat) + 1)); (let tab : Nat := (tabAt text offset stop ((prim length text : Nat) + 1)); (if ((offset =? stop) || ((tab <? stop) && (registered table (span text offset tab)))) then (strayFrom table text (stop + 1) rest) else (span text offset stop)))))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: strayIn,
+  parameters: [table : Bytes, text : Bytes],
+  result: Bytes,
+  body: (strayFrom table text 0 ((prim length text : Nat) + 1))
+}
+
+definition{
+  name: valuesFrom,
+  parameters: [text : Bytes, offset : Nat, fuel : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then out else (let stop : Nat := (lineEnd text offset ((prim length text : Nat) + 1)); (let tab : Nat := (tabAt text offset stop ((prim length text : Nat) + 1)); (valuesFrom text (stop + 1) rest (if ((prim length out : Nat) =? 0) then (span text (tab + 1) stop) else (prim append (prim append out 0x0a : Bytes) (span text (tab + 1) stop) : Bytes))))))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: values,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (valuesFrom text 0 ((prim length text : Nat) + 1) 0x)
+}
+
+definition{
+  name: carried,
+  parameters: [out : Bytes, value : Bytes],
+  result: Bool,
+  body: (occursFrom (prim append (prim append 0x20 out : Bytes) 0x20 : Bytes) (prim append (prim append 0x20 value : Bytes) 0x20 : Bytes) 0 ((prim length out : Nat) + 2))
+}
+
+definition{
+  name: spreadValueFrom,
+  parameters: [pairs : Bytes, text : Bytes, domain : Bytes, phase : Bytes, offset : Nat, fuel : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (if ((prim length text : Nat) <=? offset) then out else (let stop : Nat := (lineEnd text offset ((prim length text : Nat) + 1)); (let tab : Nat := (tabAt text offset stop ((prim length text : Nat) + 1)); (let value : Bytes := (span text (tab + 1) stop); (spreadValueFrom pairs text domain phase (stop + 1) rest (if (((prim length value : Nat) =? 0) || ((carried out value) || (not ((sameFrom (span text (offset + 2) tab) phase 0 ((prim length phase : Nat) + 1)) && (hasFrom (closureIn pairs (octetAt text offset)) (byteNat domain 0) 0 26))))) then out else (if ((prim length out : Nat) =? 0) then value else (prim append (prim append out 0x20 : Bytes) value : Bytes))))))))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: cellsFrom,
+  parameters: [pairs : Bytes, table : Bytes, text : Bytes, offset : Nat, fuel : Nat, out : Bytes],
+  result: Bytes,
+  body: (match fuel
+    | Nat.zero => out
+    | Nat.succ rest => (if ((prim length table : Nat) <=? offset) then out else (let stop : Nat := (lineEnd table offset ((prim length table : Nat) + 1)); (let tab : Nat := (tabAt table offset stop ((prim length table : Nat) + 1)); (cellsFrom pairs table text (stop + 1) rest (prim append out (prim append (prim append (span table offset (tab + 1)) (spreadValueFrom pairs text (octetAt table offset) (span table (offset + 2) tab) 0 ((prim length text : Nat) + 1) 0x) : Bytes) 0x0a : Bytes) : Bytes)))))),
+  recursive_argument: fuel
+}
+
+definition{
+  name: cellsIn,
+  parameters: [pairs : Bytes, table : Bytes, text : Bytes],
+  result: Bytes,
+  body: (cellsFrom pairs table text 0 ((prim length table : Nat) + 1) 0x)
+}
+
+definition{
+  name: routedCells,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (cellsIn (Studio.Prism.Closure.Register::pairs) (cells) text)
+}
+
+definition{
+  name: stray,
+  parameters: [text : Bytes],
+  result: Bytes,
+  body: (if (routed text) then (strayIn (cells) text) else 0x)
+}
+
+definition{
+  name: strayRefusal,
+  parameters: [line : Bytes],
+  result: Bytes,
+  body: (prim append (prim append 0x726566757365643a2074686520726f75746564206c696e6520 line : Bytes) 0x206973206e6f7420612063656c6c206f662074686520507269736d27732072656769737465722c206120646f6d61696e2f7068617365207468656e2061207461622074686174206e616d65732069747320726f757465642076616c7565 : Bytes)
+}
+
 theorem{
   name: closes_domains_that_share_a_standard,
   parameters: [],
@@ -211,6 +343,46 @@ theorem{
   name: spreads_only_to_cells_the_register_holds,
   parameters: [],
   statement: ((spreadIn 0x41424a4d4d55 0x412f434f4e090a422f434f4e090a4a2f4f5053090a4d2f4f5053090a552f505245090a 0x4a 0x505245) = 0x552f5052450a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: fills_a_routed_cell_and_spreads_it_over_its_closure,
+  parameters: [],
+  statement: ((cellsIn 0x41424a4d4d55 0x412f434f4e090a422f434f4e090a4a2f4f5053090a4d2f4f5053090a552f505245090a 0x4a2f4f5053096c616e7465726e) = 0x412f434f4e090a422f434f4e090a4a2f4f5053096c616e7465726e0a4d2f4f5053096c616e7465726e0a552f505245090a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: routed_cells_are_a_fixed_point,
+  parameters: [],
+  statement: ((cellsIn 0x41424a4d4d55 0x412f434f4e090a422f434f4e090a4a2f4f5053090a4d2f4f5053090a552f505245090a 0x412f434f4e090a422f434f4e090a4a2f4f5053096c616e7465726e0a4d2f4f5053096c616e7465726e0a552f505245090a) = 0x412f434f4e090a422f434f4e090a4a2f4f5053096c616e7465726e0a4d2f4f5053096c616e7465726e0a552f505245090a),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: names_a_routed_line_outside_the_register,
+  parameters: [],
+  statement: ((strayIn 0x412f434f4e090a422f434f4e090a4a2f4f5053090a4d2f4f5053090a552f505245090a 0x4a2f4f5053096c616e7465726e0a512f4f50530978) = 0x512f4f50530978),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: admits_routed_lines_the_register_holds,
+  parameters: [],
+  statement: ((strayIn 0x412f434f4e090a422f434f4e090a4a2f4f5053090a4d2f4f5053090a552f505245090a 0x4a2f4f5053096c616e7465726e0a412f434f4e097365610a) = 0x),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: a_routed_text_carries_its_values,
+  parameters: [],
+  statement: ((values 0x4a2f4f5053096c616e7465726e0a412f434f4e09736561) = 0x6c616e7465726e0a736561),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }

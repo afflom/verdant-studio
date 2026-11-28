@@ -59,10 +59,18 @@ definition{
 }
 
 definition{
+  name: featuresOf,
+  parameters: [seed : Bytes],
+  result: Bytes,
+  body: (if (Studio.Prism.Closure::routed seed) then (Studio.Prism.Seed::features (Studio.Prism.Closure::values seed)) else (Studio.Prism.Seed::features seed)),
+  axioms: [Quot.sound, propext]
+}
+
+definition{
   name: bundle,
   parameters: [seed : Bytes],
   result: Bytes,
-  body: (let bag : Bytes := (Studio.Prism.Bundle::bag (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed))); (if ((prim length bag : Nat) <=? 16777216) then bag else (largeRefusal))),
+  body: (let bag : Bytes := (Studio.Prism.Bundle::bag (Studio.Generator.Music.Midi::compose (featuresOf seed)) (Studio.Generator.AudioFile.Bwf::encode (featuresOf seed)) (Studio.Generator.VectorImage.Svg::generate (featuresOf seed))); (if ((prim length bag : Nat) <=? 16777216) then bag else (largeRefusal))),
   axioms: [Quot.sound, propext]
 }
 
@@ -143,7 +151,7 @@ definition{
   name: facet,
   parameters: [mediaType : Bytes, seed : Bytes],
   result: Bytes,
-  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (same mediaType (featuresKey)) then (Studio.Prism.Seed::features seed) else (if (same mediaType (cellsKey)) then (Studio.Prism.Closure::cells) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (Studio.Prism.Seed::features seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (Studio.Prism.Seed::features seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (Studio.Prism.Seed::features seed)) else (if (same mediaType (zipType)) then (bundle seed) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType))))))))),
+  body: (if (not (Studio.Prism.Seed::admitted seed)) then (Studio.Prism.Seed::refusal seed) else (if (not ((prim length (Studio.Prism.Closure::stray seed) : Nat) =? 0)) then (Studio.Prism.Closure::strayRefusal (Studio.Prism.Closure::stray seed)) else (if ((prim length (featuresOf seed) : Nat) =? 0) then (Studio.Prism.Seed::noWordRefusal) else (if (same mediaType (featuresKey)) then (featuresOf seed) else (if (same mediaType (cellsKey)) then (if (Studio.Prism.Closure::routed seed) then (Studio.Prism.Closure::routedCells seed) else (Studio.Prism.Closure::cells)) else (if (same mediaType (midiType)) then (Studio.Generator.Music.Midi::compose (featuresOf seed)) else (if (same mediaType (waveType)) then (Studio.Generator.AudioFile.Bwf::encode (featuresOf seed)) else (if (same mediaType (svgType)) then (Studio.Generator.VectorImage.Svg::generate (featuresOf seed)) else (if (same mediaType (zipType)) then (bundle seed) else (if ((prim length mediaType : Nat) =? 0) then (manifest) else (unknownRefusal mediaType))))))))))),
   axioms: [Quot.sound, propext]
 }
 
@@ -245,6 +253,13 @@ theorem{
   name: lists_the_cells,
   parameters: [],
   statement: ((generate 0x63656c6c730976657264616e74) = (Studio.Prism.Closure::cells)),
+  proof: decide{},
+  axioms: [Quot.sound, propext]
+}
+theorem{
+  name: lists_the_routed_values_as_features,
+  parameters: [],
+  statement: ((generate 0x6665617475726573094a2f4f5053096c616e7465726e0a412f434f4e09736561) = 0x6c616e7465726e0a736561),
   proof: decide{},
   axioms: [Quot.sound, propext]
 }
