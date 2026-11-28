@@ -218,6 +218,14 @@ The three honesty levels (R2):
 | `VS-99` | `build` | Only the maintainer's linked agent calls its tools, so Studio.Agent.Interface.Transport refuses a call from an agent whose Prism ID is not linked to the maintainer's, by Studio.Agent.Contributor | `Studio.Agent.Interface.Transport.refuses_a_call_from_an_unlinked_agent`, refuses with `refused: prism:agent is not linked to prism:alex, so it is no contributor of that maintainer` |
 | `VS-100` | `open` | The agent's MCP JSON-RPC messages reach Studio.Agent.Interface.Transport over Stitch's sealed relay as a custom MCP transport, each delivered only when Stitch.Relay deliveryAllowed holds; until an instance hosts the relay, the agent reaches the workspace operations through the GitHub App |  |
 
+## gui-coordination
+
+| ID | Level | Statement | Evidence |
+| --- | --- | --- | --- |
+| `VS-101` | `build` | Studio.Gui.Coordination presents the coordination journey of the Studio UI Prism in Stitch Product.Experience's pattern, a journey whose view is chosen by facts and whose actions are enabled by model guards: with the agent linked to the maintainer (Studio.Coordination), the coordinationOpen view, its send action enabled once a message is drafted | `Studio.Gui.Coordination.presents_the_open_view_with_send_enabled` |
+| `VS-102` | `build` | Studio.Gui.Coordination presents the coordinationUnlinked view, its send action disabled, when the other Prism ID is not linked to the maintainer, as Studio.Coordination carries no message for that pair | `Studio.Gui.Coordination.presents_the_unlinked_view_with_send_disabled` |
+| `VS-103` | `build` | The send action of the coordination journey is guarded by the link, so Studio.Gui.Coordination never enables it for a pair that is not a maintainer and its linked agent, whatever is drafted | `Studio.Gui.Coordination.an_unlinked_pair_never_sends` |
+
 ## Cited authorities
 
 An authority is cited, never re-derived: what it states is not claimed as established here, so the claim that reproduces it stays `some-true`.
